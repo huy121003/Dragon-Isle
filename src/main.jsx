@@ -3,6 +3,7 @@ import React, {useEffect,useMemo,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,ConfigProvider,Drawer,Form,Input,InputNumber,Modal,Popconfirm,Progress,Space,Spin,Table,Tag,Typography,message} from 'antd';
 import ArenaView from './ArenaView.jsx';
+import {inlineStyle} from './inline-style.mjs';
 import './ui.css';
 const $=id=>document.getElementById(id);
 const game=()=>window.DragonGame;
@@ -59,11 +60,7 @@ function convert(node,key){
     if(name==='class')props.className=attr.value;
     else if(name==='for')props.htmlFor=attr.value;
     else if(name==='style'){
-      const style={};for(const declaration of attr.value.split(';')){
-        const pos=declaration.indexOf(':');if(pos<0)continue;
-        const property=declaration.slice(0,pos).trim().replace(/-([a-z])/g,(_,letter)=>letter.toUpperCase());
-        style[property]=declaration.slice(pos+1).trim();
-      }props.style=style;
+      props.style=inlineStyle(attr.value);
     }else if(!name.startsWith('on')&&!['value','disabled'].includes(name))props[name]=attr.value;
   }
   if(tag==='progress')return <Progress key={key} percent={Math.round((Number(node.value)/Math.max(1,Number(node.max)))*100)} showInfo={false}/>;

@@ -22,11 +22,11 @@ Mở `http://IP-máy-Kali:8080`. Tài khoản được đăng ký **đầu tiên
 
 Trong **Quản trị**, bấm **Chỉnh tài nguyên** ở từng người chơi để đặt số dư Vàng, Thức ăn, Gem, hoặc nhập các ô ở khung **Đặt số dư cho tất cả tài khoản**. Ô để trống sẽ giữ nguyên; nhập `0` để đặt về không. Giới hạn lần lượt là 1.000 tỷ vàng, 1 tỷ thức ăn và 1 tỷ gem. Tài khoản đã sửa cần đăng nhập lại để đọc bản lưu mới, kể cả tài khoản admin nếu chỉnh chính mình hoặc áp dụng cho tất cả. Người chưa vào game vẫn nhận một đảo khởi đầu đầy đủ khi admin cấp tài nguyên. API tài nguyên chỉ chấp nhận quyền quản trị và ghi vào hồ sơ JSON của từng người.
 
-Thư mục `dist/` đã có bản build để chạy ngay bằng `node server.cjs` nếu không sửa mã. Sau khi sửa `src/` hoặc CSS, chạy lại `npm run build`. Khi nâng cấp máy chủ đang dùng, giữ nguyên `data/users.json`, `data/sessions.json` và `data/profiles/` để không mất tài khoản/tiến trình. Đặt HTTPS reverse proxy nếu mở ra Internet và thêm cờ `--secure-cookies` khi chạy sau HTTPS.
+Thư mục `dist/` được tạo khi chạy `npm run build` và không lưu trong repository. Sau khi sửa `src/` hoặc CSS, chạy lại lệnh build. Khi nâng cấp máy chủ đang dùng, giữ nguyên `data/users.json`, `data/sessions.json` và `data/profiles/` để không mất tài khoản/tiến trình. Đặt HTTPS reverse proxy nếu mở ra Internet và thêm cờ `--secure-cookies` khi chạy sau HTTPS.
 
 ## Đăng ký, đăng nhập và lưu riêng từng người
 
-Cài theo phần trên, hoặc với bản build sẵn mở terminal tại thư mục `dragon-isle`, chạy:
+Sau khi cài và build theo phần trên, mở terminal tại thư mục `dragon-isle`, chạy:
 
 ```sh
 node server.cjs
@@ -50,7 +50,7 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 | --- | --- |
 | `data/dragons.json` | Mười hệ, độ hiếm, 510 loài với tên tiếng Anh, chiêu và chỉ số |
 | `data/game.json`, `data/economy.js` | Bản đồ 11 đảo, vùng đất 24×24, công trình, tiến trình và các hệ số cân bằng |
-| `data/users.json`, `data/sessions.json` | Tài khoản và phiên đăng nhập, không cho tải trực tiếp qua web |
+| `data/users.json`, `data/sessions.json` | Máy chủ tự tạo tài khoản và phiên; không lưu trong repository và không cho tải trực tiếp qua web |
 | `data/profiles/` | Một file JSON tiến trình riêng cho từng tài khoản |
 | `server/auth.cjs`, `server/store.cjs`, `server/profile.cjs` | Xác thực, ghi JSON nguyên tử và tạo hồ sơ đầu tiên khi admin cấp tài nguyên |
 | `js/data/dragon-rules.js` | Quy tắc sinh rồng lai, tính chỉ số và pha màu từ JSON |
@@ -60,12 +60,12 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 | `js/render/`, `js/ui/` | Canvas đảo/rồng và giao diện thông tin, Sổ tay, chuồng; `dragon-anatomy.js` vẽ dáng gốc, `dragon-tertiary.js` vẽ lớp hình thể của hệ thứ ba |
 | `js/auth.js`, `js/save.js`, `js/audio.js`, `js/main.js` | Đăng nhập, lưu hồ sơ, âm thanh, vòng lặp game |
 | `src/main.jsx`, `src/ui.css` | Giao diện React và theme Ant Design, màn hình quản trị, bộ nối thao tác Canvas |
-| `dist/` | Bản React production do Vite build; Node phục vụ trực tiếp |
+| `dist/` | Đầu ra do Vite build, không lưu trong repository; Node phục vụ trực tiếp |
 | `server.cjs` | Máy chủ Node.js đọc/ghi JSON, xác thực và API quản trị |
 | `package.json`, `vite.config.mjs` | Gói React/Ant Design/Vite và lệnh build |
 | `tests/` | Kiểm thử game và máy chủ |
 
-Khi sinh lại loài, chạy `node scripts/generate-species.cjs`, `node scripts/name-species.cjs`, rồi `node scripts/build-cache.cjs` để giữ tên tiếng Anh và đồng bộ cache. Chạy `node server.cjs` để thử game; mở `/debug/gallery.html` để xem rồng theo hệ và tuổi. Sau khi sửa React/CSS, chạy `npm run build`.
+Dữ liệu loài được quản lý trong `data/dragons.json`. `npm run build` tự tạo cache từ JSON và build React; `npm test` cũng build trước khi kiểm tra. Chạy `node server.cjs` để thử game; mở `/debug/gallery.html` để xem rồng theo hệ và tuổi.
 
 ## Bản cập nhật đảo và rồng
 

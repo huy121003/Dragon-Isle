@@ -10,7 +10,7 @@ function newGame(){
     for(let x=startX;x<startX+DATA.islandRegionSize;x++)land.push(x+","+y);
   return {version:SAVE_VERSION,lastTick:Date.now(),savedAt:Date.now(),nextId:4,player:{level:1,xp:0},
     gold:500,food:50,gems:10,expansions:0,land:land,regions:[],unlockedIslands:1,
-    eggs:[],discovered:["fire"],recipes:[],testGrantApplied:false,
+    eggs:[],discovered:["fire"],recipes:[],
     buildings:[{id:1,type:"habitat",element:"fire",x:startX+11,y:startY+11,level:1,stored:false,
       storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null},
       {id:3,type:"hatchery",element:null,x:startX,y:startY,level:1,stored:false,

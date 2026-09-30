@@ -165,9 +165,9 @@ async function start(){
           JSON.stringify(dragons)+';\nwindow.GameDatabase='+JSON.stringify(game)+';\n';
         reply(res,200,source,'text/javascript; charset=utf-8');return;
       }
-      if(pathname.startsWith('/data/')&&!['/data/dragons.json','/data/game.json','/data/economy.js'].includes(pathname)||
-        pathname.startsWith('/tests/')||pathname.startsWith('/scripts/')||
-        pathname.startsWith('/server/')||pathname==='/server.cjs'){
+      if(!(['/', '/index.html', '/css/style.css', '/debug/gallery.html',
+          '/data/dragons.json', '/data/game.json', '/data/economy.js'].includes(pathname)||
+          pathname.startsWith('/assets/')||pathname.startsWith('/js/'))){
         reply(res,403,'Không được truy cập.');return;
       }
       /* STATIC: React build ở dist; Canvas engine và catalog JSON vẫn dùng đường dẫn công khai cũ. */

@@ -1,0 +1,9 @@
+node_modules/
+node_modules
+dist/
+js/data/db-cache.js
+data/users.json
+data/sessions.json
+data/profiles/
+data/arena/
+*.log

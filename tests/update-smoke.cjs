@@ -60,6 +60,23 @@ const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
 const balance=await boot();
+check('battle preview, multiple attacking elements and colored skill symbols',()=>{
+ const combat=require('../js/data/combat-rules.js');
+ const waterFire=db.species.find(s=>s.elements.join('>')==='water>fire');
+ const ice=db.species.find(s=>s.id==='ice');
+ const flame={...JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).skills.elemental.fire[0],element:'fire'};
+ const attacker={species:waterFire.id,level:25},defender={species:ice.id,level:25};
+ const actor=combat.stats(waterFire.elements,waterFire.doHiem,25,db.elements,db.rarities);
+ const target={...combat.stats(ice.elements,ice.doHiem,25,db.elements,db.rarities),parts:ice.elements};
+ assert.equal(balance.run('calculateSkillDamage('+JSON.stringify(attacker)+','+JSON.stringify(defender)+','+
+   JSON.stringify(flame)+',1)'),combat.damage(actor,target,flame,db.typeChart));
+ const matchup=snapshot(balance,'matchupFor(DATA.species["'+waterFire.id+'"])');
+ assert.equal(matchup.weak.length,2);
+ assert(matchup.strong.includes('ice'),'Secondary Fire counters Ice');
+ const detail=balance.run('dragonDetailHtml(DATA.species["fire"],{species:"fire",level:25,nickname:"Fire",habitatId:1})');
+ assert(detail.includes('skill-hex neutral')&&detail.includes('skill-hex elemental'));
+ assert(detail.includes('100% base attack + '));
+});
 check('early player XP, level rewards and dragon feeding costs',()=>{
  assert(balance.run('playerXPNeeded(1)')<100);
  assert(balance.run('playerXPNeeded(20)')<2000);

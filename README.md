@@ -91,4 +91,10 @@ Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng
 - Trứng lai 3 và 4 hệ giữ mức xác suất 4–8% và 0,5–1%; phần còn lại ưu tiên rồng 2 hệ. Giao diện hiển thị xác suất theo hai chữ số thập phân.
 - Shop Food bán 10, 100 hoặc 500 thức ăn với giá 5 vàng mỗi thức ăn. Các tham số EXP, thưởng, giới hạn Farm, giá cho ăn và tỉ lệ lai nằm trong `data/economy.js`.
 
+### Chiến đấu
+
+- Mỗi hệ khắc đúng hai hệ và bị đúng hai hệ khắc. Hệ đầu tiên quyết định điểm yếu phòng thủ; các hệ còn lại cho phép dùng chiêu của hệ đó để khắc đối thủ. Đòn hệ mạnh gây ×1,5, đòn bị kháng gây ×0,75; chiêu thường không có hệ.
+- HP, tấn công và giáp được pha từ các hệ của rồng theo thứ tự, nhân bậc hiếm rồi tăng dần theo cấp 1–100. Đấu trường đánh theo lượt với bên chủ động đi trước, không còn chỉ số tốc độ.
+- Chiêu thường bằng một phần trăm tấn công gốc; chiêu hệ bằng 100% tấn công gốc cộng thêm sát thương hệ tính theo phần trăm tấn công gốc. Sau đó áp dụng khắc hệ, giảm theo giáp, sai số ±10% và chí mạng ×1,5. Máy chủ và giao diện dùng chung `js/data/combat-rules.js`.
+
 Khi cập nhật máy chủ đang dùng, giữ nguyên `data/users.json`, `data/sessions.json`, `data/profiles/` và `data/arena/`. Chạy `npm ci && npm run build && npm test`, sau đó `node server.cjs --host 0.0.0.0 --port 8080`. Bản lưu v7–v10 được nâng lên v11; đất và công trình đi theo đảo tương ứng khi tọa độ đảo thay đổi.

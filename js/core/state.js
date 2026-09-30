@@ -205,7 +205,7 @@ function dragonActivity(dragon,now){
 }
 function dragonStats(dragon){
   const stats=DRAGON_DATA.getStats(DATA.species[dragon.species].detail,dragon.level);
-  return {hp:stats.hp,attack:stats.tanCong,defense:stats.phongThu,speed:stats.tocDo};
+  return {hp:stats.hp,attack:stats.tanCong,defense:stats.phongThu};
 }
 function dragonIncome(dragon,building){
   const base = DATA.rarities[DATA.species[dragon.species].rarity].income;

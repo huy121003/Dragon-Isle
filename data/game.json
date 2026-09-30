@@ -575,15 +575,15 @@
           "id": "fire-1",
           "name": "Flame Slash",
           "icon": "🔥",
-          "power": 1.25,
-          "bonus": 26
+          "power": 1,
+          "bonus": 0.51
         },
         {
           "id": "fire-2",
           "name": "Inferno Burst",
           "icon": "☄️",
-          "power": 1.55,
-          "bonus": 40
+          "power": 1,
+          "bonus": 0.95
         }
       ],
       "water": [
@@ -591,15 +591,15 @@
           "id": "water-1",
           "name": "Water Strike",
           "icon": "💧",
-          "power": 1.2,
-          "bonus": 21
+          "power": 1,
+          "bonus": 0.41
         },
         {
           "id": "water-2",
           "name": "Tidal Surge",
           "icon": "🌊",
-          "power": 1.5,
-          "bonus": 34
+          "power": 1,
+          "bonus": 0.84
         }
       ],
       "earth": [
@@ -607,15 +607,15 @@
           "id": "earth-1",
           "name": "Earthquake",
           "icon": "⛰️",
-          "power": 1.25,
-          "bonus": 18
+          "power": 1,
+          "bonus": 0.43
         },
         {
           "id": "earth-2",
           "name": "Stone Impact",
           "icon": "🪨",
-          "power": 1.5,
-          "bonus": 31
+          "power": 1,
+          "bonus": 0.81
         }
       ],
       "wind": [
@@ -623,15 +623,15 @@
           "id": "wind-1",
           "name": "Wind Blade",
           "icon": "🌪️",
-          "power": 1.3,
-          "bonus": 19
+          "power": 1,
+          "bonus": 0.49
         },
         {
           "id": "wind-2",
           "name": "Cyclone",
           "icon": "🪽",
-          "power": 1.55,
-          "bonus": 32
+          "power": 1,
+          "bonus": 0.87
         }
       ],
       "ice": [
@@ -639,15 +639,15 @@
           "id": "ice-1",
           "name": "Frost Slash",
           "icon": "❄️",
-          "power": 1.25,
-          "bonus": 22
+          "power": 1,
+          "bonus": 0.47
         },
         {
           "id": "ice-2",
           "name": "Blizzard",
           "icon": "🧊",
-          "power": 1.55,
-          "bonus": 36
+          "power": 1,
+          "bonus": 0.91
         }
       ],
       "thunder": [
@@ -655,15 +655,15 @@
           "id": "thunder-1",
           "name": "Thunder Strike",
           "icon": "⚡",
-          "power": 1.3,
-          "bonus": 27
+          "power": 1,
+          "bonus": 0.57
         },
         {
           "id": "thunder-2",
           "name": "Sky Thunder",
           "icon": "🌩️",
-          "power": 1.6,
-          "bonus": 42
+          "power": 1,
+          "bonus": 1.02
         }
       ],
       "nature": [
@@ -671,15 +671,15 @@
           "id": "nature-1",
           "name": "Vine Lash",
           "icon": "🌿",
-          "power": 1.2,
-          "bonus": 19
+          "power": 1,
+          "bonus": 0.39
         },
         {
           "id": "nature-2",
           "name": "Thorn Forest",
           "icon": "🍃",
-          "power": 1.5,
-          "bonus": 33
+          "power": 1,
+          "bonus": 0.83
         }
       ],
       "dark": [
@@ -687,15 +687,15 @@
           "id": "dark-1",
           "name": "Shadow Slash",
           "icon": "🌑",
-          "power": 1.3,
-          "bonus": 25
+          "power": 1,
+          "bonus": 0.55
         },
         {
           "id": "dark-2",
           "name": "Dark Moon",
           "icon": "🦇",
-          "power": 1.55,
-          "bonus": 39
+          "power": 1,
+          "bonus": 0.94
         }
       ],
       "light": [
@@ -703,15 +703,15 @@
           "id": "light-1",
           "name": "Light Blade",
           "icon": "✨",
-          "power": 1.25,
-          "bonus": 20
+          "power": 1,
+          "bonus": 0.45
         },
         {
           "id": "light-2",
           "name": "Holy Radiance",
           "icon": "☀️",
-          "power": 1.55,
-          "bonus": 35
+          "power": 1,
+          "bonus": 0.9
         }
       ],
       "metal": [
@@ -719,15 +719,15 @@
           "id": "metal-1",
           "name": "Iron Slash",
           "icon": "⚙️",
-          "power": 1.2,
-          "bonus": 23
+          "power": 1,
+          "bonus": 0.43
         },
         {
           "id": "metal-2",
           "name": "Steel Storm",
           "icon": "🛡️",
-          "power": 1.55,
-          "bonus": 36
+          "power": 1,
+          "bonus": 0.91
         }
       ]
     }

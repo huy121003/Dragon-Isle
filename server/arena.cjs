@@ -1,6 +1,7 @@
 /* PvP: máy chủ giữ đội hình, thời gian chờ và tung kết quả trận. */
 const path=require('node:path');
 const {readJson,updateJson}=require('./store.cjs');
+const combat=require('../js/data/combat-rules.js');
 const COOLDOWN=15*60*1000;
 const TEAM_SIZE=3;
 const MIN_BATTLE_LEVEL=10;
@@ -28,22 +29,18 @@ function createArena({profilesDir,dataDir,auth}){
     if(!parts.length||parts.length>4||parts.some(e=>!elements[e])||new Set(parts).size!==parts.length)return null;
     const rarity=raw?.doHiem|| (parts.length===1?'common':parts.length===2?
       parts.some(e=>['light','dark','metal'].includes(e))?'epic':'rare':parts.length===3?'legendary':'mythic');
-    const weight={1:[1],2:[.6,.4],3:[.5,.3,.2],4:[.4,.3,.2,.1]}[parts.length];
-    const base={};for(const key of ['hp','tanCong','phongThu','tocDo'])
-      base[key]=parts.reduce((total,e,i)=>total+elements[e].chiSo[key]*weight[i],0)*rarities[rarity].heSoChiSo;
-    return {parts,rarity,base};
+    return {parts,rarity};
   };
   function fighter(d){
     const s=species(d.species);if(!s)return null;
-    const l=Math.max(1,Math.min(100,d.level)),base=s.base;
+    const stats=combat.stats(s.parts,s.rarity,d.level,elements,rarities);
     const skills=(catalog.species.find(x=>x.id===d.species)?.skillIds||
       (s.parts.length===1?['claw','slam',s.parts[0]+'-1',s.parts[0]+'-2']:
         (s.parts.length===2?['claw','slam']:s.parts.length===3?['claw']:[]).concat(s.parts.map(e=>e+'-1'))));
     const registry=[...(game.skills.neutral||[]),...Object.entries(game.skills.elemental||{}).flatMap(([element,list])=>
       list.map(skill=>({...skill,element})))];
-    return {...d,parts:s.parts,rarity:s.rarity,maxHp:Math.round(base.hp*5*(1+.09*(l-1))),
-      hp:Math.round(base.hp*5*(1+.09*(l-1))),attack:Math.round(base.tanCong*(1+.075*(l-1))),
-      defense:Math.round(base.phongThu*(1+.075*(l-1))),speed:Math.round(base.tocDo*(1+.025*(l-1))),
+    return {...d,parts:s.parts,rarity:s.rarity,maxHp:stats.hp,
+      hp:stats.hp,attack:stats.attack,defense:stats.defense,
       skills:skills.map(id=>registry.find(x=>x.id===id))};
   }
   function fight(attackers,defenders){
@@ -51,8 +48,7 @@ function createArena({profilesDir,dataDir,auth}){
     if(!left.length||!right.length)throw Object.assign(new Error('Invalid team.'),{status:400});
     for(let turn=1;turn<=80&&left.some(f=>f.hp>0)&&right.some(f=>f.hp>0);turn++){
       const order=left.filter(f=>f.hp>0).map(f=>({f,side:'attack'})).concat(
-        right.filter(f=>f.hp>0).map(f=>({f,side:'defense'})))
-        .sort((a,b)=>b.f.speed-a.f.speed||Math.random()-.5);
+        right.filter(f=>f.hp>0).map(f=>({f,side:'defense'})));
       for(const {f,side} of order){
         if(f.hp<=0)continue;
         const targets=side==='attack'?right:left,target=targets.find(v=>v.hp>0);
@@ -60,11 +56,9 @@ function createArena({profilesDir,dataDir,auth}){
         const ready=f.skills.filter((s,i)=>s&&f.level>=game.progression.skillUnlockLevels[i]);
         if(!ready.length)throw Object.assign(new Error('This dragon has no unlocked skills.'),{status:400});
         const skill=ready[Math.floor(Math.random()*ready.length)];
-        const type=skill.element?(catalog.typeChart?.[skill.element]?.[target.parts[0]]||1):1;
-        const bonus=skill.element?skill.bonus*(1+.1*(f.level-1))*rarities[f.rarity].heSoChiSo:0;
         const critical=Math.random()<.1;
-        const damage=Math.max(1,Math.round(((f.attack*skill.power+bonus)*type-target.defense*.5)*
-          (.9+Math.random()*.2)*(critical?1.5:1)));
+        const damage=Math.min(target.hp,combat.damage(f,target,skill,catalog.typeChart,
+          .9+Math.random()*.2,critical));
         target.hp=Math.max(0,target.hp-damage);
         events.push({turn,side,actor:f.nickname,actorSpecies:f.species,target:target.nickname,
           skill:skill.name,element:skill.element||null,damage,critical,remaining:target.hp,knockout:target.hp===0});
@@ -99,8 +93,9 @@ function createArena({profilesDir,dataDir,auth}){
   }
   function publicBattle(b){
     const view=f=>({id:f.id,species:f.species,level:f.level,nickname:f.nickname,
-      hp:f.hp,maxHp:f.maxHp,speed:f.speed,skills:f.skills.map((skill,i)=>skill?{
+      hp:f.hp,maxHp:f.maxHp,skills:f.skills.map((skill,i)=>skill?{
         index:i,name:skill.name,element:skill.element||null,power:skill.power,
+        bonus:skill.bonus||0,
         unlockLevel:game.progression.skillUnlockLevels[i],
         unlocked:f.level>=game.progression.skillUnlockLevels[i]}:null)});
     return {opponent:b.opponent,turn:b.turn,attack:b.attack.map(view),defense:b.defense.map(view),
@@ -110,11 +105,9 @@ function createArena({profilesDir,dataDir,auth}){
   function strike(b,side,skill){
     const actor=active(b,side),other=side==='attack'?'defense':'attack',target=active(b,other);
     if(!actor||actor.hp<=0||!target||target.hp<=0)return;
-    const type=skill.element?(catalog.typeChart?.[skill.element]?.[target.parts[0]]||1):1;
-    const bonus=skill.element?(skill.bonus||0)*(1+.1*(actor.level-1))*rarities[actor.rarity].heSoChiSo:0;
     const critical=Math.random()<.1;
-    const damage=Math.max(1,Math.round(((actor.attack*skill.power+bonus)*type-target.defense*.5)*
-      (.9+Math.random()*.2)*(critical?1.5:1)));
+    const damage=Math.min(target.hp,combat.damage(actor,target,skill,catalog.typeChart,
+      .9+Math.random()*.2,critical));
     target.hp=Math.max(0,target.hp-damage);
     b.events.push({turn:b.turn,side,actor:actor.nickname,actorSpecies:actor.species,
       target:target.nickname,skill:skill.name,element:skill.element||null,damage,critical,

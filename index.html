@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#84d7ec">
+  <title>Dragon Isle</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <symbol id="flag-fire" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1c1 5-2 5-1 9 2-1 3-3 3-5 7 5 8 11 5 15-3 4-11 5-15 0C1 16 5 11 7 8c0 4 2 5 3 5 1-4 0-7 2-12Zm0 12c-2 2-3 4-3 6 1 3 5 3 6 0 0-2-1-4-3-6Z"/></symbol>
+    <symbol id="flag-water" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1C9 6 4 11 4 16a8 8 0 0 0 16 0c0-5-5-10-8-15Zm-4 15a4 4 0 0 0 3 4c-3 0-5-2-5-5 0-1 1-3 2-4-.3 2 0 3 0 5Z"/></symbol>
+    <symbol id="flag-earth" viewBox="0 0 24 24"><path fill="currentColor" d="M1 21 8 5l4 8 3-6 8 14H1Zm4-2h14l-4-7-3 5-4-8-3 10Z"/></symbol>
+    <symbol id="flag-wind" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M2 7h13c4 0 4-5 1-5-2 0-3 1-3 2M2 12h17c4 0 4 5 0 5-2 0-3-1-3-2M2 17h8c4 0 4 5 0 5-2 0-3-1-3-2"/></symbol>
+    <symbol id="flag-ice" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 1v22M2.5 6.5l19 11M2.5 17.5l19-11M9 4l3 3 3-3M9 20l3-3 3 3M3 10l4-1-1-4M21 14l-4 1 1 4M3 14l4 1-1 4M21 10l-4-1 1-4"/></symbol>
+    <symbol id="flag-thunder" viewBox="0 0 24 24"><path fill="currentColor" d="M14 1 3 14h8l-2 9 12-14h-8l1-8Z"/></symbol>
+    <symbol id="flag-nature" viewBox="0 0 24 24"><path fill="currentColor" d="M21 2C11 2 3 5 3 14a7 7 0 0 0 7 7C19 21 22 12 21 2ZM2 22c4-7 9-11 16-15-5 5-8 9-12 15H2Z"/></symbol>
+    <symbol id="flag-dark" viewBox="0 0 24 24"><path fill="currentColor" d="M16 1a10 10 0 1 0 7 17A10 10 0 0 1 16 1Z"/></symbol>
+    <symbol id="flag-light" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M12 1v3m0 16v3M1 12h3m16 0h3M4.2 4.2l2.2 2.2m11.2 11.2 2.2 2.2m0-15.6-2.2 2.2M6.4 17.6l-2.2 2.2"/></symbol>
+    <symbol id="flag-metal" viewBox="0 0 24 24"><path fill="currentColor" d="m10 1-.7 2.3-2.1.8-2.1-1.2-2.2 2.2 1.2 2.1-.8 2.1L1 10v4l2.3.7.8 2.1-1.2 2.1 2.2 2.2 2.1-1.2 2.1.8L10 23h4l.7-2.3 2.1-.8 2.1 1.2 2.2-2.2-1.2-2.1.8-2.1L23 14v-4l-2.3-.7-.8-2.1 1.2-2.1-2.2-2.2-2.1 1.2-2.1-.8L14 1h-4Zm2 7a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" fill-rule="evenodd"/></symbol>
+  </defs>
+</svg>
+<section id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-mascot">🐉</div><h1>Dragon Isle</h1>
+    <p>Every trainer has their own island and progress.</p>
+    <div class="auth-tabs"><button id="loginTab" type="button" class="btn primary" data-auth-mode="login">Sign in</button>
+      <button id="registerTab" type="button" class="btn" data-auth-mode="register">Register</button></div>
+    <form id="authForm" autocomplete="on">
+      <label>Username<input id="authUsername" name="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" autocomplete="username" placeholder="Example: alex_01"></label>
+      <label>Password<input id="authPassword" name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password" placeholder="At least 8 characters"></label>
+      <button id="authSubmit" class="btn good" type="submit">Enter island</button>
+    </form>
+    <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+  </div>
+</section>
+<div id="game" hidden>
+  <header id="topbar">
+    <div class="brand"><span class="brand-icon" aria-hidden="true">🐉</span><div><b>Dragon Isle</b><small id="playerLevel">Level 1</small><div class="xp-track"><div id="xpFill"></div></div></div></div>
+    <button class="account-btn" data-action="logout" title="Sign out"><span id="accountName"></span> ↪</button>
+    <div class="resources" aria-label="Resources">
+    <span class="resource gold" aria-label="Gold"><i>🪙</i><span id="goldAmount">500</span><small id="incomeRate">+0/min</small></span>
+      <span class="resource food" aria-label="Food"><i>🍎</i><span id="foodAmount">50</span></span>
+      <span class="resource gem" aria-label="Gem"><i>💎</i><span id="gemAmount">10</span></span>
+    </div>
+  </header>
+  <main id="stage">
+    <canvas id="island" aria-label="Eleven floating islands on one continuous map"></canvas>
+    <div id="timersBar" aria-label="Pending activities"></div>
+    <div id="hint">Tap a Habitat to collect gold · drag to move around the island</div>
+    <div id="inspector"></div>
+    <div id="placementBar"><span id="placementText"></span><button class="btn danger" data-action="cancel-mode">Cancel</button></div>
+  </main>
+  <nav id="dock" aria-label="Main menu">
+    <button class="dock-btn" data-action="open-islands"><span>🗺️</span>Islands</button>
+    <button class="dock-btn" data-action="open-shop"><span>🏪</span>Shop</button>
+    <button class="dock-btn" data-action="open-dragons"><span>🐲</span>Dragons</button>
+    <button class="dock-btn" data-action="open-book"><span>📖</span>Dragon Book<small id="collectionProgress">1/823</small></button>
+    <button class="dock-btn" data-action="open-inventory"><span>🎒</span>Inventory</button>
+  </nav>
+</div>
+<div id="overlay" role="dialog" aria-modal="true" aria-label="Game dialog">
+  <div id="sheet"><div class="sheet-head"><h2 id="sheetTitle" tabindex="-1"></h2><button class="btn icon" data-action="close-modal" aria-label="Close">×</button></div><div class="sheet-body" id="sheetBody"></div></div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="react-root"></div>
+  <script defer src="js/data/db-cache.js"></script>
+  <script defer src="data/economy.js"></script>
+  <script defer src="js/data/dragon-rules.js"></script>
+  <script defer src="js/data/catalog.js"></script>
+  <script defer src="js/core/state.js"></script>
+  <script defer src="js/logic/world.js"></script>
+  <script defer src="js/logic/eggs.js"></script>
+  <script defer src="js/logic/breeding.js"></script>
+  <script defer src="js/logic/buildings.js"></script>
+  <script defer src="js/logic/timers.js"></script>
+  <script defer src="js/logic/skills.js"></script>
+  <script defer src="js/logic/arena.js"></script>
+  <script defer src="js/render/world.js"></script>
+  <script defer src="js/render/dragon-anatomy.js"></script>
+  <script defer src="js/render/dragon-tertiary.js"></script>
+  <script defer src="js/render/dragon-motion.js"></script>
+  <script defer src="js/render/dragon-art.js"></script>
+  <script defer src="js/render/egg-art.js"></script>
+  <script defer src="js/render/building-art.js"></script>
+  <script defer src="js/render/scene.js"></script>
+  <script defer src="js/ui/core.js"></script>
+  <script defer src="js/ui/dragon-info.js"></script>
+  <script defer src="js/ui/panels.js"></script>
+  <script defer src="js/ui/timers.js"></script>
+  <script defer src="js/ui/input.js"></script>
+  <script defer src="js/audio.js"></script>
+  <script defer src="js/save.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/main.js"></script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

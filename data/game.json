@@ -1,0 +1,843 @@
+{
+  "version": 4,
+  "size": 1500,
+  "tile": 12,
+  "legacyGridOffset": 164,
+  "legacyGridScale": 3,
+  "footprints": {
+    "habitat": [
+      [
+        6,
+        6
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        12,
+        12
+      ]
+    ],
+    "farm": [
+      [
+        9,
+        6
+      ],
+      [
+        11,
+        8
+      ],
+      [
+        13,
+        10
+      ],
+      [
+        15,
+        12
+      ]
+    ],
+    "hatchery": [
+      [
+        9,
+        9
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        15,
+        15
+      ],
+      [
+        18,
+        18
+      ],
+      [
+        21,
+        21
+      ]
+    ],
+    "cave": [
+      [
+        12,
+        9
+      ]
+    ],
+    "arena": [
+      [
+        12,
+        12
+      ]
+    ],
+    "decor": [
+      [
+        3,
+        3
+      ]
+    ],
+    "academy": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        10
+      ]
+    ]
+  },
+  "habitatThemes": {
+    "fire": {
+      "ground": "#90473a",
+      "rim": "#ff9a50",
+      "accent": "#ffdb72",
+      "ornament": "flame"
+    },
+    "water": {
+      "ground": "#3989ab",
+      "rim": "#74d8ec",
+      "accent": "#d8faff",
+      "ornament": "wave"
+    },
+    "earth": {
+      "ground": "#7a694e",
+      "rim": "#bca77c",
+      "accent": "#ded0a2",
+      "ornament": "rock"
+    },
+    "wind": {
+      "ground": "#70b6a3",
+      "rim": "#b7f1d7",
+      "accent": "#ecfff3",
+      "ornament": "swirl"
+    },
+    "ice": {
+      "ground": "#81aecb",
+      "rim": "#d2f5ff",
+      "accent": "#ffffff",
+      "ornament": "crystal"
+    },
+    "thunder": {
+      "ground": "#66639b",
+      "rim": "#dfc0ff",
+      "accent": "#fff583",
+      "ornament": "bolt"
+    },
+    "nature": {
+      "ground": "#51885b",
+      "rim": "#a6db80",
+      "accent": "#e7f5a4",
+      "ornament": "leaf"
+    },
+    "dark": {
+      "ground": "#433a68",
+      "rim": "#9b86c7",
+      "accent": "#d5adf3",
+      "ornament": "moon"
+    },
+    "light": {
+      "ground": "#c7a86a",
+      "rim": "#fff0b0",
+      "accent": "#fff9dc",
+      "ornament": "sun"
+    },
+    "metal": {
+      "ground": "#627b83",
+      "rim": "#bbd4d7",
+      "accent": "#e8f6f5",
+      "ornament": "gear"
+    }
+  },
+  "testResources": {
+    "gold": 10000000,
+    "food": 100000,
+    "gems": 10000
+  },
+  "gemPerDragonPerHour": 1,
+  "progression": {
+    "dragonMaxLevel": 100,
+    "breedLevel": 5,
+    "skillUnlockLevels": [
+      10,
+      15,
+      20,
+      25
+    ],
+    "xpBase": 40,
+    "xpExponent": 1.5,
+    "academyCaps": [
+      40,
+      55,
+      70,
+      85,
+      100
+    ],
+    "academyUpgrades": [
+      {
+        "playerLevel": 10,
+        "gold": 3750,
+        "food": 750,
+        "gems": 8
+      },
+      {
+        "playerLevel": 20,
+        "gold": 9375,
+        "food": 1875,
+        "gems": 20
+      },
+      {
+        "playerLevel": 30,
+        "gold": 23438,
+        "food": 4688,
+        "gems": 50
+      },
+      {
+        "playerLevel": 40,
+        "gold": 58594,
+        "food": 11719,
+        "gems": 125
+      }
+    ]
+  },
+  "upgradeTimes": {
+    "habitat": [
+      60,
+      180,
+      480
+    ],
+    "farm": [
+      90,
+      240,
+      600
+    ],
+    "hatchery": [
+      120,
+      360,
+      900,
+      1800
+    ],
+    "academy": [
+      300,
+      660,
+      1452,
+      3194
+    ]
+  },
+  "breedingTimes": {
+    "common": 120,
+    "rare": 300,
+    "epic": 600,
+    "legendary": 1200,
+    "mythic": 2400
+  },
+  "nicknames": [
+    "Alex",
+    "Tom",
+    "Luna",
+    "Milo",
+    "Nova",
+    "Kai",
+    "Nina",
+    "Leo",
+    "Ivy",
+    "Ruby",
+    "Finn",
+    "Zoe",
+    "Kira",
+    "Max",
+    "Mia",
+    "Rio",
+    "Nala",
+    "Ari",
+    "Pip",
+    "Sol",
+    "Loki",
+    "Tara",
+    "Nori",
+    "Rex",
+    "Coco",
+    "Bela",
+    "Juno",
+    "Ozzy",
+    "Suki",
+    "Theo",
+    "Yumi",
+    "Hana",
+    "Echo",
+    "Bolt",
+    "Cloud",
+    "Sunny",
+    "Sparky",
+    "Fluffy",
+    "Ember",
+    "Breezy",
+    "Ink",
+    "Frosty",
+    "Steel",
+    "Sprout",
+    "Star",
+    "Mist",
+    "Dust",
+    "Leafy",
+    "Flash"
+  ],
+  "dragonForms": {
+    "fire": {
+      "silhouette": "hunter",
+      "motion": "stride",
+      "body": "biped",
+      "width": 19,
+      "height": 17,
+      "neck": 10,
+      "legs": 2,
+      "wing": "bat",
+      "tail": "flame",
+      "head": "round",
+      "crest": "flame"
+    },
+    "water": {
+      "silhouette": "serpent",
+      "motion": "swim",
+      "body": "aquatic",
+      "width": 26,
+      "height": 11,
+      "neck": 16,
+      "legs": 0,
+      "wing": "fin",
+      "tail": "fin",
+      "head": "long",
+      "crest": "gill"
+    },
+    "earth": {
+      "silhouette": "bulwark",
+      "motion": "heavy",
+      "body": "quadruped",
+      "width": 27,
+      "height": 20,
+      "neck": 5,
+      "legs": 4,
+      "wing": "none",
+      "tail": "club",
+      "head": "square",
+      "crest": "stone"
+    },
+    "wind": {
+      "silhouette": "raptor",
+      "motion": "hover",
+      "body": "avian",
+      "width": 15,
+      "height": 15,
+      "neck": 15,
+      "legs": 2,
+      "wing": "feather",
+      "tail": "feather",
+      "head": "beak",
+      "crest": "plume"
+    },
+    "ice": {
+      "silhouette": "panther",
+      "motion": "prowl",
+      "body": "quadruped",
+      "width": 22,
+      "height": 16,
+      "neck": 10,
+      "legs": 4,
+      "wing": "crystal",
+      "tail": "crystal",
+      "head": "angular",
+      "crest": "crystal"
+    },
+    "thunder": {
+      "silhouette": "wyvern",
+      "motion": "jitter",
+      "body": "biped",
+      "width": 16,
+      "height": 15,
+      "neck": 12,
+      "legs": 2,
+      "wing": "bolt",
+      "tail": "bolt",
+      "head": "sharp",
+      "crest": "bolt"
+    },
+    "nature": {
+      "silhouette": "stag",
+      "motion": "stride",
+      "body": "quadruped",
+      "width": 23,
+      "height": 18,
+      "neck": 8,
+      "legs": 4,
+      "wing": "leaf",
+      "tail": "leaf",
+      "head": "round",
+      "crest": "antler"
+    },
+    "dark": {
+      "silhouette": "stalker",
+      "motion": "prowl",
+      "body": "wyvern",
+      "width": 20,
+      "height": 13,
+      "neck": 15,
+      "legs": 2,
+      "wing": "bat",
+      "tail": "spade",
+      "head": "sharp",
+      "crest": "curved"
+    },
+    "light": {
+      "silhouette": "celestial",
+      "motion": "hover",
+      "body": "avian",
+      "width": 18,
+      "height": 17,
+      "neck": 14,
+      "legs": 2,
+      "wing": "feather",
+      "tail": "sun",
+      "head": "round",
+      "crest": "halo"
+    },
+    "metal": {
+      "silhouette": "ironback",
+      "motion": "heavy",
+      "body": "quadruped",
+      "width": 25,
+      "height": 18,
+      "neck": 7,
+      "legs": 4,
+      "wing": "plate",
+      "tail": "spike",
+      "head": "square",
+      "crest": "plate"
+    }
+  },
+  "tertiaryForms": {
+    "fire": {
+      "kind": "flame-mantle",
+      "speed": 0.007
+    },
+    "water": {
+      "kind": "tidal-sail",
+      "speed": 0.003
+    },
+    "earth": {
+      "kind": "stone-carapace",
+      "speed": 0.002
+    },
+    "wind": {
+      "kind": "feather-fan",
+      "speed": 0.008
+    },
+    "ice": {
+      "kind": "crystal-ridge",
+      "speed": 0.004
+    },
+    "thunder": {
+      "kind": "lightning-prongs",
+      "speed": 0.011
+    },
+    "nature": {
+      "kind": "branch-canopy",
+      "speed": 0.004
+    },
+    "dark": {
+      "kind": "shadow-cloak",
+      "speed": 0.005
+    },
+    "light": {
+      "kind": "solar-rays",
+      "speed": 0.004
+    },
+    "metal": {
+      "kind": "armored-blades",
+      "speed": 0.005
+    }
+  },
+  "buildings": {
+    "habitat": {
+      "maxLevel": 4,
+      "name": "Dragon Habitat",
+      "icon": "⌂",
+      "cost": 200,
+      "sellRate": 0.5
+    },
+    "farm": {
+      "maxLevel": 4,
+      "name": "Farm",
+      "icon": "✿",
+      "cost": 150,
+      "sellRate": 0.5
+    },
+    "hatchery": {
+      "maxLevel": 5,
+      "name": "Hatchery",
+      "icon": "◉",
+      "cost": 200,
+      "sellRate": 0.5
+    },
+    "cave": {
+      "maxLevel": 1,
+      "name": "Breeding Cave",
+      "icon": "♧",
+      "cost": 250,
+      "sellRate": 0.5
+    },
+    "arena": {
+      "maxLevel": 1,
+      "name": "Arena",
+      "icon": "⚔",
+      "cost": 500,
+      "sellRate": 0.5
+    },
+    "decor": {
+      "maxLevel": 1,
+      "name": "Flagpole",
+      "icon": "⚑",
+      "cost": 75,
+      "sellRate": 0.5
+    },
+    "academy": {
+      "maxLevel": 5,
+      "name": "Dragon Academy",
+      "icon": "✦",
+      "cost": 1500,
+      "sellRate": 0
+    }
+  },
+  "crops": [
+    {
+      "id": "wheat",
+      "name": "Wheat",
+      "duration": 60,
+      "yield": 10,
+      "cost": 10
+    },
+    {
+      "id": "carrot",
+      "name": "Carrot",
+      "duration": 300,
+      "yield": 60,
+      "cost": 50
+    },
+    {
+      "id": "pumpkin",
+      "name": "Pumpkin",
+      "duration": 1800,
+      "yield": 400,
+      "cost": 250
+    },
+    {
+      "id": "dragonfruit",
+      "name": "Dragon Fruit",
+      "duration": 14400,
+      "yield": 3500,
+      "cost": 2000
+    }
+  ],
+  "skills": {
+    "neutral": [
+      {
+        "id": "claw",
+        "name": "Rending Claw",
+        "icon": "🗡️",
+        "power": 0.9
+      },
+      {
+        "id": "slam",
+        "name": "Tail Slam",
+        "icon": "💥",
+        "power": 1.15
+      }
+    ],
+    "elemental": {
+      "fire": [
+        {
+          "id": "fire-1",
+          "name": "Flame Slash",
+          "icon": "🔥",
+          "power": 1.25,
+          "bonus": 26
+        },
+        {
+          "id": "fire-2",
+          "name": "Inferno Burst",
+          "icon": "☄️",
+          "power": 1.55,
+          "bonus": 40
+        }
+      ],
+      "water": [
+        {
+          "id": "water-1",
+          "name": "Water Strike",
+          "icon": "💧",
+          "power": 1.2,
+          "bonus": 21
+        },
+        {
+          "id": "water-2",
+          "name": "Tidal Surge",
+          "icon": "🌊",
+          "power": 1.5,
+          "bonus": 34
+        }
+      ],
+      "earth": [
+        {
+          "id": "earth-1",
+          "name": "Earthquake",
+          "icon": "⛰️",
+          "power": 1.25,
+          "bonus": 18
+        },
+        {
+          "id": "earth-2",
+          "name": "Stone Impact",
+          "icon": "🪨",
+          "power": 1.5,
+          "bonus": 31
+        }
+      ],
+      "wind": [
+        {
+          "id": "wind-1",
+          "name": "Wind Blade",
+          "icon": "🌪️",
+          "power": 1.3,
+          "bonus": 19
+        },
+        {
+          "id": "wind-2",
+          "name": "Cyclone",
+          "icon": "🪽",
+          "power": 1.55,
+          "bonus": 32
+        }
+      ],
+      "ice": [
+        {
+          "id": "ice-1",
+          "name": "Frost Slash",
+          "icon": "❄️",
+          "power": 1.25,
+          "bonus": 22
+        },
+        {
+          "id": "ice-2",
+          "name": "Blizzard",
+          "icon": "🧊",
+          "power": 1.55,
+          "bonus": 36
+        }
+      ],
+      "thunder": [
+        {
+          "id": "thunder-1",
+          "name": "Thunder Strike",
+          "icon": "⚡",
+          "power": 1.3,
+          "bonus": 27
+        },
+        {
+          "id": "thunder-2",
+          "name": "Sky Thunder",
+          "icon": "🌩️",
+          "power": 1.6,
+          "bonus": 42
+        }
+      ],
+      "nature": [
+        {
+          "id": "nature-1",
+          "name": "Vine Lash",
+          "icon": "🌿",
+          "power": 1.2,
+          "bonus": 19
+        },
+        {
+          "id": "nature-2",
+          "name": "Thorn Forest",
+          "icon": "🍃",
+          "power": 1.5,
+          "bonus": 33
+        }
+      ],
+      "dark": [
+        {
+          "id": "dark-1",
+          "name": "Shadow Slash",
+          "icon": "🌑",
+          "power": 1.3,
+          "bonus": 25
+        },
+        {
+          "id": "dark-2",
+          "name": "Dark Moon",
+          "icon": "🦇",
+          "power": 1.55,
+          "bonus": 39
+        }
+      ],
+      "light": [
+        {
+          "id": "light-1",
+          "name": "Light Blade",
+          "icon": "✨",
+          "power": 1.25,
+          "bonus": 20
+        },
+        {
+          "id": "light-2",
+          "name": "Holy Radiance",
+          "icon": "☀️",
+          "power": 1.55,
+          "bonus": 35
+        }
+      ],
+      "metal": [
+        {
+          "id": "metal-1",
+          "name": "Iron Slash",
+          "icon": "⚙️",
+          "power": 1.2,
+          "bonus": 23
+        },
+        {
+          "id": "metal-2",
+          "name": "Steel Storm",
+          "icon": "🛡️",
+          "power": 1.55,
+          "bonus": 36
+        }
+      ]
+    }
+  },
+  "islands": [
+    {
+      "id": "home",
+      "name": "Origin Island",
+      "element": null,
+      "x": 714,
+      "y": 668,
+      "size": 72,
+      "gemCost": 0
+    },
+    {
+      "id": "fire",
+      "name": "Fire Island",
+      "element": "fire",
+      "x": 631,
+      "y": 555,
+      "size": 72,
+      "gemCost": 80
+    },
+    {
+      "id": "water",
+      "name": "Water Island",
+      "element": "water",
+      "x": 799,
+      "y": 554,
+      "size": 72,
+      "gemCost": 120
+    },
+    {
+      "id": "earth",
+      "name": "Earth Island",
+      "element": "earth",
+      "x": 549,
+      "y": 660,
+      "size": 72,
+      "gemCost": 160
+    },
+    {
+      "id": "wind",
+      "name": "Wind Island",
+      "element": "wind",
+      "x": 631,
+      "y": 674,
+      "size": 72,
+      "gemCost": 200
+    },
+    {
+      "id": "ice",
+      "name": "Ice Island",
+      "element": "ice",
+      "x": 798,
+      "y": 674,
+      "size": 72,
+      "gemCost": 240
+    },
+    {
+      "id": "thunder",
+      "name": "Thunder Island",
+      "element": "thunder",
+      "x": 881,
+      "y": 661,
+      "size": 72,
+      "gemCost": 280
+    },
+    {
+      "id": "nature",
+      "name": "Nature Island",
+      "element": "nature",
+      "x": 632,
+      "y": 782,
+      "size": 72,
+      "gemCost": 320
+    },
+    {
+      "id": "dark",
+      "name": "Dark Island",
+      "element": "dark",
+      "x": 716,
+      "y": 785,
+      "size": 72,
+      "gemCost": 360
+    },
+    {
+      "id": "light",
+      "name": "Light Island",
+      "element": "light",
+      "x": 799,
+      "y": 781,
+      "size": 72,
+      "gemCost": 400
+    },
+    {
+      "id": "metal",
+      "name": "Metal Island",
+      "element": "metal",
+      "x": 716,
+      "y": 550,
+      "size": 72,
+      "gemCost": 440
+    }
+  ],
+  "islandRegionSize": 24,
+  "environment": {
+    "cycleSeconds": 480,
+    "particlesPerIsland": 10,
+    "maxDevicePixelRatio": 2,
+    "maxDesktopPixelRatio": 1.5
+  }
+}

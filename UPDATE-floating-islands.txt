@@ -1,0 +1,4 @@
+Dragon Isle floating islands update, with prebuilt dist/ included.
+
+Extract onto your existing dragon-isle project. Keep data/users.json, data/sessions.json, data/profiles/ and data/arena/.
+Restart node server.cjs to use the bundled build. npm ci and npm run build are only needed for future source changes.

@@ -1,0 +1,5 @@
+Dragon Isle filter update
+
+Unzip over the existing game. Preserve data/users.json, data/sessions.json, data/profiles/ and data/arena/.
+This full source includes built dist/ and the latest dragon names. Restart the server after applying.
+Element filters in breeding, dragon roster, book and Arena team selection support up to four selected affinities. Matching dragons contain all selected affinities. Opponent selection has no element filter.

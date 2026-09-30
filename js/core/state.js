@@ -31,7 +31,7 @@ function uniqueNickname(taken){
 let state = null;
 let storageAvailable = true;
 let saveWarningShown = false;
-const ui = {modal:null,shopTab:"buildings",bookTab:"all",bookPage:0,
+const ui = {modal:null,shopTab:"special",bookTab:"all",bookPage:0,
   breedFatherElements:[],breedMotherElements:[],breedFatherQuery:"",breedMotherQuery:"",
   dragonElements:[],bookElements:[],fixedDay:false,dayOffset:0,
   returnModal:null,

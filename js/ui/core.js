@@ -127,7 +127,7 @@ function updateInspector(){
       gemSkipCost(b.crop.readyAt,Date.now())+' Skip</button>';
   }else if(b.type==="hatchery"){
     const eggs=eggsInHatchery(b.id),ready=eggs.filter(function(e){return e.readyAt<=Date.now();}).length;
-    body+='<p>'+eggs.length+'/'+hatcheryCapacity(b.level)+' tiles occupied · '+ready+' eggs ready to hatch.</p>'+
+    body+='<p>'+eggs.length+' active egg · '+ready+' ready to hatch. Collect the egg before starting the next incubation.</p>'+
       '<div class="actions"><button class="btn good" data-action="hatchery-menu" data-id="'+b.id+
       '">Manage eggs</button></div>';
   }else if(b.type==="cave"){
@@ -155,8 +155,8 @@ function updateInspector(){
       duration(upgradeSeconds(b))+'</button>';
   if(!b.upgradeEnds){
     body+='<button class="btn" data-action="move" data-id="'+b.id+'">Move</button>';
-    if(b.type!=="hatchery")body+='<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
-      (b.type!=="habitat"||!occupants(b).length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell</button>':'');
+    if(b.type==="habitat")body+='<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
+      (!occupants(b).length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell</button>':'');
   }
   body+='</div></div>';
   dom.inspector.innerHTML=body;

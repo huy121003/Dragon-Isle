@@ -19,6 +19,7 @@ function unlockIsland(index){
   if(!Number.isInteger(index)||index!==state.unlockedIslands||index>=DATA.islands.length)return;
   const previous=index-1,island=DATA.islands[index];
   if(!islandComplete(previous)){toast("Fully unlock "+DATA.islands[previous].name+" before buying the next island.");return;}
+  if(state.player.level<(island.playerLevel||1)){toast("Requires player level "+island.playerLevel+" to unlock "+island.name+".");return;}
   if(state.gems<island.gemCost){toast("Requires "+island.gemCost+" gems to unlock "+island.name+".");return;}
   state.gems-=island.gemCost;state.unlockedIslands++;
   const middle=Math.floor(island.size/DATA.islandRegionSize/2);
@@ -98,12 +99,10 @@ function harvest(b){
 function storeBuilding(id){
   const b=buildingById(id);
   if(!b||b.stored)return;
-  if(b.upgradeEnds||b.type==="hatchery"||b.type==="academy"){toast("This building cannot be stored.");return;}
+  if(b.type!=="habitat"||b.upgradeEnds){toast("Only Habitats can be stored.");return;}
   if(b.type==="habitat"&&occupants(b).some(function(d){return dragonBusy(d.id);})){
     toast("Wait for breeding dragons before storing this Habitat.");return;
   }
-  if(b.type==="hatchery"&&eggsInHatchery(b.id).length){toast("Hatch all eggs before storing the Hatchery.");return;}
-  if(b.type==="cave"&&b.breeding){toast("Collect the bred egg before storing the Cave.");return;}
   b.stored=true;ui.selection=null;
   toast(buildingName(b)+" was stored. Dragons stop producing gold and gems while it is stored.");
   updateUI();saveGame();
@@ -111,13 +110,11 @@ function storeBuilding(id){
 function sellBuilding(id){
   const b=buildingById(id);
   if(!b)return;
-  if(b.upgradeEnds||b.type==="hatchery"||b.type==="academy"){toast("This building cannot be sold.");return;}
+  if(b.type!=="habitat"||b.upgradeEnds){toast("Only Habitats can be sold.");return;}
   if(b.type==="habitat"&&occupants(b).length){toast("Move or sell every dragon before selling the Habitat.");return;}
   if(b.type==="habitat"&&occupants(b).some(function(d){return dragonBusy(d.id);})){
     toast("Wait for breeding dragons before selling the Habitat.");return;
   }
-  if(b.type==="hatchery"&&eggsInHatchery(b.id).length){toast("Hatch all eggs before selling the Hatchery.");return;}
-  if(b.type==="cave"&&b.breeding){toast("Collect the bred egg before selling the Cave.");return;}
   const refund=Math.round(buildingPurchaseCost(b.type,b.element)*Math.pow(1.8,b.level-1)*DATA.buildings[b.type].sellRate);
   if(!window.confirm("Sell "+buildingName(b)+" for "+money(refund)+" gold?"))return;
   state.gold+=refund+(b.storedGold||0);

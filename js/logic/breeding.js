@@ -64,7 +64,9 @@ function dragonBusy(id){
 }
 function startBreeding(caveId,fatherId,motherId){
   const cave=buildingById(caveId),father=dragonById(fatherId),mother=dragonById(motherId);
-  if(!cave||cave.type!=="cave"||cave.stored||cave.breeding||!father||!mother||
+  if(!cave||cave.type!=="cave"||cave.stored||cave.breeding||
+    state.eggs.some(function(egg){return egg.source==="breed"&&(egg.caveId===cave.id||!egg.caveId);})||
+    !father||!mother||
     father.id===mother.id||dragonBusy(father.id)||dragonBusy(mother.id)){
     toast("Choose two different dragons and an available Breeding Cave.");return;
   }
@@ -88,7 +90,7 @@ function collectBreeding(caveId){
     toast("Breeding is not finished.");return;
   }
   const breeding=cave.breeding;
-  const egg=addEgg(breeding.result,"breed",[breeding.fatherSpecies,breeding.motherSpecies]);
+  const egg=addEgg(breeding.result,"breed",[breeding.fatherSpecies,breeding.motherSpecies],cave.id);
   cave.breeding=null;
   gainPlayerXP(20);
   toast(egg.hatcheryId?"The bred egg entered the Hatchery.":"The Hatchery is full; the bred egg is waiting in Inventory.");

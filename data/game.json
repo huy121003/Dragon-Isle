@@ -164,6 +164,36 @@
       "rim": "#bbd4d7",
       "accent": "#e8f6f5",
       "ornament": "gear"
+    },
+    "war": {
+      "ground": "#863e3a",
+      "rim": "#e58a62",
+      "accent": "#ffc480",
+      "ornament": "spear"
+    },
+    "pure": {
+      "ground": "#a275ab",
+      "rim": "#f0c4e9",
+      "accent": "#fff2fa",
+      "ornament": "prism"
+    },
+    "legend": {
+      "ground": "#53387b",
+      "rim": "#aa8de0",
+      "accent": "#eddaff",
+      "ornament": "loop"
+    },
+    "primal": {
+      "ground": "#686a50",
+      "rim": "#afb185",
+      "accent": "#eee6ba",
+      "ornament": "spiral"
+    },
+    "time": {
+      "ground": "#827478",
+      "rim": "#c8b9a7",
+      "accent": "#f3e9d4",
+      "ornament": "clock"
     }
   },
   "testResources": {
@@ -429,6 +459,71 @@
       "tail": "spike",
       "head": "square",
       "crest": "plate"
+    },
+    "war": {
+      "silhouette": "warlord",
+      "motion": "heavy",
+      "body": "biped",
+      "width": 19,
+      "height": 17,
+      "neck": 10,
+      "legs": 2,
+      "wing": "bat",
+      "tail": "flame",
+      "head": "round",
+      "crest": "flame"
+    },
+    "pure": {
+      "silhouette": "oracle",
+      "motion": "hover",
+      "body": "avian",
+      "width": 18,
+      "height": 17,
+      "neck": 14,
+      "legs": 2,
+      "wing": "feather",
+      "tail": "sun",
+      "head": "round",
+      "crest": "halo"
+    },
+    "legend": {
+      "silhouette": "infinity",
+      "motion": "hover",
+      "body": "wyvern",
+      "width": 20,
+      "height": 13,
+      "neck": 15,
+      "legs": 2,
+      "wing": "bat",
+      "tail": "spade",
+      "head": "sharp",
+      "crest": "curved"
+    },
+    "primal": {
+      "silhouette": "ancient",
+      "motion": "heavy",
+      "body": "quadruped",
+      "width": 27,
+      "height": 20,
+      "neck": 5,
+      "legs": 4,
+      "wing": "none",
+      "tail": "club",
+      "head": "square",
+      "crest": "stone"
+    },
+    "time": {
+      "silhouette": "chronarch",
+      "motion": "hover",
+      "body": "avian",
+      "width": 15,
+      "height": 15,
+      "neck": 15,
+      "legs": 2,
+      "wing": "feather",
+      "tail": "feather",
+      "head": "beak",
+      "crest": "plume"
     }
   },
   "tertiaryForms": {
@@ -471,6 +566,26 @@
     "metal": {
       "kind": "armored-blades",
       "speed": 0.005
+    },
+    "war": {
+      "kind": "battle-standards",
+      "speed": 0.004
+    },
+    "pure": {
+      "kind": "prismatic-wings",
+      "speed": 0.004
+    },
+    "legend": {
+      "kind": "infinity-arcs",
+      "speed": 0.006
+    },
+    "primal": {
+      "kind": "ancient-spines",
+      "speed": 0.002
+    },
+    "time": {
+      "kind": "clockwork-rings",
+      "speed": 0.003
     }
   },
   "buildings": {
@@ -729,6 +844,86 @@
           "power": 1,
           "bonus": 0.91
         }
+      ],
+      "war": [
+        {
+          "id": "war-1",
+          "name": "Banner Charge",
+          "icon": "⚔️",
+          "power": 1,
+          "bonus": 0.52
+        },
+        {
+          "id": "war-2",
+          "name": "Siege Breaker",
+          "icon": "🛡️",
+          "power": 1,
+          "bonus": 0.95
+        }
+      ],
+      "pure": [
+        {
+          "id": "pure-1",
+          "name": "Prism Ray",
+          "icon": "🔺",
+          "power": 1,
+          "bonus": 0.53
+        },
+        {
+          "id": "pure-2",
+          "name": "Purifying Nova",
+          "icon": "✨",
+          "power": 1,
+          "bonus": 0.96
+        }
+      ],
+      "legend": [
+        {
+          "id": "legend-1",
+          "name": "Eternal Arc",
+          "icon": "∞",
+          "power": 1,
+          "bonus": 0.54
+        },
+        {
+          "id": "legend-2",
+          "name": "Fatebreaker",
+          "icon": "🌌",
+          "power": 1,
+          "bonus": 0.98
+        }
+      ],
+      "primal": [
+        {
+          "id": "primal-1",
+          "name": "Ancient Fang",
+          "icon": "☯",
+          "power": 1,
+          "bonus": 0.55
+        },
+        {
+          "id": "primal-2",
+          "name": "Origin Roar",
+          "icon": "🌀",
+          "power": 1,
+          "bonus": 0.98
+        }
+      ],
+      "time": [
+        {
+          "id": "time-1",
+          "name": "Second Hand",
+          "icon": "⏳",
+          "power": 1,
+          "bonus": 0.56
+        },
+        {
+          "id": "time-2",
+          "name": "Epoch Storm",
+          "icon": "⌛",
+          "power": 1,
+          "bonus": 1
+        }
       ]
     }
   },
@@ -831,6 +1026,56 @@
       "y": 550,
       "size": 72,
       "gemCost": 440
+    },
+    {
+      "id": "war",
+      "name": "War Island",
+      "element": "war",
+      "x": 465,
+      "y": 550,
+      "size": 72,
+      "gemCost": 480,
+      "playerLevel": 24
+    },
+    {
+      "id": "pure",
+      "name": "Pure Island",
+      "element": "pure",
+      "x": 962,
+      "y": 550,
+      "size": 72,
+      "gemCost": 520,
+      "playerLevel": 28
+    },
+    {
+      "id": "legend",
+      "name": "Legend Island",
+      "element": "legend",
+      "x": 465,
+      "y": 780,
+      "size": 72,
+      "gemCost": 560,
+      "playerLevel": 33
+    },
+    {
+      "id": "primal",
+      "name": "Primal Island",
+      "element": "primal",
+      "x": 962,
+      "y": 780,
+      "size": 72,
+      "gemCost": 600,
+      "playerLevel": 39
+    },
+    {
+      "id": "time",
+      "name": "Time Island",
+      "element": "time",
+      "x": 716,
+      "y": 900,
+      "size": 72,
+      "gemCost": 640,
+      "playerLevel": 45
     }
   ],
   "islandRegionSize": 24,
@@ -839,5 +1084,22 @@
     "particlesPerIsland": 10,
     "maxDevicePixelRatio": 2,
     "maxDesktopPixelRatio": 1.5
+  },
+  "elementUnlocks": {
+    "fire": 1,
+    "water": 1,
+    "earth": 3,
+    "wind": 5,
+    "ice": 7,
+    "thunder": 9,
+    "nature": 11,
+    "dark": 14,
+    "light": 17,
+    "metal": 20,
+    "war": 24,
+    "pure": 28,
+    "legend": 33,
+    "primal": 39,
+    "time": 45
   }
 }

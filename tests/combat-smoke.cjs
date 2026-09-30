@@ -3,9 +3,11 @@ const path=require('node:path');
 const db=require('../data/dragons.json');
 const game=require('../data/game.json');
 const combat=require('../js/data/combat-rules.js');
+require('../scripts/extend-catalog.cjs')(db,game);
 const {createArena}=require('../server/arena.cjs');
 
 const ids=Object.keys(db.elements);
+assert.equal(ids.length,15);
 for(const attack of ids){
   const wins=ids.filter(target=>db.typeChart[attack][target]>1);
   const losses=ids.filter(source=>db.typeChart[source][attack]>1);

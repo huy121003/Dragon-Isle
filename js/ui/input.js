@@ -11,6 +11,7 @@ function pointerDown(event){
   const p=localPoint(event);
   ui.pointers.set(event.pointerId,p);
   if(ui.pointers.size===2){
+    if(ui.gesture?.holdTimer)clearTimeout(ui.gesture.holdTimer);
     const points=Array.from(ui.pointers.values()),mid={x:(points[0].x+points[1].x)/2,y:(points[0].y+points[1].y)/2};
     ui.gesture={kind:"pinch",distance:Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y),
       zoom:ui.camera.zoom,anchor:screenToWorld(mid.x,mid.y)};
@@ -26,8 +27,16 @@ function pointerDown(event){
     return;
   }
   const hit=inside(cell.x,cell.y)?buildingAt(cell.x,cell.y):null;
-  ui.gesture={kind:hit?"building":"pan",start:p,last:p,hitId:hit?hit.id:null,
+  const gesture={kind:hit?"building":"pan",start:p,last:p,hitId:hit?hit.id:null,
     offsetX:hit?cell.x-hit.x:0,offsetY:hit?cell.y-hit.y:0,moved:false};
+  ui.gesture=gesture;
+  if(hit&&!hit.upgradeEnds)gesture.holdTimer=setTimeout(function(){
+    if(ui.gesture!==gesture||ui.pointers.size!==1||gesture.kind!=="building")return;
+    ui.mode={kind:"move",id:hit.id,x:hit.x,y:hit.y};
+    gesture.kind="drag-building";gesture.longPress=true;
+    dom.barText.textContent="Drag and release to move the building";
+    dom.bar.classList.add("visible");
+  },500);
 }
 function pointerMove(event){
   const hover=localPoint(event);ui.pointerWorld=screenToIslandWorld(hover.x,hover.y);
@@ -50,14 +59,11 @@ function pointerMove(event){
   }
   const distance=Math.hypot(p.x-g.start.x,p.y-g.start.y);
   if(g.kind==="building"&&distance>9){
-    const held=buildingById(g.hitId);
-    if(held?.upgradeEnds){g.kind="pan";g.moved=true;return;}
-    ui.mode={kind:"move",id:g.hitId,x:null,y:null};
-    g.kind="drag-building";g.moved=true;
-    dom.barText.textContent="Drop the building on valid tiles";
-    dom.bar.classList.add("visible");
+    if(g.holdTimer)clearTimeout(g.holdTimer);
+    g.kind="pan";g.moved=true;
   }
   if(g.kind==="drag-building"){
+    if(distance>5)g.moved=true;
     const c=screenCell(p.x,p.y);ui.mode.x=c.x-g.offsetX;ui.mode.y=c.y-g.offsetY;
   }else if(g.kind==="pan"){
     if(distance>5)g.moved=true;
@@ -71,6 +77,7 @@ function pointerUp(event){
   if(!ui.pointers.has(event.pointerId))return;
   event.preventDefault();
   const p=localPoint(event),g=ui.gesture;
+  if(g?.holdTimer)clearTimeout(g.holdTimer);
   ui.pointers.delete(event.pointerId);
   if(g&&g.kind==="pinch"){
     if(ui.pointers.size===1){
@@ -82,6 +89,9 @@ function pointerUp(event){
   if(ui.pointers.size) return;
   ui.gesture=null;
   if(!g)return;
+  if(g.kind==="drag-building"&&!g.moved){
+    toast("Tap an empty tile to place the building.");return;
+  }
   if(g.kind==="placement"||g.kind==="drag-building"){
     const c=screenCell(p.x,p.y);
     ui.mode.x=c.x-g.offsetX;ui.mode.y=c.y-g.offsetY;
@@ -101,8 +111,6 @@ function pointerUp(event){
       openModal("habitat",b.id);
       return;
     }
-    if(b.type==="arena"){openModal("arena");loadArena();return;}
-    if(b.type==="farm"&&b.crop&&Date.now()>=b.crop.readyAt)harvest(b);
     ui.selection={type:"building",id:b.id};
   }else if(islandAt(cell.x,cell.y)>=0&&!unlocked(cell.x,cell.y)){
     const index=islandAt(cell.x,cell.y);
@@ -111,6 +119,7 @@ function pointerUp(event){
   updateInspector();
 }
 function pointerCancel(event){
+  if(ui.gesture?.holdTimer)clearTimeout(ui.gesture.holdTimer);
   ui.pointers.delete(event.pointerId);
   if(ui.mode&&ui.gesture&&ui.gesture.kind==="drag-building")stopMode();
   ui.gesture=null;

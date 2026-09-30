@@ -89,7 +89,7 @@ function topUpTestResources(showNotice){
 function getBuildValid(x,y,mode){
   return !!mode&&footprintValid(x,y,placementFootprint(mode),mode.kind==="move"?mode.id:null);
 }
-const ELEMENT_UNLOCK={fire:1,water:1,earth:3,wind:5,ice:7,thunder:9,nature:11,dark:14,light:17,metal:20};
+const ELEMENT_UNLOCK=DATA.elementUnlocks;
 function buildLockReason(type,element){
   if(!DATA.buildings[type])return "This building does not exist.";
   if(type==="hatchery")return "The fixed Hatchery is already on the island and cannot be bought.";
@@ -100,6 +100,7 @@ function buildLockReason(type,element){
       (farmLimit(state.player.level)<window.DragonEconomy.progression.maxFarms?
         "Unlock another at player level "+next+".":"Maximum reached.");
   }
+  if(type==="habitat"&&!DATA.elements[element])return "Unknown Habitat element.";
   if(type==="habitat"&&state.player.level<(ELEMENT_UNLOCK[element]||99))
     return "Habitat "+(DATA.elements[element]?.name||"element")+" unlocks at level "+ELEMENT_UNLOCK[element]+".";
   if((type==="cave"||type==="arena"||type==="academy")&&state.buildings.some(b=>b.type===type))

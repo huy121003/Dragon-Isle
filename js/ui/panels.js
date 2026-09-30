@@ -25,13 +25,13 @@ function renderModal(){
 }
 function renderIslands(){
   dom.title.textContent="🗺️ Island World";
-  let html='<div class="note">All 11 floating islands share one continuous map. Drag the world to travel and use the mouse wheel or pinch to zoom.</div><div class="actions"><button class="btn primary" data-action="show-world">See entire world on the map</button></div><div class="island-list">';
+  let html='<div class="note">All '+DATA.islands.length+' floating islands share one continuous map. Drag the world to travel and use the mouse wheel or pinch to zoom.</div><div class="actions"><button class="btn primary" data-action="show-world">See entire world on the map</button></div><div class="island-list">';
   DATA.islands.forEach(function(island,index){
     const owned=index<state.unlockedIslands,next=index===state.unlockedIslands;
     const count=owned?islandRegionCount(index):0,total=islandRegionTotal(index);
-    const ready=next&&islandComplete(index-1);
+    const ready=next&&islandComplete(index-1)&&state.player.level>=(island.playerLevel||1);
     const element=island.element&&DATA.elements[island.element];
-    html+='<div class="island-item '+(owned?'owned':'locked')+'"><span class="island-symbol" style="--island-color:'+(element?element.color:'#86c981')+'">'+(element?element.mark:'🏝️')+'</span><div class="island-info"><b>'+(index+1)+'. '+esc(island.name)+'</b><small>'+(element?element.name+' element · ':'Starting island · ')+island.size+'×'+island.size+' tiles</small><small>'+(owned?count+'/'+total+' regions unlocked':next?'♦ '+money(island.gemCost)+' gems':'Unlock the previous island first')+'</small>'+(owned?'<div class="island-progress"><span style="width:'+(count/total*100)+'%"></span></div>':'')+'</div><div class="island-actions">'+
+    html+='<div class="island-item '+(owned?'owned':'locked')+'"><span class="island-symbol" style="--island-color:'+(element?element.color:'#86c981')+'">'+(element?element.mark:'🏝️')+'</span><div class="island-info"><b>'+(index+1)+'. '+esc(island.name)+'</b><small>'+(element?element.name+' element · ':'Starting island · ')+island.size+'×'+island.size+' tiles</small><small>'+(owned?count+'/'+total+' regions unlocked':next?'♦ '+money(island.gemCost)+' gems'+(state.player.level<(island.playerLevel||1)?' · Requires player level '+island.playerLevel:''):'Unlock the previous island first')+'</small>'+(owned?'<div class="island-progress"><span style="width:'+(count/total*100)+'%"></span></div>':'')+'</div><div class="island-actions">'+
       (owned?'<button class="btn primary" data-action="focus-island" data-id="'+index+'">View on map</button>':ready?'<button class="btn good" data-action="unlock-island" data-id="'+index+'">Unlock · ♦ '+money(island.gemCost)+'</button>':
       '<button class="btn" disabled>🔒 Locked</button>')+'</div></div>';
   });
@@ -39,14 +39,12 @@ function renderIslands(){
 }
 function renderShop(){
   dom.title.textContent="🏪 Shop";
-  let html='<div class="tabs"><button class="btn '+(ui.shopTab==="buildings"?"active":"")+
-    '" data-action="shop-tab" data-tab="buildings">Buildings</button><button class="btn '+
-    (ui.shopTab==="eggs"?"active":"")+'" data-action="shop-tab" data-tab="eggs">Eggs</button>'+
-    '<button class="btn '+(ui.shopTab==="supplies"?"active":"")+
-    '" data-action="shop-tab" data-tab="supplies">Food</button>'+
-    '<button class="btn '+(ui.shopTab==="save"?"active":"")+
-    '" data-action="shop-tab" data-tab="save">💾 Data</button></div>';
-  if(ui.shopTab==="buildings"){
+  let html='<div class="tabs">'+
+    [['special','Special buildings'],['habitats','Habitats'],['decorations','Decorations'],
+      ['eggs','Eggs'],['supplies','Food'],['save','💾 Data']]
+      .map(function([id,label]){return '<button class="btn '+(ui.shopTab===id?'active':'')+
+        '" data-action="shop-tab" data-tab="'+id+'">'+label+'</button>';}).join('')+'</div>';
+  if(ui.shopTab==="habitats"){
     html+='<div class="cards">';
     Object.keys(DATA.elements).forEach(function(element){
       const e=DATA.elements[element];
@@ -55,6 +53,9 @@ function renderShop(){
         '<span class="shop-icon" style="color:'+e.color+'">'+e.mark+'</span><span><b>Habitat '+e.name+
         '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+'</small></span><strong>● '+money(habitatPurchaseCost(element))+'</strong></button>';
     });
+    html+='</div>';
+  }else if(ui.shopTab==="special"){
+    html+='<div class="cards">';
     const farms=farmCount(),limit=farmLimit(state.player.level);
     html+='<button class="shop-item" data-action="choose-build" data-type="farm"'+(farms>=limit?' disabled':'')+'><span class="shop-icon">🌱</span>'+
       '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every 5 player levels · four crop levels · 9×6 tiles</small></span><strong>● '+money(DATA.buildings.farm.cost)+'</strong></button>'+
@@ -62,9 +63,12 @@ function renderShop(){
       '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● 250</strong></button>'+ 
       '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● 1,500</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● 500</strong></button>'+ 
-      '<button class="shop-item" data-action="choose-build" data-type="decor"><span class="shop-icon">🚩</span>'+
-      '<span><b>Flagpole</b><small>Island decoration · 3×3 tiles</small></span><strong>● 75</strong></button>';
+      '';
     html+='</div>';
+  }else if(ui.shopTab==="decorations"){
+    html+='<div class="cards"><button class="shop-item" data-action="choose-build" data-type="decor">'+
+      '<span class="shop-icon">🚩</span><span><b>Flagpole</b><small>Island decoration · 3×3 tiles</small></span>'+
+      '<strong>● '+money(DATA.buildings.decor.cost)+'</strong></button></div>';
   }else if(ui.shopTab==="eggs"){
     html+='<div class="note">The shop sells pure element eggs. Prices depend on rarity and unlock level. Purchased eggs enter an available Hatchery nest.</div>'+ 
       '<div class="cards">';
@@ -478,8 +482,8 @@ function renderBook(){
     '<button class="btn" data-action="book-page" data-page="'+(ui.bookPage+1)+'"'+
     (ui.bookPage>=pages-1?' disabled':'')+'>Next ›</button></div>';
   let html='<div class="book-count">Discovered <b>'+knownCount+'/'+filtered.length+'</b> species. '+
-    (ui.bookTab==="triple"?'120 trios × 3 primary elements = 360 three-element dragons. ':
-      ui.bookTab==="quad"?'10 primary elements × 5 species = 50 four-element dragons. ':
+    (ui.bookTab==="triple"?TRIPLE_IDS.length+' three-element dragons. ':
+      ui.bookTab==="quad"?FOUR_IDS.length+' four-element dragons. ':
       'Open a discovered dragon to see its appearance and four skills. ')+
     'Undiscovered entries show basic information; hatch an egg to unlock details.</div>'+ 
     '<div class="tabs">';

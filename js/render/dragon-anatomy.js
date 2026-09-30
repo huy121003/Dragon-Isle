@@ -315,6 +315,95 @@ function artIronback(c,p,t,id){
 }
 
 /* RENDER: Ánh xạ cấu hình hình thể; một loài mới chỉ cần chọn silhouette trong JSON. */
+/* Five distinct bodies share the original art helpers, animations and hybrid overlays. */
+function artWarlord(c,p,t,id){
+  const march=Math.sin(t*.003+id)*3;
+  artFill(c,[[-19,-16],[-35,-51],[-49,-54],[-42,-20],[-29,-5]],p.canhMang,p.vien,2);
+  artStroke(c,[[-40,-49],[-39,-70],[-13,-61]],p.sung,3);
+  artFill(c,[[-39,-69],[-12,-62],[-20,-47],[-37,-54]],p.canh,p.vien,1);
+  artStroke(c,[[-22,1],[-37,21]],p.vien,10);
+  artLeg(c,[[-11,0],[-12,21]],p,8,-17,22,march);
+  artLeg(c,[[10,1],[13,20]],p,8,7,22,-march);
+  artBody(c,[[-29,-24],[-13,-33],[17,-28],[28,-12],[23,7],[-23,7],[-34,-7]],p);
+  for(let i=0;i<3;i++)artFill(c,[[-22+i*14,-22],[-16+i*14,-31],
+    [-7+i*14,-18],[-10+i*14,-4]],p.canh,p.vien,1);
+  artFill(c,[[7,-17],[27,-24],[29,-13],[13,-4]],p.sung,p.vien,1);
+  artFace(c,p,[[14,-40],[28,-47],[44,-38],[52,-27],[42,-22],[27,-27]],36,-35,t,id);
+  artFill(c,[[18,-44],[21,-65],[31,-43]],p.sung,p.vien,1);
+  artFill(c,[[28,-44],[43,-60],[43,-36]],p.canh,p.vien,1);
+}
+function artOracle(c,p,t,id){
+  const float=Math.sin(t*.002+id)*3;
+  artStroke(c,[[-12,-6],[-29,16],[-38,21]],p.canh,7);
+  for(const side of [-1,1]){
+    const x=side*20;
+    artFill(c,[[x,-9+float],[side*48,-39+float],[side*39,0],
+      [side*26,13]],p.canhMang,p.vien,1.5);
+    artStroke(c,[[x,-9+float],[side*48,-39+float]],p.sung,2);
+  }
+  artBody(c,[[-20,-29],[-6,-42],[18,-31],[24,-9],[10,9],[-12,6],[-26,-11]],p);
+  artFill(c,[[-17,-7],[0,-28],[18,-7],[0,13]],p.bung,p.vien,1);
+  for(const x of [-12,0,12])artFill(c,[[x-5,-32],[x,-54-float],[x+6,-32]],
+    p.sung,p.vien,1);
+  artFace(c,p,[[5,-43],[18,-53],[31,-42],[38,-27],[21,-24],[8,-31]],
+    24,-39,t,id);
+  artOval(c,0,15,6,3,p.haoQuang||p.sung);
+}
+function artInfinity(c,p,t,id){
+  const wave=Math.sin(t*.003+id)*3;
+  artStroke(c,[[-14,-11],[-31,-25],[-55,-10],[-38,9],[-13,-4],
+    [-30,-27],[-58,-15]],p.vien,13);
+  artStroke(c,[[-14,-11],[-31,-25],[-55,-10],[-38,9],[-13,-4],
+    [-30,-27],[-58,-15]],p.than,9);
+  artFill(c,[[-55,-10],[-70,-19-wave],[-64,0],[-53,-2]],p.canh,p.vien,1);
+  artBody(c,[[-28,-22],[-6,-33],[21,-25],[31,-7],[18,7],
+    [-13,6],[-33,-6]],p);
+  artFill(c,[[-9,-31],[-30,-63-wave],[-35,-49],[-28,-18]],p.canhMang,p.vien,1);
+  artFill(c,[[4,-28],[-1,-57-wave],[15,-43],[21,-20]],p.canh,p.vien,1);
+  artFace(c,p,[[20,-32],[34,-42],[49,-36],[56,-20],[45,-15],[25,-19]],
+    40,-32,t,id);
+  artStroke(c,[[32,-39],[29,-58],[39,-63]],p.sung,3);
+  artStroke(c,[[40,-41],[45,-58],[53,-60]],p.sung,3);
+}
+function artAncient(c,p,t,id){
+  const step=Math.sin(t*.002+id)*2;
+  for(const x of [-30,-19,14,28])artLeg(c,[[x,-1],[x+2,16]],p,10,x-5,19,x<0?step:-step);
+  artStroke(c,[[-29,-2],[-47,2],[-56,15]],p.vien,14);
+  artStroke(c,[[-29,-2],[-47,2],[-56,15]],p.than,10);
+  artFill(c,[[-28,-6],[-33,-30],[-12,-48],[20,-39],[34,-9],
+    [25,7],[-24,6]],p.thanToi,p.vien,2);
+  artFill(c,[[-28,-9],[-27,-32],[-10,-44],[12,-37],
+    [26,-14],[21,-3]],p.canhMang,p.vien,2);
+  for(let i=0;i<3;i++)artFill(c,[[-24+i*15,-16],[-15+i*15,-37],
+    [-4+i*15,-21],[-8+i*15,-7]],p.canh,p.vien,1.6);
+  artFace(c,p,[[22,-32],[40,-33],[52,-24],[59,-9],[44,-3],[28,-11]],
+    44,-23,t,id);
+  artFill(c,[[29,-29],[19,-55],[36,-40]],p.sung,p.vien,1);
+  artFill(c,[[45,-30],[49,-52],[52,-23]],p.sung,p.vien,1);
+}
+function artChronarch(c,p,t,id){
+  const turn=Math.sin(t*.003+id)*3;
+  artStroke(c,[[-10,-5],[-33,7],[-43,-11]],p.vien,8);
+  artStroke(c,[[-10,-5],[-33,7],[-43,-11]],p.sung,5);
+  artFill(c,[[-47,-10],[-54,-23],[-41,-26],[-35,-10]],p.canhMang,p.vien,1);
+  for(const x of [-22,9]){
+    c.strokeStyle=p.sung;c.lineWidth=3;c.beginPath();
+    c.ellipse(x,-26+turn,13,22,.3,0,Math.PI*2);c.stroke();
+    artStroke(c,[[x,-47+turn],[x,-6+turn]],p.canh,2);
+  }
+  artBody(c,[[-18,-26],[-4,-40],[14,-30],[20,-12],[8,8],
+    [-6,-7],[-23,6]],p);
+  artFill(c,[[-8,-18],[6,-18],[0,-4]],p.canhMang,p.vien,1);
+  artFill(c,[[-8,-18],[6,-18],[0,-30]],p.sung,p.vien,1);
+  artFace(c,p,[[11,-43],[26,-49],[40,-35],[46,-21],[29,-16],[14,-25]],
+    31,-35,t,id);
+  artStroke(c,[[21,-44],[18,-62],[30,-56]],p.sung,3);
+  c.strokeStyle=p.haoQuang||p.sung;c.lineWidth=2;c.beginPath();
+  c.arc(11,-24,38,-.5,1.2);c.stroke();
+}
+
 const DRAGON_SILHOUETTES={hunter:artHunter,serpent:artSerpent,bulwark:artBulwark,
   raptor:artRaptor,panther:artPanther,wyvern:artWyvern,stag:artStag,
-  stalker:artStalker,celestial:artCelestial,ironback:artIronback};
+  stalker:artStalker,celestial:artCelestial,ironback:artIronback,
+  warlord:artWarlord,oracle:artOracle,infinity:artInfinity,
+  ancient:artAncient,chronarch:artChronarch};

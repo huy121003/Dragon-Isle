@@ -59,7 +59,27 @@ function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+'
 const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
+require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
 const balance=await boot();
+const lifecycle=await boot();
+check('only habitats can be sold or stored and ready eggs block the next turn',()=>{
+  lifecycle.run('state=newGame();state.buildings.push({id:91,type:"farm",x:740,y:704,level:1,stored:false});'+
+    'storeBuilding(91);sellBuilding(91);');
+  assert(lifecycle.run('!!buildingById(91)&&!buildingById(91).stored'));
+  lifecycle.run('addEgg("fire","shop");addEgg("fire","shop");');
+  assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId!==null).length'),1);
+  assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId===null).length'),1);
+  lifecycle.run('state.eggs[0].readyAt=Date.now()-1;autoAssignWaitingEggs();');
+  assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId!==null).length'),1);
+  lifecycle.run('state.eggs.shift();autoAssignWaitingEggs();');
+  assert.equal(lifecycle.run('state.eggs[0].hatcheryId'),3);
+  lifecycle.run('state.buildings.push({id:92,type:"cave",stored:false,breeding:null});'+
+    'state.dragons[0].level=5;state.dragons.push({...state.dragons[0],id:77,species:"water",level:5});'+
+    'state.eggs.push({id:93,species:"fire",source:"breed",caveId:92,hatcheryId:null});'+
+    'startBreeding(92,state.dragons[0].id,77);');
+  assert.equal(lifecycle.run('buildingById(92).breeding'),null);
+});
+
 check('battle preview, multiple attacking elements and colored skill symbols',()=>{
  const combat=require('../js/data/combat-rules.js');
  const waterFire=db.species.find(s=>s.elements.join('>')==='water>fire');
@@ -146,8 +166,9 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
  balance.run('renderBreeding(state.buildings.at(-1).id)');
  assert(balance.element('sheetBody').innerHTML.includes('75.00%'));
 });
-check('11 closely grouped islands with the home island centered',()=>{
- assert.equal(game.run('DATA.islands.length'),11);
+check('16 element-ordered islands preserve the original save indices',()=>{
+ assert.equal(game.run('DATA.islands.length'),16);
+  assert.deepEqual(snapshot(game,'DATA.islands.slice(11).map(i=>i.element)'),['war','pure','legend','primal','time']);
  assert(game.run('DATA.islands.every(i=>i.size===72)'));
  assert.deepEqual([...new Set(db.species.map(s=>s.id))].length,db.species.length);
  assert.equal(game.run('DATA.islandRegionSize'),24);
@@ -164,7 +185,7 @@ check('11 closely grouped islands with the home island centered',()=>{
    const gapY=Math.max(0,Math.max(a.y,b.y)-Math.min(a.y+a.size,b.y+b.size));
    assert(Math.hypot(gapX,gapY)>=9,`${a.id} and ${b.id} overlap`);
  }
- assert(Math.max(...islands.map(i=>i.x+i.size))-Math.min(...islands.map(i=>i.x))<500);
+ assert(Math.max(...islands.map(i=>i.x+i.size))-Math.min(...islands.map(i=>i.x))<650);
  assert(Math.max(...islands.map(i=>i.x+i.size))-Math.min(...islands.map(i=>i.x))<410);
 });
 check('region purchase and placement work',()=>{
@@ -223,10 +244,10 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
 });
-check('510 unique English species and no Special',()=>{
- assert.equal(db.species.length,510);
+check('1715 unique species and no Special',()=>{
+ assert.equal(db.species.length,1715);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
- assert(db.species.every(s=>!s.id.startsWith('special_')&&/Dragon$/.test(s.ten)));
+ assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.length>2));
  assert.equal(db.species.find(s=>s.id==='fire').ten,'Flame Dragon');
  assert.equal(db.species.find(s=>s.id==='thunder').ten,'Electric Dragon');
  assert.equal(db.species.find(s=>s.id==='fire>water').ten,'Geyser Dragon');

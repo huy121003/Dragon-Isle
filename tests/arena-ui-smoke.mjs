@@ -2,8 +2,15 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import React from 'react';
+import {inlineStyle} from '../src/inline-style.mjs';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
+const skillStyle=inlineStyle('--skill-color:#2F8FE8; --element:#E8452C; border-color:red');
+assert.equal(skillStyle['--skill-color'],'#2F8FE8');
+assert.equal(skillStyle['--element'],'#E8452C');
+assert.equal(skillStyle.borderColor,'red');
+assert.match(renderToStaticMarkup(React.createElement('span',{className:'skill-hex elemental',style:skillStyle})),
+  /style="--skill-color:#2F8FE8;--element:#E8452C;border-color:red"/);
 const server=await createServer({server:{middlewareMode:true},appType:'custom',logLevel:'error'});
 try{
   const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/ArenaView.jsx');

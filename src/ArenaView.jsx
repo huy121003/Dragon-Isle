@@ -154,15 +154,19 @@ function battleSnapshot(before,events,frame){
 }
 const effectIcons={fire:'🔥',water:'💧',earth:'◆',wind:'🌀',ice:'❄',thunder:'⚡',
   nature:'❀',dark:'☾',light:'✦',metal:'⚔',neutral:'✹'};
-const effectElements=new Set(Object.keys(effectIcons));
+const illustratedEffects=new Set(['war','pure','legend','primal','time']);
 export function SkillEffect({event,frame}){
   if(!event?.damage)return null;
-  const element=effectElements.has(event.element)?event.element:'neutral';
-  const color=game()?.data?.elements?.[element]?.color||'#f7cf80';
+  const theme=game()?.data?.elements?.[event.element];
+  const element=theme||effectIcons[event.element]?event.element:'neutral';
+  const color=theme?.color||'#f7cf80';
+  const illustrated=illustratedEffects.has(element);
   return <div key={frame} className={'battle-skill-fx element-'+element+' '+
     (event.side==='attack'?'toward-right':'toward-left')+(event.critical?' critical':'')}
     style={{'--fx':color}} aria-label={`${event.skill}: ${fmt.format(event.damage)} damage`}>
-    <span className="fx-trail"/><span className="fx-projectile"><i>{effectIcons[element]}</i></span>
+    <span className="fx-trail"/><span className="fx-projectile"><i>{illustrated?
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href={'#flag-'+element}/></svg>:
+      effectIcons[element]}</i></span>
     <span className="fx-impact"><span className="fx-core"/><span className="fx-ring"/>
       {Array.from({length:8},(_,i)=><span key={i} className="fx-particle" style={{'--i':i}}/>)}</span>
     <strong className="fx-damage">−{fmt.format(event.damage)}{event.critical?' CRIT!':''}</strong>

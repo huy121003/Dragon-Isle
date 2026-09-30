@@ -18,7 +18,10 @@ try{
     water:{name:'Water Dragon',elements:['water'],rarity:'common'}};
   globalThis.window={DragonGame:{data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
     water:{mark:'💧',name:'Water',color:'#48e'},earth:{mark:'◆',name:'Earth',color:'#a86'},
-    wind:{mark:'🌀',name:'Wind',color:'#6ab'},ice:{mark:'❄',name:'Ice',color:'#9ce'}},
+    wind:{mark:'🌀',name:'Wind',color:'#6ab'},ice:{mark:'❄',name:'Ice',color:'#9ce'},
+    war:{name:'War',color:'#d64e33'},pure:{name:'Pure',color:'#db71c9'},
+    legend:{name:'Legend',color:'#8155c5'},primal:{name:'Primal',color:'#8b8e83'},
+    time:{name:'Time',color:'#b7aba4'}},
     rarities:{common:{name:'Common',color:'#aaa'}}}}};
   const dragon={id:2,nickname:'Alex',species:'fire',level:20,hp:500,maxHp:500,
     canBattle:true,skills:[{index:0,name:'Flame Slash',power:1.3,unlocked:true,element:'fire'}]};
@@ -73,11 +76,20 @@ try{
     assert.match(effect,/fx-projectile/);assert.match(effect,/fx-impact/);
     assert.match(effect,/134/);
   }
+  for(const element of ['war','pure','legend','primal','time']){
+    const effect=renderToStaticMarkup(React.createElement(SkillEffect,{frame:1,
+      event:{damage:134,element,skill:'Advanced '+element,side:'attack',critical:false}}));
+    assert.match(effect,new RegExp('element-'+element));
+    assert.match(effect,new RegExp('href="#flag-'+element+'"'));
+    assert.doesNotMatch(effect,/element-neutral/);
+  }
   const counterEffect=renderToStaticMarkup(React.createElement(SkillEffect,{frame:2,
     event:{damage:300,element:'thunder',skill:'Sky Thunder',side:'defense',critical:true}}));
   assert.match(counterEffect,/toward-left critical/);assert.match(counterEffect,/CRIT!/);
   assert.equal(renderToStaticMarkup(React.createElement(SkillEffect,{event:{switchTo:'Alex'}})),'');
   const styles=readFileSync(new URL('../src/arena.css',import.meta.url),'utf8');
+  for(const element of ['war','pure','legend','primal','time'])
+    assert(styles.includes('.element-'+element+' .fx-projectile'));
   const reducedMotion=styles.match(/@media\(prefers-reduced-motion:reduce\)\{[^\n]+/i)?.[0]||'';
   assert.doesNotMatch(reducedMotion,/\.fx-(?:trail|projectile|impact)[^}]*display\s*:\s*none/i,
     'Chế độ giảm chuyển động không được ẩn hiệu ứng chiêu và chỉ để lại sát thương');

@@ -13,7 +13,8 @@
         17
       ],
       "base": "fire",
-      "unlock": 24
+      "unlock": 24,
+      "epicHybrid": true
     },
     {
       "id": "pure",
@@ -28,7 +29,8 @@
         21
       ],
       "base": "light",
-      "unlock": 28
+      "unlock": 28,
+      "epicHybrid": true
     },
     {
       "id": "legend",
@@ -43,7 +45,8 @@
         17
       ],
       "base": "dark",
-      "unlock": 33
+      "unlock": 33,
+      "epicHybrid": true
     },
     {
       "id": "primal",
@@ -58,7 +61,8 @@
         24
       ],
       "base": "earth",
-      "unlock": 39
+      "unlock": 39,
+      "epicHybrid": true
     },
     {
       "id": "time",
@@ -73,7 +77,8 @@
         19
       ],
       "base": "wind",
-      "unlock": 45
+      "unlock": 45,
+      "epicHybrid": true
     }
   ],
   "wins": {

@@ -22,6 +22,7 @@ function extendCatalog(db,game){
     if(db.elements[d.id])throw Error('Duplicate element: '+d.id);
     const base=clone(db.elements[d.base]);
     base.id=d.id;base.ten=d.name;base.icon=d.icon;
+    base.epicHybrid=!!d.epicHybrid;
     base.moTa=d.name+' dragons channel '+domains[d.id].toLowerCase()+
       ' through their distinctive form, breath and elemental techniques.';
     base.chiSo={hp:d.stats[0],tanCong:d.stats[1],phongThu:d.stats[2]};

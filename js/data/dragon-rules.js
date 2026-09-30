@@ -21,8 +21,7 @@ function typeMultiplier(attackElement, defenderElements) {
 function rarityOf(elements) {
   const n = elements.length;
   if (n === 1) return 'common';
-  if (n === 2) return elements.some(e => e === 'dark' || e === 'light' || e === 'metal' ||
-    ['war','pure','legend','primal','time'].includes(e)) ? 'epic' : 'rare';
+  if (n === 2) return elements.some(e => e === 'dark' || e === 'light' || e === 'metal' || ELEMENTS[e].epicHybrid) ? 'epic' : 'rare';
   if (n === 3) return 'legendary';
   return 'mythic';
 }

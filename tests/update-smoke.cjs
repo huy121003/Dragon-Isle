@@ -59,6 +59,76 @@ function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+'
 const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
+const balance=await boot();
+check('early player XP, level rewards and dragon feeding costs',()=>{
+ assert(balance.run('playerXPNeeded(1)')<100);
+ assert(balance.run('playerXPNeeded(20)')<2000);
+ assert(balance.run('playerXPNeeded(21)')>balance.run('playerXPNeeded(20)'));
+ assert(balance.run('dragonFeedCost(1)')>1);
+ assert(balance.run('dragonFeedCost(30)')>100);
+ const before=snapshot(balance,'{gold:state.gold,food:state.food,gems:state.gems}');
+ balance.run('gainPlayerXP(playerXPNeeded(1))');
+ assert.equal(balance.run('state.player.level'),2);
+ assert.equal(balance.run('state.gold'),before.gold+200);
+ assert.equal(balance.run('state.food'),before.food+40);
+ assert.equal(balance.run('state.gems'),before.gems+1);
+ balance.run('state.player.level=4;state.player.xp=0;gainPlayerXP(playerXPNeeded(4))');
+ assert.equal(balance.run('state.player.level'),5);
+ assert.equal(balance.run('state.gems'),before.gems+4);
+});
+check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
+ balance.run('state.player.level=1;state.gold=10000;state.food=0;');
+ assert.equal(balance.run('farmLimit(state.player.level)'),1);
+ balance.run('ui.shopTab="supplies";renderShop()');
+ let shop=balance.element('sheetBody').innerHTML;
+ assert(shop.includes('data-count="500"'));
+ assert(!shop.includes('data-action="topup-test"'));
+ balance.run('window.DragonGame.action({action:"buy-food",count:"100"})');
+ assert.equal(balance.run('state.food'),100);
+ assert.equal(balance.run('state.gold'),9500);
+ balance.run('state.gold=0;renderShop();window.DragonGame.action({action:"buy-food",count:"10"})');
+ assert(balance.element('sheetBody').innerHTML.includes('Need 50 more gold'));
+ assert.equal(balance.run('state.food'),100);
+ assert(balance.element('toast').textContent.includes('Not enough gold'));
+ balance.run('state.gold=9500');
+ balance.run('state.buildings.push({id:state.nextId++,type:"farm",level:4,x:750,y:692,stored:false,crop:null})');
+ assert(balance.run('buildLockReason("farm",null)').includes('limit'));
+ balance.run('state.player.level=5');
+ assert.equal(balance.run('farmLimit(state.player.level)'),2);
+ const farmId=balance.run('state.buildings.at(-1).id');
+ balance.run('renderCrops('+farmId+')');
+ assert(balance.element('sheetBody').innerHTML.includes('data-crop="dragonfruit"'));
+ balance.run('state.gold=0;renderCrops('+farmId+');window.DragonGame.action({action:"plant",id:"'+farmId+'",crop:"dragonfruit"})');
+ assert.equal(balance.run('state.buildings.at(-1).crop'),null);
+ assert(balance.element('toast').textContent.includes('Not enough gold'));
+ balance.run('state.gold=9500');
+ balance.run('window.DragonGame.action({action:"plant",id:"'+farmId+'",crop:"dragonfruit"})');
+ assert.equal(balance.run('state.buildings.at(-1).crop.id'),'dragonfruit');
+ assert.equal(balance.run('state.gold'),7500);
+ balance.run('state.buildings.at(-1).crop.readyAt=Date.now()-1;harvest(state.buildings.at(-1))');
+ assert(balance.run('state.food')>100);
+});
+check('Hatchery movement and XP for land and island',()=>{
+ const g=balance;
+ g.run('state= newGame();addEgg("fire");beginMode({kind:"move",id:3});completePlacement(750,692)');
+ assert.equal(g.run('state.buildings.find(b=>b.type==="hatchery").x'),750);
+ assert.equal(g.run('state.eggs[0].hatcheryId'),3);
+ g.run('state.gold=500000;unlockLand(739,691)');
+ assert(g.run('state.player.level')>=2);
+ g.run('state.player.level=10;state.player.xp=0;state.gems=1000;'+
+   'state.regions=[...new Set([...state.regions,...Array.from({length:9},(_,i)=>`0:${i%3}:${Math.floor(i/3)}`)])];unlockIsland(1)');
+ assert.equal(g.run('state.player.xp'),300);
+});
+check('two-element breeding is favored and chance labels have two decimals',()=>{
+ balance.run('state.dragons.push({id:state.nextId++,species:"water",level:5,habitatId:null});'+
+   'state.dragons[0].species="fire";state.dragons[0].level=5;'+
+   'ui.breedDraft={father:state.dragons[0].id,mother:state.dragons.at(-1).id};'+
+   'state.buildings.push({id:state.nextId++,type:"cave",level:1,stored:false,x:740,y:705,breeding:null})');
+ const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons.at(-1))');
+ assert(Math.abs(odds.filter(o=>o.id.includes('>')).reduce((n,o)=>n+o.chance,0)-.75)<1e-9);
+ balance.run('renderBreeding(state.buildings.at(-1).id)');
+ assert(balance.element('sheetBody').innerHTML.includes('75.00%'));
+});
 check('11 closely grouped islands with the home island centered',()=>{
  assert.equal(game.run('DATA.islands.length'),11);
  assert(game.run('DATA.islands.every(i=>i.size===72)'));

@@ -52,8 +52,8 @@ function beginMode(mode){
   if(mode.kind==="buy"){
     const reason=buildLockReason(mode.type,mode.element);
     if(reason){toast(reason);return;}
-  }else if(mode.kind==="move"&&(buildingById(mode.id).upgradeEnds||buildingById(mode.id).type==="hatchery")){
-    toast("This building cannot be moved.");return;
+  }else if(mode.kind==="move"&&buildingById(mode.id).upgradeEnds){
+    toast("This building cannot be moved during an upgrade.");return;
   }
   ui.mode=Object.assign({x:null,y:null},mode);
   ui.selection=null;dom.inspector.innerHTML="";
@@ -153,9 +153,11 @@ function updateInspector(){
     (b.type!=="hatchery"||state.player.level>=1+b.level*4))
     body+='<button class="btn" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+(b.type==="academy"?money(academyUpgradeCost(b.level).gold)+' gold · '+money(academyUpgradeCost(b.level).food)+' food · '+money(academyUpgradeCost(b.level).gems)+' gems · Player Lv'+academyUpgradeCost(b.level).playerLevel:money(upgradeCost(b))+' gold')+' · '+
       duration(upgradeSeconds(b))+'</button>';
-  if(!b.upgradeEnds&&b.type!=="hatchery")body+='<button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
-    '<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
-    (b.type!=="habitat"||!occupants(b).length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell</button>':'');
+  if(!b.upgradeEnds){
+    body+='<button class="btn" data-action="move" data-id="'+b.id+'">Move</button>';
+    if(b.type!=="hatchery")body+='<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
+      (b.type!=="habitat"||!occupants(b).length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell</button>':'');
+  }
   body+='</div></div>';
   dom.inspector.innerHTML=body;
 }

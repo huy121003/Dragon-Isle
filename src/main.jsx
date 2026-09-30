@@ -207,7 +207,7 @@ function App(){
   if(!authReady)return <div className="react-loading"><Spin size="large"/></div>;
   if(!account)return <Auth onDone={()=>{}}/>;
   if(!state)return <div className="react-loading"><Spin size="large" tip="Loading dragon island"/></div>;
-  const xp=state.player.level>=60?100:Math.min(100,Math.round(state.player.xp/(100+75*Math.pow(state.player.level,1.4))*100));
+  const xp=state.player.level>=60?100:Math.min(100,Math.round(state.player.xp/game().xpNeeded(state.player.level)*100));
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory']];
   return <>
     <header className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><Progress percent={xp} showInfo={false} size="small"/></div></div>

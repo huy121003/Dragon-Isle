@@ -92,6 +92,9 @@
     .shop-icon{display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:15px;background:#e5f4ef;font-size:26px}
     .shop-item b,.dragon-card b{display:block}.shop-item small,.dragon-card small{display:block;color:#728491;margin-top:4px;line-height:1.35}
     .shop-item strong{margin-left:auto;white-space:nowrap;color:#a77720;font-size:13px}
+    .food-offer{min-width:0;flex-wrap:wrap}
+    .food-offer-copy{min-width:0;flex:1 1 110px}
+    .food-offer strong{margin-left:auto}
     .dragon-card{display:flex;gap:10px;align-items:center}
     .dragon-portrait{flex:none;width:53px;height:53px;border-radius:16px;background:linear-gradient(#f3ffec,#e4effb);border:3px solid var(--rarity,#b7c0c6);display:grid;place-items:center;font-size:26px}
     /* Thẻ rồng: tranh Canvas, hệ chủ đạo và viền độ hiếm. */

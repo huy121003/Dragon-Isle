@@ -76,6 +76,7 @@ requestAnimationFrame(frame);
 window.DragonGame={
   get state(){return state;},get ui(){return ui;},get account(){return currentAccount;},
   data:DATA,speciesIds:BOOK_SPECIES_IDS,
+  xpNeeded:playerXPNeeded,
   action(dataset){handleAction({dataset:{...dataset}});window.dispatchEvent(new Event('dragon-ui-update'));},
   importSave(file){return importSaveJson(file);},
   paint(canvas,speciesId,level,options={}){

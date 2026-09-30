@@ -2,9 +2,9 @@
 
 /* 3/4-element offspring stay rare; a four-element parent cannot bypass the 3+3 rule. */
 const BREED_TIER_WEIGHTS={
-  "1+1":[65,35],"1+2":[44,56],"1+3":[39,61],"1+4":[36,64],
-  "2+2":[43,57],"2+3":[39,61],"2+4":[36,64],
-  "3+3":[35,65],"3+4":[32,68],"4+4":[30,70]
+  "1+1":[25,75],"1+2":[20,80],"1+3":[18,82],"1+4":[16,84],
+  "2+2":[20,80],"2+3":[18,82],"2+4":[16,84],
+  "3+3":[16,84],"3+4":[15,85],"4+4":[14,86]
 };
 function breedingOptions(father,mother){
   if(!father||!mother||father.id===mother.id)return [];

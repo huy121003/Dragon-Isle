@@ -17,6 +17,10 @@ body.react-ready #inspector,body.react-ready #placementBar,body.react-ready #ove
 .login-card{width:min(440px,100%);box-shadow:0 20px 55px #205a7560;text-align:center}.login-card .ant-card-body{padding:28px}.login-card .ant-form{text-align:left}.login-crest{font-size:52px;background:#fff0c5;display:inline-grid;place-items:center;width:88px;height:88px;border-radius:26px}.auth-switch{display:flex;gap:10px;margin:22px 0}.auth-switch .ant-btn{flex:1}
 .game-modal .ant-modal-content{background:#fffdf5;border:2px solid #fff;box-shadow:0 22px 70px #173d4c80}.game-modal .ant-modal-title{font-size:20px;color:#296078}.game-modal .ant-modal-body{overscroll-behavior:contain}
 .react-content .actions,.react-content .tabs{display:flex;gap:8px;flex-wrap:wrap}.react-content .tabs .ant-btn.active{background:#298d80;color:#fff}.react-content .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}.react-content .shop-item,.react-content .dragon-card,.react-content .egg-card{border-color:#d8e9e1;box-shadow:0 4px 0 #e9efe7}.react-content .ant-btn{white-space:normal;height:auto;min-height:34px}.react-content .shop-item.ant-btn{height:auto;display:flex;align-items:center;justify-content:flex-start;text-align:left;padding:12px}.react-content .dragon-preview{display:block}.react-content select{max-width:100%}
+.react-content .food-shop-cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.react-content .food-offer.ant-btn{min-height:76px;flex-wrap:wrap;gap:10px}
+.react-content .food-offer .food-offer-copy{min-width:0;flex:1 1 100px}
+.react-content .food-offer strong{margin-left:auto;white-space:nowrap}
 /* CỬA HÀNG TRỨNG: Ba vùng nội dung cố định, hai nút luôn nằm trên một hàng riêng. */
 .react-content .egg-shop-card{display:grid;grid-template-columns:60px minmax(0,1fr) 70px;gap:8px;align-items:center;min-width:0;width:100%;padding:11px}
 .react-content .egg-shop-card .egg-plinth{width:58px;height:68px}

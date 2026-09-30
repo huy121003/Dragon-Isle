@@ -165,9 +165,23 @@ function habitatCapacity(level){return Math.min(4,level);}
 function hatcheryCapacity(level){return Math.min(5,level);}
 function habitatHasRoom(building){return building.type==="habitat"&&!building.stored&&!building.upgradeEnds&&
   occupants(building).length<habitatCapacity(building.level);}
-function playerXPNeeded(level){return Math.floor(100+75*Math.pow(level,1.4));}
+function playerXPNeeded(level){
+  const rules=window.DragonEconomy.progression;
+  const factor=level<=20?rules.earlyXpFactor:Math.min(1,
+    rules.earlyXpFactor+(1-rules.earlyXpFactor)*(level-20)/(rules.fullXpLevel-20));
+  return Math.floor((100+75*Math.pow(level,1.4))*factor);
+}
 function dragonXPNeeded(level){return Math.ceil(DATA.progression.xpBase*Math.pow(level,DATA.progression.xpExponent));}
-function dragonFeedCost(level){return Math.max(1,Math.min(DATA.progression.dragonMaxLevel,Math.floor(level)));}
+function dragonFeedCost(level){
+  const n=clamp(Math.floor(Number(level)||1),1,DATA.progression.dragonMaxLevel);
+  const rules=window.DragonEconomy.progression;
+  return Math.ceil(rules.feedBase+rules.feedLinear*n+rules.feedQuadratic*n*n);
+}
+function farmLimit(level){
+  const rules=window.DragonEconomy.progression;
+  return Math.min(rules.maxFarms,1+Math.floor(Math.max(1,level)/rules.farmEveryLevels));
+}
+function farmCount(){return state.buildings.filter(function(b){return b.type==="farm";}).length;}
 function dragonLevelCap(){
   const academy=state?.buildings.find(b=>b.type==="academy"&&!b.stored);
   return academy?DATA.progression.academyCaps[Math.min(academy.level-1,4)]:30;

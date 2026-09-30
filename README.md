@@ -82,6 +82,13 @@ Dữ liệu loài được quản lý trong `data/dragons.json`. `npm run build`
 
 Đấu trường yêu cầu ba rồng từ cấp 10 trở lên trong mỗi đội tấn công và phòng thủ; rồng đang lai không thể tham chiến. Chọn đội trước khi xem đối thủ. Trong trận, chọn một trong các chiêu của rồng hoặc đổi rồng; lượt của đội tấn công diễn ra trước. Đội phòng thủ do máy chủ điều khiển. Thắng được vàng, thức ăn và gem; thua phải chờ 15 phút. Số trận thắng/thua và tiến trình được lưu theo tài khoản.
 
-Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng theo cấp. EXP người chơi chỉ tăng khi ấp nở, lai thành công, mua/nâng cấp chuồng hoặc thu hoạch thức ăn. Chuồng đang nâng cấp hoặc chứa rồng không bán được; rồng trong chuồng có thể bán từ trang thông tin. Lò ấp cấp 1 có sẵn ở tài khoản mới, không bán trong cửa hàng.
+Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng theo cấp với phần tăng mạnh hơn ở cấp cao. EXP người chơi nhận khi ấp nở, lai thành công, mua/nâng cấp chuồng, thu hoạch thức ăn, mở vùng đất và mua đảo. Chuồng đang nâng cấp hoặc chứa rồng không bán được; rồng trong chuồng có thể bán từ trang thông tin. Lò ấp cấp 1 có sẵn ở tài khoản mới, không bán trong cửa hàng nhưng có thể di chuyển kể cả khi có trứng.
+
+### Cân bằng tiến trình
+
+- EXP cần cho cấp người chơi 1–20 bằng 38% công thức cũ; từ cấp 21 tăng dần và trở về mức cũ ở cấp 40. Mỗi lần lên cấp nhận vàng, thức ăn và gem; cấp chia hết cho 5 có thêm 2 gem.
+- Mở một vùng đất nhận 80 EXP; mua một đảo nhận 300 EXP. Số Farm tối đa là 1 ở cấp 1–4, thêm 1 ở mỗi mốc cấp 5, 10, 15… và tối đa 12 Farm. Farm đã cất kho vẫn tính vào giới hạn.
+- Trứng lai 3 và 4 hệ giữ mức xác suất 4–8% và 0,5–1%; phần còn lại ưu tiên rồng 2 hệ. Giao diện hiển thị xác suất theo hai chữ số thập phân.
+- Shop Food bán 10, 100 hoặc 500 thức ăn với giá 5 vàng mỗi thức ăn. Các tham số EXP, thưởng, giới hạn Farm, giá cho ăn và tỉ lệ lai nằm trong `data/economy.js`.
 
 Khi cập nhật máy chủ đang dùng, giữ nguyên `data/users.json`, `data/sessions.json`, `data/profiles/` và `data/arena/`. Chạy `npm ci && npm run build && npm test`, sau đó `node server.cjs --host 0.0.0.0 --port 8080`. Bản lưu v7–v10 được nâng lên v11; đất và công trình đi theo đảo tương ứng khi tọa độ đảo thay đổi.

@@ -10,6 +10,7 @@ function unlockLand(x,y,currency){
     state.gems-=gemCost;
   }else if(!spendGold(cost))return;
   state.regions.push(region.id);state.expansions+=tiles.length;
+  gainPlayerXP(window.DragonEconomy.progression.landXp);
   burst((x+.5)*DATA.tile,(y+.5)*DATA.tile,"#c9f89b",15);
   ui.selection=null;
   AUDIO.play("place");updateUI();saveGame();
@@ -22,6 +23,7 @@ function unlockIsland(index){
   state.gems-=island.gemCost;state.unlockedIslands++;
   const middle=Math.floor(island.size/DATA.islandRegionSize/2);
   state.regions.push(index+":"+middle+":"+middle);
+  gainPlayerXP(window.DragonEconomy.progression.islandXp);
   ui.selection=null;
   focusIsland(index);
   toast("Unlocked "+island.name+"!");AUDIO.play("place");updateUI();saveGame();

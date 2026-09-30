@@ -48,14 +48,20 @@ function advanceWorld(now){
 }
 function gainPlayerXP(value){
   state.player.xp+=value;
-  let leveled=false;
+  let levels=0,rewardGold=0,rewardFood=0,rewardGems=0;
+  const rules=window.DragonEconomy.progression;
   while(state.player.level<60&&state.player.xp>=playerXPNeeded(state.player.level)){
     state.player.xp-=playerXPNeeded(state.player.level);
     state.player.level++;
-    leveled=true;
+    levels++;
+    rewardGold+=rules.levelGoldBase+rules.levelGoldStep*state.player.level;
+    rewardFood+=rules.levelFoodBase+rules.levelFoodStep*state.player.level;
+    rewardGems+=rules.levelGems+(state.player.level%5===0?rules.milestoneGemBonus:0);
   }
-  if(leveled){
-    toast("Reached level "+state.player.level+"!");
+  if(levels){
+    state.gold+=rewardGold;state.food+=rewardFood;state.gems+=rewardGems;
+    toast("Reached level "+state.player.level+"! +"+money(rewardGold)+" gold, +"+
+      money(rewardFood)+" food, +"+money(rewardGems)+" gems.");
     const home=state.buildings.find(function(b){return !b.stored;});
     if(home){const center=buildingCenter(home);burst(center.x,center.y,"#ffe68d",30);}
   }
@@ -87,6 +93,13 @@ const ELEMENT_UNLOCK={fire:1,water:1,earth:3,wind:5,ice:7,thunder:9,nature:11,da
 function buildLockReason(type,element){
   if(!DATA.buildings[type])return "This building does not exist.";
   if(type==="hatchery")return "The fixed Hatchery is already on the island and cannot be bought.";
+  if(type==="farm"&&farmCount()>=farmLimit(state.player.level)){
+    const next=(Math.floor(state.player.level/window.DragonEconomy.progression.farmEveryLevels)+1)*
+      window.DragonEconomy.progression.farmEveryLevels;
+    return "Farm limit reached ("+farmCount()+"/"+farmLimit(state.player.level)+"). "+
+      (farmLimit(state.player.level)<window.DragonEconomy.progression.maxFarms?
+        "Unlock another at player level "+next+".":"Maximum reached.");
+  }
   if(type==="habitat"&&state.player.level<(ELEMENT_UNLOCK[element]||99))
     return "Habitat "+(DATA.elements[element]?.name||"element")+" unlocks at level "+ELEMENT_UNLOCK[element]+".";
   if((type==="cave"||type==="arena"||type==="academy")&&state.buildings.some(b=>b.type===type))
@@ -101,7 +114,7 @@ function completePlacement(x,y){
   if(mode.kind==="move"){
     const building=buildingById(mode.id);
     if(!building){stopMode();return;}
-    if(building.upgradeEnds||building.type==="hatchery"){toast("This building cannot be moved.");stopMode();return;}
+    if(building.upgradeEnds){toast("This building cannot be moved during an upgrade.");stopMode();return;}
     building.x=x;building.y=y;building.stored=false;
     ui.selection={type:"building",id:building.id};
     toast("Building moved.");

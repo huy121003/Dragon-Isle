@@ -55,8 +55,9 @@ function renderShop(){
         '<span class="shop-icon" style="color:'+e.color+'">'+e.mark+'</span><span><b>Habitat '+e.name+
         '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+'</small></span><strong>● '+money(habitatPurchaseCost(element))+'</strong></button>';
     });
-    html+='<button class="shop-item" data-action="choose-build" data-type="farm"><span class="shop-icon">🌱</span>'+
-      '<span><b>Farm</b><small>Four levels, one new crop per level · 9×6 tiles</small></span><strong>● 150</strong></button>'+
+    const farms=farmCount(),limit=farmLimit(state.player.level);
+    html+='<button class="shop-item" data-action="choose-build" data-type="farm"'+(farms>=limit?' disabled':'')+'><span class="shop-icon">🌱</span>'+
+      '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every 5 player levels · four crop levels · 9×6 tiles</small></span><strong>● '+money(DATA.buildings.farm.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="cave"'+(state.buildings.some(b=>b.type==="cave")?' disabled':'')+'><span class="shop-icon">💞</span>'+
       '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● 250</strong></button>'+ 
       '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● 1,500</strong></button>'+
@@ -95,16 +96,20 @@ function renderShop(){
       '<label class="btn good" for="saveImport">Import save JSON</label>'+ 
       '<input id="saveImport" type="file" accept=".json,application/json" class="visually-hidden"></div>'+ 
       '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to 500 gold, 50 food, 10 gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+ 
-      '<button class="btn danger" data-action="factory-reset">Reset game</button></div>';
+      '<button class="btn danger" data-action="factory-reset">Reset game</button></div>'+
+      '<div class="panel"><h3>Testing</h3><button class="btn" data-action="topup-test">Grant test resources</button>'+
+      '<p>Sets a minimum of 10 million gold, 100,000 food and 10,000 gems.</p></div>';
   }else{
-    html+='<div class="cards">';
-    html+='<button class="shop-item" data-action="topup-test"><span class="shop-icon">🎁</span>'+
-      '<span><b>Grant test resources</b><small>At least 10 million gold · 100,000 food · 10,000 gems</small></span>'+
-      '<strong>Free</strong></button>';
-    html+='<button class="shop-item" data-action="buy-food" data-count="10"><span class="shop-icon">🍎</span>'+
-      '<span><b>10 food</b><small>Feed dragons or stockpile</small></span><strong>● 50</strong></button>'+
-      '<button class="shop-item" data-action="buy-food" data-count="100"><span class="shop-icon">🥕</span>'+
-      '<span><b>100 food</b><small>5 gold per food</small></span><strong>● 500</strong></button>';
+    const price=window.DragonEconomy.progression.foodGoldPrice;
+    html+='<div class="note">Buy food with gold · '+money(price)+' gold per food. Purchases are added instantly.</div>'+
+      '<div class="cards food-shop-cards">';
+    [[10,'🍎'],[100,'🥕'],[500,'🍇']].forEach(function([count,icon]){
+      const cost=count*price,missing=Math.max(0,cost-state.gold);
+      html+='<button class="shop-item food-offer" data-action="buy-food" data-count="'+count+'">'+
+        '<span class="shop-icon">'+icon+'</span><span class="food-offer-copy"><b>'+money(count)+' food</b>'+
+        '<small>'+(missing?'Need '+money(missing)+' more gold':'Ready to purchase')+'</small></span>'+
+        '<strong>● '+money(cost)+'</strong></button>';
+    });
     html+='</div>';
   }
   dom.body.innerHTML=html;
@@ -244,7 +249,7 @@ function renderCrops(id){
     const yieldAmount=Math.round(c.yield*(1+(b.level-1)*.2));
     const locked=index>=b.level;
     html+='<button class="shop-item" data-action="plant" data-id="'+id+'" data-crop="'+c.id+'"'+
-      (locked||state.gold<c.cost?' disabled':'')+'>'+
+      (locked?' disabled':'')+'>'+
       '<span class="shop-icon">🌿</span><span><b>'+c.name+'</b><small>'+duration(c.duration)+' → '+
       money(yieldAmount)+' food</small></span><strong>'+
       (locked?'Unlocks at level '+(index+1):state.gold<c.cost?'Need '+money(c.cost-state.gold)+' gold':'● '+money(c.cost))+'</strong></button>';
@@ -417,20 +422,20 @@ function renderBreeding(id){
     const exact=[1,2,3,4].map(function(count){return options.filter(function(o){
       return DATA.species[o.id].elements.length===count;
     }).reduce(function(sum,o){return sum+o.chance;},0)*100;});
-    const tenths=exact.map(function(n){return n*10;});
-    const totals=tenths.map(Math.floor);
-    let remainder=1000-totals.reduce(function(sum,n){return sum+n;},0);
-    const fractional=[0,1,2,3].sort(function(a,b){return tenths[b]%1-tenths[a]%1;});
+    const hundredths=exact.map(function(n){return n*100;});
+    const totals=hundredths.map(Math.floor);
+    let remainder=10000-totals.reduce(function(sum,n){return sum+n;},0);
+    const fractional=[0,1,2,3].sort(function(a,b){return hundredths[b]%1-hundredths[a]%1;});
     for(let i=0;i<remainder;i++)totals[fractional[i]]++;
     html+='<div class="breed-chances"><h3>Offspring probabilities</h3>'+
-      totals.map(function(n,i){return '<span><b>'+(n/10).toFixed(1)+'%</b><small>'+ (i+1)+' elements</small></span>';}).join('')+'</div>'+
+      totals.map(function(n,i){return '<span><b>'+(n/100).toFixed(2)+'%</b><small>'+ (i+1)+' elements</small></span>';}).join('')+'</div>'+
       '<details class="breed-outcomes"><summary>View '+options.length+' possible outcomes</summary>';
     options.forEach(function(option){
       const s=DATA.species[option.id],known=state.discovered.includes(s.id);
       html+='<div class="egg-card">'+eggShellHtml({species:s.id},false)+
         '<div><b>'+(known?esc(s.name):'Undiscovered result')+'</b><small>'+ 
         (known?elementBadges(s)+rarityGem(s.rarity,s.elements[0]):'Revealed when the egg hatches')+'</small></div><strong>'+ 
-        (option.chance*100).toFixed(1)+'%</strong>'+
+        (option.chance*100).toFixed(option.chance<.0001?3:2)+'%</strong>'+
         (known?'<button class="btn" data-action="book-detail" data-species="'+s.id+'">Xem</button>':'')+'</div>';
     });
     html+='</details><div class="actions"><button class="btn good" data-action="start-breeding" data-id="'+id+

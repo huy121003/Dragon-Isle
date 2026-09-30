@@ -51,7 +51,7 @@ function pointerMove(event){
   const distance=Math.hypot(p.x-g.start.x,p.y-g.start.y);
   if(g.kind==="building"&&distance>9){
     const held=buildingById(g.hitId);
-    if(held?.upgradeEnds||held?.type==="hatchery"){g.kind="pan";g.moved=true;return;}
+    if(held?.upgradeEnds){g.kind="pan";g.moved=true;return;}
     ui.mode={kind:"move",id:g.hitId,x:null,y:null};
     g.kind="drag-building";g.moved=true;
     dom.barText.textContent="Drop the building on valid tiles";
@@ -228,7 +228,9 @@ function handleAction(button){
     case "logout":logoutAccount();break;
     case "buy-food":{
       const count=Number(button.dataset.count);
-      if(spendGold(count*5)){state.food+=count;toast("Bought "+count+" food.");updateUI();saveGame();}
+      if(![10,100,500].includes(count))break;
+      const cost=count*window.DragonEconomy.progression.foodGoldPrice;
+      if(spendGold(cost)){state.food+=count;toast("Bought "+money(count)+" food for "+money(cost)+" gold.");updateUI();saveGame();}
       break;
     }
     case "unlock-land":unlockLand(Number(button.dataset.x),Number(button.dataset.y));break;

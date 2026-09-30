@@ -244,6 +244,16 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
 });
+check('five pure species use their element names',()=>{
+  const ids=['war','pure','legend','primal','time'];
+  assert.deepEqual(snapshot(game,'DATA.islands.slice(11).map(island=>island.element)'),ids);
+  for(const id of ids){
+    assert.equal(db.species.find(s=>s.id===id).ten,
+      id.charAt(0).toUpperCase()+id.slice(1)+' Dragon');
+    assert(game.run('DATA.species['+JSON.stringify(id)+'].name').endsWith(' Dragon'));
+  }
+  assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
+});
 check('1715 unique species and no Special',()=>{
  assert.equal(db.species.length,1715);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);

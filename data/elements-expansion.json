@@ -3,7 +3,7 @@
     {
       "id": "war",
       "name": "War",
-      "icon": "⚔️",
+      "icon": "🪖",
       "color": "#d64e33",
       "light": "#ffc273",
       "dark": "#693044",
@@ -51,7 +51,7 @@
     {
       "id": "primal",
       "name": "Primal",
-      "icon": "☯",
+      "icon": "🦖",
       "color": "#8b8e83",
       "light": "#e8e5c2",
       "dark": "#45473d",
@@ -67,7 +67,7 @@
     {
       "id": "time",
       "name": "Time",
-      "icon": "◉",
+      "icon": "⟲",
       "color": "#b7aba4",
       "light": "#f0e1d5",
       "dark": "#5f596b",

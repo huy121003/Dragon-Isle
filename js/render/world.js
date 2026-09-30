@@ -172,7 +172,13 @@ function islandScenery(kind,x,y,size,time,variant){
         const x=9*Math.sin(t),y=7*Math.sin(t)*Math.cos(t)-2;
         if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
     }else if(kind==='primal'){
-      ctx.arc(0,-1,7,0,Math.PI*2);ctx.moveTo(0,-8);ctx.arc(0,-1,7,-Math.PI/2,Math.PI/2);
+      for(let i=0;i<3;i++){
+        const a=i*Math.PI*2/3,c=Math.cos(a),n=Math.sin(a);
+        const point=(x,y)=>[x*c-y*n,x*n+y*c-1];
+        ctx.moveTo(...point(-1,-1));
+        ctx.quadraticCurveTo(...point(-9,-3),...point(-4,-10));
+        ctx.lineTo(...point(-1,-7));
+      }
     }else{ctx.arc(0,-2,8,0,Math.PI*2);ctx.moveTo(0,-2);ctx.lineTo(0,-8);ctx.moveTo(0,-2);ctx.lineTo(5,1);}
     ctx.stroke();ellipse(0,-2,2,2,theme.rim);
   }else if(kind==='metal'){
@@ -257,8 +263,13 @@ function islandFeatures(kind,cx,cy,s,time){
         const x=.46*Math.sin(t),y=.27*Math.sin(t)*Math.cos(t);
         if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
     }else if(kind==='primal'){
-      ctx.arc(0,0,.35,0,Math.PI*2);
-      ctx.moveTo(0,-.35);ctx.bezierCurveTo(.5,-.05,-.5,.05,0,.35);
+      for(let i=0;i<3;i++){
+        const a=i*Math.PI*2/3,c=Math.cos(a),n=Math.sin(a);
+        const point=(x,y)=>[x*c-y*n,x*n+y*c];
+        ctx.moveTo(...point(-.04,-.03));
+        ctx.quadraticCurveTo(...point(-.34,-.11),...point(-.17,-.43));
+        ctx.lineTo(...point(-.06,-.26));
+      }
     }else{
       ctx.arc(0,0,.37,0,Math.PI*2);
       for(let i=0;i<12;i++){const t=i*Math.PI/6;

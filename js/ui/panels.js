@@ -50,7 +50,7 @@ function renderShop(){
       const e=DATA.elements[element];
       const need=ELEMENT_UNLOCK[element]||99,locked=state.player.level<need;
       html+='<button class="shop-item" data-action="choose-build" data-type="habitat" data-element="'+element+'"'+(locked?' disabled':'')+'>'+
-        '<span class="shop-icon" style="color:'+e.color+'">'+e.mark+'</span><span><b>Habitat '+e.name+
+        '<span class="shop-icon" style="color:'+e.color+'">'+elementFlag(element,false,'lg')+'</span><span><b>Habitat '+e.name+
         '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+'</small></span><strong>● '+money(habitatPurchaseCost(element))+'</strong></button>';
     });
     html+='</div>';

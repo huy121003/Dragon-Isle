@@ -849,7 +849,7 @@
         {
           "id": "war-1",
           "name": "Banner Charge",
-          "icon": "⚔️",
+          "icon": "🪖",
           "power": 1,
           "bonus": 0.52
         },
@@ -897,14 +897,14 @@
         {
           "id": "primal-1",
           "name": "Ancient Fang",
-          "icon": "☯",
+          "icon": "🐾",
           "power": 1,
           "bonus": 0.55
         },
         {
           "id": "primal-2",
           "name": "Origin Roar",
-          "icon": "🌀",
+          "icon": "🦖",
           "power": 1,
           "bonus": 0.98
         }

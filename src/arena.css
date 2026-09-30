@@ -103,6 +103,42 @@
 .element-light .fx-ring{border-style:double;border-width:12px}
 .element-metal .fx-projectile,.element-metal .fx-core{border-radius:0;clip-path:polygon(49% 0,60% 40%,100% 51%,60% 61%,49% 100%,39% 61%,0 51%,39% 40%)}
 .element-metal .fx-trail{height:7px;background:linear-gradient(90deg,transparent,#fff,var(--fx));transform:skewY(-7deg)}
+/* Advanced elements reuse the arena timing, with a distinct projectile and impact for each type. */
+.battle-skill-fx .fx-projectile i svg{display:block;width:39px;height:39px;color:#fff;fill:currentColor;filter:drop-shadow(0 1px 3px #1f233e)}
+.element-war .fx-projectile{border-radius:18% 60% 22% 60%;background:linear-gradient(125deg,#ffe4a3,var(--fx) 45%,#6e2337);box-shadow:0 0 26px #fb8051,5px 4px 0 #762d36}
+.element-war .fx-trail{height:23px;background:repeating-linear-gradient(-20deg,transparent 0 12px,#ffdc8d 13px 17px,transparent 18px 27px);filter:drop-shadow(0 0 7px var(--fx))}
+.element-war .fx-core{border-radius:12%;clip-path:polygon(50% 0,65% 34%,100% 28%,75% 56%,87% 100%,50% 73%,13% 100%,25% 56%,0 28%,35% 34%);background:linear-gradient(145deg,#ffe3a1,var(--fx),#7b2a38)}
+.element-war .fx-ring{border-radius:18%;border-color:#ffd798;box-shadow:0 0 20px var(--fx)}
+.element-war .fx-particle{border-radius:2px;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.element-pure .fx-projectile{clip-path:polygon(50% 0,100% 88%,0 88%);border-radius:0;background:linear-gradient(145deg,#fff5ff,#f1b2e9,var(--fx));box-shadow:0 0 30px #ffe2fa}
+.element-pure .fx-trail{height:24px;background:linear-gradient(0deg,transparent 0 18%,#fff6fb 20% 26%,transparent 27% 47%,#ffbaf0 48% 54%,transparent 55% 72%,#fff6fb 74% 80%,transparent 82%),linear-gradient(90deg,transparent,var(--fx),transparent)}
+.element-pure .fx-core{clip-path:polygon(50% 0,100% 85%,0 85%);background:radial-gradient(circle at 49% 47%,#fff 0,#fff1fd 30%,var(--fx) 80%);box-shadow:0 0 23px 14px #ffd4f6}
+.element-pure .fx-ring{clip-path:polygon(50% 0,100% 85%,0 85%);border-width:10px;border-color:#ffe9fc}
+.element-pure .fx-particle{border-radius:2px;transform:rotate(calc(var(--i)*45deg))}
+.element-legend .fx-projectile{background:radial-gradient(circle at 50% 50%,#eddbff 6%,var(--fx) 52%,#302055 78%,transparent 80%);box-shadow:0 0 28px 8px #a989ee}
+.element-legend .fx-projectile i{animation:fx-legend-glyph 1.38s ease-in-out both}
+.element-legend .fx-trail{height:19px;background:radial-gradient(circle,#fff 0 2px,transparent 3px) 0 0/22px 16px,linear-gradient(90deg,transparent,var(--fx),transparent)}
+.element-legend .fx-core{background:radial-gradient(circle,#e9d7ff 0 10%,#9d71dc 31%,#322058 68%,transparent 75%);box-shadow:0 0 23px 12px var(--fx)}
+.element-legend .fx-ring{border:7px double #dfbcff;box-shadow:0 0 22px var(--fx)}
+.element-legend .fx-impact:after{content:'∞';position:absolute;inset:15%;display:grid;place-items:center;color:#fff;font-size:74px;font-weight:900;text-shadow:0 0 13px var(--fx);animation:fx-symbol-echo 1.38s ease-out both}
+.element-primal .fx-projectile{background:conic-gradient(from 20deg,#f4e7c8,#535044,var(--fx),#f4e7c8);border:3px solid #e8d8b2;box-shadow:0 0 22px 6px #514938}
+.element-primal .fx-projectile i{animation:fx-primal-claw 1.38s ease-out both}
+.element-primal .fx-trail{height:19px;background:repeating-conic-gradient(from 15deg at 12% 50%,transparent 0 30deg,#e9d5ac 31deg 34deg,transparent 35deg 60deg);filter:drop-shadow(0 0 7px var(--fx))}
+.element-primal .fx-core{background:conic-gradient(from 15deg,#f1dec1,#595442,#f1dec1,#656347,#f1dec1);clip-path:polygon(50% 0,62% 28%,97% 20%,79% 51%,98% 83%,62% 73%,50% 100%,38% 73%,2% 83%,21% 51%,3% 20%,38% 28%)}
+.element-primal .fx-ring{border:7px dashed #e6d5b4;box-shadow:0 0 18px var(--fx)}
+.element-primal .fx-particle{border-radius:45% 0 70% 0;background:#e9d5b4}
+.element-time .fx-projectile{background:conic-gradient(from 0deg,#faf1dd,var(--fx),#726474,#f6e5cb,var(--fx));border:3px solid #f8ebd1;box-shadow:0 0 25px #f8e9d4}
+.element-time .fx-projectile i{animation:fx-time-rewind 1.38s ease-out both}
+.element-time .fx-trail{height:25px;background:radial-gradient(circle at 7px 50%,#fff 0 3px,transparent 4px) 0 0/25px 25px,linear-gradient(90deg,transparent,#e7d6c9,var(--fx))}
+.element-time .fx-core{background:radial-gradient(circle,#fff7e4 0 12%,#766a7a 14% 19%,#e8d8c6 21% 32%,#766a7a 34% 37%,var(--fx) 41%);box-shadow:0 0 25px 11px #e9dacf}
+.element-time .fx-ring{border:7px double #fff1d7;box-shadow:0 0 17px #f9ecdc;animation:fx-time-ring .7s .36s ease-out both}
+.element-time .fx-particle{width:10px;height:10px;border:2px solid #fff3df;background:transparent;animation-name:fx-time-particle}
+@keyframes fx-legend-glyph{0%{transform:rotate(-30deg) scale(.5)}55%{transform:rotate(25deg) scale(1.2)}100%{transform:rotate(180deg) scale(.8)}}
+@keyframes fx-primal-claw{0%{transform:rotate(-110deg) scale(.6)}55%{transform:rotate(80deg) scale(1.3)}100%{transform:rotate(240deg) scale(.6)}}
+@keyframes fx-time-rewind{0%{transform:rotate(180deg)}50%{transform:rotate(15deg) scale(1.25)}100%{transform:rotate(-210deg)}}
+@keyframes fx-time-ring{0%{opacity:1;transform:rotate(110deg) scale(1.1)}100%{opacity:0;transform:rotate(-100deg) scale(.2)}}
+@keyframes fx-time-particle{0%{opacity:0;transform:rotate(calc(var(--i)*45deg)) translateX(53px)}38%{opacity:1}100%{opacity:0;transform:rotate(calc(var(--i)*45deg)) translateX(0)}}
+@keyframes fx-symbol-echo{0%,28%{opacity:0;transform:scale(.25)}52%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.5)}}
 @keyframes fx-flight-right{0%{left:24%;opacity:0;transform:translate(-50%,-50%) scale(.3)}16%{opacity:1}45%{left:76%;opacity:1;transform:translate(-50%,-50%) scale(1.35)}65%,100%{left:76%;opacity:0;transform:translate(-50%,-50%) scale(.2)}}
 @keyframes fx-flight-left{0%{left:76%;opacity:0;transform:translate(-50%,-50%) scale(.3)}16%{opacity:1}45%{left:24%;opacity:1;transform:translate(-50%,-50%) scale(1.35)}65%,100%{left:24%;opacity:0;transform:translate(-50%,-50%) scale(.2)}}
 @keyframes fx-trail{0%{opacity:0;transform:scaleX(0)}30%{opacity:1;transform:scaleX(.65)}55%{opacity:.85;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1)}}
@@ -121,7 +157,7 @@
 .battle-skill-label{display:flex;align-items:center;gap:7px;white-space:normal;line-height:1.1}.battle-skill-grid .skill-hex{width:30px;height:32px;font-size:13px}.battle-skill-grid .skill-hex svg{width:17px;height:17px}
 .battle-switch-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:8px;margin-top:8px}.battle-switch-list .ant-btn{min-width:0;width:100%;height:auto;min-height:64px;padding:5px 8px;display:flex;gap:7px;align-items:center;justify-content:flex-start;white-space:normal}.battle-switch-list .arena-portrait{width:52px;height:48px;flex:none}.battle-switch-list .ant-btn>span{min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis}.battle-switch-list small{display:block;font-size:9px;overflow:hidden;text-overflow:ellipsis}
 .battle-feed{margin:12px 0;padding:12px;border-radius:14px;background:#f4efe2}.battle-feed p{margin:5px 0;font-size:12px}
-@media(max-width:680px){.arena-hub{padding:9px}.arena-hub-hero{padding:15px;gap:9px}.arena-hub-hero .arena-crest{width:48px;height:48px;font-size:27px}.arena-hub-hero h2{font-size:21px}.arena-hub-hero p{margin:0;font-size:11px}.arena-setup-section{padding:11px}.arena-roster-grid{grid-template-columns:1fr}.arena-roster-card{gap:4px;padding:5px}.roster-art{width:59px;height:63px}.arena-element{font-size:9px;padding:1px 3px}.arena-check{width:18px;height:18px}.arena-teams-preview{gap:6px}.arena-team-slot{width:100%;height:60px}.arena-team-slot .arena-portrait{max-width:100%;width:50px;height:49px}.arena-save-bar{align-items:flex-start}.battle-stage{min-height:300px;grid-template-columns:1fr 42px 1fr}.battle-side{padding:4px}.battle-name b{font-size:10px}.battle-hp small{font-size:9px}.battle-dragon{height:180px}.battle-vs{font-size:13px;padding:5px;border-width:2px}.battle-skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.battle-skill-grid .ant-btn{font-size:11px}.fx-projectile{width:44px;height:44px}.fx-projectile i{font-size:27px}.fx-impact{width:75px;height:75px}.fx-particle{width:8px;height:8px}.fx-skill-name{bottom:5%;font-size:11px} }
+@media(max-width:680px){.arena-hub{padding:9px}.arena-hub-hero{padding:15px;gap:9px}.arena-hub-hero .arena-crest{width:48px;height:48px;font-size:27px}.arena-hub-hero h2{font-size:21px}.arena-hub-hero p{margin:0;font-size:11px}.arena-setup-section{padding:11px}.arena-roster-grid{grid-template-columns:1fr}.arena-roster-card{gap:4px;padding:5px}.roster-art{width:59px;height:63px}.arena-element{font-size:9px;padding:1px 3px}.arena-check{width:18px;height:18px}.arena-teams-preview{gap:6px}.arena-team-slot{width:100%;height:60px}.arena-team-slot .arena-portrait{max-width:100%;width:50px;height:49px}.arena-save-bar{align-items:flex-start}.battle-stage{min-height:300px;grid-template-columns:1fr 42px 1fr}.battle-side{padding:4px}.battle-name b{font-size:10px}.battle-hp small{font-size:9px}.battle-dragon{height:180px}.battle-vs{font-size:13px;padding:5px;border-width:2px}.battle-skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.battle-skill-grid .ant-btn{font-size:11px}.fx-projectile{width:44px;height:44px}.fx-projectile i{font-size:27px}.battle-skill-fx .fx-projectile i svg{width:28px;height:28px}.fx-impact{width:75px;height:75px}.fx-particle{width:8px;height:8px}.fx-skill-name{bottom:5%;font-size:11px} }
 @media(max-width:420px){.arena-roster-grid{grid-template-columns:1fr}.arena-hub-hero .ant-btn{font-size:10px;padding:0 5px}.battle-stage{min-height:270px}.battle-dragon{height:140px}.battle-name .arena-element{display:none}}
 @media(prefers-reduced-motion:reduce){.battle-dragon,.battle-switch-cue,.battle-charge span,.is-charging .battle-side.player .battle-dragon:after{animation:none!important}}
 /* Lai tạo dùng thẻ chân dung thay cho danh sách chữ. */

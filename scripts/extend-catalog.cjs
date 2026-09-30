@@ -54,7 +54,7 @@ function extendCatalog(db,game){
     const id=parts.join('>');
     if(seen.has(id))return;
     const dragon=rules.buildDragon(parts);
-    const name=parts.length===1?rootNames[parts[0]]:
+    const name=parts.length===1?db.elements[parts[0]].ten+' Dragon':
       rootNames[parts[0]]+' '+traits[parts[1]]+
       (parts.length>=3?' of the '+domains[parts[2]]:'')+
       (parts.length>=4?', '+titles[parts[3]]:'');

@@ -254,8 +254,8 @@ check('five pure species use their element names',()=>{
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
 });
-check('1715 unique species and no Special',()=>{
- assert.equal(db.species.length,1715);
+check('1740 unique species and no Special',()=>{
+ assert.equal(db.species.length,1740);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
  assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.length>2));
  assert.equal(db.species.find(s=>s.id==='fire').ten,'Flame Dragon');
@@ -266,6 +266,54 @@ check('1715 unique species and no Special',()=>{
  assert.equal('specials' in db,false);
  assert.equal(game.run('BOOK_SPECIES_IDS.some(x=>x.startsWith("special_"))'),false);
  game.run('openModal("book")');assert(!game.element('sheetBody').innerHTML.includes('>Special<'));
+});
+check('ordered pairs, unique secondary triples and balanced four-element species',()=>{
+ const elements=Object.keys(db.elements);
+ const groups=Object.fromEntries([1,2,3,4].map(n=>[n,db.species.filter(s=>s.elements.length===n)]));
+ assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,150]);
+ const byId=new Map(db.species.map(s=>[s.id,s]));
+ for(const a of elements)for(const b of elements){
+   if(a===b)continue;
+   assert(byId.has(a+'>'+b),'Missing directed pair '+a+'>'+b);
+ }
+ assert.equal(game.run('DATA.species["fire>time"].elements[0]'),'fire');
+ assert.equal(game.run('DATA.species["time>fire"].elements[0]'),'time');
+ const triples=groups[3],tripleKeys=triples.map(s=>
+   s.elements[0]+'|'+s.elements.slice(1).sort().join('|'));
+ assert.equal(new Set(tripleKeys).size,triples.length);
+ assert.equal(game.run('DATA.species["fire>time>water"].id'),'fire>water>time');
+ const fours=groups[4],quartets=fours.map(s=>s.elements.slice().sort().join('|'));
+ assert.equal(new Set(quartets).size,fours.length);
+ const existing=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'))).species
+   .filter(s=>s.elements.length===4);
+ for(const s of existing)assert.equal(byId.get(s.id)?.ten,s.ten,
+   'Previously owned dragon IDs and names must survive');
+ for(const a of elements){
+   const primary=fours.filter(s=>s.elements[0]===a);
+   assert.equal(primary.length,10,a+' has 10 dominant dragons');
+   assert.equal(fours.filter(s=>s.elements.slice(1).includes(a)).length,30,
+     a+' appears exactly 30 times as an additional element');
+   for(const b of elements){
+     if(a===b)continue;
+     const count=primary.filter(s=>s.elements.slice(1).includes(b)).length;
+     assert(count>=2&&count<=3,a+' and '+b+' are spread across primary groups');
+   }
+ }
+ // Previously generated four-element dragons still load with their primary and advanced affinity.
+ for(const id of ['fire>water>earth>war','water>fire>wind>pure',
+   'earth>fire>wind>legend','wind>fire>ice>primal','ice>fire>water>time',
+   'war>fire>water>pure']){
+   const migrated=game.run('migrateSpeciesId('+JSON.stringify(id)+')');
+   const original=id.split('>'),parts=migrated.split('>');
+   assert.equal(parts[0],original[0]);
+   for(const advanced of original.filter(e=>db.elements[e].epicHybrid))
+     assert(parts.includes(advanced),id+' must keep its advanced element');
+ }
+ for(const a of ['war','pure','legend','primal','time'])
+   for(let slot=1;slot<=3;slot++){
+     const count=fours.filter(s=>s.elements[slot]===a).length;
+     assert(count>=9&&count<=11,a+' is balanced across secondary positions');
+   }
 });
 check('rare breeding, 100000 roll Monte Carlo',()=>{
  game.run('state.dragons[0].species="fire>water>earth";state.dragons[0].level=35;'+

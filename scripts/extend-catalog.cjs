@@ -76,19 +76,77 @@ function extendCatalog(db,game){
       if(fresh(parts))append(parts);
     }
   }
-  const existingSets=new Set(db.species.filter(s=>s.elements.length===4)
-    .map(s=>s.elements.slice().sort().join('|')));
+  // Keep existing four-element IDs stable; distribute new combinations across all 15 elements.
+  const fourExisting=db.species.filter(s=>s.elements.length===4);
+  const targetPerPrimary=10,globalQuota=targetPerPrimary*3;
+  const minimumPerPair=Math.floor(globalQuota/(ids.length-1));
+  const maximumPerPair=Math.ceil(globalQuota/(ids.length-1));
+  const fourSets=new Set(fourExisting.map(s=>s.elements.slice().sort().join('|')));
+  const perPrimary=Object.fromEntries(ids.map(a=>[a,
+    fourExisting.filter(s=>s.elements[0]===a).length]));
+  const secondary=Object.fromEntries(ids.map(e=>[e,
+    fourExisting.filter(s=>s.elements.slice(1).includes(e)).length]));
+  const local=Object.fromEntries(ids.map(a=>[a,Object.fromEntries(ids.map(e=>[e,
+    fourExisting.filter(s=>s.elements[0]===a&&s.elements.slice(1).includes(e)).length]))]));
+  const positions=[0,1,2,3].map(slot=>Object.fromEntries(ids.map(e=>[e,
+    fourExisting.filter(s=>s.elements[slot]===e).length])));
+  // Stable pseudo-random tie-breaks give varied combinations without changing the catalog on each build.
+  function jitter(value){
+    let hash=2166136261;
+    for(const character of value){
+      hash^=character.charCodeAt(0);
+      hash=Math.imul(hash,16777619);
+    }
+    return (hash>>>0)/4294967296;
+  }
+  function orderSecondary(parts){
+    const [a,b,c]=parts;
+    const choices=[[a,b,c],[a,c,b],[b,a,c],[b,c,a],[c,a,b],[c,b,a]];
+    let best,lowest=Infinity;
+    for(const choice of choices){
+      // The first 50 species are fixed, so balance positions around their existing counts.
+      const cost=choice.reduce((sum,e,i)=>sum+2*(positions[i+1][e]-targetPerPrimary)+1,0);
+      if(cost<lowest){best=choice;lowest=cost;}
+    }
+    best.forEach((e,i)=>positions[i+1][e]++);
+    return best;
+  }
   for(const a of ids){
     const rest=ids.filter(e=>e!==a);
-    let added=0;
-    for(let i=0;i<rest.length&&added<5;i++)
-      for(let j=i+1;j<rest.length&&added<5;j++)
-        for(let k=j+1;k<rest.length&&added<5;k++){
-          const parts=[a,rest[i],rest[j],rest[k]],key=parts.slice().sort().join('|');
-          if(!fresh(parts)||existingSets.has(key))continue;
-          append(parts);existingSets.add(key);added++;
-        }
-    if(added!==5)throw Error('Insufficient four-element species for '+a);
+    const toAdd=targetPerPrimary-perPrimary[a];
+    if(toAdd<0)throw Error('Too many four-element species for '+a);
+    for(let step=0;step<toAdd;step++){
+      const remaining=toAdd-step-1;
+      let chosen=null,highest=-Infinity;
+      for(let i=0;i<rest.length;i++)
+        for(let j=i+1;j<rest.length;j++)
+          for(let k=j+1;k<rest.length;k++){
+            const parts=[rest[i],rest[j],rest[k]];
+            const key=[a,...parts].slice().sort().join('|');
+            if(fourSets.has(key)||parts.some(e=>
+              local[a][e]>=maximumPerPair||secondary[e]>=globalQuota))continue;
+            const needed=rest.map(e=>Math.max(0,minimumPerPair-local[a][e]-
+              (parts.includes(e)?1:0)));
+            if(needed.some(n=>n>remaining)||
+              needed.reduce((sum,n)=>sum+n,0)>remaining*3)continue;
+            const score=parts.reduce((sum,e)=>sum+
+              12*(local[a][e]<minimumPerPair)+2*(globalQuota-secondary[e])+
+              1.2*(maximumPerPair-local[a][e]),0)+jitter(key+step)*.2;
+            if(score>highest){chosen=parts;highest=score;}
+          }
+      if(!chosen)throw Error('Cannot balance four-element species for '+a);
+      const quartet=[a,...orderSecondary(chosen)];
+      append(quartet);
+      fourSets.add(quartet.slice().sort().join('|'));
+      perPrimary[a]++;
+      chosen.forEach(e=>{secondary[e]++;local[a][e]++;});
+    }
+  }
+  for(const a of ids){
+    if(perPrimary[a]!==targetPerPrimary||secondary[a]!==globalQuota||
+      ids.some(e=>e!==a&&(local[a][e]<minimumPerPair||
+        local[a][e]>maximumPerPair)))
+      throw Error('Unbalanced four-element species for '+a);
   }
   return {db,game};
 }

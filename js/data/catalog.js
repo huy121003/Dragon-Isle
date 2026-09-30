@@ -65,7 +65,12 @@ function migrateSpeciesId(id){
   if(parts.length!==4||new Set(parts).size!==4||parts.some(function(e){return !DATA.elements[e];}))return mapped;
   const candidates=fourSpecies.filter(function(s){return s.elements[0]===parts[0];});
   candidates.sort(function(a,b){
-    const score=s=>s.elements.filter(function(e){return parts.includes(e);}).length;
+    // Old saves may contain four-element recipes from the earlier, uneven catalog.
+    // Keep their dominant affinity and favor scarce/advanced secondary affinities.
+    const score=s=>s.elements.filter(function(e){return parts.includes(e);}).length+
+      s.elements.slice(1).filter(function(e){
+        return parts.includes(e)&&DRAGON_DB.elements[e].epicHybrid;
+      }).length*3;
     return score(b)-score(a)||a.id.localeCompare(b.id);
   });
   return candidates[0]?.id||mapped;

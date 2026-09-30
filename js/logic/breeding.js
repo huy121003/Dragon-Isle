@@ -14,7 +14,7 @@ function breedingOptions(father,mother){
   const order=Object.keys(DATA.elements);
   const canInherit=parts=>parts.some(e=>F.elements.includes(e))&&
     parts.some(e=>M.elements.includes(e));
-  const groups=[pool.map(e=>e),[],[],[]];
+  const groups=[pool.map(e=>e),[],[],[],[]];
   for(const first of pool)for(const second of pool){
     if(first===second)continue;
     const parts=[first,second];
@@ -31,6 +31,16 @@ function breedingOptions(father,mother){
     const parts=DATA.species[id].elements;
     return parts.every(e=>pool.includes(e))&&canInherit(parts);
   });
+  const readyForDouble=father.level>=window.DragonEconomy.breeding.doubleMinParentLevel&&
+    mother.level>=window.DragonEconomy.breeding.doubleMinParentLevel&&
+    new Set(F.elements).size>=3&&new Set(M.elements).size>=3;
+  groups[4]=!readyForDouble?[]:DOUBLE_IDS.filter(function(id){
+    const parts=DATA.species[id].elements,primary=parts[0],additional=parts.slice(2);
+    return F.elements.includes(primary)&&M.elements.includes(primary)&&
+      additional.every(e=>pool.includes(e))&&
+      additional.some(e=>F.elements.includes(e))&&
+      additional.some(e=>M.elements.includes(e));
+  });
   const tierKey=[F.elements.length,M.elements.length].sort(function(a,b){return a-b;}).join("+");
   const rules=window.DragonEconomy.breeding,avg=(father.level+mother.level)/2;
   const three=groups[2].length?Math.min(rules.threeCap,
@@ -39,9 +49,11 @@ function breedingOptions(father,mother){
   const four=groups[3].length&&F.elements.length===3&&M.elements.length===3&&disjoint&&
     father.level>=rules.fourMinParentLevel&&mother.level>=rules.fourMinParentLevel?
     Math.min(rules.fourCap,rules.fourBase+Math.floor((avg-30)/10)*rules.fourPerTenLevels):0;
-  const low=1-three-four,base=BREED_TIER_WEIGHTS[tierKey];
+  const double=groups[4].length?Math.min(rules.doubleCap,
+    rules.doubleBase+Math.floor((avg-rules.doubleMinParentLevel)/10)*rules.doublePerTenLevels):0;
+  const low=1-three-four-double,base=BREED_TIER_WEIGHTS[tierKey];
   const two=groups[1].length?low*base[1]/(base[0]+base[1]):0;
-  const weights=[low-two,two,three,four];
+  const weights=[low-two,two,three,four,double];
   return groups.flatMap(function(ids,index){
     if(!ids.length||!weights[index])return [];
     const bias=ids.map(function(id){

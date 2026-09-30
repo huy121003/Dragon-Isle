@@ -423,16 +423,20 @@ function renderBreeding(id){
   if(father.id===mother.id)html+='<div class="note">Choose two different dragons.</div>';
   else{
     const options=breedingOptions(father,mother);
-    const exact=[1,2,3,4].map(function(count){return options.filter(function(o){
-      return DATA.species[o.id].elements.length===count;
+    const tiers=[['1 element',s=>s.elements.length===1],['2 elements',s=>s.elements.length===2],
+      ['3 elements',s=>s.elements.length===3],
+      ['4 elements',s=>s.elements.length===4&&s.rarity!=="transcendent"],
+      ['Double Element',s=>s.rarity==="transcendent"]];
+    const exact=tiers.map(function(tier){return options.filter(function(o){
+      return tier[1](DATA.species[o.id]);
     }).reduce(function(sum,o){return sum+o.chance;},0)*100;});
     const hundredths=exact.map(function(n){return n*100;});
     const totals=hundredths.map(Math.floor);
     let remainder=10000-totals.reduce(function(sum,n){return sum+n;},0);
-    const fractional=[0,1,2,3].sort(function(a,b){return hundredths[b]%1-hundredths[a]%1;});
+    const fractional=tiers.map(function(_,i){return i;}).sort(function(a,b){return hundredths[b]%1-hundredths[a]%1;});
     for(let i=0;i<remainder;i++)totals[fractional[i]]++;
     html+='<div class="breed-chances"><h3>Offspring probabilities</h3>'+
-      totals.map(function(n,i){return '<span><b>'+(n/100).toFixed(2)+'%</b><small>'+ (i+1)+' elements</small></span>';}).join('')+'</div>'+
+      totals.map(function(n,i){return '<span><b>'+(n/100).toFixed(2)+'%</b><small>'+tiers[i][0]+'</small></span>';}).join('')+'</div>'+
       '<details class="breed-outcomes"><summary>View '+options.length+' possible outcomes</summary>';
     options.forEach(function(option){
       const s=DATA.species[option.id],known=state.discovered.includes(s.id);
@@ -466,7 +470,7 @@ function renderBook(){
   dom.title.textContent="📖 Dragon Book";
   const known=new Set(state.discovered);
   const filtered=(ui.bookTab==="triple"?TRIPLE_IDS:
-    ui.bookTab==="quad"?FOUR_IDS:BOOK_SPECIES_IDS).filter(function(id){
+    ui.bookTab==="quad"?FOUR_IDS:ui.bookTab==="double"?DOUBLE_IDS:BOOK_SPECIES_IDS).filter(function(id){
     const s=DATA.species[id];
     if(!matchesElementFilter(s,ui.bookElements))return false;
     if(ui.bookTab==="pure")return s.elements.length===1;
@@ -484,11 +488,12 @@ function renderBook(){
   let html='<div class="book-count">Discovered <b>'+knownCount+'/'+filtered.length+'</b> species. '+
     (ui.bookTab==="triple"?TRIPLE_IDS.length+' three-element dragons. ':
       ui.bookTab==="quad"?FOUR_IDS.length+' four-element dragons. ':
+      ui.bookTab==="double"?DOUBLE_IDS.length+' Double Element dragons. ':
       'Open a discovered dragon to see its appearance and four skills. ')+
     'Undiscovered entries show basic information; hatch an egg to unlock details.</div>'+ 
     '<div class="tabs">';
   [["all","All"],["pure","1 element"],["pair","2 elements"],["triple","3 elements"],
-    ["quad","4 elements"]].forEach(function(tab){
+    ["quad","4 elements"],["double","Double Element"]].forEach(function(tab){
     html+='<button class="btn '+(ui.bookTab===tab[0]?"active":"")+'" data-action="book-tab" data-tab="'+tab[0]+'">'+tab[1]+'</button>';
   });
   html+='</div>'+elementFilter('book',ui.bookElements)+pager+'<div class="cards book-grid">';

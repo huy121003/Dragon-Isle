@@ -6,7 +6,8 @@ window.DragonEconomy={
     farmEveryLevels:5,maxFarms:12,feedBase:5,feedLinear:2,feedQuadratic:.12,
     foodGoldPrice:5},
   breeding:{threeBase:.04,threePerTenLevels:.005,threeCap:.08,
-    fourBase:.005,fourPerTenLevels:.001,fourCap:.01,fourMinParentLevel:30},
+    fourBase:.005,fourPerTenLevels:.001,fourCap:.01,fourMinParentLevel:30,
+    doubleBase:.002,doublePerTenLevels:.0005,doubleCap:.004,doubleMinParentLevel:35},
   land:{basePerTile:20,regionMultiplier:1.25},
   academy:{baseGold:1500,baseFood:300,baseGems:3,costFactor:2.5,baseUpgradeSeconds:300,timeFactor:2.2},
   visual:{daySeconds:480,weatherParticles:10}

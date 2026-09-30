@@ -48,7 +48,7 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 
 | File / thư mục | Nội dung |
 | --- | --- |
-| `data/dragons.json`, `data/elements-expansion.json` | 510 loài gốc và 5 hệ mở rộng; bộ sinh danh mục dùng lại công thức rồng hiện tại |
+| `data/dragons.json`, `data/elements-expansion.json`, `data/double-elements.json` | Loài gốc, 5 hệ mở rộng và 30 thiết kế Double Element; bộ sinh danh mục dùng lại công thức rồng hiện tại |
 | `data/game.json`, `data/economy.js` | Bản đồ 16 đảo sau khi mở rộng, vùng đất 24×24, công trình và hệ số cân bằng |
 | `data/users.json`, `data/sessions.json` | Máy chủ tự tạo tài khoản và phiên; không lưu trong repository và không cho tải trực tiếp qua web |
 | `data/profiles/` | Một file JSON tiến trình riêng cho từng tài khoản |
@@ -65,7 +65,7 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 | `package.json`, `vite.config.mjs` | Gói React/Ant Design/Vite và lệnh build |
 | `tests/` | Kiểm thử game và máy chủ |
 
-Dữ liệu loài được quản lý trong `data/dragons.json`. `npm run build` tự tạo cache từ JSON và build React; `npm test` cũng build trước khi kiểm tra. Chạy `node server.cjs` để thử game; mở `/debug/gallery.html` để xem rồng theo hệ và tuổi.
+Dữ liệu loài được quản lý trong các tệp JSON thuộc `data/`; `scripts/extend-catalog.cjs` mở rộng danh mục khi build và khi Arena tải dữ liệu. `npm run build` tự tạo cache và build React; `npm test` cũng build trước khi kiểm tra. Chạy `node server.cjs` để thử game; mở `/debug/gallery.html` để xem rồng theo hệ và tuổi.
 
 ## Bản cập nhật đảo và rồng
 
@@ -73,7 +73,7 @@ Dữ liệu loài được quản lý trong `data/dragons.json`. `npm run build`
 - Chu kỳ ngày đêm chạy trong 8 phút và đổi màu trời, nước, đảo, công trình. Có thể mở trang `/debug/gallery.html` để xem mười dáng rồng cơ bản và các bản lai ở các tuổi; nút Pause và Quality hỗ trợ kiểm tra hoạt ảnh.
 - Dragon Academy có thể kéo hoặc dùng nút Move như công trình khác. Công trình giới hạn cấp rồng ở 30 khi chưa nâng cấp; mỗi cấp Academy tăng chi phí vàng, thức ăn, gem và thời gian theo `data/economy.js`, đồng thời yêu cầu cấp người chơi.
 - Hang lai có **hai cột Father/Mother**, mỗi cột có lọc tối đa bốn hệ và tìm tên riêng. Hệ được chọn có viền và dấu ✓; rồng phải có đủ tất cả hệ được chọn. Bộ lọc kho rồng, Sổ tay và chọn đội đấu trường cũng theo quy tắc này. Danh sách đối thủ không có bộ lọc hệ. Rồng đã chọn ở một cột bị khóa ở cột kia. Danh sách hiển thị chân dung, tên tiếng Anh, cờ hệ nhỏ và độ hiếm.
-- Danh mục sau khi mở rộng có **1.740 loài**: 15 rồng một hệ, 210 rồng hai hệ (mỗi cặp có đủ hai hệ chủ đạo), 1.365 rồng ba hệ (mỗi hệ chủ đạo đi với một cặp hệ phụ không thứ tự), 150 rồng bốn hệ (mỗi hệ chủ đạo có 10 con). Mỗi hệ xuất hiện đúng 30 lần với vai trò hệ phụ của rồng bốn hệ; trong từng nhóm chủ đạo, mỗi hệ phụ khác xuất hiện 2–3 lần. Giữ nguyên ID của 50 rồng bốn hệ gốc để bảo toàn bản lưu. Không còn loài hoặc bộ lọc Special.
+- Danh mục sau khi mở rộng có **1.770 loài**: 15 rồng một hệ, 210 rồng hai hệ (mỗi cặp có đủ hai hệ chủ đạo), 1.365 rồng ba hệ (mỗi hệ chủ đạo đi với một cặp hệ phụ không thứ tự), 150 rồng bốn hệ (mỗi hệ chủ đạo có 10 con) và 30 rồng Double Element. Mỗi hệ xuất hiện đúng 30 lần với vai trò hệ phụ của rồng bốn hệ; trong từng nhóm chủ đạo, mỗi hệ phụ khác xuất hiện 2–3 lần. Giữ nguyên ID của 50 rồng bốn hệ gốc để bảo toàn bản lưu. Bộ lọc Double Element tách khỏi 4 hệ thông thường.
 - Lai tạo chỉ lấy các hệ có trong hai bố mẹ. Rồng ba hệ chỉ có khi kết hợp được ít nhất ba hệ, tỉ lệ **4–8%** tùy cấp. Rồng bốn hệ chỉ có khi hai bố mẹ đều ba hệ, **không trùng hệ**, đạt ít nhất cấp 30 và danh mục có loài phù hợp; tỉ lệ **0,5–1%**. Hệ trùng trong bố mẹ tăng trọng số thừa hưởng. Các hệ số ở `data/economy.js`.
 - Kỹ năng dùng icon lục giác với màu và hình hệ tương ứng; chiêu thường có icon riêng. Cờ hệ trong bộ lọc, thẻ rồng, Sổ tay và bảng thông tin có các kích cỡ thống nhất.
 - Rồng có chuyển động đuôi lò xo, nhịp thở, cánh và phần đầu theo trạng thái. Bậc 2/3/4 có phần cánh, áo giáp, vây hoặc trường năng lượng của các hệ phụ. Công trình được vẽ lại từ đầu bằng hình khối nhìn nghiêng. Mười chuồng có địa hình và hình dáng riêng: Lửa có núi dung nham, Nước có hồ san hô, Đất có cột đá, Gió có cối gió trên mây, Băng có tinh thể và nhũ băng, Sét có mây điện, Thiên nhiên có tán cây, Bóng tối có trăng và tháp mộ, Ánh sáng có đền mặt trời, Kim loại có lò rèn và bánh răng. Nông trại có ruộng bậc và kho gỗ, lò ấp là vỏ trứng bao lấy buồng kính và ổ ấp, Dragon Academy là tháp chính với hai cánh, Đấu trường có khán đài và hai cờ, Hang Lai là cổng đá cùng tinh thể. Rồng, trứng, cây trồng, quá trình lai và ánh sáng đêm vẫn đổi theo trạng thái thực tế.
@@ -89,6 +89,7 @@ Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng
 - EXP cần cho cấp người chơi 1–20 bằng 38% công thức cũ; từ cấp 21 tăng dần và trở về mức cũ ở cấp 40. Mỗi lần lên cấp nhận vàng, thức ăn và gem; cấp chia hết cho 5 có thêm 2 gem.
 - Mở một vùng đất nhận 80 EXP; mua một đảo nhận 300 EXP. Số Farm tối đa là 1 ở cấp 1–4, thêm 1 ở mỗi mốc cấp 5, 10, 15… và tối đa 12 Farm. Farm đã cất kho vẫn tính vào giới hạn.
 - Trứng lai 3 và 4 hệ giữ mức xác suất 4–8% và 0,5–1%; phần còn lại ưu tiên rồng 2 hệ. Giao diện hiển thị xác suất theo hai chữ số thập phân.
+- Rồng **Double Element** có bốn slot nhưng chỉ ba hệ: hai slot đầu là hệ chủ đạo trùng nhau. Có hai loài riêng cho mỗi hệ, thuộc bậc Transcendent với chỉ số nằm giữa rồng 3 hệ và 4 hệ. Bố mẹ đều cần cấp 35, đều mang hệ chủ đạo và mỗi con có ít nhất ba hệ riêng; tỉ lệ xuất hiện 0,2–0,4%, thấp hơn rồng 4 hệ. Trứng và hình thể theo hai dạng riêng, màu/chi tiết phụ thuộc các hệ thành phần; Sổ tay có tab riêng. Danh sách 30 thiết kế, kỹ năng và các thông số nằm tại `data/double-elements.json`.
 - Shop Food bán 10, 100 hoặc 500 thức ăn với giá 5 vàng mỗi thức ăn. Các tham số EXP, thưởng, giới hạn Farm, giá cho ăn và tỉ lệ lai nằm trong `data/economy.js`.
 
 ### Chiến đấu
@@ -96,5 +97,6 @@ Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng
 - Mỗi hệ khắc đúng hai hệ và bị đúng hai hệ khắc. Hệ đầu tiên quyết định điểm yếu phòng thủ; các hệ còn lại cho phép dùng chiêu của hệ đó để khắc đối thủ. Đòn hệ mạnh gây ×1,5, đòn bị kháng gây ×0,75; chiêu thường không có hệ.
 - HP, tấn công và giáp được pha từ các hệ của rồng theo thứ tự, nhân bậc hiếm rồi tăng dần theo cấp 1–100. Đấu trường đánh theo lượt với bên chủ động đi trước, không còn chỉ số tốc độ.
 - Chiêu thường bằng một phần trăm tấn công gốc; chiêu hệ bằng 100% tấn công gốc cộng thêm sát thương hệ tính theo phần trăm tấn công gốc. Sau đó áp dụng khắc hệ, giảm theo giáp, sai số ±10% và chí mạng ×1,5. Máy chủ và giao diện dùng chung `js/data/combat-rules.js`.
+- Slot kỹ năng thứ tư của Double Element là chiêu đặc biệt hệ chủ đạo, có hồi chiêu 3–4 lượt. Arena lưu trạng thái và lượt còn lại cho tăng/giảm sát thương hoặc giáp, giảm sát thương nhận, độc, hồi máu theo lượt, đóng băng, tăng HP và đòn nhiều nhịp có xác suất hụt; hiệu ứng cùng loại làm mới thời gian và lấy giá trị cao hơn thay vì cộng dồn. Kỹ năng hỗ trợ thuần không gây sát thương. Biểu tượng trạng thái hiện dưới thanh HP.
 
 Khi cập nhật máy chủ đang dùng, giữ nguyên `data/users.json`, `data/sessions.json`, `data/profiles/` và `data/arena/`. Chạy `npm ci && npm run build && npm test`, sau đó `node server.cjs --host 0.0.0.0 --port 8080`. Bản lưu v7–v10 được nâng lên v11; đất và công trình đi theo đảo tương ứng khi tọa độ đảo thay đổi.

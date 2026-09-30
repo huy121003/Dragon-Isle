@@ -3,11 +3,12 @@
 /* RENDER: Dấu vân gắn với loài, nên trứng cùng loài giống nhau dù ID cá thể khác. */
 function eggStyle(egg){
   const species=typeof egg==="string"?egg:(egg&&egg.species)||"unknown";
+  const double=DATA.species[species]?.rarity==="transcendent";
   let hash=2166136261;
   for(let i=0;i<species.length;i++)hash=Math.imul(hash^species.charCodeAt(i),16777619)>>>0;
   hash^=hash>>>16;hash=Math.imul(hash,2246822507)>>>0;
   const hue=hash%360,other=(hue+62+(hash>>>12)%140)%360;
-  return {seed:hash,pattern:(hash>>>8)%8,contour:(hash>>>20)%3,
+  return {seed:hash,pattern:(hash>>>8)%8,contour:double?3:(hash>>>20)%3,double,
     base:"hsl("+hue+" 55% 74%)",shade:"hsl("+hue+" 39% 44%)",
     shine:"hsl("+hue+" 78% 94%)",mark:"hsl("+other+" 68% 48%)"};
 }
@@ -15,7 +16,7 @@ function eggStyle(egg){
 function eggShellHtml(egg,ready){
   const style=eggStyle(egg);
   return '<span class="mystery-egg pattern-'+style.pattern+' contour-'+style.contour+
-    (ready?' ready':'')+'" aria-label="Mystery egg" style="--shell:'+style.base+
+    (style.double?' double-egg':'')+(ready?' ready':'')+'" aria-label="Mystery egg" style="--shell:'+style.base+
     ';--shell-shade:'+style.shade+';--shell-shine:'+style.shine+
     ';--shell-mark:'+style.mark+'"><i></i></span>';
 }
@@ -72,6 +73,18 @@ function drawEgg(context,egg,x,y,time,scale){
       context.lineTo(point[0]+3,point[1]);context.lineTo(point[0],point[1]+3);
       context.lineTo(point[0]-3,point[1]);context.closePath();context.fill();
     }break;
+  }
+  if(style.double){
+    context.strokeStyle=style.shine;context.lineWidth=2.4;
+    for(let i=0;i<2;i++){
+      context.beginPath();context.arc(0,-1,6+i*4,-Math.PI*.75,Math.PI*.75);
+      context.stroke();
+    }
+    context.fillStyle=style.mark;
+    for(const x of [-7,7]){
+      context.beginPath();context.moveTo(x,-11);context.lineTo(x+3,-5);
+      context.lineTo(x-2,-3);context.closePath();context.fill();
+    }
   }
   context.restore();
   if(ready){

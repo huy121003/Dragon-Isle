@@ -356,7 +356,7 @@ function migrateSave(raw){
     .map(function(r){return r.split("|").map(mapSpecies).join("|");})
     .filter(function(r){return r.split("|").every(function(id){return !!DATA.species[id];});}))];
   delete result.specialRewards;
-  result.testGrantApplied=!!raw.testGrantApplied;
+  delete result.testGrantApplied;
   result.nextId=Math.max(result.nextId,1+Math.max(0,
     ...result.buildings.map(function(b){return b.id;}),
     ...result.dragons.map(function(d){return d.id;}),
@@ -368,7 +368,7 @@ async function loadGameFromServer(){
   if(!response.ok)throw new Error(response.status===401?'Session expired. Sign in again.':
     'Cannot read progress from the server.');
   const raw=await response.json();
-  if(!raw){const initial=newGame();initial.testGrantApplied=true;return initial;}
+  if(!raw)return newGame();
   return migrateSave(raw);
 }
 /* SAVE: Ghi các snapshot theo thứ tự; thao tác mới không bị bản lưu cũ ghi đè. */
@@ -408,7 +408,6 @@ function saveGame(){
 function factoryReset(){
   if(!window.confirm("Start over? All dragons, buildings, unlocked land and resources will be replaced."))return;
   state=newGame();
-  state.testGrantApplied=true;
   saveReadOnly=false;
   ui.selection=null;ui.bookTab="all";ui.bookPage=0;ui.shopTab="buildings";
   ui.jumps.clear();stopMode();closeModal();

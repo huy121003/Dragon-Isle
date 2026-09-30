@@ -75,7 +75,6 @@ function topUpTestResources(showNotice){
   state.gold=Math.max(state.gold,amounts.gold);
   state.food=Math.max(state.food,amounts.food);
   state.gems=Math.max(state.gems,amounts.gems);
-  state.testGrantApplied=true;
   if(showNotice){
     toast("Test resources granted: 10 million gold, 100,000 food and 10,000 gems.");
     updateUI();saveGame();

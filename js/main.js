@@ -9,7 +9,6 @@ catch(error){showAuthMessage(error.message);return;}
 try{window.localStorage.removeItem(SAVE_KEY);}catch(error){}
 try{ui.fixedDay=window.localStorage.getItem('dragon-isle-fixed-day')==='1';}catch(error){}
 const offline=advanceWorld(Date.now());
-state.testGrantApplied=true;
 if(!await saveGame()){showAuthMessage("Unable to save profile. Check the server and reload.");return;}
 authScreen.hidden=true;document.getElementById("game").hidden=false;
 resizeCanvas();

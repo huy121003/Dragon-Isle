@@ -41,6 +41,7 @@ async function launch(port){
     assert.equal(economy.status,200);
     assert((await economy.text()).includes('DragonEconomy'));
     assert.equal((await fetch(base+'/debug/gallery.html')).status,200);
+    assert.equal((await fetch(base+'/README.md')).status,403);
     const cache=await (await fetch(base+'/js/data/db-cache.js')).text();
     assert(cache.includes('window.DragonDatabase='));
     const a=await post('/api/auth/register','Alex_1','very-safe-pass-1');
@@ -65,6 +66,9 @@ async function launch(port){
     const state={version:5,lastTick:12345,savedAt:Date.now(),land:[],dragons:[],buildings:[],eggs:[],gold:123};
     const putA=await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookieA,'X-Dragon-Account':idA,'Content-Type':'application/json'},body:JSON.stringify(state)});
     assert.equal(putA.status,200);
+    assert.equal((await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookieA,
+      'X-Dragon-Account':idA,'Content-Type':'application/json'},
+      body:JSON.stringify({...state,version:11})})).status,200,'Save v11 được chấp nhận');
     assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:cookieB,'X-Dragon-Account':idB}})).json()),null);
     assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:cookieA,'X-Dragon-Account':idA}})).json()).gold,123);
     assert.equal((await fetch(base+'/data/profiles/'+idA+'.json')).status,403);

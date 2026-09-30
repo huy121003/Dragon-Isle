@@ -20,9 +20,9 @@ function ElementFlag({id,primary=false,size='sm'}){
     </svg></span>;
 }
 function SkillHex({element,locked=false}){
-  const e=game()?.data?.elements?.[element],color=e?.color||'#7f93a1';
-  return <span className={'skill-hex'+(locked?' locked':'')} style={{'--skill-color':color}} aria-label={e?.name||'Neutral'}>
-    {locked?'🔒':e?<svg viewBox="0 0 24 24" aria-hidden="true"><use href={'#flag-'+element}/></svg>:'⚔'}
+  const e=game()?.data?.elements?.[element],color=e?.color||'#bd7520';
+  return <span className={'skill-hex '+(e?'elemental':'neutral')+(locked?' locked':'')} style={{'--skill-color':color}} aria-label={e?.name||'Normal skill'}>
+    {e?<svg viewBox="0 0 24 24" aria-hidden="true"><use href={'#flag-'+element}/></svg>:'⚔'}{locked&&<i aria-label="Locked">🔒</i>}
   </span>;
 }
 function RarityGem({id,element}){
@@ -218,7 +218,8 @@ function Battle({arena}){
       <div className="battle-skill-grid">{skillOptions.map(skill=><Button key={skill.index} disabled={disabled||!skill.unlocked}
           className={'battle-skill '+(skill.unlocked?'':'locked')} onClick={()=>send({action:'arena-skill',skill:skill.index})}>
           <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>{skill.name}</span>
-          <small>{skill.unlocked?Math.round(skill.power*100)+'% Attack':'Unlocks at Lv'+skill.unlockLevel}</small></Button>)}</div>
+          <small>{skill.unlocked?(skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
+            Math.round(skill.power*100)+'% base attack'):'Unlocks at Lv'+skill.unlockLevel}</small></Button>)}</div>
       <b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
         <Button key={dragon.id} disabled={disabled} onClick={()=>send({action:'arena-switch',id:dragon.id})}>
           <Portrait dragon={dragon}/><span>{dragon.nickname}<small>{fmt.format(dragon.hp)} HP · {badges(dragon.species)}</small></span></Button>)}</div>

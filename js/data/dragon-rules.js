@@ -15,8 +15,7 @@ function mix(a, b, t) {
 /* LOGIC: Trọng số chỉ số và thứ tự hệ được áp dụng cho rồng lai. */
 const WEIGHTS = { 1: [1], 2: [0.6, 0.4], 3: [0.5, 0.3, 0.2], 4: [0.4, 0.3, 0.2, 0.1] };
 function typeMultiplier(attackElement, defenderElements) {
-  const w = WEIGHTS[Math.min(defenderElements.length, 4)];
-  return defenderElements.slice(0, 4).reduce((s, d, i) => s + TYPE_CHART[attackElement][d] * w[i], 0);
+  return TYPE_CHART[attackElement][defenderElements[0]];
 }
 
 function rarityOf(elements) {
@@ -45,7 +44,7 @@ function buildDragon(elements) {
 
   // --- Chỉ số gốc: pha theo trọng số 60/40, 50/30/20, ... ---
   const w = WEIGHTS[Math.min(els.length, 4)];
-  const chiSo = { hp: 0, tanCong: 0, phongThu: 0, tocDo: 0 };
+  const chiSo = { hp: 0, tanCong: 0, phongThu: 0 };
   E.forEach((e, i) => Object.keys(chiSo).forEach(k => { chiSo[k] += e.chiSo[k] * w[i]; }));
   Object.keys(chiSo).forEach(k => { chiSo[k] = Math.round(chiSo[k] * R.heSoChiSo * 10) / 10; });
 
@@ -108,15 +107,8 @@ function buildDragon(elements) {
    ============================================================ */
 // Chỉ số theo level (1-100); hệ và độ hiếm đã quyết định chiSo gốc.
 function getStats(dragon, level) {
-  level = Math.max(1, Math.min(100, level));
-  const g = 1 + 0.075 * (level - 1);
-  return {
-    hp: Math.round(dragon.chiSo.hp * 5 * (1 + 0.09 * (level - 1))),
-    tanCong: Math.round(dragon.chiSo.tanCong * g),
-    phongThu: Math.round(dragon.chiSo.phongThu * g),
-    tocDo: Math.round(dragon.chiSo.tocDo * (1 + 0.025 * (level - 1))),
-    chiMang: 0.10
-  };
+  const value=root.DragonCombat.stats(dragon.elements,dragon.doHiem,level,ELEMENTS,RARITY);
+  return {hp:value.hp,tanCong:value.attack,phongThu:value.defense,chiMang:0.10};
 }
 // XP cần để lên level kế
 function xpToNext(level) { return Math.round(40 * Math.pow(level, 1.5)); }

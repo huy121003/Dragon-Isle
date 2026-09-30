@@ -18,36 +18,26 @@ function skillUnlocked(dragon,skill){
   const species=DATA.species[dragon.species];
   return dragon.level>=skillUnlockLevel(species.detail.skillIds.indexOf(skill.id));
 }
-/* LOGIC: Element: đầu tiên là elements chủ đạo duy nhất used để tính khắc chế. */
-function primaryMultiplier(attackerSpecies,defenderSpecies){
-  return DRAGON_DATA.TYPE_CHART[attackerSpecies.elements[0]][defenderSpecies.elements[0]];
-}
 function speciesStats(species,level){
-  const raw=DRAGON_DATA.getStats(species.detail,level);
-  return {hp:raw.hp,attack:raw.tanCong,defense:raw.phongThu,speed:raw.tocDo};
+  return window.DragonCombat.stats(species.elements,species.rarity,level,DRAGON_DB.elements,DRAGON_DB.rarities);
 }
-function elementalBonus(skill,level,rarity){
-  return skill.element?Math.round(skill.bonus*(1+.1*(level-1))*DATA.rarities[rarity].statFactor):0;
+function elementalBonus(skill,level,species){
+  return skill.element?Math.round(speciesStats(species,level).attack*skill.bonus):0;
 }
 function skillPowerPreview(species,level,skill){
-  return Math.round(speciesStats(species,level).attack*skill.power+
-    elementalBonus(skill,level,species.rarity));
+  return Math.round(window.DragonCombat.skillPower(speciesStats(species,level).attack,skill));
 }
 function calculateSkillDamage(attacker,defender,skill,variance){
   if(!skillUnlocked(attacker,skill))return 0;
   const attackSpecies=DATA.species[attacker.species],defenseSpecies=DATA.species[defender.species];
-  const attack=speciesStats(attackSpecies,attacker.level).attack;
-  const defense=speciesStats(defenseSpecies,defender.level).defense;
-  const type=skill.element?primaryMultiplier(attackSpecies,defenseSpecies):1;
-  const roll=variance===undefined?1:clamp(variance,.9,1.1);
-  return Math.max(1,Math.round((attack*skill.power+
-    elementalBonus(skill,attacker.level,attackSpecies.rarity))*type*roll-defense*.5));
+  const actor=speciesStats(attackSpecies,attacker.level);
+  const target={...speciesStats(defenseSpecies,defender.level),parts:defenseSpecies.elements};
+  return window.DragonCombat.damage(actor,target,skill,DRAGON_DB.typeChart,variance);
 }
 function matchupFor(species){
   const primary=species.elements[0],strong=[],weak=[];
   Object.keys(DATA.elements).forEach(function(id){
-    if(id===primary)return;
-    if(DRAGON_DATA.TYPE_CHART[primary][id]>1)strong.push(id);
+    if(species.elements.some(function(e){return DRAGON_DATA.TYPE_CHART[e][id]>1;}))strong.push(id);
     if(DRAGON_DATA.TYPE_CHART[id][primary]>1)weak.push(id);
   });
   return {strong:strong,weak:weak};

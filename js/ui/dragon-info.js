@@ -51,9 +51,9 @@ function elementBadges(species,size='sm'){
 }
 function skillHex(skill,locked=false){
   const e=skill.element?DATA.elements[skill.element]:null;
-  const glyph=locked?'🔒':e?'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#flag-'+skill.element+'"/></svg>':'⚔';
-  return '<span class="skill-hex'+(locked?' locked':'')+'" style="--skill-color:'+(e?e.color:'#7f93a1')+'"'+
-    ' title="'+esc(e?e.name:'Neutral')+'">'+glyph+'</span>';
+  const glyph=e?'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#flag-'+skill.element+'"/></svg>':'⚔';
+  return '<span class="skill-hex '+(e?'elemental':'neutral')+(locked?' locked':'')+'" style="--skill-color:'+(e?e.color:'#bd7520')+'"'+
+    ' title="'+esc(e?e.name+' element skill':'Normal skill')+'">'+glyph+(locked?'<i aria-label="Locked">🔒</i>':'')+'</span>';
 }
 function matchupBadges(ids){
   return ids.length?ids.map(function(id){return elementFlag(id,false);}).join(''):
@@ -82,11 +82,12 @@ function dragonDetailHtml(species,dragon){
       return;
     }
     const element=skill.element?DATA.elements[skill.element]:null;
-    const extra=elementalBonus(skill,level,species.rarity);
+    const extra=elementalBonus(skill,level,species);
     html+='<div class="skill-card" style="--element:'+(element?element.color:'#8194a1')+'">'+
       skillHex(skill)+'<div><b>'+esc(skill.name)+'</b><small>'+ 
       (element?esc(element.name):'Neutral')+' · '+
-      Math.round(skill.power*100)+'% base attack'+(element?' + '+extra+' elemental damage':'')+
+      (element?'100% base attack + '+Math.round(skill.bonus*100)+'% elemental attack ('+extra+')':
+        Math.round(skill.power*100)+'% base attack')+
       '</small><strong>Attack preview '+money(skillPowerPreview(species,level,skill))+'</strong></div></div>';
   });
   html+='</div><div class="stat-grid"><div><span>🪙 Gold/min</span><b>'+goldPerMinute(gold)+'</b></div>'+
@@ -96,8 +97,8 @@ function dragonDetailHtml(species,dragon){
     '<small class="muted">Base attack at the shown level, before skill power. '+
     (dragon&&house&&!house.stored?'Actual gold at '+esc(buildingName(house)):
     'Base gold before happiness and Habitat bonuses')+'</small>'+
-    '<div class="matchup"><h4>Primary element matchups · '+elementFlag(species.elements[0],true)+'</h4><p>Strong against ×2: '+matchupBadges(matchup.strong)+
-    '</p><p>Weak against ×2: '+matchupBadges(matchup.weak)+'</p></div>'+
+    '<div class="matchup"><h4>Element matchups · '+elementFlag(species.elements[0],true)+'</h4><p>Can counter ×1.5: '+matchupBadges(matchup.strong)+
+    '</p><p>Primary weak to ×1.5: '+matchupBadges(matchup.weak)+'</p></div>'+
     '<p class="muted">'+esc(species.detail.hienTuong)+'</p>';
   if(dragon){
     const feedCost=dragonFeedCost(dragon.level);

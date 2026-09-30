@@ -35,8 +35,7 @@
       "chiSo": {
         "hp": 95,
         "tanCong": 120,
-        "phongThu": 80,
-        "tocDo": 105
+        "phongThu": 80
       },
       "moTa": "A fire dragon with the power of fire.",
       "noiTai": {
@@ -80,8 +79,7 @@
       "chiSo": {
         "hp": 110,
         "tanCong": 95,
-        "phongThu": 100,
-        "tocDo": 95
+        "phongThu": 100
       },
       "moTa": "A water dragon with the power of water.",
       "noiTai": {
@@ -125,8 +123,7 @@
       "chiSo": {
         "hp": 120,
         "tanCong": 90,
-        "phongThu": 120,
-        "tocDo": 70
+        "phongThu": 120
       },
       "moTa": "A earth dragon with the power of earth.",
       "noiTai": {
@@ -170,15 +167,14 @@
       "chiSo": {
         "hp": 90,
         "tanCong": 95,
-        "phongThu": 80,
-        "tocDo": 135
+        "phongThu": 80
       },
       "moTa": "A wind dragon with the power of wind.",
       "noiTai": {
-        "ten": "Swift Gale",
-        "moTa": "Increases speed.",
-        "chiSo": "tocDo",
-        "giaTri": 0.12
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1
       }
     },
     "ice": {
@@ -215,8 +211,7 @@
       "chiSo": {
         "hp": 100,
         "tanCong": 105,
-        "phongThu": 95,
-        "tocDo": 100
+        "phongThu": 95
       },
       "moTa": "A ice dragon with the power of ice.",
       "noiTai": {
@@ -260,8 +255,7 @@
       "chiSo": {
         "hp": 90,
         "tanCong": 115,
-        "phongThu": 80,
-        "tocDo": 115
+        "phongThu": 80
       },
       "moTa": "A thunder dragon with the power of thunder.",
       "noiTai": {
@@ -305,8 +299,7 @@
       "chiSo": {
         "hp": 115,
         "tanCong": 90,
-        "phongThu": 105,
-        "tocDo": 90
+        "phongThu": 105
       },
       "moTa": "A nature dragon with the power of nature.",
       "noiTai": {
@@ -350,8 +343,7 @@
       "chiSo": {
         "hp": 100,
         "tanCong": 115,
-        "phongThu": 90,
-        "tocDo": 95
+        "phongThu": 90
       },
       "moTa": "A dark dragon with the power of dark.",
       "noiTai": {
@@ -395,8 +387,7 @@
       "chiSo": {
         "hp": 105,
         "tanCong": 100,
-        "phongThu": 100,
-        "tocDo": 95
+        "phongThu": 100
       },
       "moTa": "A light dragon with the power of light.",
       "noiTai": {
@@ -440,8 +431,7 @@
       "chiSo": {
         "hp": 105,
         "tanCong": 105,
-        "phongThu": 130,
-        "tocDo": 70
+        "phongThu": 130
       },
       "moTa": "A metal dragon with the power of metal.",
       "noiTai": {
@@ -455,83 +445,83 @@
   "typeChart": {
     "fire": {
       "fire": 1,
-      "water": 0.5,
-      "earth": 0.5,
+      "water": 0.75,
+      "earth": 0.75,
       "wind": 1,
-      "ice": 2,
+      "ice": 1.5,
       "thunder": 1,
-      "nature": 2,
+      "nature": 1.5,
       "dark": 1,
       "light": 1,
-      "metal": 2
+      "metal": 1
     },
     "water": {
-      "fire": 2,
+      "fire": 1.5,
       "water": 1,
-      "earth": 2,
+      "earth": 1,
       "wind": 1,
-      "ice": 0.5,
-      "thunder": 0.5,
-      "nature": 0.5,
+      "ice": 0.75,
+      "thunder": 0.75,
+      "nature": 1,
       "dark": 1,
       "light": 1,
-      "metal": 2
+      "metal": 1.5
     },
     "earth": {
-      "fire": 2,
-      "water": 0.5,
+      "fire": 1.5,
+      "water": 1,
       "earth": 1,
-      "wind": 0.5,
+      "wind": 0.75,
       "ice": 1,
-      "thunder": 2,
-      "nature": 0.5,
-      "dark": 2,
+      "thunder": 1,
+      "nature": 0.75,
+      "dark": 1.5,
       "light": 1,
       "metal": 1
     },
     "wind": {
       "fire": 1,
       "water": 1,
-      "earth": 2,
+      "earth": 1.5,
       "wind": 1,
-      "ice": 0.5,
-      "thunder": 0.5,
-      "nature": 2,
-      "dark": 2,
-      "light": 0.5,
+      "ice": 1,
+      "thunder": 0.75,
+      "nature": 1,
+      "dark": 1.5,
+      "light": 0.75,
       "metal": 1
     },
     "ice": {
-      "fire": 0.5,
-      "water": 2,
+      "fire": 0.75,
+      "water": 1.5,
       "earth": 1,
-      "wind": 2,
+      "wind": 1,
       "ice": 1,
       "thunder": 1,
-      "nature": 2,
-      "dark": 0.5,
+      "nature": 1.5,
+      "dark": 1,
       "light": 1,
-      "metal": 0.5
+      "metal": 0.75
     },
     "thunder": {
       "fire": 1,
-      "water": 2,
-      "earth": 0.5,
-      "wind": 2,
+      "water": 1.5,
+      "earth": 1,
+      "wind": 1.5,
       "ice": 1,
       "thunder": 1,
-      "nature": 0.5,
+      "nature": 0.75,
       "dark": 1,
-      "light": 0.5,
-      "metal": 2
+      "light": 0.75,
+      "metal": 1
     },
     "nature": {
-      "fire": 0.5,
-      "water": 2,
-      "earth": 2,
-      "wind": 0.5,
-      "ice": 0.5,
-      "thunder": 2,
+      "fire": 0.75,
+      "water": 1,
+      "earth": 1.5,
+      "wind": 1,
+      "ice": 0.75,
+      "thunder": 1.5,
       "nature": 1,
       "dark": 1,
       "light": 1,
@@ -540,37 +530,37 @@
     "dark": {
       "fire": 1,
       "water": 1,
-      "earth": 0.5,
-      "wind": 0.5,
-      "ice": 2,
+      "earth": 0.75,
+      "wind": 0.75,
+      "ice": 1,
       "thunder": 1,
       "nature": 1,
       "dark": 1,
-      "light": 2,
-      "metal": 2
+      "light": 1.5,
+      "metal": 1.5
     },
     "light": {
       "fire": 1,
       "water": 1,
       "earth": 1,
-      "wind": 2,
+      "wind": 1.5,
       "ice": 1,
-      "thunder": 2,
+      "thunder": 1.5,
       "nature": 1,
-      "dark": 2,
+      "dark": 0.75,
       "light": 1,
-      "metal": 0.5
+      "metal": 0.75
     },
     "metal": {
-      "fire": 0.5,
-      "water": 0.5,
+      "fire": 1,
+      "water": 0.75,
       "earth": 1,
       "wind": 1,
-      "ice": 2,
-      "thunder": 0.5,
+      "ice": 1.5,
+      "thunder": 1,
       "nature": 1,
-      "dark": 0.5,
-      "light": 2,
+      "dark": 0.75,
+      "light": 1.5,
       "metal": 1
     }
   },
@@ -1244,8 +1234,7 @@
       "chiSo": {
         "hp": 95,
         "tanCong": 120,
-        "phongThu": 80,
-        "tocDo": 105
+        "phongThu": 80
       },
       "mau": {
         "than": "#E8452C",
@@ -1325,8 +1314,7 @@
       "chiSo": {
         "hp": 110,
         "tanCong": 95,
-        "phongThu": 100,
-        "tocDo": 95
+        "phongThu": 100
       },
       "mau": {
         "than": "#2F8FE8",
@@ -1406,8 +1394,7 @@
       "chiSo": {
         "hp": 120,
         "tanCong": 90,
-        "phongThu": 120,
-        "tocDo": 70
+        "phongThu": 120
       },
       "mau": {
         "than": "#A86B3C",
@@ -1487,8 +1474,7 @@
       "chiSo": {
         "hp": 90,
         "tanCong": 95,
-        "phongThu": 80,
-        "tocDo": 135
+        "phongThu": 80
       },
       "mau": {
         "than": "#5FD3B0",
@@ -1529,10 +1515,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         }
       ],
@@ -1568,8 +1554,7 @@
       "chiSo": {
         "hp": 100,
         "tanCong": 105,
-        "phongThu": 95,
-        "tocDo": 100
+        "phongThu": 95
       },
       "mau": {
         "than": "#8FD9F5",
@@ -1649,8 +1634,7 @@
       "chiSo": {
         "hp": 90,
         "tanCong": 115,
-        "phongThu": 80,
-        "tocDo": 115
+        "phongThu": 80
       },
       "mau": {
         "than": "#F5C518",
@@ -1730,8 +1714,7 @@
       "chiSo": {
         "hp": 115,
         "tanCong": 90,
-        "phongThu": 105,
-        "tocDo": 90
+        "phongThu": 105
       },
       "mau": {
         "than": "#4CAF50",
@@ -1811,8 +1794,7 @@
       "chiSo": {
         "hp": 100,
         "tanCong": 115,
-        "phongThu": 90,
-        "tocDo": 95
+        "phongThu": 90
       },
       "mau": {
         "than": "#4B3570",
@@ -1892,8 +1874,7 @@
       "chiSo": {
         "hp": 105,
         "tanCong": 100,
-        "phongThu": 100,
-        "tocDo": 95
+        "phongThu": 100
       },
       "mau": {
         "than": "#FFF1A8",
@@ -1973,8 +1954,7 @@
       "chiSo": {
         "hp": 105,
         "tanCong": 105,
-        "phongThu": 130,
-        "tocDo": 70
+        "phongThu": 130
       },
       "mau": {
         "than": "#8C97A6",
@@ -2057,8 +2037,7 @@
       "chiSo": {
         "hp": 116.2,
         "tanCong": 126.5,
-        "phongThu": 101.2,
-        "tocDo": 116.2
+        "phongThu": 101.2
       },
       "mau": {
         "than": "#d24e43",
@@ -2158,8 +2137,7 @@
       "chiSo": {
         "hp": 120.7,
         "tanCong": 124.2,
-        "phongThu": 110.4,
-        "tocDo": 104.7
+        "phongThu": 110.4
       },
       "mau": {
         "than": "#e04a2e",
@@ -2259,8 +2237,7 @@
       "chiSo": {
         "hp": 107,
         "tanCong": 126.5,
-        "phongThu": 92,
-        "tocDo": 134.5
+        "phongThu": 92
       },
       "mau": {
         "than": "#d8563c",
@@ -2318,10 +2295,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -2360,8 +2337,7 @@
       "chiSo": {
         "hp": 111.6,
         "tanCong": 131.1,
-        "phongThu": 98.9,
-        "tocDo": 118.5
+        "phongThu": 98.9
       },
       "mau": {
         "than": "#dd5744",
@@ -2461,8 +2437,7 @@
       "chiSo": {
         "hp": 107,
         "tanCong": 135.7,
-        "phongThu": 92,
-        "tocDo": 125.4
+        "phongThu": 92
       },
       "mau": {
         "than": "#ea542a",
@@ -2562,8 +2537,7 @@
       "chiSo": {
         "hp": 118.5,
         "tanCong": 124.2,
-        "phongThu": 103.5,
-        "tocDo": 113.9
+        "phongThu": 103.5
       },
       "mau": {
         "than": "#d55230",
@@ -2663,8 +2637,7 @@
       "chiSo": {
         "hp": 126.1,
         "tanCong": 153.4,
-        "phongThu": 109.2,
-        "tocDo": 131.3
+        "phongThu": 109.2
       },
       "mau": {
         "than": "#d54334",
@@ -2764,8 +2737,7 @@
       "chiSo": {
         "hp": 128.7,
         "tanCong": 145.6,
-        "phongThu": 114.4,
-        "tocDo": 131.3
+        "phongThu": 114.4
       },
       "mau": {
         "than": "#eb5a3b",
@@ -2865,8 +2837,7 @@
       "chiSo": {
         "hp": 128.7,
         "tanCong": 148.2,
-        "phongThu": 130,
-        "tocDo": 118.3
+        "phongThu": 130
       },
       "mau": {
         "than": "#dd4f3b",
@@ -2966,8 +2937,7 @@
       "chiSo": {
         "hp": 119.6,
         "tanCong": 120.7,
-        "phongThu": 105.8,
-        "tocDo": 113.9
+        "phongThu": 105.8
       },
       "mau": {
         "than": "#4586d1",
@@ -3067,8 +3037,7 @@
       "chiSo": {
         "hp": 131.1,
         "tanCong": 107,
-        "phongThu": 124.2,
-        "tocDo": 97.7
+        "phongThu": 124.2
       },
       "mau": {
         "than": "#3e8bd3",
@@ -3168,8 +3137,7 @@
       "chiSo": {
         "hp": 117.3,
         "tanCong": 109.2,
-        "phongThu": 105.8,
-        "tocDo": 127.7
+        "phongThu": 105.8
       },
       "mau": {
         "than": "#3597e1",
@@ -3227,10 +3195,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -3269,8 +3237,7 @@
       "chiSo": {
         "hp": 121.9,
         "tanCong": 113.9,
-        "phongThu": 112.7,
-        "tocDo": 111.6
+        "phongThu": 112.7
       },
       "mau": {
         "than": "#3b98ea",
@@ -3370,8 +3337,7 @@
       "chiSo": {
         "hp": 117.3,
         "tanCong": 118.5,
-        "phongThu": 105.8,
-        "tocDo": 118.5
+        "phongThu": 105.8
       },
       "mau": {
         "than": "#4795cf",
@@ -3471,8 +3437,7 @@
       "chiSo": {
         "hp": 128.8,
         "tanCong": 107,
-        "phongThu": 117.3,
-        "tocDo": 107
+        "phongThu": 117.3
       },
       "mau": {
         "than": "#3293d6",
@@ -3572,8 +3537,7 @@
       "chiSo": {
         "hp": 137.8,
         "tanCong": 133.9,
-        "phongThu": 124.8,
-        "tocDo": 123.5
+        "phongThu": 124.8
       },
       "mau": {
         "than": "#3284da",
@@ -3673,8 +3637,7 @@
       "chiSo": {
         "hp": 140.4,
         "tanCong": 126.1,
-        "phongThu": 130,
-        "tocDo": 123.5
+        "phongThu": 130
       },
       "mau": {
         "than": "#489be0",
@@ -3774,8 +3737,7 @@
       "chiSo": {
         "hp": 140.4,
         "tanCong": 128.7,
-        "phongThu": 145.6,
-        "tocDo": 110.5
+        "phongThu": 145.6
       },
       "mau": {
         "than": "#3a90e0",
@@ -3875,8 +3837,7 @@
       "chiSo": {
         "hp": 126.5,
         "tanCong": 117.3,
-        "phongThu": 119.6,
-        "tocDo": 96.6
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#b0663a",
@@ -3976,8 +3937,7 @@
       "chiSo": {
         "hp": 133.4,
         "tanCong": 105.8,
-        "phongThu": 128.8,
-        "tocDo": 92
+        "phongThu": 128.8
       },
       "mau": {
         "than": "#996f51",
@@ -4077,8 +4037,7 @@
       "chiSo": {
         "hp": 124.2,
         "tanCong": 105.8,
-        "phongThu": 119.6,
-        "tocDo": 110.4
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#9f774a",
@@ -4136,10 +4095,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -4178,8 +4137,7 @@
       "chiSo": {
         "hp": 128.8,
         "tanCong": 110.4,
-        "phongThu": 126.5,
-        "tocDo": 94.3
+        "phongThu": 126.5
       },
       "mau": {
         "than": "#a57852",
@@ -4279,8 +4237,7 @@
       "chiSo": {
         "hp": 124.2,
         "tanCong": 115,
-        "phongThu": 119.6,
-        "tocDo": 101.2
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#b17638",
@@ -4380,8 +4337,7 @@
       "chiSo": {
         "hp": 135.7,
         "tanCong": 103.5,
-        "phongThu": 131.1,
-        "tocDo": 89.7
+        "phongThu": 131.1
       },
       "mau": {
         "than": "#9d733e",
@@ -4481,8 +4437,7 @@
       "chiSo": {
         "hp": 145.6,
         "tanCong": 130,
-        "phongThu": 140.4,
-        "tocDo": 104
+        "phongThu": 140.4
       },
       "mau": {
         "than": "#9d6542",
@@ -4582,8 +4537,7 @@
       "chiSo": {
         "hp": 148.2,
         "tanCong": 122.2,
-        "phongThu": 145.6,
-        "tocDo": 104
+        "phongThu": 145.6
       },
       "mau": {
         "than": "#b27b49",
@@ -4683,8 +4637,7 @@
       "chiSo": {
         "hp": 148.2,
         "tanCong": 124.8,
-        "phongThu": 161.2,
-        "tocDo": 91
+        "phongThu": 161.2
       },
       "mau": {
         "than": "#a57049",
@@ -4784,8 +4737,7 @@
       "chiSo": {
         "hp": 105.8,
         "tanCong": 120.7,
-        "phongThu": 92,
-        "tocDo": 141.5
+        "phongThu": 92
       },
       "mau": {
         "than": "#6fc2a0",
@@ -4836,10 +4788,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -4885,8 +4837,7 @@
       "chiSo": {
         "hp": 112.7,
         "tanCong": 109.2,
-        "phongThu": 101.2,
-        "tocDo": 136.9
+        "phongThu": 101.2
       },
       "mau": {
         "than": "#59cbb7",
@@ -4937,10 +4888,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -4986,8 +4937,7 @@
       "chiSo": {
         "hp": 117.3,
         "tanCong": 107,
-        "phongThu": 110.4,
-        "tocDo": 125.4
+        "phongThu": 110.4
       },
       "mau": {
         "than": "#68c7a2",
@@ -5038,10 +4988,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5087,8 +5037,7 @@
       "chiSo": {
         "hp": 108.1,
         "tanCong": 113.9,
-        "phongThu": 98.9,
-        "tocDo": 139.1
+        "phongThu": 98.9
       },
       "mau": {
         "than": "#65d4b8",
@@ -5139,10 +5088,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5188,8 +5137,7 @@
       "chiSo": {
         "hp": 103.5,
         "tanCong": 118.5,
-        "phongThu": 92,
-        "tocDo": 146
+        "phongThu": 92
       },
       "mau": {
         "than": "#71d19e",
@@ -5240,10 +5188,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5289,8 +5237,7 @@
       "chiSo": {
         "hp": 115,
         "tanCong": 107,
-        "phongThu": 103.5,
-        "tocDo": 134.5
+        "phongThu": 103.5
       },
       "mau": {
         "than": "#5dcfa4",
@@ -5341,10 +5288,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5390,8 +5337,7 @@
       "chiSo": {
         "hp": 122.2,
         "tanCong": 133.9,
-        "phongThu": 109.2,
-        "tocDo": 154.7
+        "phongThu": 109.2
       },
       "mau": {
         "than": "#5dc0a8",
@@ -5442,10 +5388,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5491,8 +5437,7 @@
       "chiSo": {
         "hp": 124.8,
         "tanCong": 126.1,
-        "phongThu": 114.4,
-        "tocDo": 154.7
+        "phongThu": 114.4
       },
       "mau": {
         "than": "#72d7af",
@@ -5543,10 +5488,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5592,8 +5537,7 @@
       "chiSo": {
         "hp": 124.8,
         "tanCong": 128.7,
-        "phongThu": 130,
-        "tocDo": 141.7
+        "phongThu": 130
       },
       "mau": {
         "than": "#64ccaf",
@@ -5644,10 +5588,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -5693,8 +5637,7 @@
       "chiSo": {
         "hp": 112.7,
         "tanCong": 127.7,
-        "phongThu": 102.4,
-        "tocDo": 117.3
+        "phongThu": 102.4
       },
       "mau": {
         "than": "#9ac7dd",
@@ -5794,8 +5737,7 @@
       "chiSo": {
         "hp": 119.6,
         "tanCong": 116.2,
-        "phongThu": 111.6,
-        "tocDo": 112.7
+        "phongThu": 111.6
       },
       "mau": {
         "than": "#83d0f3",
@@ -5895,8 +5837,7 @@
       "chiSo": {
         "hp": 124.2,
         "tanCong": 113.9,
-        "phongThu": 120.7,
-        "tocDo": 101.2
+        "phongThu": 120.7
       },
       "mau": {
         "than": "#92ccdf",
@@ -5996,8 +5937,7 @@
       "chiSo": {
         "hp": 110.4,
         "tanCong": 116.2,
-        "phongThu": 102.4,
-        "tocDo": 131.1
+        "phongThu": 102.4
       },
       "mau": {
         "than": "#89d8ed",
@@ -6055,10 +5995,10 @@
           "tuHe": "ice"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -6097,8 +6037,7 @@
       "chiSo": {
         "hp": 110.4,
         "tanCong": 125.4,
-        "phongThu": 102.4,
-        "tocDo": 121.9
+        "phongThu": 102.4
       },
       "mau": {
         "than": "#9bd7da",
@@ -6198,8 +6137,7 @@
       "chiSo": {
         "hp": 121.9,
         "tanCong": 113.9,
-        "phongThu": 113.9,
-        "tocDo": 110.4
+        "phongThu": 113.9
       },
       "mau": {
         "than": "#87d4e1",
@@ -6299,8 +6237,7 @@
       "chiSo": {
         "hp": 130,
         "tanCong": 141.7,
-        "phongThu": 120.9,
-        "tocDo": 127.4
+        "phongThu": 120.9
       },
       "mau": {
         "than": "#87c5e5",
@@ -6400,8 +6337,7 @@
       "chiSo": {
         "hp": 132.6,
         "tanCong": 133.9,
-        "phongThu": 126.1,
-        "tocDo": 127.4
+        "phongThu": 126.1
       },
       "mau": {
         "than": "#9cdcec",
@@ -6501,8 +6437,7 @@
       "chiSo": {
         "hp": 132.6,
         "tanCong": 136.5,
-        "phongThu": 141.7,
-        "tocDo": 114.4
+        "phongThu": 141.7
       },
       "mau": {
         "than": "#8fd1ec",
@@ -6602,8 +6537,7 @@
       "chiSo": {
         "hp": 105.8,
         "tanCong": 134.5,
-        "phongThu": 92,
-        "tocDo": 127.7
+        "phongThu": 92
       },
       "mau": {
         "than": "#f3b61a",
@@ -6703,8 +6637,7 @@
       "chiSo": {
         "hp": 112.7,
         "tanCong": 123.1,
-        "phongThu": 101.2,
-        "tocDo": 123.1
+        "phongThu": 101.2
       },
       "mau": {
         "than": "#ddbf31",
@@ -6804,8 +6737,7 @@
       "chiSo": {
         "hp": 117.3,
         "tanCong": 120.7,
-        "phongThu": 110.4,
-        "tocDo": 111.6
+        "phongThu": 110.4
       },
       "mau": {
         "than": "#ecba1c",
@@ -6905,8 +6837,7 @@
       "chiSo": {
         "hp": 103.5,
         "tanCong": 123.1,
-        "phongThu": 92,
-        "tocDo": 141.5
+        "phongThu": 92
       },
       "mau": {
         "than": "#e3c72a",
@@ -6964,10 +6895,10 @@
           "tuHe": "thunder"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -7006,8 +6937,7 @@
       "chiSo": {
         "hp": 108.1,
         "tanCong": 127.7,
-        "phongThu": 98.9,
-        "tocDo": 125.4
+        "phongThu": 98.9
       },
       "mau": {
         "than": "#e9c733",
@@ -7107,8 +7037,7 @@
       "chiSo": {
         "hp": 115,
         "tanCong": 120.7,
-        "phongThu": 103.5,
-        "tocDo": 120.7
+        "phongThu": 103.5
       },
       "mau": {
         "than": "#e1c21f",
@@ -7208,8 +7137,7 @@
       "chiSo": {
         "hp": 122.2,
         "tanCong": 149.5,
-        "phongThu": 109.2,
-        "tocDo": 139.1
+        "phongThu": 109.2
       },
       "mau": {
         "than": "#e1b423",
@@ -7309,8 +7237,7 @@
       "chiSo": {
         "hp": 124.8,
         "tanCong": 141.7,
-        "phongThu": 114.4,
-        "tocDo": 139.1
+        "phongThu": 114.4
       },
       "mau": {
         "than": "#f6ca29",
@@ -7410,8 +7337,7 @@
       "chiSo": {
         "hp": 124.8,
         "tanCong": 144.3,
-        "phongThu": 130,
-        "tocDo": 126.1
+        "phongThu": 130
       },
       "mau": {
         "than": "#e8bf29",
@@ -7511,8 +7437,7 @@
       "chiSo": {
         "hp": 123.1,
         "tanCong": 117.3,
-        "phongThu": 109.2,
-        "tocDo": 110.4
+        "phongThu": 109.2
       },
       "mau": {
         "than": "#5fa24c",
@@ -7612,8 +7537,7 @@
       "chiSo": {
         "hp": 130,
         "tanCong": 105.8,
-        "phongThu": 118.5,
-        "tocDo": 105.8
+        "phongThu": 118.5
       },
       "mau": {
         "than": "#49ab62",
@@ -7713,8 +7637,7 @@
       "chiSo": {
         "hp": 134.5,
         "tanCong": 103.5,
-        "phongThu": 127.7,
-        "tocDo": 94.3
+        "phongThu": 127.7
       },
       "mau": {
         "than": "#57a74e",
@@ -7814,8 +7737,7 @@
       "chiSo": {
         "hp": 120.7,
         "tanCong": 105.8,
-        "phongThu": 109.2,
-        "tocDo": 124.2
+        "phongThu": 109.2
       },
       "mau": {
         "than": "#4eb35c",
@@ -7873,10 +7795,10 @@
           "tuHe": "nature"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -7915,8 +7837,7 @@
       "chiSo": {
         "hp": 125.4,
         "tanCong": 110.4,
-        "phongThu": 116.2,
-        "tocDo": 108.1
+        "phongThu": 116.2
       },
       "mau": {
         "than": "#54b464",
@@ -8016,8 +7937,7 @@
       "chiSo": {
         "hp": 120.7,
         "tanCong": 115,
-        "phongThu": 109.2,
-        "tocDo": 115
+        "phongThu": 109.2
       },
       "mau": {
         "than": "#60b249",
@@ -8117,8 +8037,7 @@
       "chiSo": {
         "hp": 141.7,
         "tanCong": 130,
-        "phongThu": 128.7,
-        "tocDo": 119.6
+        "phongThu": 128.7
       },
       "mau": {
         "than": "#4ca054",
@@ -8218,8 +8137,7 @@
       "chiSo": {
         "hp": 144.3,
         "tanCong": 122.2,
-        "phongThu": 133.9,
-        "tocDo": 119.6
+        "phongThu": 133.9
       },
       "mau": {
         "than": "#61b75b",
@@ -8319,8 +8237,7 @@
       "chiSo": {
         "hp": 144.3,
         "tanCong": 124.8,
-        "phongThu": 149.5,
-        "tocDo": 106.6
+        "phongThu": 149.5
       },
       "mau": {
         "than": "#54ac5a",
@@ -8420,8 +8337,7 @@
       "chiSo": {
         "hp": 127.4,
         "tanCong": 152.1,
-        "phongThu": 111.8,
-        "tocDo": 128.7
+        "phongThu": 111.8
       },
       "mau": {
         "than": "#5e3768",
@@ -8521,8 +8437,7 @@
       "chiSo": {
         "hp": 135.2,
         "tanCong": 139.1,
-        "phongThu": 122.2,
-        "tocDo": 123.5
+        "phongThu": 122.2
       },
       "mau": {
         "than": "#48407e",
@@ -8622,8 +8537,7 @@
       "chiSo": {
         "hp": 140.4,
         "tanCong": 136.5,
-        "phongThu": 132.6,
-        "tocDo": 110.5
+        "phongThu": 132.6
       },
       "mau": {
         "than": "#563b6a",
@@ -8723,8 +8637,7 @@
       "chiSo": {
         "hp": 124.8,
         "tanCong": 139.1,
-        "phongThu": 111.8,
-        "tocDo": 144.3
+        "phongThu": 111.8
       },
       "mau": {
         "than": "#4d4878",
@@ -8782,10 +8695,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -8824,8 +8737,7 @@
       "chiSo": {
         "hp": 130,
         "tanCong": 144.3,
-        "phongThu": 119.6,
-        "tocDo": 126.1
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#534980",
@@ -8925,8 +8837,7 @@
       "chiSo": {
         "hp": 124.8,
         "tanCong": 149.5,
-        "phongThu": 111.8,
-        "tocDo": 133.9
+        "phongThu": 111.8
       },
       "mau": {
         "than": "#5f4665",
@@ -9026,8 +8937,7 @@
       "chiSo": {
         "hp": 137.8,
         "tanCong": 136.5,
-        "phongThu": 124.8,
-        "tocDo": 120.9
+        "phongThu": 124.8
       },
       "mau": {
         "than": "#4b446c",
@@ -9127,8 +9037,7 @@
       "chiSo": {
         "hp": 132.6,
         "tanCong": 141.7,
-        "phongThu": 122.2,
-        "tocDo": 123.5
+        "phongThu": 122.2
       },
       "mau": {
         "than": "#614c77",
@@ -9228,8 +9137,7 @@
       "chiSo": {
         "hp": 132.6,
         "tanCong": 144.3,
-        "phongThu": 137.8,
-        "tocDo": 110.5
+        "phongThu": 137.8
       },
       "mau": {
         "than": "#534176",
@@ -9329,8 +9237,7 @@
       "chiSo": {
         "hp": 131.3,
         "tanCong": 140.4,
-        "phongThu": 119.6,
-        "tocDo": 128.7
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#fcdc99",
@@ -9430,8 +9337,7 @@
       "chiSo": {
         "hp": 139.1,
         "tanCong": 127.4,
-        "phongThu": 130,
-        "tocDo": 123.5
+        "phongThu": 130
       },
       "mau": {
         "than": "#e6e5b0",
@@ -9531,8 +9437,7 @@
       "chiSo": {
         "hp": 144.3,
         "tanCong": 124.8,
-        "phongThu": 140.4,
-        "tocDo": 110.5
+        "phongThu": 140.4
       },
       "mau": {
         "than": "#f5e19b",
@@ -9632,8 +9537,7 @@
       "chiSo": {
         "hp": 128.7,
         "tanCong": 127.4,
-        "phongThu": 119.6,
-        "tocDo": 144.3
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#eceda9",
@@ -9691,10 +9595,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -9733,8 +9637,7 @@
       "chiSo": {
         "hp": 133.9,
         "tanCong": 132.6,
-        "phongThu": 127.4,
-        "tocDo": 126.1
+        "phongThu": 127.4
       },
       "mau": {
         "than": "#f2eeb1",
@@ -9834,8 +9737,7 @@
       "chiSo": {
         "hp": 128.7,
         "tanCong": 137.8,
-        "phongThu": 119.6,
-        "tocDo": 133.9
+        "phongThu": 119.6
       },
       "mau": {
         "than": "#feec97",
@@ -9935,8 +9837,7 @@
       "chiSo": {
         "hp": 141.7,
         "tanCong": 124.8,
-        "phongThu": 132.6,
-        "tocDo": 120.9
+        "phongThu": 132.6
       },
       "mau": {
         "than": "#eae99d",
@@ -10036,8 +9937,7 @@
       "chiSo": {
         "hp": 133.9,
         "tanCong": 137.8,
-        "phongThu": 124.8,
-        "tocDo": 123.5
+        "phongThu": 124.8
       },
       "mau": {
         "than": "#e9daa1",
@@ -10137,8 +10037,7 @@
       "chiSo": {
         "hp": 136.5,
         "tanCong": 132.6,
-        "phongThu": 145.6,
-        "tocDo": 110.5
+        "phongThu": 145.6
       },
       "mau": {
         "than": "#f1e6a8",
@@ -10238,8 +10137,7 @@
       "chiSo": {
         "hp": 131.3,
         "tanCong": 144.3,
-        "phongThu": 143,
-        "tocDo": 109.2
+        "phongThu": 143
       },
       "mau": {
         "than": "#978d97",
@@ -10339,8 +10237,7 @@
       "chiSo": {
         "hp": 139.1,
         "tanCong": 131.3,
-        "phongThu": 153.4,
-        "tocDo": 104
+        "phongThu": 153.4
       },
       "mau": {
         "than": "#8196ae",
@@ -10440,8 +10337,7 @@
       "chiSo": {
         "hp": 144.3,
         "tanCong": 128.7,
-        "phongThu": 163.8,
-        "tocDo": 91
+        "phongThu": 163.8
       },
       "mau": {
         "than": "#8f9299",
@@ -10541,8 +10437,7 @@
       "chiSo": {
         "hp": 128.7,
         "tanCong": 131.3,
-        "phongThu": 143,
-        "tocDo": 124.8
+        "phongThu": 143
       },
       "mau": {
         "than": "#879ea7",
@@ -10600,10 +10495,10 @@
           "tuHe": "metal"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         }
       ],
@@ -10642,8 +10537,7 @@
       "chiSo": {
         "hp": 133.9,
         "tanCong": 136.5,
-        "phongThu": 150.8,
-        "tocDo": 106.6
+        "phongThu": 150.8
       },
       "mau": {
         "than": "#8c9faf",
@@ -10743,8 +10637,7 @@
       "chiSo": {
         "hp": 128.7,
         "tanCong": 141.7,
-        "phongThu": 143,
-        "tocDo": 114.4
+        "phongThu": 143
       },
       "mau": {
         "than": "#999d95",
@@ -10844,8 +10737,7 @@
       "chiSo": {
         "hp": 141.7,
         "tanCong": 128.7,
-        "phongThu": 156,
-        "tocDo": 101.4
+        "phongThu": 156
       },
       "mau": {
         "than": "#849a9c",
@@ -10945,8 +10837,7 @@
       "chiSo": {
         "hp": 133.9,
         "tanCong": 141.7,
-        "phongThu": 148.2,
-        "tocDo": 104
+        "phongThu": 148.2
       },
       "mau": {
         "than": "#848ba0",
@@ -11046,8 +10937,7 @@
       "chiSo": {
         "hp": 136.5,
         "tanCong": 133.9,
-        "phongThu": 153.4,
-        "tocDo": 104
+        "phongThu": 153.4
       },
       "mau": {
         "than": "#9aa2a6",
@@ -11149,8 +11039,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 159.8,
-        "phongThu": 141,
-        "tocDo": 142.5
+        "phongThu": 141
       },
       "mau": {
         "than": "#d24e43",
@@ -11269,8 +11158,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 161.3,
-        "phongThu": 129,
-        "tocDo": 162
+        "phongThu": 129
       },
       "mau": {
         "than": "#d24e43",
@@ -11345,10 +11233,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -11389,8 +11277,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 164.3,
-        "phongThu": 133.5,
-        "tocDo": 151.5
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#d24e43",
@@ -11509,8 +11396,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 167.3,
-        "phongThu": 129,
-        "tocDo": 156
+        "phongThu": 129
       },
       "mau": {
         "than": "#d24e43",
@@ -11629,8 +11515,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 159.8,
-        "phongThu": 136.5,
-        "tocDo": 148.5
+        "phongThu": 136.5
       },
       "mau": {
         "than": "#d24e43",
@@ -11749,8 +11634,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 167.3,
-        "phongThu": 132,
-        "tocDo": 150
+        "phongThu": 132
       },
       "mau": {
         "than": "#d24e43",
@@ -11869,8 +11753,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 162.8,
-        "phongThu": 135,
-        "tocDo": 150
+        "phongThu": 135
       },
       "mau": {
         "than": "#d24e43",
@@ -11989,8 +11872,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 164.3,
-        "phongThu": 144,
-        "tocDo": 142.5
+        "phongThu": 144
       },
       "mau": {
         "than": "#d24e43",
@@ -12109,8 +11991,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 159,
-        "phongThu": 138,
-        "tocDo": 150.8
+        "phongThu": 138
       },
       "mau": {
         "than": "#e04a2e",
@@ -12191,10 +12072,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -12229,8 +12110,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 162,
-        "phongThu": 142.5,
-        "tocDo": 140.3
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#e04a2e",
@@ -12349,8 +12229,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 165,
-        "phongThu": 138,
-        "tocDo": 144.8
+        "phongThu": 138
       },
       "mau": {
         "than": "#e04a2e",
@@ -12469,8 +12348,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 157.5,
-        "phongThu": 145.5,
-        "tocDo": 137.3
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#e04a2e",
@@ -12589,8 +12467,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 165,
-        "phongThu": 141,
-        "tocDo": 138.8
+        "phongThu": 141
       },
       "mau": {
         "than": "#e04a2e",
@@ -12709,8 +12586,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 160.5,
-        "phongThu": 144,
-        "tocDo": 138.8
+        "phongThu": 144
       },
       "mau": {
         "than": "#e04a2e",
@@ -12829,8 +12705,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 162,
-        "phongThu": 153,
-        "tocDo": 131.3
+        "phongThu": 153
       },
       "mau": {
         "than": "#e04a2e",
@@ -12949,8 +12824,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 164.3,
-        "phongThu": 124.5,
-        "tocDo": 169.5
+        "phongThu": 124.5
       },
       "mau": {
         "than": "#d8563c",
@@ -13024,10 +12898,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -13069,8 +12943,7 @@
       "chiSo": {
         "hp": 138.8,
         "tanCong": 167.3,
-        "phongThu": 120,
-        "tocDo": 174
+        "phongThu": 120
       },
       "mau": {
         "than": "#d8563c",
@@ -13144,10 +13017,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -13189,8 +13062,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 159.8,
-        "phongThu": 127.5,
-        "tocDo": 166.5
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#d8563c",
@@ -13264,10 +13136,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -13309,8 +13181,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 167.3,
-        "phongThu": 123,
-        "tocDo": 168
+        "phongThu": 123
       },
       "mau": {
         "than": "#d8563c",
@@ -13384,10 +13255,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -13429,8 +13300,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 162.8,
-        "phongThu": 126,
-        "tocDo": 168
+        "phongThu": 126
       },
       "mau": {
         "than": "#d8563c",
@@ -13504,10 +13374,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -13549,8 +13419,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 164.3,
-        "phongThu": 135,
-        "tocDo": 160.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#d8563c",
@@ -13624,10 +13493,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -13669,8 +13538,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 171.8,
-        "phongThu": 126.8,
-        "tocDo": 158.3
+        "phongThu": 126.8
       },
       "mau": {
         "than": "#dd5744",
@@ -13789,8 +13657,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 164.3,
-        "phongThu": 134.3,
-        "tocDo": 150.8
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#dd5744",
@@ -13909,8 +13776,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 171.8,
-        "phongThu": 129.8,
-        "tocDo": 152.3
+        "phongThu": 129.8
       },
       "mau": {
         "than": "#dd5744",
@@ -14029,8 +13895,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 167.3,
-        "phongThu": 132.8,
-        "tocDo": 152.3
+        "phongThu": 132.8
       },
       "mau": {
         "than": "#dd5744",
@@ -14149,8 +14014,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 168.8,
-        "phongThu": 141.8,
-        "tocDo": 144.8
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#dd5744",
@@ -14269,8 +14133,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 168.8,
-        "phongThu": 127.5,
-        "tocDo": 157.5
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#ea542a",
@@ -14389,8 +14252,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 176.3,
-        "phongThu": 123,
-        "tocDo": 159
+        "phongThu": 123
       },
       "mau": {
         "than": "#ea542a",
@@ -14509,8 +14371,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 171.8,
-        "phongThu": 126,
-        "tocDo": 159
+        "phongThu": 126
       },
       "mau": {
         "than": "#ea542a",
@@ -14629,8 +14490,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 173.3,
-        "phongThu": 135,
-        "tocDo": 151.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#ea542a",
@@ -14749,8 +14609,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 165,
-        "phongThu": 134.3,
-        "tocDo": 147.8
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#d55230",
@@ -14869,8 +14728,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 160.5,
-        "phongThu": 137.3,
-        "tocDo": 147.8
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#d55230",
@@ -14989,8 +14847,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 162,
-        "phongThu": 146.3,
-        "tocDo": 140.3
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#d55230",
@@ -15109,8 +14966,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 171.8,
-        "phongThu": 130.5,
-        "tocDo": 150
+        "phongThu": 130.5
       },
       "mau": {
         "than": "#d54334",
@@ -15229,8 +15085,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 173.3,
-        "phongThu": 139.5,
-        "tocDo": 142.5
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#d54334",
@@ -15349,8 +15204,7 @@
       "chiSo": {
         "hp": 150,
         "tanCong": 166.5,
-        "phongThu": 144,
-        "tocDo": 142.5
+        "phongThu": 144
       },
       "mau": {
         "than": "#eb5a3b",
@@ -15469,8 +15323,7 @@
       "chiSo": {
         "hp": 161.3,
         "tanCong": 152.3,
-        "phongThu": 147,
-        "tocDo": 139.5
+        "phongThu": 147
       },
       "mau": {
         "than": "#4586d1",
@@ -15589,8 +15442,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 153.8,
-        "phongThu": 135,
-        "tocDo": 159
+        "phongThu": 135
       },
       "mau": {
         "than": "#4586d1",
@@ -15671,10 +15523,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -15709,8 +15561,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 156.8,
-        "phongThu": 139.5,
-        "tocDo": 148.5
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#4586d1",
@@ -15829,8 +15680,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 159.8,
-        "phongThu": 135,
-        "tocDo": 153
+        "phongThu": 135
       },
       "mau": {
         "than": "#4586d1",
@@ -15949,8 +15799,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 152.3,
-        "phongThu": 142.5,
-        "tocDo": 145.5
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#4586d1",
@@ -16069,8 +15918,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 159.8,
-        "phongThu": 138,
-        "tocDo": 147
+        "phongThu": 138
       },
       "mau": {
         "than": "#4586d1",
@@ -16189,8 +16037,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 155.3,
-        "phongThu": 141,
-        "tocDo": 147
+        "phongThu": 141
       },
       "mau": {
         "than": "#4586d1",
@@ -16309,8 +16156,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 156.8,
-        "phongThu": 150,
-        "tocDo": 139.5
+        "phongThu": 150
       },
       "mau": {
         "than": "#4586d1",
@@ -16429,8 +16275,7 @@
       "chiSo": {
         "hp": 163.5,
         "tanCong": 140.3,
-        "phongThu": 153,
-        "tocDo": 143.3
+        "phongThu": 153
       },
       "mau": {
         "than": "#3e8bd3",
@@ -16511,10 +16356,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -16549,8 +16394,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 143.3,
-        "phongThu": 157.5,
-        "tocDo": 132.8
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#3e8bd3",
@@ -16669,8 +16513,7 @@
       "chiSo": {
         "hp": 163.5,
         "tanCong": 146.3,
-        "phongThu": 153,
-        "tocDo": 137.3
+        "phongThu": 153
       },
       "mau": {
         "than": "#3e8bd3",
@@ -16789,8 +16632,7 @@
       "chiSo": {
         "hp": 171,
         "tanCong": 138.8,
-        "phongThu": 160.5,
-        "tocDo": 129.8
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#3e8bd3",
@@ -16909,8 +16751,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 146.3,
-        "phongThu": 156,
-        "tocDo": 131.3
+        "phongThu": 156
       },
       "mau": {
         "than": "#3e8bd3",
@@ -17029,8 +16870,7 @@
       "chiSo": {
         "hp": 168,
         "tanCong": 141.8,
-        "phongThu": 159,
-        "tocDo": 131.3
+        "phongThu": 159
       },
       "mau": {
         "than": "#3e8bd3",
@@ -17149,8 +16989,7 @@
       "chiSo": {
         "hp": 168,
         "tanCong": 143.3,
-        "phongThu": 168,
-        "tocDo": 123.8
+        "phongThu": 168
       },
       "mau": {
         "than": "#3e8bd3",
@@ -17269,8 +17108,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 145.5,
-        "phongThu": 139.5,
-        "tocDo": 162
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#3597e1",
@@ -17344,10 +17182,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -17389,8 +17227,7 @@
       "chiSo": {
         "hp": 150,
         "tanCong": 148.5,
-        "phongThu": 135,
-        "tocDo": 166.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#3597e1",
@@ -17458,10 +17295,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -17509,8 +17346,7 @@
       "chiSo": {
         "hp": 157.5,
         "tanCong": 141,
-        "phongThu": 142.5,
-        "tocDo": 159
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#3597e1",
@@ -17584,10 +17420,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -17629,8 +17465,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 148.5,
-        "phongThu": 138,
-        "tocDo": 160.5
+        "phongThu": 138
       },
       "mau": {
         "than": "#3597e1",
@@ -17704,10 +17539,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -17749,8 +17584,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 144,
-        "phongThu": 141,
-        "tocDo": 160.5
+        "phongThu": 141
       },
       "mau": {
         "than": "#3597e1",
@@ -17824,10 +17658,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -17869,8 +17703,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 145.5,
-        "phongThu": 150,
-        "tocDo": 153
+        "phongThu": 150
       },
       "mau": {
         "than": "#3597e1",
@@ -17944,10 +17777,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -17989,8 +17822,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 153,
-        "phongThu": 141.8,
-        "tocDo": 150.8
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#3b98ea",
@@ -18109,8 +17941,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 145.5,
-        "phongThu": 149.3,
-        "tocDo": 143.3
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#3b98ea",
@@ -18229,8 +18060,7 @@
       "chiSo": {
         "hp": 157.5,
         "tanCong": 153,
-        "phongThu": 144.8,
-        "tocDo": 144.8
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#3b98ea",
@@ -18349,8 +18179,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 148.5,
-        "phongThu": 147.8,
-        "tocDo": 144.8
+        "phongThu": 147.8
       },
       "mau": {
         "than": "#3b98ea",
@@ -18469,8 +18298,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 150,
-        "phongThu": 156.8,
-        "tocDo": 137.3
+        "phongThu": 156.8
       },
       "mau": {
         "than": "#3b98ea",
@@ -18589,8 +18417,7 @@
       "chiSo": {
         "hp": 157.5,
         "tanCong": 150,
-        "phongThu": 142.5,
-        "tocDo": 150
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#4795cf",
@@ -18709,8 +18536,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 157.5,
-        "phongThu": 138,
-        "tocDo": 151.5
+        "phongThu": 138
       },
       "mau": {
         "than": "#4795cf",
@@ -18829,8 +18655,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 153,
-        "phongThu": 141,
-        "tocDo": 151.5
+        "phongThu": 141
       },
       "mau": {
         "than": "#4795cf",
@@ -18949,8 +18774,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 154.5,
-        "phongThu": 150,
-        "tocDo": 144
+        "phongThu": 150
       },
       "mau": {
         "than": "#4795cf",
@@ -19069,8 +18893,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 146.3,
-        "phongThu": 149.3,
-        "tocDo": 140.3
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#3293d6",
@@ -19189,8 +19012,7 @@
       "chiSo": {
         "hp": 165.8,
         "tanCong": 141.8,
-        "phongThu": 152.3,
-        "tocDo": 140.3
+        "phongThu": 152.3
       },
       "mau": {
         "than": "#3293d6",
@@ -19309,8 +19131,7 @@
       "chiSo": {
         "hp": 165.8,
         "tanCong": 143.3,
-        "phongThu": 161.3,
-        "tocDo": 132.8
+        "phongThu": 161.3
       },
       "mau": {
         "than": "#3293d6",
@@ -19429,8 +19250,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 153,
-        "phongThu": 145.5,
-        "tocDo": 142.5
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#3284da",
@@ -19549,8 +19369,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 154.5,
-        "phongThu": 154.5,
-        "tocDo": 135
+        "phongThu": 154.5
       },
       "mau": {
         "than": "#3284da",
@@ -19669,8 +19488,7 @@
       "chiSo": {
         "hp": 161.3,
         "tanCong": 147.8,
-        "phongThu": 159,
-        "tocDo": 135
+        "phongThu": 159
       },
       "mau": {
         "than": "#489be0",
@@ -19789,8 +19607,7 @@
       "chiSo": {
         "hp": 165.8,
         "tanCong": 150,
-        "phongThu": 156,
-        "tocDo": 128.3
+        "phongThu": 156
       },
       "mau": {
         "than": "#b0663a",
@@ -19909,8 +19726,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 150,
-        "phongThu": 150,
-        "tocDo": 140.3
+        "phongThu": 150
       },
       "mau": {
         "than": "#b0663a",
@@ -19985,10 +19801,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -20029,8 +19845,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 153,
-        "phongThu": 154.5,
-        "tocDo": 129.8
+        "phongThu": 154.5
       },
       "mau": {
         "than": "#b0663a",
@@ -20149,8 +19964,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 156,
-        "phongThu": 150,
-        "tocDo": 134.3
+        "phongThu": 150
       },
       "mau": {
         "than": "#b0663a",
@@ -20269,8 +20083,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 148.5,
-        "phongThu": 157.5,
-        "tocDo": 126.8
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#b0663a",
@@ -20389,8 +20202,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 156,
-        "phongThu": 153,
-        "tocDo": 128.3
+        "phongThu": 153
       },
       "mau": {
         "than": "#b0663a",
@@ -20509,8 +20321,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 151.5,
-        "phongThu": 156,
-        "tocDo": 128.3
+        "phongThu": 156
       },
       "mau": {
         "than": "#b0663a",
@@ -20629,8 +20440,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 153,
-        "phongThu": 165,
-        "tocDo": 120.8
+        "phongThu": 165
       },
       "mau": {
         "than": "#b0663a",
@@ -20749,8 +20559,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 138.8,
-        "phongThu": 159,
-        "tocDo": 135.8
+        "phongThu": 159
       },
       "mau": {
         "than": "#996f51",
@@ -20831,10 +20640,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -20869,8 +20678,7 @@
       "chiSo": {
         "hp": 169.5,
         "tanCong": 141.8,
-        "phongThu": 163.5,
-        "tocDo": 125.3
+        "phongThu": 163.5
       },
       "mau": {
         "than": "#996f51",
@@ -20989,8 +20797,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 144.8,
-        "phongThu": 159,
-        "tocDo": 129.8
+        "phongThu": 159
       },
       "mau": {
         "than": "#996f51",
@@ -21109,8 +20916,7 @@
       "chiSo": {
         "hp": 174,
         "tanCong": 137.3,
-        "phongThu": 166.5,
-        "tocDo": 122.3
+        "phongThu": 166.5
       },
       "mau": {
         "than": "#996f51",
@@ -21229,8 +21035,7 @@
       "chiSo": {
         "hp": 169.5,
         "tanCong": 144.8,
-        "phongThu": 162,
-        "tocDo": 123.8
+        "phongThu": 162
       },
       "mau": {
         "than": "#996f51",
@@ -21349,8 +21154,7 @@
       "chiSo": {
         "hp": 171,
         "tanCong": 140.3,
-        "phongThu": 165,
-        "tocDo": 123.8
+        "phongThu": 165
       },
       "mau": {
         "than": "#996f51",
@@ -21469,8 +21273,7 @@
       "chiSo": {
         "hp": 171,
         "tanCong": 141.8,
-        "phongThu": 174,
-        "tocDo": 116.3
+        "phongThu": 174
       },
       "mau": {
         "than": "#996f51",
@@ -21589,8 +21392,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 141.8,
-        "phongThu": 154.5,
-        "tocDo": 143.3
+        "phongThu": 154.5
       },
       "mau": {
         "than": "#9f774a",
@@ -21664,10 +21466,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -21709,8 +21511,7 @@
       "chiSo": {
         "hp": 157.5,
         "tanCong": 144.8,
-        "phongThu": 150,
-        "tocDo": 147.8
+        "phongThu": 150
       },
       "mau": {
         "than": "#9f774a",
@@ -21784,10 +21585,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -21829,8 +21630,7 @@
       "chiSo": {
         "hp": 165,
         "tanCong": 137.3,
-        "phongThu": 157.5,
-        "tocDo": 140.3
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#9f774a",
@@ -21904,10 +21704,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -21949,8 +21749,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 144.8,
-        "phongThu": 153,
-        "tocDo": 141.8
+        "phongThu": 153
       },
       "mau": {
         "than": "#9f774a",
@@ -22024,10 +21823,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -22069,8 +21868,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 140.3,
-        "phongThu": 156,
-        "tocDo": 141.8
+        "phongThu": 156
       },
       "mau": {
         "than": "#9f774a",
@@ -22144,10 +21942,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -22189,8 +21987,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 141.8,
-        "phongThu": 165,
-        "tocDo": 134.3
+        "phongThu": 165
       },
       "mau": {
         "than": "#9f774a",
@@ -22264,10 +22061,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -22309,8 +22106,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 149.3,
-        "phongThu": 156.8,
-        "tocDo": 132
+        "phongThu": 156.8
       },
       "mau": {
         "than": "#a57852",
@@ -22429,8 +22225,7 @@
       "chiSo": {
         "hp": 169.5,
         "tanCong": 141.8,
-        "phongThu": 164.3,
-        "tocDo": 124.5
+        "phongThu": 164.3
       },
       "mau": {
         "than": "#a57852",
@@ -22549,8 +22344,7 @@
       "chiSo": {
         "hp": 165,
         "tanCong": 149.3,
-        "phongThu": 159.8,
-        "tocDo": 126
+        "phongThu": 159.8
       },
       "mau": {
         "than": "#a57852",
@@ -22669,8 +22463,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 144.8,
-        "phongThu": 162.8,
-        "tocDo": 126
+        "phongThu": 162.8
       },
       "mau": {
         "than": "#a57852",
@@ -22789,8 +22582,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 146.3,
-        "phongThu": 171.8,
-        "tocDo": 118.5
+        "phongThu": 171.8
       },
       "mau": {
         "than": "#a57852",
@@ -22909,8 +22701,7 @@
       "chiSo": {
         "hp": 165,
         "tanCong": 146.3,
-        "phongThu": 157.5,
-        "tocDo": 131.3
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#b17638",
@@ -23029,8 +22820,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 153.8,
-        "phongThu": 153,
-        "tocDo": 132.8
+        "phongThu": 153
       },
       "mau": {
         "than": "#b17638",
@@ -23149,8 +22939,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 149.3,
-        "phongThu": 156,
-        "tocDo": 132.8
+        "phongThu": 156
       },
       "mau": {
         "than": "#b17638",
@@ -23269,8 +23058,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 150.8,
-        "phongThu": 165,
-        "tocDo": 125.3
+        "phongThu": 165
       },
       "mau": {
         "than": "#b17638",
@@ -23389,8 +23177,7 @@
       "chiSo": {
         "hp": 171.8,
         "tanCong": 142.5,
-        "phongThu": 164.3,
-        "tocDo": 121.5
+        "phongThu": 164.3
       },
       "mau": {
         "than": "#9d733e",
@@ -23509,8 +23296,7 @@
       "chiSo": {
         "hp": 173.3,
         "tanCong": 138,
-        "phongThu": 167.3,
-        "tocDo": 121.5
+        "phongThu": 167.3
       },
       "mau": {
         "than": "#9d733e",
@@ -23629,8 +23415,7 @@
       "chiSo": {
         "hp": 173.3,
         "tanCong": 139.5,
-        "phongThu": 176.3,
-        "tocDo": 114
+        "phongThu": 176.3
       },
       "mau": {
         "than": "#9d733e",
@@ -23749,8 +23534,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 149.3,
-        "phongThu": 160.5,
-        "tocDo": 123.8
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#9d6542",
@@ -23869,8 +23653,7 @@
       "chiSo": {
         "hp": 166.5,
         "tanCong": 150.8,
-        "phongThu": 169.5,
-        "tocDo": 116.3
+        "phongThu": 169.5
       },
       "mau": {
         "than": "#9d6542",
@@ -23989,8 +23772,7 @@
       "chiSo": {
         "hp": 168.8,
         "tanCong": 144,
-        "phongThu": 174,
-        "tocDo": 116.3
+        "phongThu": 174
       },
       "mau": {
         "than": "#b27b49",
@@ -24109,8 +23891,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 153.8,
-        "phongThu": 126,
-        "tocDo": 177
+        "phongThu": 126
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24177,10 +23958,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24229,8 +24010,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 152.3,
-        "phongThu": 132,
-        "tocDo": 169.5
+        "phongThu": 132
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24297,10 +24077,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24349,8 +24129,7 @@
       "chiSo": {
         "hp": 140.3,
         "tanCong": 156.8,
-        "phongThu": 124.5,
-        "tocDo": 178.5
+        "phongThu": 124.5
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24417,10 +24196,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24469,8 +24248,7 @@
       "chiSo": {
         "hp": 137.3,
         "tanCong": 159.8,
-        "phongThu": 120,
-        "tocDo": 183
+        "phongThu": 120
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24537,10 +24315,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24589,8 +24367,7 @@
       "chiSo": {
         "hp": 144.8,
         "tanCong": 152.3,
-        "phongThu": 127.5,
-        "tocDo": 175.5
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24657,10 +24434,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24709,8 +24486,7 @@
       "chiSo": {
         "hp": 140.3,
         "tanCong": 159.8,
-        "phongThu": 123,
-        "tocDo": 177
+        "phongThu": 123
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24777,10 +24553,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24829,8 +24605,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 155.3,
-        "phongThu": 126,
-        "tocDo": 177
+        "phongThu": 126
       },
       "mau": {
         "than": "#6fc2a0",
@@ -24897,10 +24672,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -24949,8 +24724,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 156.8,
-        "phongThu": 135,
-        "tocDo": 169.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#6fc2a0",
@@ -25017,10 +24791,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25069,8 +24843,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 141,
-        "phongThu": 141,
-        "tocDo": 165
+        "phongThu": 141
       },
       "mau": {
         "than": "#59cbb7",
@@ -25137,10 +24910,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25189,8 +24962,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 145.5,
-        "phongThu": 133.5,
-        "tocDo": 174
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#59cbb7",
@@ -25257,10 +25029,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25309,8 +25081,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 148.5,
-        "phongThu": 129,
-        "tocDo": 178.5
+        "phongThu": 129
       },
       "mau": {
         "than": "#59cbb7",
@@ -25371,10 +25142,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25429,8 +25200,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 141,
-        "phongThu": 136.5,
-        "tocDo": 171
+        "phongThu": 136.5
       },
       "mau": {
         "than": "#59cbb7",
@@ -25497,10 +25267,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25549,8 +25319,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 148.5,
-        "phongThu": 132,
-        "tocDo": 172.5
+        "phongThu": 132
       },
       "mau": {
         "than": "#59cbb7",
@@ -25617,10 +25386,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25669,8 +25438,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 144,
-        "phongThu": 135,
-        "tocDo": 172.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#59cbb7",
@@ -25737,10 +25505,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25789,8 +25557,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 145.5,
-        "phongThu": 144,
-        "tocDo": 165
+        "phongThu": 144
       },
       "mau": {
         "than": "#59cbb7",
@@ -25857,10 +25624,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -25909,8 +25676,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 143.3,
-        "phongThu": 142.5,
-        "tocDo": 162.8
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#68c7a2",
@@ -25977,10 +25743,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26029,8 +25795,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 146.3,
-        "phongThu": 138,
-        "tocDo": 167.3
+        "phongThu": 138
       },
       "mau": {
         "than": "#68c7a2",
@@ -26097,10 +25862,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26149,8 +25914,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 138.8,
-        "phongThu": 145.5,
-        "tocDo": 159.8
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#68c7a2",
@@ -26217,10 +25981,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26269,8 +26033,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 146.3,
-        "phongThu": 141,
-        "tocDo": 161.3
+        "phongThu": 141
       },
       "mau": {
         "than": "#68c7a2",
@@ -26337,10 +26100,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26389,8 +26152,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 141.8,
-        "phongThu": 144,
-        "tocDo": 161.3
+        "phongThu": 144
       },
       "mau": {
         "than": "#68c7a2",
@@ -26457,10 +26219,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26509,8 +26271,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 143.3,
-        "phongThu": 153,
-        "tocDo": 153.8
+        "phongThu": 153
       },
       "mau": {
         "than": "#68c7a2",
@@ -26571,10 +26332,10 @@
       },
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26629,8 +26390,7 @@
       "chiSo": {
         "hp": 139.5,
         "tanCong": 153,
-        "phongThu": 126.8,
-        "tocDo": 180.8
+        "phongThu": 126.8
       },
       "mau": {
         "than": "#65d4b8",
@@ -26697,10 +26457,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26749,8 +26509,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 145.5,
-        "phongThu": 134.3,
-        "tocDo": 173.3
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#65d4b8",
@@ -26817,10 +26576,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26869,8 +26628,7 @@
       "chiSo": {
         "hp": 142.5,
         "tanCong": 153,
-        "phongThu": 129.8,
-        "tocDo": 174.8
+        "phongThu": 129.8
       },
       "mau": {
         "than": "#65d4b8",
@@ -26937,10 +26695,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -26989,8 +26747,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 148.5,
-        "phongThu": 132.8,
-        "tocDo": 174.8
+        "phongThu": 132.8
       },
       "mau": {
         "than": "#65d4b8",
@@ -27057,10 +26814,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27109,8 +26866,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 150,
-        "phongThu": 141.8,
-        "tocDo": 167.3
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#65d4b8",
@@ -27177,10 +26933,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27229,8 +26985,7 @@
       "chiSo": {
         "hp": 142.5,
         "tanCong": 150,
-        "phongThu": 127.5,
-        "tocDo": 180
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#71d19e",
@@ -27297,10 +27052,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27349,8 +27104,7 @@
       "chiSo": {
         "hp": 138,
         "tanCong": 157.5,
-        "phongThu": 123,
-        "tocDo": 181.5
+        "phongThu": 123
       },
       "mau": {
         "than": "#71d19e",
@@ -27417,10 +27171,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27469,8 +27223,7 @@
       "chiSo": {
         "hp": 139.5,
         "tanCong": 153,
-        "phongThu": 126,
-        "tocDo": 181.5
+        "phongThu": 126
       },
       "mau": {
         "than": "#71d19e",
@@ -27537,10 +27290,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27589,8 +27342,7 @@
       "chiSo": {
         "hp": 139.5,
         "tanCong": 154.5,
-        "phongThu": 135,
-        "tocDo": 174
+        "phongThu": 135
       },
       "mau": {
         "than": "#71d19e",
@@ -27657,10 +27409,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27709,8 +27461,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 146.3,
-        "phongThu": 134.3,
-        "tocDo": 170.3
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#5dcfa4",
@@ -27777,10 +27528,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27829,8 +27580,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 141.8,
-        "phongThu": 137.3,
-        "tocDo": 170.3
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#5dcfa4",
@@ -27897,10 +27647,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -27949,8 +27699,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 143.3,
-        "phongThu": 146.3,
-        "tocDo": 162.8
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#5dcfa4",
@@ -28017,10 +27766,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -28069,8 +27818,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 153,
-        "phongThu": 130.5,
-        "tocDo": 172.5
+        "phongThu": 130.5
       },
       "mau": {
         "than": "#5dc0a8",
@@ -28137,10 +27885,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -28189,8 +27937,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 154.5,
-        "phongThu": 139.5,
-        "tocDo": 165
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#5dc0a8",
@@ -28257,10 +28004,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -28309,8 +28056,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 147.8,
-        "phongThu": 144,
-        "tocDo": 165
+        "phongThu": 144
       },
       "mau": {
         "than": "#72d7af",
@@ -28377,10 +28123,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -28429,8 +28175,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 161.3,
-        "phongThu": 137.3,
-        "tocDo": 150.8
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -28549,8 +28294,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 159.8,
-        "phongThu": 143.3,
-        "tocDo": 143.3
+        "phongThu": 143.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -28669,8 +28413,7 @@
       "chiSo": {
         "hp": 144.8,
         "tanCong": 161.3,
-        "phongThu": 131.3,
-        "tocDo": 162.8
+        "phongThu": 131.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -28751,10 +28494,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -28789,8 +28532,7 @@
       "chiSo": {
         "hp": 144.8,
         "tanCong": 167.3,
-        "phongThu": 131.3,
-        "tocDo": 156.8
+        "phongThu": 131.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -28909,8 +28651,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 159.8,
-        "phongThu": 138.8,
-        "tocDo": 149.3
+        "phongThu": 138.8
       },
       "mau": {
         "than": "#9ac7dd",
@@ -29029,8 +28770,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 167.3,
-        "phongThu": 134.3,
-        "tocDo": 150.8
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -29149,8 +28889,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 162.8,
-        "phongThu": 137.3,
-        "tocDo": 150.8
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -29269,8 +29008,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 164.3,
-        "phongThu": 146.3,
-        "tocDo": 143.3
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#9ac7dd",
@@ -29389,8 +29127,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 148.5,
-        "phongThu": 152.3,
-        "tocDo": 138.8
+        "phongThu": 152.3
       },
       "mau": {
         "than": "#83d0f3",
@@ -29509,8 +29246,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 150,
-        "phongThu": 140.3,
-        "tocDo": 158.3
+        "phongThu": 140.3
       },
       "mau": {
         "than": "#83d0f3",
@@ -29591,10 +29327,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -29629,8 +29365,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 156,
-        "phongThu": 140.3,
-        "tocDo": 152.3
+        "phongThu": 140.3
       },
       "mau": {
         "than": "#83d0f3",
@@ -29749,8 +29484,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 148.5,
-        "phongThu": 147.8,
-        "tocDo": 144.8
+        "phongThu": 147.8
       },
       "mau": {
         "than": "#83d0f3",
@@ -29869,8 +29603,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 156,
-        "phongThu": 143.3,
-        "tocDo": 146.3
+        "phongThu": 143.3
       },
       "mau": {
         "than": "#83d0f3",
@@ -29989,8 +29722,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 151.5,
-        "phongThu": 146.3,
-        "tocDo": 146.3
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#83d0f3",
@@ -30109,8 +29841,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 153,
-        "phongThu": 155.3,
-        "tocDo": 138.8
+        "phongThu": 155.3
       },
       "mau": {
         "than": "#83d0f3",
@@ -30229,8 +29960,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 147.8,
-        "phongThu": 149.3,
-        "tocDo": 147
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#92ccdf",
@@ -30311,10 +30041,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -30349,8 +30079,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 153.8,
-        "phongThu": 149.3,
-        "tocDo": 141
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#92ccdf",
@@ -30469,8 +30198,7 @@
       "chiSo": {
         "hp": 163.5,
         "tanCong": 146.3,
-        "phongThu": 156.8,
-        "tocDo": 133.5
+        "phongThu": 156.8
       },
       "mau": {
         "than": "#92ccdf",
@@ -30589,8 +30317,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 153.8,
-        "phongThu": 152.3,
-        "tocDo": 135
+        "phongThu": 152.3
       },
       "mau": {
         "than": "#92ccdf",
@@ -30709,8 +30436,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 149.3,
-        "phongThu": 155.3,
-        "tocDo": 135
+        "phongThu": 155.3
       },
       "mau": {
         "than": "#92ccdf",
@@ -30829,8 +30555,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 150.8,
-        "phongThu": 164.3,
-        "tocDo": 127.5
+        "phongThu": 164.3
       },
       "mau": {
         "than": "#92ccdf",
@@ -30949,8 +30674,7 @@
       "chiSo": {
         "hp": 142.5,
         "tanCong": 156,
-        "phongThu": 131.3,
-        "tocDo": 170.3
+        "phongThu": 131.3
       },
       "mau": {
         "than": "#89d8ed",
@@ -31024,10 +30748,10 @@
           "tuHe": "ice"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -31069,8 +30793,7 @@
       "chiSo": {
         "hp": 150,
         "tanCong": 148.5,
-        "phongThu": 138.8,
-        "tocDo": 162.8
+        "phongThu": 138.8
       },
       "mau": {
         "than": "#89d8ed",
@@ -31144,10 +30867,10 @@
           "tuHe": "ice"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -31189,8 +30912,7 @@
       "chiSo": {
         "hp": 145.5,
         "tanCong": 156,
-        "phongThu": 134.3,
-        "tocDo": 164.3
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#89d8ed",
@@ -31258,10 +30980,10 @@
           "tuHe": "ice"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -31309,8 +31031,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 151.5,
-        "phongThu": 137.3,
-        "tocDo": 164.3
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#89d8ed",
@@ -31384,10 +31105,10 @@
           "tuHe": "ice"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -31429,8 +31150,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 153,
-        "phongThu": 146.3,
-        "tocDo": 156.8
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#89d8ed",
@@ -31504,10 +31224,10 @@
           "tuHe": "ice"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -31549,8 +31269,7 @@
       "chiSo": {
         "hp": 150,
         "tanCong": 157.5,
-        "phongThu": 138.8,
-        "tocDo": 153.8
+        "phongThu": 138.8
       },
       "mau": {
         "than": "#9bd7da",
@@ -31669,8 +31388,7 @@
       "chiSo": {
         "hp": 145.5,
         "tanCong": 165,
-        "phongThu": 134.3,
-        "tocDo": 155.3
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#9bd7da",
@@ -31789,8 +31507,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 160.5,
-        "phongThu": 137.3,
-        "tocDo": 155.3
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#9bd7da",
@@ -31909,8 +31626,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 162,
-        "phongThu": 146.3,
-        "tocDo": 147.8
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#9bd7da",
@@ -32029,8 +31745,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 153.8,
-        "phongThu": 145.5,
-        "tocDo": 144
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#87d4e1",
@@ -32149,8 +31864,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 149.3,
-        "phongThu": 148.5,
-        "tocDo": 144
+        "phongThu": 148.5
       },
       "mau": {
         "than": "#87d4e1",
@@ -32269,8 +31983,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 150.8,
-        "phongThu": 157.5,
-        "tocDo": 136.5
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#87d4e1",
@@ -32389,8 +32102,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 160.5,
-        "phongThu": 141.8,
-        "tocDo": 146.3
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#87c5e5",
@@ -32509,8 +32221,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 162,
-        "phongThu": 150.8,
-        "tocDo": 138.8
+        "phongThu": 150.8
       },
       "mau": {
         "than": "#87c5e5",
@@ -32629,8 +32340,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 155.3,
-        "phongThu": 155.3,
-        "tocDo": 138.8
+        "phongThu": 155.3
       },
       "mau": {
         "than": "#9cdcec",
@@ -32749,8 +32459,7 @@
       "chiSo": {
         "hp": 143.3,
         "tanCong": 168.8,
-        "phongThu": 126,
-        "tocDo": 162
+        "phongThu": 126
       },
       "mau": {
         "than": "#f3b61a",
@@ -32869,8 +32578,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 167.3,
-        "phongThu": 132,
-        "tocDo": 154.5
+        "phongThu": 132
       },
       "mau": {
         "than": "#f3b61a",
@@ -32989,8 +32697,7 @@
       "chiSo": {
         "hp": 137.3,
         "tanCong": 168.8,
-        "phongThu": 120,
-        "tocDo": 174
+        "phongThu": 120
       },
       "mau": {
         "than": "#f3b61a",
@@ -33071,10 +32778,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -33109,8 +32816,7 @@
       "chiSo": {
         "hp": 140.3,
         "tanCong": 171.8,
-        "phongThu": 124.5,
-        "tocDo": 163.5
+        "phongThu": 124.5
       },
       "mau": {
         "than": "#f3b61a",
@@ -33229,8 +32935,7 @@
       "chiSo": {
         "hp": 144.8,
         "tanCong": 167.3,
-        "phongThu": 127.5,
-        "tocDo": 160.5
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#f3b61a",
@@ -33349,8 +33054,7 @@
       "chiSo": {
         "hp": 140.3,
         "tanCong": 174.8,
-        "phongThu": 123,
-        "tocDo": 162
+        "phongThu": 123
       },
       "mau": {
         "than": "#f3b61a",
@@ -33469,8 +33173,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 170.3,
-        "phongThu": 126,
-        "tocDo": 162
+        "phongThu": 126
       },
       "mau": {
         "than": "#f3b61a",
@@ -33589,8 +33292,7 @@
       "chiSo": {
         "hp": 141.8,
         "tanCong": 171.8,
-        "phongThu": 135,
-        "tocDo": 154.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#f3b61a",
@@ -33709,8 +33411,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 156,
-        "phongThu": 141,
-        "tocDo": 150
+        "phongThu": 141
       },
       "mau": {
         "than": "#ddbf31",
@@ -33829,8 +33530,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 157.5,
-        "phongThu": 129,
-        "tocDo": 169.5
+        "phongThu": 129
       },
       "mau": {
         "than": "#ddbf31",
@@ -33911,10 +33611,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -33949,8 +33649,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 160.5,
-        "phongThu": 133.5,
-        "tocDo": 159
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#ddbf31",
@@ -34069,8 +33768,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 156,
-        "phongThu": 136.5,
-        "tocDo": 156
+        "phongThu": 136.5
       },
       "mau": {
         "than": "#ddbf31",
@@ -34189,8 +33887,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 163.5,
-        "phongThu": 132,
-        "tocDo": 157.5
+        "phongThu": 132
       },
       "mau": {
         "than": "#ddbf31",
@@ -34309,8 +34006,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 159,
-        "phongThu": 135,
-        "tocDo": 157.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#ddbf31",
@@ -34429,8 +34125,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 160.5,
-        "phongThu": 144,
-        "tocDo": 150
+        "phongThu": 144
       },
       "mau": {
         "than": "#ddbf31",
@@ -34549,8 +34244,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 155.3,
-        "phongThu": 138,
-        "tocDo": 158.3
+        "phongThu": 138
       },
       "mau": {
         "than": "#ecba1c",
@@ -34631,10 +34325,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -34669,8 +34363,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 158.3,
-        "phongThu": 142.5,
-        "tocDo": 147.8
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#ecba1c",
@@ -34789,8 +34482,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 153.8,
-        "phongThu": 145.5,
-        "tocDo": 144.8
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#ecba1c",
@@ -34909,8 +34601,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 161.3,
-        "phongThu": 141,
-        "tocDo": 146.3
+        "phongThu": 141
       },
       "mau": {
         "than": "#ecba1c",
@@ -35029,8 +34720,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 156.8,
-        "phongThu": 144,
-        "tocDo": 146.3
+        "phongThu": 144
       },
       "mau": {
         "than": "#ecba1c",
@@ -35149,8 +34839,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 158.3,
-        "phongThu": 153,
-        "tocDo": 138.8
+        "phongThu": 153
       },
       "mau": {
         "than": "#ecba1c",
@@ -35269,8 +34958,7 @@
       "chiSo": {
         "hp": 138,
         "tanCong": 160.5,
-        "phongThu": 124.5,
-        "tocDo": 177
+        "phongThu": 124.5
       },
       "mau": {
         "than": "#e3c72a",
@@ -35338,10 +35026,10 @@
           "tuHe": "thunder"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -35389,8 +35077,7 @@
       "chiSo": {
         "hp": 142.5,
         "tanCong": 156,
-        "phongThu": 127.5,
-        "tocDo": 174
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#e3c72a",
@@ -35464,10 +35151,10 @@
           "tuHe": "thunder"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -35509,8 +35196,7 @@
       "chiSo": {
         "hp": 138,
         "tanCong": 163.5,
-        "phongThu": 123,
-        "tocDo": 175.5
+        "phongThu": 123
       },
       "mau": {
         "than": "#e3c72a",
@@ -35584,10 +35270,10 @@
           "tuHe": "thunder"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -35629,8 +35315,7 @@
       "chiSo": {
         "hp": 139.5,
         "tanCong": 159,
-        "phongThu": 126,
-        "tocDo": 175.5
+        "phongThu": 126
       },
       "mau": {
         "than": "#e3c72a",
@@ -35704,10 +35389,10 @@
           "tuHe": "thunder"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -35749,8 +35434,7 @@
       "chiSo": {
         "hp": 139.5,
         "tanCong": 160.5,
-        "phongThu": 135,
-        "tocDo": 168
+        "phongThu": 135
       },
       "mau": {
         "than": "#e3c72a",
@@ -35824,10 +35508,10 @@
           "tuHe": "thunder"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -35869,8 +35553,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 160.5,
-        "phongThu": 134.3,
-        "tocDo": 158.3
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#e9c733",
@@ -35989,8 +35672,7 @@
       "chiSo": {
         "hp": 142.5,
         "tanCong": 168,
-        "phongThu": 129.8,
-        "tocDo": 159.8
+        "phongThu": 129.8
       },
       "mau": {
         "than": "#e9c733",
@@ -36109,8 +35791,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 163.5,
-        "phongThu": 132.8,
-        "tocDo": 159.8
+        "phongThu": 132.8
       },
       "mau": {
         "than": "#e9c733",
@@ -36229,8 +35910,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 165,
-        "phongThu": 141.8,
-        "tocDo": 152.3
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#e9c733",
@@ -36349,8 +36029,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 161.3,
-        "phongThu": 134.3,
-        "tocDo": 155.3
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#e1c21f",
@@ -36469,8 +36148,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 156.8,
-        "phongThu": 137.3,
-        "tocDo": 155.3
+        "phongThu": 137.3
       },
       "mau": {
         "than": "#e1c21f",
@@ -36589,8 +36267,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 158.3,
-        "phongThu": 146.3,
-        "tocDo": 147.8
+        "phongThu": 146.3
       },
       "mau": {
         "than": "#e1c21f",
@@ -36709,8 +36386,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 168,
-        "phongThu": 130.5,
-        "tocDo": 157.5
+        "phongThu": 130.5
       },
       "mau": {
         "than": "#e1b423",
@@ -36829,8 +36505,7 @@
       "chiSo": {
         "hp": 144,
         "tanCong": 169.5,
-        "phongThu": 139.5,
-        "tocDo": 150
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#e1b423",
@@ -36949,8 +36624,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 162.8,
-        "phongThu": 144,
-        "tocDo": 150
+        "phongThu": 144
       },
       "mau": {
         "than": "#f6ca29",
@@ -37069,8 +36743,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 150,
-        "phongThu": 144.8,
-        "tocDo": 143.3
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -37189,8 +36862,7 @@
       "chiSo": {
         "hp": 165,
         "tanCong": 148.5,
-        "phongThu": 150.8,
-        "tocDo": 135.8
+        "phongThu": 150.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -37309,8 +36981,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 150,
-        "phongThu": 138.8,
-        "tocDo": 155.3
+        "phongThu": 138.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -37391,10 +37062,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -37429,8 +37100,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 153,
-        "phongThu": 143.3,
-        "tocDo": 144.8
+        "phongThu": 143.3
       },
       "mau": {
         "than": "#5fa24c",
@@ -37549,8 +37219,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 156,
-        "phongThu": 138.8,
-        "tocDo": 149.3
+        "phongThu": 138.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -37669,8 +37338,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 156,
-        "phongThu": 141.8,
-        "tocDo": 143.3
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -37789,8 +37457,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 151.5,
-        "phongThu": 144.8,
-        "tocDo": 143.3
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -37909,8 +37576,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 153,
-        "phongThu": 153.8,
-        "tocDo": 135.8
+        "phongThu": 153.8
       },
       "mau": {
         "than": "#5fa24c",
@@ -38029,8 +37695,7 @@
       "chiSo": {
         "hp": 171.8,
         "tanCong": 137.3,
-        "phongThu": 159.8,
-        "tocDo": 131.3
+        "phongThu": 159.8
       },
       "mau": {
         "than": "#49ab62",
@@ -38149,8 +37814,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 138.8,
-        "phongThu": 147.8,
-        "tocDo": 150.8
+        "phongThu": 147.8
       },
       "mau": {
         "than": "#49ab62",
@@ -38231,10 +37895,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -38269,8 +37933,7 @@
       "chiSo": {
         "hp": 165.8,
         "tanCong": 141.8,
-        "phongThu": 152.3,
-        "tocDo": 140.3
+        "phongThu": 152.3
       },
       "mau": {
         "than": "#49ab62",
@@ -38389,8 +38052,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 144.8,
-        "phongThu": 147.8,
-        "tocDo": 144.8
+        "phongThu": 147.8
       },
       "mau": {
         "than": "#49ab62",
@@ -38509,8 +38171,7 @@
       "chiSo": {
         "hp": 165.8,
         "tanCong": 144.8,
-        "phongThu": 150.8,
-        "tocDo": 138.8
+        "phongThu": 150.8
       },
       "mau": {
         "than": "#49ab62",
@@ -38629,8 +38290,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 140.3,
-        "phongThu": 153.8,
-        "tocDo": 138.8
+        "phongThu": 153.8
       },
       "mau": {
         "than": "#49ab62",
@@ -38749,8 +38409,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 141.8,
-        "phongThu": 162.8,
-        "tocDo": 131.3
+        "phongThu": 162.8
       },
       "mau": {
         "than": "#49ab62",
@@ -38869,8 +38528,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 136.5,
-        "phongThu": 156.8,
-        "tocDo": 139.5
+        "phongThu": 156.8
       },
       "mau": {
         "than": "#57a74e",
@@ -38951,10 +38609,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -38989,8 +38647,7 @@
       "chiSo": {
         "hp": 170.3,
         "tanCong": 139.5,
-        "phongThu": 161.3,
-        "tocDo": 129
+        "phongThu": 161.3
       },
       "mau": {
         "than": "#57a74e",
@@ -39109,8 +38766,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 142.5,
-        "phongThu": 156.8,
-        "tocDo": 133.5
+        "phongThu": 156.8
       },
       "mau": {
         "than": "#57a74e",
@@ -39229,8 +38885,7 @@
       "chiSo": {
         "hp": 170.3,
         "tanCong": 142.5,
-        "phongThu": 159.8,
-        "tocDo": 127.5
+        "phongThu": 159.8
       },
       "mau": {
         "than": "#57a74e",
@@ -39349,8 +39004,7 @@
       "chiSo": {
         "hp": 171.8,
         "tanCong": 138,
-        "phongThu": 162.8,
-        "tocDo": 127.5
+        "phongThu": 162.8
       },
       "mau": {
         "than": "#57a74e",
@@ -39469,8 +39123,7 @@
       "chiSo": {
         "hp": 171.8,
         "tanCong": 139.5,
-        "phongThu": 171.8,
-        "tocDo": 120
+        "phongThu": 171.8
       },
       "mau": {
         "than": "#57a74e",
@@ -39589,8 +39242,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 141.8,
-        "phongThu": 143.3,
-        "tocDo": 158.3
+        "phongThu": 143.3
       },
       "mau": {
         "than": "#4eb35c",
@@ -39664,10 +39316,10 @@
           "tuHe": "nature"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -39709,8 +39361,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 144.8,
-        "phongThu": 138.8,
-        "tocDo": 162.8
+        "phongThu": 138.8
       },
       "mau": {
         "than": "#4eb35c",
@@ -39784,10 +39435,10 @@
           "tuHe": "nature"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -39829,8 +39480,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 144.8,
-        "phongThu": 141.8,
-        "tocDo": 156.8
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#4eb35c",
@@ -39904,10 +39554,10 @@
           "tuHe": "nature"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -39949,8 +39599,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 140.3,
-        "phongThu": 144.8,
-        "tocDo": 156.8
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#4eb35c",
@@ -40024,10 +39673,10 @@
           "tuHe": "nature"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -40069,8 +39718,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 141.8,
-        "phongThu": 153.8,
-        "tocDo": 149.3
+        "phongThu": 153.8
       },
       "mau": {
         "than": "#4eb35c",
@@ -40144,10 +39792,10 @@
           "tuHe": "nature"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -40189,8 +39837,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 149.3,
-        "phongThu": 145.5,
-        "tocDo": 147
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#54b464",
@@ -40309,8 +39956,7 @@
       "chiSo": {
         "hp": 161.3,
         "tanCong": 149.3,
-        "phongThu": 148.5,
-        "tocDo": 141
+        "phongThu": 148.5
       },
       "mau": {
         "than": "#54b464",
@@ -40429,8 +40075,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 144.8,
-        "phongThu": 151.5,
-        "tocDo": 141
+        "phongThu": 151.5
       },
       "mau": {
         "than": "#54b464",
@@ -40549,8 +40194,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 146.3,
-        "phongThu": 160.5,
-        "tocDo": 133.5
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#54b464",
@@ -40669,8 +40313,7 @@
       "chiSo": {
         "hp": 156.8,
         "tanCong": 153.8,
-        "phongThu": 141.8,
-        "tocDo": 147.8
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#60b249",
@@ -40789,8 +40432,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 149.3,
-        "phongThu": 144.8,
-        "tocDo": 147.8
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#60b249",
@@ -40909,8 +40551,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 150.8,
-        "phongThu": 153.8,
-        "tocDo": 140.3
+        "phongThu": 153.8
       },
       "mau": {
         "than": "#60b249",
@@ -41029,8 +40670,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 149.3,
-        "phongThu": 149.3,
-        "tocDo": 138.8
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#4ca054",
@@ -41149,8 +40789,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 150.8,
-        "phongThu": 158.3,
-        "tocDo": 131.3
+        "phongThu": 158.3
       },
       "mau": {
         "than": "#4ca054",
@@ -41269,8 +40908,7 @@
       "chiSo": {
         "hp": 165,
         "tanCong": 144,
-        "phongThu": 162.8,
-        "tocDo": 131.3
+        "phongThu": 162.8
       },
       "mau": {
         "than": "#61b75b",
@@ -41389,8 +41027,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 168.8,
-        "phongThu": 133.5,
-        "tocDo": 147
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#5e3768",
@@ -41509,8 +41146,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 167.3,
-        "phongThu": 139.5,
-        "tocDo": 139.5
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#5e3768",
@@ -41629,8 +41265,7 @@
       "chiSo": {
         "hp": 144.8,
         "tanCong": 168.8,
-        "phongThu": 127.5,
-        "tocDo": 159
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#5e3768",
@@ -41711,10 +41346,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -41749,8 +41384,7 @@
       "chiSo": {
         "hp": 147.8,
         "tanCong": 171.8,
-        "phongThu": 132,
-        "tocDo": 148.5
+        "phongThu": 132
       },
       "mau": {
         "than": "#5e3768",
@@ -41869,8 +41503,7 @@
       "chiSo": {
         "hp": 144.8,
         "tanCong": 174.8,
-        "phongThu": 127.5,
-        "tocDo": 153
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#5e3768",
@@ -41989,8 +41622,7 @@
       "chiSo": {
         "hp": 152.3,
         "tanCong": 167.3,
-        "phongThu": 135,
-        "tocDo": 145.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#5e3768",
@@ -42109,8 +41741,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 170.3,
-        "phongThu": 133.5,
-        "tocDo": 147
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#5e3768",
@@ -42229,8 +41860,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 171.8,
-        "phongThu": 142.5,
-        "tocDo": 139.5
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#5e3768",
@@ -42349,8 +41979,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 156,
-        "phongThu": 148.5,
-        "tocDo": 135
+        "phongThu": 148.5
       },
       "mau": {
         "than": "#48407e",
@@ -42469,8 +42098,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 157.5,
-        "phongThu": 136.5,
-        "tocDo": 154.5
+        "phongThu": 136.5
       },
       "mau": {
         "than": "#48407e",
@@ -42551,10 +42179,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -42589,8 +42217,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 160.5,
-        "phongThu": 141,
-        "tocDo": 144
+        "phongThu": 141
       },
       "mau": {
         "than": "#48407e",
@@ -42709,8 +42336,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 163.5,
-        "phongThu": 136.5,
-        "tocDo": 148.5
+        "phongThu": 136.5
       },
       "mau": {
         "than": "#48407e",
@@ -42829,8 +42455,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 156,
-        "phongThu": 144,
-        "tocDo": 141
+        "phongThu": 144
       },
       "mau": {
         "than": "#48407e",
@@ -42949,8 +42574,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 159,
-        "phongThu": 142.5,
-        "tocDo": 142.5
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#48407e",
@@ -43069,8 +42693,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 160.5,
-        "phongThu": 151.5,
-        "tocDo": 135
+        "phongThu": 151.5
       },
       "mau": {
         "than": "#48407e",
@@ -43189,8 +42812,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 155.3,
-        "phongThu": 145.5,
-        "tocDo": 143.3
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#563b6a",
@@ -43271,10 +42893,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -43309,8 +42931,7 @@
       "chiSo": {
         "hp": 159,
         "tanCong": 158.3,
-        "phongThu": 150,
-        "tocDo": 132.8
+        "phongThu": 150
       },
       "mau": {
         "than": "#563b6a",
@@ -43429,8 +43050,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 161.3,
-        "phongThu": 145.5,
-        "tocDo": 137.3
+        "phongThu": 145.5
       },
       "mau": {
         "than": "#563b6a",
@@ -43549,8 +43169,7 @@
       "chiSo": {
         "hp": 163.5,
         "tanCong": 153.8,
-        "phongThu": 153,
-        "tocDo": 129.8
+        "phongThu": 153
       },
       "mau": {
         "than": "#563b6a",
@@ -43669,8 +43288,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 156.8,
-        "phongThu": 151.5,
-        "tocDo": 131.3
+        "phongThu": 151.5
       },
       "mau": {
         "than": "#563b6a",
@@ -43789,8 +43407,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 158.3,
-        "phongThu": 160.5,
-        "tocDo": 123.8
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#563b6a",
@@ -43909,8 +43526,7 @@
       "chiSo": {
         "hp": 145.5,
         "tanCong": 160.5,
-        "phongThu": 132,
-        "tocDo": 162
+        "phongThu": 132
       },
       "mau": {
         "than": "#4d4878",
@@ -43984,10 +43600,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -44029,8 +43645,7 @@
       "chiSo": {
         "hp": 142.5,
         "tanCong": 163.5,
-        "phongThu": 127.5,
-        "tocDo": 166.5
+        "phongThu": 127.5
       },
       "mau": {
         "than": "#4d4878",
@@ -44104,10 +43719,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -44149,8 +43764,7 @@
       "chiSo": {
         "hp": 150,
         "tanCong": 156,
-        "phongThu": 135,
-        "tocDo": 159
+        "phongThu": 135
       },
       "mau": {
         "than": "#4d4878",
@@ -44224,10 +43838,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -44269,8 +43883,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 159,
-        "phongThu": 133.5,
-        "tocDo": 160.5
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#4d4878",
@@ -44344,10 +43957,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -44389,8 +44002,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 160.5,
-        "phongThu": 142.5,
-        "tocDo": 153
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#4d4878",
@@ -44464,10 +44076,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -44509,8 +44121,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 168,
-        "phongThu": 134.3,
-        "tocDo": 150.8
+        "phongThu": 134.3
       },
       "mau": {
         "than": "#534980",
@@ -44629,8 +44240,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 160.5,
-        "phongThu": 141.8,
-        "tocDo": 143.3
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#534980",
@@ -44749,8 +44359,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 163.5,
-        "phongThu": 140.3,
-        "tocDo": 144.8
+        "phongThu": 140.3
       },
       "mau": {
         "than": "#534980",
@@ -44869,8 +44478,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 165,
-        "phongThu": 149.3,
-        "tocDo": 137.3
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#534980",
@@ -44989,8 +44597,7 @@
       "chiSo": {
         "hp": 150,
         "tanCong": 165,
-        "phongThu": 135,
-        "tocDo": 150
+        "phongThu": 135
       },
       "mau": {
         "than": "#5f4665",
@@ -45109,8 +44716,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 168,
-        "phongThu": 133.5,
-        "tocDo": 151.5
+        "phongThu": 133.5
       },
       "mau": {
         "than": "#5f4665",
@@ -45229,8 +44835,7 @@
       "chiSo": {
         "hp": 147,
         "tanCong": 169.5,
-        "phongThu": 142.5,
-        "tocDo": 144
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#5f4665",
@@ -45349,8 +44954,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 156.8,
-        "phongThu": 144.8,
-        "tocDo": 140.3
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#4b446c",
@@ -45469,8 +45073,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 158.3,
-        "phongThu": 153.8,
-        "tocDo": 132.8
+        "phongThu": 153.8
       },
       "mau": {
         "than": "#4b446c",
@@ -45589,8 +45192,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 162.8,
-        "phongThu": 151.5,
-        "tocDo": 135
+        "phongThu": 151.5
       },
       "mau": {
         "than": "#614c77",
@@ -45709,8 +45311,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 157.5,
-        "phongThu": 141,
-        "tocDo": 147
+        "phongThu": 141
       },
       "mau": {
         "than": "#fcdc99",
@@ -45829,8 +45430,7 @@
       "chiSo": {
         "hp": 157.5,
         "tanCong": 156,
-        "phongThu": 147,
-        "tocDo": 139.5
+        "phongThu": 147
       },
       "mau": {
         "than": "#fcdc99",
@@ -45949,8 +45549,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 157.5,
-        "phongThu": 135,
-        "tocDo": 159
+        "phongThu": 135
       },
       "mau": {
         "than": "#fcdc99",
@@ -46025,10 +45624,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -46069,8 +45668,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 160.5,
-        "phongThu": 139.5,
-        "tocDo": 148.5
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#fcdc99",
@@ -46189,8 +45787,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 163.5,
-        "phongThu": 135,
-        "tocDo": 153
+        "phongThu": 135
       },
       "mau": {
         "than": "#fcdc99",
@@ -46309,8 +45906,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 156,
-        "phongThu": 142.5,
-        "tocDo": 145.5
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#fcdc99",
@@ -46429,8 +46025,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 163.5,
-        "phongThu": 138,
-        "tocDo": 147
+        "phongThu": 138
       },
       "mau": {
         "than": "#fcdc99",
@@ -46549,8 +46144,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 160.5,
-        "phongThu": 150,
-        "tocDo": 139.5
+        "phongThu": 150
       },
       "mau": {
         "than": "#fcdc99",
@@ -46669,8 +46263,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 144.8,
-        "phongThu": 156,
-        "tocDo": 135
+        "phongThu": 156
       },
       "mau": {
         "than": "#e6e5b0",
@@ -46789,8 +46382,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 146.3,
-        "phongThu": 144,
-        "tocDo": 154.5
+        "phongThu": 144
       },
       "mau": {
         "than": "#e6e5b0",
@@ -46865,10 +46457,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -46909,8 +46501,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 149.3,
-        "phongThu": 148.5,
-        "tocDo": 144
+        "phongThu": 148.5
       },
       "mau": {
         "than": "#e6e5b0",
@@ -47029,8 +46620,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 152.3,
-        "phongThu": 144,
-        "tocDo": 148.5
+        "phongThu": 144
       },
       "mau": {
         "than": "#e6e5b0",
@@ -47149,8 +46739,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 144.8,
-        "phongThu": 151.5,
-        "tocDo": 141
+        "phongThu": 151.5
       },
       "mau": {
         "than": "#e6e5b0",
@@ -47269,8 +46858,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 152.3,
-        "phongThu": 147,
-        "tocDo": 142.5
+        "phongThu": 147
       },
       "mau": {
         "than": "#e6e5b0",
@@ -47389,8 +46977,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 149.3,
-        "phongThu": 159,
-        "tocDo": 135
+        "phongThu": 159
       },
       "mau": {
         "than": "#e6e5b0",
@@ -47509,8 +47096,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 144,
-        "phongThu": 153,
-        "tocDo": 143.3
+        "phongThu": 153
       },
       "mau": {
         "than": "#f5e19b",
@@ -47591,10 +47177,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -47629,8 +47215,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 147,
-        "phongThu": 157.5,
-        "tocDo": 132.8
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#f5e19b",
@@ -47749,8 +47334,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 150,
-        "phongThu": 153,
-        "tocDo": 137.3
+        "phongThu": 153
       },
       "mau": {
         "than": "#f5e19b",
@@ -47869,8 +47453,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 142.5,
-        "phongThu": 160.5,
-        "tocDo": 129.8
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#f5e19b",
@@ -47989,8 +47572,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 150,
-        "phongThu": 156,
-        "tocDo": 131.3
+        "phongThu": 156
       },
       "mau": {
         "than": "#f5e19b",
@@ -48109,8 +47691,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 147,
-        "phongThu": 168,
-        "tocDo": 123.8
+        "phongThu": 168
       },
       "mau": {
         "than": "#f5e19b",
@@ -48229,8 +47810,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 149.3,
-        "phongThu": 139.5,
-        "tocDo": 162
+        "phongThu": 139.5
       },
       "mau": {
         "than": "#eceda9",
@@ -48304,10 +47884,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -48349,8 +47929,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 152.3,
-        "phongThu": 135,
-        "tocDo": 166.5
+        "phongThu": 135
       },
       "mau": {
         "than": "#eceda9",
@@ -48424,10 +48003,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -48469,8 +48048,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 144.8,
-        "phongThu": 142.5,
-        "tocDo": 159
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#eceda9",
@@ -48544,10 +48122,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -48589,8 +48167,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 152.3,
-        "phongThu": 138,
-        "tocDo": 160.5
+        "phongThu": 138
       },
       "mau": {
         "than": "#eceda9",
@@ -48664,10 +48241,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -48709,8 +48286,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 149.3,
-        "phongThu": 150,
-        "tocDo": 153
+        "phongThu": 150
       },
       "mau": {
         "than": "#eceda9",
@@ -48784,10 +48360,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -48829,8 +48405,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 156.8,
-        "phongThu": 141.8,
-        "tocDo": 150.8
+        "phongThu": 141.8
       },
       "mau": {
         "than": "#f2eeb1",
@@ -48949,8 +48524,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 149.3,
-        "phongThu": 149.3,
-        "tocDo": 143.3
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#f2eeb1",
@@ -49069,8 +48643,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 156.8,
-        "phongThu": 144.8,
-        "tocDo": 144.8
+        "phongThu": 144.8
       },
       "mau": {
         "than": "#f2eeb1",
@@ -49189,8 +48762,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 153.8,
-        "phongThu": 156.8,
-        "tocDo": 137.3
+        "phongThu": 156.8
       },
       "mau": {
         "than": "#f2eeb1",
@@ -49309,8 +48881,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 153.8,
-        "phongThu": 142.5,
-        "tocDo": 150
+        "phongThu": 142.5
       },
       "mau": {
         "than": "#feec97",
@@ -49429,8 +49000,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 161.3,
-        "phongThu": 138,
-        "tocDo": 151.5
+        "phongThu": 138
       },
       "mau": {
         "than": "#feec97",
@@ -49549,8 +49119,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 158.3,
-        "phongThu": 150,
-        "tocDo": 144
+        "phongThu": 150
       },
       "mau": {
         "than": "#feec97",
@@ -49669,8 +49238,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 150,
-        "phongThu": 149.3,
-        "tocDo": 140.3
+        "phongThu": 149.3
       },
       "mau": {
         "than": "#eae99d",
@@ -49789,8 +49357,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 147,
-        "phongThu": 161.3,
-        "tocDo": 132.8
+        "phongThu": 161.3
       },
       "mau": {
         "than": "#eae99d",
@@ -49909,8 +49476,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 158.3,
-        "phongThu": 154.5,
-        "tocDo": 135
+        "phongThu": 154.5
       },
       "mau": {
         "than": "#e9daa1",
@@ -50029,8 +49595,7 @@
       "chiSo": {
         "hp": 154.5,
         "tanCong": 161.3,
-        "phongThu": 163.5,
-        "tocDo": 128.3
+        "phongThu": 163.5
       },
       "mau": {
         "than": "#978d97",
@@ -50149,8 +49714,7 @@
       "chiSo": {
         "hp": 157.5,
         "tanCong": 159.8,
-        "phongThu": 169.5,
-        "tocDo": 120.8
+        "phongThu": 169.5
       },
       "mau": {
         "than": "#978d97",
@@ -50269,8 +49833,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 161.3,
-        "phongThu": 157.5,
-        "tocDo": 140.3
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#978d97",
@@ -50351,10 +49914,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -50389,8 +49952,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 164.3,
-        "phongThu": 162,
-        "tocDo": 129.8
+        "phongThu": 162
       },
       "mau": {
         "than": "#978d97",
@@ -50509,8 +50071,7 @@
       "chiSo": {
         "hp": 148.5,
         "tanCong": 167.3,
-        "phongThu": 157.5,
-        "tocDo": 134.3
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#978d97",
@@ -50629,8 +50190,7 @@
       "chiSo": {
         "hp": 156,
         "tanCong": 159.8,
-        "phongThu": 165,
-        "tocDo": 126.8
+        "phongThu": 165
       },
       "mau": {
         "than": "#978d97",
@@ -50749,8 +50309,7 @@
       "chiSo": {
         "hp": 151.5,
         "tanCong": 167.3,
-        "phongThu": 160.5,
-        "tocDo": 128.3
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#978d97",
@@ -50869,8 +50428,7 @@
       "chiSo": {
         "hp": 153,
         "tanCong": 162.8,
-        "phongThu": 163.5,
-        "tocDo": 128.3
+        "phongThu": 163.5
       },
       "mau": {
         "than": "#978d97",
@@ -50989,8 +50547,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 148.5,
-        "phongThu": 178.5,
-        "tocDo": 116.3
+        "phongThu": 178.5
       },
       "mau": {
         "than": "#8196ae",
@@ -51109,8 +50666,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 150,
-        "phongThu": 166.5,
-        "tocDo": 135.8
+        "phongThu": 166.5
       },
       "mau": {
         "than": "#8196ae",
@@ -51191,10 +50747,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -51229,8 +50785,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 153,
-        "phongThu": 171,
-        "tocDo": 125.3
+        "phongThu": 171
       },
       "mau": {
         "than": "#8196ae",
@@ -51349,8 +50904,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 156,
-        "phongThu": 166.5,
-        "tocDo": 129.8
+        "phongThu": 166.5
       },
       "mau": {
         "than": "#8196ae",
@@ -51469,8 +51023,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 148.5,
-        "phongThu": 174,
-        "tocDo": 122.3
+        "phongThu": 174
       },
       "mau": {
         "than": "#8196ae",
@@ -51589,8 +51142,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 156,
-        "phongThu": 169.5,
-        "tocDo": 123.8
+        "phongThu": 169.5
       },
       "mau": {
         "than": "#8196ae",
@@ -51709,8 +51261,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 151.5,
-        "phongThu": 172.5,
-        "tocDo": 123.8
+        "phongThu": 172.5
       },
       "mau": {
         "than": "#8196ae",
@@ -51829,8 +51380,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 147.8,
-        "phongThu": 175.5,
-        "tocDo": 124.5
+        "phongThu": 175.5
       },
       "mau": {
         "than": "#8f9299",
@@ -51911,10 +51461,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         }
       ],
@@ -51949,8 +51499,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 150.8,
-        "phongThu": 180,
-        "tocDo": 114
+        "phongThu": 180
       },
       "mau": {
         "than": "#8f9299",
@@ -52069,8 +51618,7 @@
       "chiSo": {
         "hp": 159.8,
         "tanCong": 153.8,
-        "phongThu": 175.5,
-        "tocDo": 118.5
+        "phongThu": 175.5
       },
       "mau": {
         "than": "#8f9299",
@@ -52189,8 +51737,7 @@
       "chiSo": {
         "hp": 167.3,
         "tanCong": 146.3,
-        "phongThu": 183,
-        "tocDo": 111
+        "phongThu": 183
       },
       "mau": {
         "than": "#8f9299",
@@ -52309,8 +51856,7 @@
       "chiSo": {
         "hp": 162.8,
         "tanCong": 153.8,
-        "phongThu": 178.5,
-        "tocDo": 112.5
+        "phongThu": 178.5
       },
       "mau": {
         "than": "#8f9299",
@@ -52429,8 +51975,7 @@
       "chiSo": {
         "hp": 164.3,
         "tanCong": 149.3,
-        "phongThu": 181.5,
-        "tocDo": 112.5
+        "phongThu": 181.5
       },
       "mau": {
         "than": "#8f9299",
@@ -52549,8 +52094,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 153,
-        "phongThu": 162,
-        "tocDo": 143.3
+        "phongThu": 162
       },
       "mau": {
         "than": "#879ea7",
@@ -52624,10 +52168,10 @@
           "tuHe": "metal"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -52669,8 +52213,7 @@
       "chiSo": {
         "hp": 146.3,
         "tanCong": 156,
-        "phongThu": 157.5,
-        "tocDo": 147.8
+        "phongThu": 157.5
       },
       "mau": {
         "than": "#879ea7",
@@ -52744,10 +52287,10 @@
           "tuHe": "metal"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -52789,8 +52332,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 148.5,
-        "phongThu": 165,
-        "tocDo": 140.3
+        "phongThu": 165
       },
       "mau": {
         "than": "#879ea7",
@@ -52864,10 +52406,10 @@
           "tuHe": "metal"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -52909,8 +52451,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 156,
-        "phongThu": 160.5,
-        "tocDo": 141.8
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#879ea7",
@@ -52984,10 +52525,10 @@
           "tuHe": "metal"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -53029,8 +52570,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 151.5,
-        "phongThu": 163.5,
-        "tocDo": 141.8
+        "phongThu": 163.5
       },
       "mau": {
         "than": "#879ea7",
@@ -53104,10 +52644,10 @@
           "tuHe": "metal"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -53149,8 +52689,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 160.5,
-        "phongThu": 164.3,
-        "tocDo": 132
+        "phongThu": 164.3
       },
       "mau": {
         "than": "#8c9faf",
@@ -53269,8 +52808,7 @@
       "chiSo": {
         "hp": 158.3,
         "tanCong": 153,
-        "phongThu": 171.8,
-        "tocDo": 124.5
+        "phongThu": 171.8
       },
       "mau": {
         "than": "#8c9faf",
@@ -53389,8 +52927,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 160.5,
-        "phongThu": 167.3,
-        "tocDo": 126
+        "phongThu": 167.3
       },
       "mau": {
         "than": "#8c9faf",
@@ -53509,8 +53046,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 156,
-        "phongThu": 170.3,
-        "tocDo": 126
+        "phongThu": 170.3
       },
       "mau": {
         "than": "#8c9faf",
@@ -53629,8 +53165,7 @@
       "chiSo": {
         "hp": 153.8,
         "tanCong": 157.5,
-        "phongThu": 165,
-        "tocDo": 131.3
+        "phongThu": 165
       },
       "mau": {
         "than": "#999d95",
@@ -53749,8 +53284,7 @@
       "chiSo": {
         "hp": 149.3,
         "tanCong": 165,
-        "phongThu": 160.5,
-        "tocDo": 132.8
+        "phongThu": 160.5
       },
       "mau": {
         "than": "#999d95",
@@ -53869,8 +53403,7 @@
       "chiSo": {
         "hp": 150.8,
         "tanCong": 160.5,
-        "phongThu": 163.5,
-        "tocDo": 132.8
+        "phongThu": 163.5
       },
       "mau": {
         "than": "#999d95",
@@ -53989,8 +53522,7 @@
       "chiSo": {
         "hp": 160.5,
         "tanCong": 153.8,
-        "phongThu": 171.8,
-        "tocDo": 121.5
+        "phongThu": 171.8
       },
       "mau": {
         "than": "#849a9c",
@@ -54109,8 +53641,7 @@
       "chiSo": {
         "hp": 162,
         "tanCong": 149.3,
-        "phongThu": 174.8,
-        "tocDo": 121.5
+        "phongThu": 174.8
       },
       "mau": {
         "than": "#849a9c",
@@ -54229,8 +53760,7 @@
       "chiSo": {
         "hp": 155.3,
         "tanCong": 160.5,
-        "phongThu": 168,
-        "tocDo": 123.8
+        "phongThu": 168
       },
       "mau": {
         "than": "#848ba0",
@@ -54351,8 +53881,7 @@
       "chiSo": {
         "hp": 187.2,
         "tanCong": 193.5,
-        "phongThu": 172.8,
-        "tocDo": 166.5
+        "phongThu": 172.8
       },
       "mau": {
         "than": "#e04a2e",
@@ -54478,8 +54007,7 @@
       "chiSo": {
         "hp": 187.2,
         "tanCong": 189.9,
-        "phongThu": 173.7,
-        "tocDo": 171
+        "phongThu": 173.7
       },
       "mau": {
         "than": "#d55230",
@@ -54605,8 +54133,7 @@
       "chiSo": {
         "hp": 176.4,
         "tanCong": 192.6,
-        "phongThu": 154.8,
-        "tocDo": 196.2
+        "phongThu": 154.8
       },
       "mau": {
         "than": "#d24e43",
@@ -54687,10 +54214,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         },
         {
@@ -54732,8 +54259,7 @@
       "chiSo": {
         "hp": 171.9,
         "tanCong": 207.9,
-        "phongThu": 151.2,
-        "tocDo": 189
+        "phongThu": 151.2
       },
       "mau": {
         "than": "#ea542a",
@@ -54859,8 +54385,7 @@
       "chiSo": {
         "hp": 189.9,
         "tanCong": 189,
-        "phongThu": 178.2,
-        "tocDo": 164.7
+        "phongThu": 178.2
       },
       "mau": {
         "than": "#d24e43",
@@ -54986,8 +54511,7 @@
       "chiSo": {
         "hp": 184.5,
         "tanCong": 173.7,
-        "phongThu": 168.3,
-        "tocDo": 193.5
+        "phongThu": 168.3
       },
       "mau": {
         "than": "#3597e1",
@@ -55061,10 +54585,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -55113,8 +54637,7 @@
       "chiSo": {
         "hp": 198,
         "tanCong": 175.5,
-        "phongThu": 187.2,
-        "tocDo": 159.3
+        "phongThu": 187.2
       },
       "mau": {
         "than": "#3e8bd3",
@@ -55240,8 +54763,7 @@
       "chiSo": {
         "hp": 198,
         "tanCong": 171.9,
-        "phongThu": 188.1,
-        "tocDo": 163.8
+        "phongThu": 188.1
       },
       "mau": {
         "than": "#3293d6",
@@ -55367,8 +54889,7 @@
       "chiSo": {
         "hp": 178.2,
         "tanCong": 181.8,
-        "phongThu": 160.2,
-        "tocDo": 199.8
+        "phongThu": 160.2
       },
       "mau": {
         "than": "#3597e1",
@@ -55442,10 +54963,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -55494,8 +55015,7 @@
       "chiSo": {
         "hp": 195.3,
         "tanCong": 176.4,
-        "phongThu": 183.6,
-        "tocDo": 164.7
+        "phongThu": 183.6
       },
       "mau": {
         "than": "#3e8bd3",
@@ -55621,8 +55141,7 @@
       "chiSo": {
         "hp": 200.7,
         "tanCong": 172.8,
-        "phongThu": 198.9,
-        "tocDo": 149.4
+        "phongThu": 198.9
       },
       "mau": {
         "than": "#a57852",
@@ -55748,8 +55267,7 @@
       "chiSo": {
         "hp": 189,
         "tanCong": 174.6,
-        "phongThu": 180,
-        "tocDo": 176.4
+        "phongThu": 180
       },
       "mau": {
         "than": "#9f774a",
@@ -55823,10 +55341,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -55875,8 +55393,7 @@
       "chiSo": {
         "hp": 191.7,
         "tanCong": 181.8,
-        "phongThu": 189,
-        "tocDo": 159.3
+        "phongThu": 189
       },
       "mau": {
         "than": "#b17638",
@@ -56002,8 +55519,7 @@
       "chiSo": {
         "hp": 190.8,
         "tanCong": 180,
-        "phongThu": 177.3,
-        "tocDo": 171.9
+        "phongThu": 177.3
       },
       "mau": {
         "than": "#b0663a",
@@ -56084,10 +55600,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         },
         {
@@ -56129,8 +55645,7 @@
       "chiSo": {
         "hp": 203.4,
         "tanCong": 172.8,
-        "phongThu": 193.5,
-        "tocDo": 150.3
+        "phongThu": 193.5
       },
       "mau": {
         "than": "#9d733e",
@@ -56256,8 +55771,7 @@
       "chiSo": {
         "hp": 170.1,
         "tanCong": 185.4,
-        "phongThu": 161.1,
-        "tocDo": 205.2
+        "phongThu": 161.1
       },
       "mau": {
         "than": "#65d4b8",
@@ -56324,10 +55838,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -56383,8 +55897,7 @@
       "chiSo": {
         "hp": 170.1,
         "tanCong": 191.7,
-        "phongThu": 151.2,
-        "tocDo": 207
+        "phongThu": 151.2
       },
       "mau": {
         "than": "#6fc2a0",
@@ -56451,10 +55964,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -56510,8 +56023,7 @@
       "chiSo": {
         "hp": 183.6,
         "tanCong": 171.9,
-        "phongThu": 173.7,
-        "tocDo": 192.6
+        "phongThu": 173.7
       },
       "mau": {
         "than": "#5dcfa4",
@@ -56578,10 +56090,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -56637,8 +56149,7 @@
       "chiSo": {
         "hp": 168.3,
         "tanCong": 189.9,
-        "phongThu": 151.2,
-        "tocDo": 210.6
+        "phongThu": 151.2
       },
       "mau": {
         "than": "#71d19e",
@@ -56705,10 +56216,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -56764,8 +56275,7 @@
       "chiSo": {
         "hp": 174.6,
         "tanCong": 186.3,
-        "phongThu": 160.2,
-        "tocDo": 200.7
+        "phongThu": 160.2
       },
       "mau": {
         "than": "#6fc2a0",
@@ -56832,10 +56342,10 @@
       ],
       "noiTai": [
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.12,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.1,
           "tuHe": "wind"
         },
         {
@@ -56891,8 +56401,7 @@
       "chiSo": {
         "hp": 180,
         "tanCong": 190.8,
-        "phongThu": 165.6,
-        "tocDo": 183.6
+        "phongThu": 165.6
       },
       "mau": {
         "than": "#9bd7da",
@@ -57018,8 +56527,7 @@
       "chiSo": {
         "hp": 180,
         "tanCong": 195.3,
-        "phongThu": 171,
-        "tocDo": 175.5
+        "phongThu": 171
       },
       "mau": {
         "than": "#9ac7dd",
@@ -57145,8 +56653,7 @@
       "chiSo": {
         "hp": 195.3,
         "tanCong": 175.5,
-        "phongThu": 184.5,
-        "tocDo": 164.7
+        "phongThu": 184.5
       },
       "mau": {
         "than": "#83d0f3",
@@ -57272,8 +56779,7 @@
       "chiSo": {
         "hp": 179.1,
         "tanCong": 195.3,
-        "phongThu": 162,
-        "tocDo": 183.6
+        "phongThu": 162
       },
       "mau": {
         "than": "#9ac7dd",
@@ -57399,8 +56905,7 @@
       "chiSo": {
         "hp": 191.7,
         "tanCong": 183.6,
-        "phongThu": 183.6,
-        "tocDo": 161.1
+        "phongThu": 183.6
       },
       "mau": {
         "than": "#92ccdf",
@@ -57526,8 +57031,7 @@
       "chiSo": {
         "hp": 181.8,
         "tanCong": 191.7,
-        "phongThu": 170.1,
-        "tocDo": 178.2
+        "phongThu": 170.1
       },
       "mau": {
         "than": "#e1c21f",
@@ -57653,8 +57157,7 @@
       "chiSo": {
         "hp": 172.8,
         "tanCong": 202.5,
-        "phongThu": 160.2,
-        "tocDo": 186.3
+        "phongThu": 160.2
       },
       "mau": {
         "than": "#f3b61a",
@@ -57780,8 +57283,7 @@
       "chiSo": {
         "hp": 177.3,
         "tanCong": 184.5,
-        "phongThu": 159.3,
-        "tocDo": 198.9
+        "phongThu": 159.3
       },
       "mau": {
         "than": "#ddbf31",
@@ -57862,10 +57364,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         },
         {
@@ -57907,8 +57409,7 @@
       "chiSo": {
         "hp": 177.3,
         "tanCong": 200.7,
-        "phongThu": 160.2,
-        "tocDo": 181.8
+        "phongThu": 160.2
       },
       "mau": {
         "than": "#f3b61a",
@@ -58034,8 +57535,7 @@
       "chiSo": {
         "hp": 179.1,
         "tanCong": 193.5,
-        "phongThu": 162,
-        "tocDo": 185.4
+        "phongThu": 162
       },
       "mau": {
         "than": "#ddbf31",
@@ -58161,8 +57661,7 @@
       "chiSo": {
         "hp": 198.9,
         "tanCong": 166.5,
-        "phongThu": 192.6,
-        "tocDo": 163.8
+        "phongThu": 192.6
       },
       "mau": {
         "than": "#57a74e",
@@ -58243,10 +57742,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         },
         {
@@ -58288,8 +57787,7 @@
       "chiSo": {
         "hp": 189,
         "tanCong": 185.4,
-        "phongThu": 171,
-        "tocDo": 174.6
+        "phongThu": 171
       },
       "mau": {
         "than": "#5fa24c",
@@ -58415,8 +57913,7 @@
       "chiSo": {
         "hp": 197.1,
         "tanCong": 176.4,
-        "phongThu": 185.4,
-        "tocDo": 162.9
+        "phongThu": 185.4
       },
       "mau": {
         "than": "#49ab62",
@@ -58542,8 +58039,7 @@
       "chiSo": {
         "hp": 189.9,
         "tanCong": 180.9,
-        "phongThu": 169.2,
-        "tocDo": 180
+        "phongThu": 169.2
       },
       "mau": {
         "than": "#5fa24c",
@@ -58631,10 +58127,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.015,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.013,
           "tuHe": "wind"
         }
       ],
@@ -58669,8 +58165,7 @@
       "chiSo": {
         "hp": 201.6,
         "tanCong": 171.9,
-        "phongThu": 190.8,
-        "tocDo": 155.7
+        "phongThu": 190.8
       },
       "mau": {
         "than": "#57a74e",
@@ -58796,8 +58291,7 @@
       "chiSo": {
         "hp": 177.3,
         "tanCong": 189,
-        "phongThu": 167.4,
-        "tocDo": 188.1
+        "phongThu": 167.4
       },
       "mau": {
         "than": "#4d4878",
@@ -58871,10 +58365,10 @@
           "tuHe": "dark"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -58923,8 +58417,7 @@
       "chiSo": {
         "hp": 185.4,
         "tanCong": 198,
-        "phongThu": 169.2,
-        "tocDo": 167.4
+        "phongThu": 169.2
       },
       "mau": {
         "than": "#5e3768",
@@ -59050,8 +58543,7 @@
       "chiSo": {
         "hp": 177.3,
         "tanCong": 199.8,
-        "phongThu": 168.3,
-        "tocDo": 176.4
+        "phongThu": 168.3
       },
       "mau": {
         "than": "#534980",
@@ -59177,8 +58669,7 @@
       "chiSo": {
         "hp": 190.8,
         "tanCong": 183.6,
-        "phongThu": 176.4,
-        "tocDo": 169.2
+        "phongThu": 176.4
       },
       "mau": {
         "than": "#48407e",
@@ -59266,10 +58757,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.015,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.013,
           "tuHe": "wind"
         }
       ],
@@ -59304,8 +58795,7 @@
       "chiSo": {
         "hp": 180.9,
         "tanCong": 200.7,
-        "phongThu": 161.1,
-        "tocDo": 177.3
+        "phongThu": 161.1
       },
       "mau": {
         "than": "#5e3768",
@@ -59431,8 +58921,7 @@
       "chiSo": {
         "hp": 175.5,
         "tanCong": 183.6,
-        "phongThu": 167.4,
-        "tocDo": 195.3
+        "phongThu": 167.4
       },
       "mau": {
         "than": "#eceda9",
@@ -59506,10 +58995,10 @@
           "tuHe": "light"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.06,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.05,
           "tuHe": "wind"
         },
         {
@@ -59558,8 +59047,7 @@
       "chiSo": {
         "hp": 188.1,
         "tanCong": 188.1,
-        "phongThu": 175.5,
-        "tocDo": 168.3
+        "phongThu": 175.5
       },
       "mau": {
         "than": "#fcdc99",
@@ -59685,8 +59173,7 @@
       "chiSo": {
         "hp": 188.1,
         "tanCong": 180.9,
-        "phongThu": 173.7,
-        "tocDo": 177.3
+        "phongThu": 173.7
       },
       "mau": {
         "than": "#e6e5b0",
@@ -59812,8 +59299,7 @@
       "chiSo": {
         "hp": 200.7,
         "tanCong": 171.9,
-        "phongThu": 198,
-        "tocDo": 151.2
+        "phongThu": 198
       },
       "mau": {
         "than": "#f5e19b",
@@ -59939,8 +59425,7 @@
       "chiSo": {
         "hp": 182.7,
         "tanCong": 188.1,
-        "phongThu": 165.6,
-        "tocDo": 183.6
+        "phongThu": 165.6
       },
       "mau": {
         "than": "#fcdc99",
@@ -60028,10 +59513,10 @@
           "tuHe": "water"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.015,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.013,
           "tuHe": "wind"
         }
       ],
@@ -60066,8 +59551,7 @@
       "chiSo": {
         "hp": 192.6,
         "tanCong": 182.7,
-        "phongThu": 207,
-        "tocDo": 144.9
+        "phongThu": 207
       },
       "mau": {
         "than": "#8f9299",
@@ -60193,8 +59677,7 @@
       "chiSo": {
         "hp": 177.3,
         "tanCong": 193.5,
-        "phongThu": 182.7,
-        "tocDo": 173.7
+        "phongThu": 182.7
       },
       "mau": {
         "than": "#978d97",
@@ -60275,10 +59758,10 @@
           "tuHe": "fire"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.03,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.025,
           "tuHe": "wind"
         },
         {
@@ -60320,8 +59803,7 @@
       "chiSo": {
         "hp": 188.1,
         "tanCong": 184.5,
-        "phongThu": 195.3,
-        "tocDo": 159.3
+        "phongThu": 195.3
       },
       "mau": {
         "than": "#8196ae",
@@ -60447,8 +59929,7 @@
       "chiSo": {
         "hp": 194.4,
         "tanCong": 176.4,
-        "phongThu": 205.2,
-        "tocDo": 151.2
+        "phongThu": 205.2
       },
       "mau": {
         "than": "#8196ae",
@@ -60536,10 +60017,10 @@
           "tuHe": "earth"
         },
         {
-          "ten": "Swift Gale",
-          "moTa": "Increases speed.",
-          "chiSo": "tocDo",
-          "giaTri": 0.015,
+          "ten": "Gale Guard",
+          "moTa": "Increases defense.",
+          "chiSo": "phongThu",
+          "giaTri": 0.013,
           "tuHe": "wind"
         }
       ],
@@ -60574,8 +60055,7 @@
       "chiSo": {
         "hp": 186.3,
         "tanCong": 193.5,
-        "phongThu": 190.8,
-        "tocDo": 156.6
+        "phongThu": 190.8
       },
       "mau": {
         "than": "#978d97",
@@ -60680,52 +60160,43 @@
   "khac": {
     "fire": [
       "ice",
-      "nature",
-      "metal"
+      "nature"
     ],
     "water": [
       "fire",
-      "earth",
       "metal"
     ],
     "earth": [
       "fire",
-      "thunder",
       "dark"
     ],
     "wind": [
       "earth",
-      "nature",
       "dark"
     ],
     "ice": [
       "water",
-      "wind",
       "nature"
     ],
     "thunder": [
       "water",
-      "wind",
-      "metal"
+      "wind"
     ],
     "nature": [
-      "water",
       "earth",
       "thunder"
     ],
     "dark": [
       "light",
-      "ice",
       "metal"
     ],
     "light": [
-      "dark",
-      "thunder",
-      "wind"
+      "wind",
+      "thunder"
     ],
     "metal": [
-      "light",
-      "ice"
+      "ice",
+      "light"
     ]
   },
   "stageInfo": {

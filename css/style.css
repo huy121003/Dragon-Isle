@@ -133,7 +133,11 @@
       background:linear-gradient(145deg,#ffffff59 0%,#ffffff00 42%,#10233636 100%),var(--skill-color,#7f93a1);color:white;
       clip-path:polygon(50% 0,94% 25%,94% 75%,50% 100%,6% 75%,6% 25%);
       filter:drop-shadow(0 2px 2px #243b53);font-size:18px;position:relative;isolation:isolate}
-    .skill-hex svg{width:21px;height:21px;fill:white;color:white}.skill-hex.locked{background:#87959e}
+    .skill-hex svg{width:21px;height:21px;fill:white;color:white}
+    .skill-hex.neutral{outline:2px solid #ffe4a2;outline-offset:1px}
+    .skill-hex.elemental{outline:2px solid var(--skill-color);outline-offset:1px}
+    .skill-hex.locked{opacity:.72}
+    .skill-hex i{position:absolute;right:1px;bottom:3px;font-size:10px;font-style:normal;filter:drop-shadow(0 1px 2px #182a3a)}
     .skill-card b,.skill-card small,.skill-card strong{display:block}.skill-card b{font-size:12px}
     .skill-card small{font-size:10px;color:#607983;line-height:1.35;margin:3px 0}.skill-card strong{font-size:10px;color:#375a6a}
     .skill-card.skill-locked{background:#edf0f2;border-color:#bac5cc;opacity:.8}

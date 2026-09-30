@@ -10,7 +10,7 @@ const DATA={
   legacyGridScale:GAME_CONFIG.legacyGridScale,
   habitatThemes:GAME_CONFIG.habitatThemes,
   size:GAME_CONFIG.size,tile:GAME_CONFIG.tile,
-  islands:GAME_CONFIG.islands,
+  islands:GAME_CONFIG.islands,elementUnlocks:GAME_CONFIG.elementUnlocks,
   islandRegionSize:GAME_CONFIG.islandRegionSize||24,environment:GAME_CONFIG.environment,
   testResources:GAME_CONFIG.testResources,nicknames:GAME_CONFIG.nicknames,
   gemPerDragonPerHour:GAME_CONFIG.gemPerDragonPerHour,

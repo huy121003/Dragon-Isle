@@ -16,6 +16,34 @@ function drawTertiaryBack(c,s,time,id){
   const w=t.wave,a=t.light,b=t.color,d=t.dark;
   c.save();
   switch(t.kind){
+  case "battle-standards":
+    for(const x of [-45,-22]){
+      artStroke(c,[[x,4],[x,-65-w*3]],d,3);
+      artFill(c,[[x,-64-w*3],[x+21,-57],[x+16,-35],[x,-44]],b,a,1.5);
+    }
+    break;
+  case "prismatic-wings":
+    for(let i=0;i<3;i++)artFill(c,[[-30+i*8,-7],[-53+i*11,-54-w*3],
+      [-45+i*11,-72],[-20+i*7,-13]],i%2?a:b,d,1.5);
+    break;
+  case "infinity-arcs":
+    c.strokeStyle=a;c.lineWidth=6;c.beginPath();
+    for(let i=0;i<65;i++){const t=i/64*Math.PI*2;
+      const x=-28+Math.sin(t)*43,y=-38+Math.sin(t)*Math.cos(t)*29+w;
+      if(!i)c.moveTo(x,y);else c.lineTo(x,y);}
+    c.stroke();break;
+  case "ancient-spines":
+    for(let i=0;i<5;i++)artFill(c,[[-51+i*14,-7],
+      [-42+i*14,-42-(i%2)*24],[-28+i*14,-12]],i%2?b:d,a,2);
+    break;
+  case "clockwork-rings":
+    c.strokeStyle=b;c.lineWidth=6;c.beginPath();c.ellipse(-29,-32+w,35,33,.3,0,Math.PI*2);c.stroke();
+    c.strokeStyle=a;c.lineWidth=2;c.beginPath();c.ellipse(-29,-32+w,28,26,.3,0,Math.PI*2);c.stroke();
+    for(let i=0;i<8;i++){
+      const t=i*Math.PI/4,x=-29+Math.cos(t)*35,y=-32+w+Math.sin(t)*33;
+      artOval(c,x,y,3,3,a);
+    }
+    break;
   case "flame-mantle":
     artFill(c,[[-37,-4],[-49,-31],[-46,-57-w*5],[-32,-46],[-27,-75-w*5],
       [-15,-53],[-2,-69+w*3],[2,-32],[-18,-12]],b,d,2.5);
@@ -101,6 +129,25 @@ function drawTertiaryFront(c,s,time,id){
   const w=t.wave,a=t.light,b=t.color,d=t.dark;
   c.save();
   switch(t.kind){
+  case "battle-standards":
+    artFill(c,[[-23,-14],[-10,-33],[6,-23],[7,-9],[-8,0]],b,d,1.8);
+    artFill(c,[[-8,-26],[0,-35],[8,-26],[0,-17]],a,b,1.5);break;
+  case "prismatic-wings":
+    artFill(c,[[-14,-12],[0,-38],[15,-12],[0,2]],a,d,2);
+    artFill(c,[[-8,-13],[0,-30],[8,-13],[0,-1]],b,a,1.3);break;
+  case "infinity-arcs":
+    c.strokeStyle=a;c.lineWidth=3;c.beginPath();
+    for(let i=0;i<49;i++){const t=i/48*Math.PI*2,x=-4+Math.sin(t)*13,y=-18+Math.sin(t)*Math.cos(t)*8;
+      if(!i)c.moveTo(x,y);else c.lineTo(x,y);}
+    c.stroke();break;
+  case "ancient-spines":
+    artFill(c,[[-23,-9],[-9,-34],[3,-21],[9,-7],[-8,4]],b,d,2);
+    artSpikes(c,{sung:a,vien:d},[[18,-42,14],[28,-45,12]],a);break;
+  case "clockwork-rings":
+    c.strokeStyle=a;c.lineWidth=2;c.beginPath();c.arc(-3,-18,15,0,Math.PI*2);c.stroke();
+    artStroke(c,[[-3,-18],[-3,-26],[5,-13]],a,2);
+    for(let i=0;i<4;i++){const t=i*Math.PI/2;artOval(c,-3+Math.cos(t)*14,-18+Math.sin(t)*14,2,2,b);}
+    break;
   case "flame-mantle":
     artFill(c,[[-20,-9],[-16,-29],[-8,-20],[-3,-40+w*2],
       [5,-15],[-3,1]],b,d,1.7);

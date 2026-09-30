@@ -1,0 +1,146 @@
+{
+  "elements": [
+    {
+      "id": "war",
+      "name": "War",
+      "icon": "⚔️",
+      "color": "#d64e33",
+      "light": "#ffc273",
+      "dark": "#693044",
+      "stats": [
+        122,
+        35,
+        17
+      ],
+      "base": "fire",
+      "unlock": 24,
+      "epicHybrid": true
+    },
+    {
+      "id": "pure",
+      "name": "Pure",
+      "icon": "🔺",
+      "color": "#db71c9",
+      "light": "#ffe6f9",
+      "dark": "#75548f",
+      "stats": [
+        127,
+        32,
+        21
+      ],
+      "base": "light",
+      "unlock": 28,
+      "epicHybrid": true
+    },
+    {
+      "id": "legend",
+      "name": "Legend",
+      "icon": "∞",
+      "color": "#8155c5",
+      "light": "#d9baff",
+      "dark": "#382663",
+      "stats": [
+        116,
+        40,
+        17
+      ],
+      "base": "dark",
+      "unlock": 33,
+      "epicHybrid": true
+    },
+    {
+      "id": "primal",
+      "name": "Primal",
+      "icon": "☯",
+      "color": "#8b8e83",
+      "light": "#e8e5c2",
+      "dark": "#45473d",
+      "stats": [
+        144,
+        33,
+        24
+      ],
+      "base": "earth",
+      "unlock": 39,
+      "epicHybrid": true
+    },
+    {
+      "id": "time",
+      "name": "Time",
+      "icon": "◉",
+      "color": "#b7aba4",
+      "light": "#f0e1d5",
+      "dark": "#5f596b",
+      "stats": [
+        119,
+        37,
+        19
+      ],
+      "base": "wind",
+      "unlock": 45,
+      "epicHybrid": true
+    }
+  ],
+  "wins": {
+    "fire": [
+      "nature",
+      "ice"
+    ],
+    "nature": [
+      "earth",
+      "water"
+    ],
+    "earth": [
+      "thunder",
+      "metal"
+    ],
+    "thunder": [
+      "water",
+      "time"
+    ],
+    "water": [
+      "ice",
+      "fire"
+    ],
+    "ice": [
+      "wind",
+      "war"
+    ],
+    "wind": [
+      "metal",
+      "earth"
+    ],
+    "metal": [
+      "war",
+      "legend"
+    ],
+    "war": [
+      "legend",
+      "dark"
+    ],
+    "legend": [
+      "pure",
+      "light"
+    ],
+    "pure": [
+      "time",
+      "primal"
+    ],
+    "time": [
+      "primal",
+      "nature"
+    ],
+    "primal": [
+      "dark",
+      "thunder"
+    ],
+    "dark": [
+      "light",
+      "wind"
+    ],
+    "light": [
+      "fire",
+      "pure"
+    ]
+  }
+}

@@ -11,6 +11,7 @@ function createArena({profilesDir,dataDir,auth}){
   const profile=id=>path.join(profilesDir,id+'.json');
   const catalog=require(path.join(dataDir,'dragons.json'));
   const game=require(path.join(dataDir,'game.json'));
+  require('../scripts/extend-catalog.cjs')(catalog,game);
   const elements=catalog.elements,rarities=catalog.rarities;
   const unlocked=p=>p?.buildings?.some(b=>b.type==='arena'&&!b.stored);
   const breeding=(p,id)=>p.buildings?.some(b=>b.type==='cave'&&b.breeding&&

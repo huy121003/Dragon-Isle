@@ -5,23 +5,22 @@ function eggById(id){return state.eggs.find(function(egg){return egg.id===id;});
 function eggsInHatchery(id){return state.eggs.filter(function(egg){return egg.hatcheryId===id;});}
 function freeHatchery(){
   return state.buildings.find(function(b){
-    return b.type==="hatchery"&&!b.stored&&eggsInHatchery(b.id).length<hatcheryCapacity(b.level);
+    return b.type==="hatchery"&&!b.stored&&eggsInHatchery(b.id).length===0;
   });
 }
 function assignIncubation(egg,house){
   if(!egg||egg.hatcheryId!==null||!house||house.type!=="hatchery"||house.stored||
-    eggsInHatchery(house.id).length>=hatcheryCapacity(house.level))return false;
+    eggsInHatchery(house.id).length>0)return false;
   egg.hatcheryId=house.id;
   egg.startedAt=Date.now();
   egg.readyAt=egg.startedAt+DATA.rarities[DATA.species[egg.species].rarity].incubate*1000;
   return true;
 }
-function addEgg(speciesId,source,parents){
-  const egg={id:state.nextId++,species:speciesId,source:source,parents:parents||null,
+function addEgg(speciesId,source,parents,caveId){
+  const egg={id:state.nextId++,species:speciesId,source:source,parents:parents||null,caveId:caveId||null,
     hatcheryId:null,startedAt:0,readyAt:0};
   state.eggs.push(egg);
-  const house=freeHatchery();
-  if(house)assignIncubation(egg,house);
+  autoAssignWaitingEggs();
   return egg;
 }
 function autoAssignWaitingEggs(){

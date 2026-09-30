@@ -208,6 +208,74 @@ function paintHabitatBiome(element,theme,time,night){
       structureLine([[-.32,.13],[0,.22],[.32,.13]],'#fff9df',.015);
       break;
     }
+    case 'war':{
+      structurePlinth('#864347','#6a303e','#462c37','#f4a36e');
+      structurePoly([[-.35,.1],[-.35,-.42],[0,-.58],[.35,-.42],[.35,.1]],
+        '#773642','#f9b66a',.02);
+      structurePoly([[-.2,-.19],[0,-.46],[.2,-.19],[.16,-.03],[0,-.1],[-.16,-.03]],
+        '#c65b42','#f8d599',.018);
+      for(const x of [-.35,.35]){
+        structureLine([[x,.06],[x,-.68]],'#fbd494',.024);
+        structurePoly([[x,-.7],[x-.06,-.58],[x+.06,-.58]],'#f6bb70');
+      }
+      structureGlow(0,-.23,.25,'#f5944566');break;
+    }
+    case 'pure':{
+      structurePlinth('#a87faa','#785482','#553c70','#fff0fa');
+      structureEllipse(0,.08,.4,.14,'#bc8cbb','#f7d6ed',.02);
+      for(const x of [-.3,.3]){
+        structurePoly([[x-.06,.03],[x-.07,-.43],[x,-.56],[x+.07,-.43],[x+.06,.03]],
+          '#f5d9f0','#ffffff',.016);
+        structureGlow(x,-.43,.13,'#ffb8f174');
+      }
+      structurePoly([[-.19,-.1],[0,-.63],[.19,-.1]],'#e9bee4','#fff4ff',.022);
+      structurePoly([[-.13,-.15],[0,-.53],[.13,-.15]],'#f9e9f8');
+      structureGlow(0,-.29,.31,'#fbd4ff66');break;
+    }
+    case 'legend':{
+      structurePlinth('#60458e','#3b315f','#2b284c','#bfa2ed');
+      structureEllipse(0,.06,.4,.16,'#402c64','#d3b7ff',.02);
+      for(const x of [-.23,.23]){
+        structurePoly([[x-.11,.04],[x-.065,-.43],[x,-.62],[x+.065,-.43],[x+.11,.04]],
+          '#7457a2','#d8c2fb',.018);
+        structureGlow(x,-.44,.2,'#b597ff70');
+      }
+      ctx.beginPath();
+      for(let i=0;i<65;i++){
+        const t=i/64*Math.PI*2,x=.2*Math.sin(t),y=-.35+.11*Math.sin(t)*Math.cos(t);
+        if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle='#f3d8ff';ctx.lineWidth=.03;ctx.stroke();break;
+    }
+    case 'primal':{
+      structurePlinth('#777458','#595944','#424339','#d6d1aa');
+      structurePoly([[-.38,.1],[-.31,-.24],[-.16,-.44],[.16,-.44],[.34,-.21],[.38,.1]],
+        '#62614b','#d8d0a5',.021);
+      for(const x of [-.27,0,.27]){
+        structurePoly([[x-.085,-.21],[x,-.58-(x===0?.09:0)],[x+.085,-.21]],
+          '#b4a87f','#e8ddac',.015);
+      }
+      structureEllipse(0,-.2,.15,.16,'#d0c496','#625c48',.018);
+      structureLine([[-.09,-.2],[0,-.34],[.09,-.2],[0,-.07],[-.09,-.2]],
+        '#eee2b9',.016);break;
+    }
+    case 'time':{
+      structurePlinth('#908085','#625c6d','#494456','#f0e4d2');
+      structureEllipse(0,.05,.39,.16,'#61576c','#e4c7a8',.025);
+      for(const x of [-.3,.3]){
+        structurePoly([[x-.04,.05],[x-.04,-.48],[x+.04,-.48],[x+.04,.05]],
+          '#b5a6a0','#f3e0bf',.012);
+      }
+      structureEllipse(0,-.4,.2,.2,'#d7c9b8','#f9eaca',.03);
+      structureEllipse(0,-.4,.14,.14,'#766d79','#f9eaca',.014);
+      for(let i=0;i<12;i++){
+        const a=i*Math.PI/6;
+        structureLine([[Math.sin(a)*.14,-.4-Math.cos(a)*.14],
+          [Math.sin(a)*.18,-.4-Math.cos(a)*.18]],'#fff1d9',.014);
+      }
+      structureLine([[0,-.4],[0,-.51],[.085,-.34]],'#fff1d9',.019);
+      structureGlow(0,-.4,.3,'#e8d5b563');break;
+    }
     case 'metal':{
       structurePlinth('#9baeb1','#627884','#455a68','#e0ece9');
       structureEllipse(0,.045,.39,.15,'#536c78','#c8d8d4',.027);

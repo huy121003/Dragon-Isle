@@ -340,6 +340,34 @@ check('30 Double Element designs draw at baby, young and adult stages',()=>{
     assert(balance.drawCalls.length>before,id+' must draw at level '+level);
   }
 });
+check('every catalog species draws with the rebuilt renderer',()=>{
+  const ids=db.species.map(s=>s.id),silhouettes=new Set();
+  for(let index=0;index<ids.length;index++){
+    const id=ids[index],level=[1,15,40][index%3];
+    balance.drawCalls.length=0;
+    balance.run('drawDragon(ctx,{dragon:{id:0,species:'+JSON.stringify(id)+',level:'+level+
+      '},x:150,y:150,time:2200,scale:1,activity:{id:"walk"}})');
+    assert(balance.drawCalls.some(call=>call[0]==='fill'),id+' needs a painted body');
+    if(id.indexOf('>')<0)silhouettes.add(JSON.stringify(balance.drawCalls
+      .filter(call=>call[0]==='moveTo'||call[0]==='lineTo').slice(0,30)));
+  }
+  assert.equal(ids.length,1770);
+  assert.equal(silhouettes.size,15,'Every primary element needs distinct geometry');
+  balance.drawCalls.length=0;
+});
+check('articulated wings, head and tail change across frames',()=>{
+  for(const id of ['fire','water','wind','war','time','fire>fire>water>thunder']){
+    const frames=[];
+    for(const time of [900,2200]){
+      balance.drawCalls.length=0;
+      balance.run('drawDragon(ctx,{dragon:{id:0,species:'+JSON.stringify(id)+
+        ',level:40},x:120,y:120,time:'+time+',scale:1,activity:{id:"walk"}})');
+      frames.push(JSON.stringify(balance.drawCalls));
+    }
+    assert.notEqual(frames[0],frames[1],id+' needs motion between frames');
+  }
+  balance.drawCalls.length=0;
+});
 check('rare breeding, 100000 roll Monte Carlo',()=>{
  game.run('state.dragons[0].species="fire>water>earth";state.dragons[0].level=35;'+
   'state.dragons[1].species="wind>ice>thunder";state.dragons[1].level=35');

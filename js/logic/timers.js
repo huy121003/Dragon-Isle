@@ -8,7 +8,7 @@ function activeTimers(){
       startedAt:b.upgradeStartedAt,end:b.upgradeEnds});
     if(b.type==="farm"&&b.crop)tasks.push({kind:"crop",id:b.id,
       label:"🌱 "+cropById(b.crop.id).name,startedAt:b.crop.startedAt,end:b.crop.readyAt});
-    if(b.type==="cave"&&b.breeding)tasks.push({kind:"breed",id:b.id,
+    if(isBreedingCave(b)&&b.breeding)tasks.push({kind:"breed",id:b.id,
       label:"💞 "+buildingName(b),startedAt:b.breeding.startedAt,end:b.breeding.readyAt});
   });
   state.eggs.forEach(function(egg){

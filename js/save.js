@@ -351,7 +351,7 @@ function migrateSave(raw){
     return out;
   });
   result.buildings.forEach(function(b){
-    if(b.type!=="cave"||!b.breeding)return;
+    if(!isBreedingCave(b)||!b.breeding)return;
     const breed=b.breeding;
     breed.fatherSpecies=mapSpecies(breed.fatherSpecies);
     breed.motherSpecies=mapSpecies(breed.motherSpecies);
@@ -359,7 +359,7 @@ function migrateSave(raw){
     if(!DATA.species[breed.result]||!DATA.species[breed.fatherSpecies]||
       !DATA.species[breed.motherSpecies])b.breeding=null;
     else breed.startedAt=Number(breed.startedAt)||
-      breed.readyAt-breedingSeconds(DATA.species[breed.result].rarity,b.level)*1000;
+      breed.readyAt-breedingSeconds(DATA.species[breed.result].rarity,b.level,b)*1000;
   });
   result.discovered=[...new Set((Array.isArray(raw.discovered)?raw.discovered:[])
     .concat(result.dragons.map(function(d){return d.species;}))

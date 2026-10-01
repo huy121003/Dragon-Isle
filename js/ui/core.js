@@ -140,10 +140,10 @@ function updateInspector(){
       ' ready to hatch. Ready eggs occupy a nest until collected or sold.</p>'+
       '<div class="actions"><button class="btn good" data-action="hatchery-menu" data-id="'+b.id+
       '">Manage eggs</button></div>';
-  }else if(b.type==="cave"){
+  }else if(isBreedingCave(b)){
     body+='<p>'+(b.breeding?(b.breeding.readyAt<=Date.now()?"The bred egg is ready.":"Breeding"):
       "Choose two dragons at level 5 or above to breed.")+'</p><div class="actions"><button class="btn good" data-action="breeding-menu" data-id="'+b.id+
-      '">Open Breeding Cave</button></div>';
+      '">Open '+esc(buildingName(b))+'</button></div>';
   }else if(b.type==="arena"){
     body+='<p>Set attack and defense teams to challenge another player.</p><div class="actions">'+
       '<button class="btn good" data-action="open-arena">Enter Arena</button></div>';

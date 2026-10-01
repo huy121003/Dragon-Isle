@@ -93,6 +93,17 @@
     .shop-icon{display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:15px;background:#e5f4ef;font-size:26px}
     .shop-item b,.dragon-card b{display:block}.shop-item small,.dragon-card small{display:block;color:#728491;margin-top:4px;line-height:1.35}
     .shop-item strong{margin-left:auto;white-space:nowrap;color:#a77720;font-size:13px}
+    .premium-cave-offer{background:linear-gradient(135deg,#e5f7f3,#fff6dc);border-color:#dfcb9a}
+    .premium-cave-offer .shop-icon{background:#d0ede8;color:#6b6798}
+    .premium-cave-offer strong{color:#8550ae}
+    .premium-breeding-banner{display:flex;align-items:center;gap:14px;padding:14px 17px;margin:0 0 13px;
+      color:#295c69;background:linear-gradient(125deg,#d5f2ed,#f8f7df 70%,#f6e6be);border:2px solid #e6d298;border-radius:17px}
+    .premium-seal{display:grid;place-items:center;flex:none;width:58px;height:58px;border-radius:50%;
+      background:radial-gradient(circle,#fffbe2,#a6e2d9 72%,#6eacb7);color:#7d5da8;font-size:37px;box-shadow:0 3px 10px #3f777a55}
+    .premium-breeding-banner b,.premium-breeding-banner small{display:block}
+    .premium-breeding-banner small{margin-top:4px;line-height:1.4}
+    .premium-breeding-screen .breed-probabilities,.premium-breeding-screen .breed-results{
+      background:linear-gradient(145deg,#f3faf6,#fff8e8);border:1px solid #e3d5af;border-radius:15px;padding:12px}
     .food-offer{min-width:0;flex-wrap:wrap}
     .food-offer-copy{min-width:0;flex:1 1 110px}
     .food-offer strong{margin-left:auto}
@@ -104,6 +115,16 @@
       box-shadow:inset 0 -9px 16px #3354661c,0 3px 8px #30586621;overflow:hidden}
     .dragon-preview canvas{display:block;width:100%;height:100%}
     .dragon-preview.large{width:100%;height:172px;max-width:310px;margin:0 auto 10px;border-width:4px;border-radius:22px}
+    .breed-parents{display:flex;align-items:flex-start;justify-content:center;gap:12px;margin:10px 0 16px}
+    .breed-parent{flex:1;min-width:0;max-width:245px;text-align:center}
+    .breed-parent .dragon-preview.large{height:138px;margin-bottom:7px}
+    .breed-parent b,.breed-parent small{display:block;overflow-wrap:anywhere}
+    .breed-parent .element-list{justify-content:center}
+    .breed-heart{align-self:center;color:#b86aa8;font-size:28px}
+    .breed-ready-egg{height:112px;display:grid;place-items:center;margin:4px auto}
+    .breed-egg-art{display:block;transform:scale(1.7)}
+    .premium-breeding{background:linear-gradient(145deg,#e9f8f4,#fff8e6);border:1px solid #dfca9b}
+    @media(max-width:480px){.breed-parents{gap:5px}.breed-parent .dragon-preview.large{height:106px}}
     .dragon-detail{padding:2px}.dragon-detail-heading{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
     .dragon-detail-heading h3{margin:0;font-size:20px}.dragon-detail h4{margin:16px 0 8px;font-size:14px}
     .dragon-stars{display:inline-flex;gap:3px;align-items:center;margin:3px 0;color:#d18a14;font-size:21px;line-height:1.1;letter-spacing:1px}.dragon-star.empty{color:#a9b9bd}.dragon-star.filled{text-shadow:0 1px 2px #80470955}.star-upgrade{margin:15px 0;padding:12px;border:1px solid #e9d49a;border-radius:12px;background:#fff9e9}.star-upgrade h4{margin:0 0 7px}.star-upgrade p{margin:7px 0;font-size:13px;line-height:1.45}

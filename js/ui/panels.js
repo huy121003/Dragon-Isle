@@ -63,6 +63,10 @@ function renderShop(){
       '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every 5 player levels · four crop levels · 9×6 tiles</small></span><strong>● '+money(DATA.buildings.farm.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="cave"'+(state.buildings.some(b=>b.type==="cave")?' disabled':'')+'><span class="shop-icon">💞</span>'+
       '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● '+money(DATA.buildings.cave.cost)+'</strong></button>'+
+      '<button class="shop-item premium-cave-offer" data-action="choose-build" data-type="premiumCave"'+
+      (state.buildings.some(b=>b.type==="premiumCave")?' disabled':'')+'><span class="shop-icon">✧</span>'+
+      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>One only · 12×9 tiles · 20% faster · 20% more chance for 3+ elements</small></span>'+
+      '<strong>♦ '+money(DATA.buildings.premiumCave.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● '+money(DATA.buildings.academy.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● '+money(DATA.buildings.arena.cost)+'</strong></button>'+
       '';
@@ -243,7 +247,7 @@ function renderInventory(){
   if(!stored.length)html+='<p>Select a building on the island and choose Store.</p>';
   stored.forEach(function(b){
     html+='<button class="shop-item" data-action="place-inventory" data-id="'+b.id+'"><span class="shop-icon">'+
-      (b.type==="habitat"?DATA.elements[b.element].mark:b.type==="farm"?"🌱":b.type==="hatchery"?"🥚":b.type==="cave"?"💞":b.type==="arena"?"⚔️":"🚩")+
+      (b.type==="habitat"?DATA.elements[b.element].mark:b.type==="farm"?"🌱":b.type==="hatchery"?"🥚":isBreedingCave(b)?"💞":b.type==="arena"?"⚔️":"🚩")+
       '</span><span><b>'+buildingName(b)+'</b><small>Level '+b.level+' · '+
       reservedFootprint(b).w+'×'+reservedFootprint(b).h+' tiles · tap to place on the island</small></span></button>';
   });
@@ -377,20 +381,24 @@ function breedingChanceLabel(chance){
 /* UI: Tier totals add to 100%; individual dragon odds keep their precision. */
 function renderBreeding(id){
   const cave=buildingById(id);
-  if(!cave||cave.type!=="cave"||cave.stored){closeModal();return;}
-  dom.title.textContent="💞 Breeding Cave";
+  if(!isBreedingCave(cave)||cave.stored){closeModal();return;}
+  const premium=cave.type==='premiumCave';
+  dom.title.textContent=(premium?'✧ ':'💞 ')+buildingName(cave);
   if(cave.breeding){
     const ready=cave.breeding.readyAt<=Date.now();
     const father=dragonById(cave.breeding.fatherId),mother=dragonById(cave.breeding.motherId);
     const parents=[father,mother].map(function(d,i){
       const id=d?d.species:(i?cave.breeding.motherSpecies:cave.breeding.fatherSpecies);
       const s=DATA.species[id];
-      return '<div class="breed-parent">'+dragonPortrait(id,d?.level||1,'small')+
+      return '<div class="breed-parent">'+dragonPortrait(id,d?.level||1,'large')+
         '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+'</small>'+
         '<span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></div>';
     }).join('<strong class="breed-heart">♥</strong>');
-    dom.body.innerHTML='<div class="note">The bred egg enters an available Hatchery nest.</div>'+
-      '<div class="panel"><div class="breed-parents">'+parents+'</div><p>'+
+    dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · 20% faster · 20% higher relative chance for 3+ elements. ':'')+
+      'The bred egg enters an available Hatchery nest.</div>'+
+      '<div class="panel '+(premium?'premium-breeding':'')+'"><div class="breed-parents">'+parents+'</div>'+
+      (ready?'<div class="breed-ready-egg" aria-label="Bred egg ready"><span class="breed-egg-art">'+
+        eggShellHtml({species:cave.breeding.result},true)+'</span></div>':'')+'<p>'+
       (ready?"Breeding finished. The egg is ready.":"Breeding.")+'</p>'+
       inlineTimer(cave.breeding.startedAt,cave.breeding.readyAt)+
       (ready?'<button class="btn good" data-action="collect-breeding" data-id="'+id+'">Collect bred egg</button>':
@@ -418,7 +426,9 @@ function renderBreeding(id){
   if(!available.some(function(d){return d.id===ui.breedDraft.father;}))ui.breedDraft.father=available[0].id;
   if(!available.some(function(d){return d.id===ui.breedDraft.mother&&d.id!==ui.breedDraft.father;}))
     ui.breedDraft.mother=available.find(function(d){return d.id!==ui.breedDraft.father;}).id;
-  let html='<div class="note">Choose two dragons at level 5 or above. Each parent has its own element filter and name search.</div>'+ 
+  let html=(premium?'<div class="premium-breeding-banner"><span class="premium-seal">✧</span><div><b>Celestial Breeding Sanctuary</b>'+
+    '<small>20% faster · 1.20× chance for dragons with 3 or more elements</small></div></div>':'')+
+    '<div class="note">Choose two dragons at level 5 or above. Each parent has its own element filter and name search.</div>'+
     '<div class="breed-selection">';
   [["father","Father"],["mother","Mother"]].forEach(function(slot){
     const filter=ui['breed'+(slot[0]==='father'?'Father':'Mother')+'Elements'];
@@ -445,7 +455,7 @@ function renderBreeding(id){
   const father=dragonById(ui.breedDraft.father),mother=dragonById(ui.breedDraft.mother);
   if(father.id===mother.id)html+='<div class="note">Choose two different dragons.</div>';
   else{
-    const options=breedingOptions(father,mother);
+    const options=breedingOptions(father,mother,cave);
     const tiers=[['1 element',s=>s.elements.length===1],['2 elements',s=>s.elements.length===2],
       ['3 elements',s=>s.elements.length===3],
       ['4 elements',s=>s.elements.length===4&&s.rarity!=="transcendent"],
@@ -459,7 +469,7 @@ function renderBreeding(id){
     const fractional=tiers.map(function(_,i){return i;}).sort(function(a,b){return hundredths[b]%1-hundredths[a]%1;});
     for(let i=0;i<remainder;i++)totals[fractional[i]]++;
     html+='<section class="breed-probabilities"><h3>Offspring probabilities</h3>'+
-      '<p class="muted">Chance for the selected parents. Each breed makes one roll. A tier shows the combined chance of all its possible dragons.</p>'+
+      '<p class="muted">Chance for the selected parents in this '+esc(buildingName(cave))+'. Each breed makes one roll. A tier shows the combined chance of all its possible dragons.</p>'+
       '<div class="breed-chances">'+totals.map(function(n,i){return '<div class="breed-chance '+
         (n?'':'unavailable')+'"><small>'+tiers[i][0]+'</small><b>'+(n/100).toFixed(2)+
         '%</b><span>'+byTier[i].length+' possible '+(byTier[i].length===1?'dragon':'dragons')+'</span></div>';}).join('')+'</div></section>'+
@@ -483,7 +493,7 @@ function renderBreeding(id){
       '" data-father="'+father.id+'" data-mother="'+mother.id+'">Start breeding</button></div>';
   }
   html+='<div class="actions"><button class="btn" data-action="open-recipes">View known breeding recipes</button></div>';
-  dom.body.innerHTML=html;
+  dom.body.innerHTML=premium?'<div class="premium-breeding-screen">'+html+'</div>':html;
   renderDragonPortraits();
 }
 function renderRecipes(){
@@ -569,7 +579,7 @@ function renderReveal(info){
 function renderWelcome(report){
   dom.title.textContent="☀️ Welcome back!";
   const readyEggs=state.eggs.filter(function(egg){return egg.hatcheryId&&egg.readyAt<=Date.now();}).length;
-  const readyCaves=state.buildings.filter(function(b){return b.type==="cave"&&b.breeding&&b.breeding.readyAt<=Date.now();}).length;
+  const readyCaves=state.buildings.filter(function(b){return isBreedingCave(b)&&b.breeding&&b.breeding.readyAt<=Date.now();}).length;
   dom.body.innerHTML='<div class="note">The island kept running while you were away, for up to 12 hours. Tap a Habitat to collect its gold.</div>'+
     '<div class="panel"><h3>Over '+duration(report.elapsed/1000)+'</h3><p>Habitats produced <b>'+
     goldDecimal(report.gold)+' gold</b> to collect.'+(report.finished?'<br>'+report.finished+' buildings finished upgrading.':'')+

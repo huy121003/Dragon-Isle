@@ -35,10 +35,10 @@ let storageAvailable = true;
 let saveWarningShown = false;
 const ui = {modal:null,shopTab:"special",bookTab:"all",bookPage:0,guideTab:"start",
   breedFatherElements:[],breedMotherElements:[],breedFatherQuery:"",breedMotherQuery:"",
-  dragonElements:[],bookElements:[],fixedDay:false,dayOffset:0,
+  dragonElements:[],bookElements:[],fixedDay:false,dayOffset:0,debugIso:false,
   returnModal:null,
   breedDraft:{father:null,mother:null},selection:null,mode:null,pointers:new Map(),gesture:null,
-  camera:{x:DATA.size*DATA.tile/2,y:DATA.size*DATA.tile/2,zoom:.9},
+  camera:{x:0,y:0,zoom:.9},
   toastTimer:0,particleCursor:0,particles:Array.from({length:110},function(){return {life:0};})};
 const dom = {
   canvas:document.getElementById("island"),stage:document.getElementById("stage"),
@@ -139,12 +139,15 @@ function reservedFootprint(b){
 }
 function buildingCenter(b){
   const f=buildingFootprint(b);
-  return {x:(b.x+f.w/2)*DATA.tile,y:(b.y+f.h/2)*DATA.tile};
+  return gridToScreen(b.x+f.w/2,b.y+f.h/2);
 }
-function buildingAt(x,y){return state.buildings.find(function(b){
+function buildingAt(x,y){return state.buildings.filter(function(b){
   const f=reservedFootprint(b);
   return !b.stored&&x>=b.x&&x<b.x+f.w&&y>=b.y&&y<b.y+f.h;
-});}
+}).sort(function(a,b){
+  const af=reservedFootprint(a),bf=reservedFootprint(b);
+  return (b.x+bf.w-1+b.y+bf.h-1)-(a.x+af.w-1+a.y+af.h-1);
+})[0]||null;}
 function placementFootprint(mode){
   return mode.kind==="buy"?buildingFootprint({type:mode.type,level:1}):
     reservedFootprint(buildingById(mode.id));

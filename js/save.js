@@ -424,7 +424,8 @@ function factoryReset(){
   saveReadOnly=false;
   ui.selection=null;ui.bookTab="all";ui.bookPage=0;ui.shopTab="buildings";
   stopMode();closeModal();
-  ui.camera.x=750*DATA.tile;ui.camera.y=750*DATA.tile;
+  const home=DATA.islands[0],center=gridToScreen(home.x+home.size/2,home.y+home.size/2);
+  ui.camera.x=center.x;ui.camera.y=center.y;
   updateUI();saveGame();
   toast("The island has been reset. Enjoy!");
 }

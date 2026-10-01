@@ -2,6 +2,10 @@
   "version": 4,
   "size": 1500,
   "tile": 12,
+  "tileW": 64,
+  "tileH": 32,
+  "originX": 0,
+  "originY": 0,
   "legacyGridOffset": 164,
   "legacyGridScale": 3,
   "footprints": {

@@ -104,6 +104,8 @@ function renderShop(){
       '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to 500 gold, 50 food, 10 gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+ 
       '<button class="btn danger" data-action="factory-reset">Reset game</button></div>'+
       '<div class="panel"><h3>Testing</h3><button class="btn" data-action="topup-test">Grant test resources</button>'+
+      '<button class="btn" data-action="toggle-iso-debug" aria-pressed="'+ui.debugIso+'">'+
+      (ui.debugIso?'✓ Isometric debug: on':'◇ Isometric debug: off')+'</button>'+
       '<p>Sets a minimum of 10 million gold, 100,000 food and 10,000 gems.</p></div>';
   }else{
     const price=window.DragonEconomy.progression.foodGoldPrice;
@@ -469,7 +471,7 @@ function renderBreeding(id){
       group.forEach(function(option){
         const s=DATA.species[option.id],known=state.discovered.includes(s.id);
         html+='<div class="egg-card">'+eggShellHtml({species:s.id},false)+
-          '<div><b>'+(known?esc(s.name):'Undiscovered result')+'</b><small>'+
+          '<div><b>'+(known?esc(s.name):'???')+'</b><small>'+
           (known?elementBadges(s)+rarityGem(s.rarity,s.elements[0]):'Revealed when the egg hatches')+'</small></div><strong>'+
           breedingChanceLabel(option.chance)+'</strong>'+
           (known?'<button class="btn" data-action="book-detail" data-species="'+s.id+'">View</button>':'')+'</div>';

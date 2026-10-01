@@ -1,7 +1,12 @@
 "use strict";
 
-/* All structures are drawn in a common oblique 2D projection. One local unit is
-   the shortest footprint edge; gameplay hitboxes and upgrade footprints stay exact. */
+/* The art shares the projected footprint; a local unit scales with its diamond. */
+let structureBase=null,structureBounds=null;
+function trackStructure(points){
+  if(!structureBounds)return;
+  for(const [x] of points){structureBounds.min=Math.min(structureBounds.min,x);
+    structureBounds.max=Math.max(structureBounds.max,x);}
+}
 function eggBounce(ready,time,index){return ready?-Math.abs(Math.sin(time*.007+index*.8))*8:0;}
 function nestSlots(level){
   return {1:[[0,.12]],2:[[-.2,.14],[.2,.14]],
@@ -11,6 +16,7 @@ function nestSlots(level){
     [Math.min(5,Math.max(1,level))];
 }
 function structurePoly(points,fill,stroke,line=0){
+  trackStructure(points);
   ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
   for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);
   ctx.closePath();
@@ -18,11 +24,13 @@ function structurePoly(points,fill,stroke,line=0){
   if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=line||.014;ctx.stroke();}
 }
 function structureLine(points,color,width=.014){
+  trackStructure(points);
   ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
   for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);
   ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
 }
 function structureEllipse(x,y,rx,ry,fill,stroke,width=.014){
+  trackStructure([[x-rx,y],[x+rx,y]]);
   ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);
   ctx.fillStyle=fill;ctx.fill();
   if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
@@ -33,6 +41,13 @@ function structureGlow(x,y,r,color){
   ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);
 }
 function structurePlinth(top,side,front,rim){
+  if(structureBase){
+    const [a,b,c,d]=structureBase,depth=.055;
+    structurePoly([d,c,[c[0],c[1]+depth],[d[0],d[1]+depth]],side);
+    structurePoly([b,c,[c[0],c[1]+depth],[b[0],b[1]+depth]],front);
+    structurePoly([a,b,c,d],top,rim,.016);
+    return;
+  }
   structurePoly([[-.51,.04],[0,.23],[0,.285],[-.51,.095]],side);
   structurePoly([[0,.23],[.51,.04],[.51,.095],[0,.285]],front);
   structurePoly([[-.51,.04],[0,-.17],[.51,.04],[0,.23]],top,rim,.016);
@@ -300,15 +315,22 @@ function paintHabitat(b,time,night){
   const theme=DATA.habitatThemes[b.element]||DATA.habitatThemes.fire;
   const e=b.element;
   paintHabitatBiome(e,theme,time,night);
-  const dragons=occupants(b),n=dragons.length;
-  dragons.forEach((d,i)=>{
+  const dragons=occupants(b),n=dragons.length,f=buildingFootprint(b);
+  const walkers=dragons.map((d,i)=>{
     const phase=time*.0007+d.id*2.17;
     const lane=(i-(n-1)/2)*Math.min(.32,.65/Math.max(1,n-1));
     const motion=DATA.dragonForms[DATA.species[d.species].elements[0]].motion;
     const travel=n>2?.04:motion==='hover'||motion==='swim'?.05:.08;
     const walk=Math.sin(phase)*travel;
-    ctx.save();ctx.scale(1/structureUnit,1/structureUnit);
-    drawDragon(ctx,{dragon:d,x:(lane+walk)*structureUnit,y:-.035*structureUnit,
+    const shift=lane+walk;
+    const c=b.x+f.w/2+shift*f.w,
+      r=b.y+f.h/2-shift*f.h+Math.sin(phase*.71)*.08;
+    return {dragon:d,c,r,phase};
+  }).sort((a,b)=>a.c+a.r-b.c-b.r);
+  walkers.forEach(({dragon:d,c,r,phase})=>{
+    const point=gridToScreen(c,r),center=buildingCenter(b);
+    ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
+    drawDragon(ctx,{dragon:d,x:point.x-center.x,y:point.y-center.y-.035*structureUnitY,
       time,facing:Math.cos(phase)<0?-1:1,scale:n>2?.43:.53});ctx.restore();
   });
   if(!n){ctx.fillStyle=theme.accent;ctx.textAlign='center';ctx.font='bold .28px system-ui';
@@ -368,8 +390,8 @@ function paintHatchery(b,time,night){
     const [x,y]=slot,r=b.level>=4?.078:.10;
     structureEllipse(x,y+.065,r*1.2,r*.42,'#79583f','#e9ca85',.012);
     structureLine([[x-r*.8,y+.06],[x,y+.085],[x+r*.8,y+.06]],'#f9e2a1',.014);
-    if(eggs[i]){ctx.save();ctx.scale(1/structureUnit,1/structureUnit);
-      drawEgg(ctx,eggs[i],x*structureUnit,(y-.02)*structureUnit,time,
+    if(eggs[i]){ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
+      drawEgg(ctx,eggs[i],x*structureUnitX,(y-.02)*structureUnitY,time,
         Math.min(.85,structureUnit/130));ctx.restore();}
   });
   structureLantern(-.36,-.05,'#ffcf88',time,night);
@@ -437,14 +459,14 @@ function paintCave(b,time,night){
   }
   if(b.breeding){
     if(b.breeding.readyAt<=Date.now()){
-      ctx.save();ctx.scale(1/structureUnit,1/structureUnit);
+      ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
       drawEgg(ctx,{id:b.id,species:b.breeding.result,readyAt:Date.now()-1},
-        0,.06*structureUnit,time,.72);ctx.restore();
+        0,.06*structureUnitY,time,.72);ctx.restore();
     }else{
       for(const [i,id] of [b.breeding.fatherId,b.breeding.motherId].entries()){
         const d=dragonById(id);if(!d)continue;
-        ctx.save();ctx.scale(1/structureUnit,1/structureUnit);
-        drawDragon(ctx,{dragon:d,x:(i? .14:-.14)*structureUnit,y:.11*structureUnit,
+        ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
+        drawDragon(ctx,{dragon:d,x:(i? .14:-.14)*structureUnitX,y:.11*structureUnitY,
           time,scale:.33,facing:i?-1:1});ctx.restore();
       }
       ctx.font='bold .17px system-ui';ctx.fillStyle='#ffe3ee';ctx.textAlign='center';
@@ -461,14 +483,21 @@ function paintFlag(b,time,night){
   structureBanner(.02,-.45,'#d46b62','#fff0bd',time);
   for(const s of [-1,1])structureEllipse(s*.18,.025,.04,.025,'#879d62');
 }
-let structureUnit=1;
+let structureUnit=1,structureUnitX=1,structureUnitY=1;
 function drawBuilding(b,time){
-  const f=buildingFootprint(b),cx=(b.x+f.w/2)*DATA.tile,cy=(b.y+f.h/2)*DATA.tile;
-  const unit=Math.min(f.w,f.h)*DATA.tile*(b.type==='decor'?1:1.13);
+  const f=buildingFootprint(b),v=footprintVertices(b.x,b.y,f.w,f.h);
+  const center=gridToScreen(b.x+f.w/2,b.y+f.h/2);
+  const width=Math.max(...v.map(p=>p.x))-Math.min(...v.map(p=>p.x));
+  const height=Math.max(...v.map(p=>p.y))-Math.min(...v.map(p=>p.y));
+  const unitX=width/1.02,unitY=height/.4,unit=Math.min(unitX,unitY);
   const night=1-daylightAt(Date.now());
-  ctx.save();ctx.translate(cx,cy);ctx.scale(unit,unit);
+  const anchor=v[2];
+  ctx.save();ctx.translate(anchor.x,anchor.y);ctx.scale(unitX,unitY);
+  ctx.translate((center.x-anchor.x)/unitX,(center.y-anchor.y)/unitY);
+  structureBase=v.map(p=>[(p.x-center.x)/unitX,(p.y-center.y)/unitY]);
+  structureBounds=ui.debugIso?{min:Infinity,max:-Infinity}:null;
   // Animation code below converts back to local pixels for drawDragon/drawEgg.
-  structureUnit=unit;
+  structureUnit=unit;structureUnitX=unitX;structureUnitY=unitY;
   if(b.type==='habitat')paintHabitat(b,time,night);
   else if(b.type==='farm')paintFarm(b,time,night);
   else if(b.type==='hatchery')paintHatchery(b,time,night);
@@ -480,5 +509,13 @@ function drawBuilding(b,time){
     structureGlow(0,-.68,.27,'#e1b7ff99');
     structurePoly([[-.08,-.64],[0,-.76],[.08,-.64]],'#efd6ff','#775e96',.012);
   }
+  const bounds=structureBounds;
+  if(ui.debugIso&&bounds.min<Infinity&&
+    (bounds.min<-.561||bounds.max>.561)){
+    ctx.fillStyle='#ff5555';ctx.font='bold .08px system-ui';ctx.textAlign='center';
+    ctx.fillText('⚠ sprite exceeds base',0,-.92);
+  }
+  structureBase=null;structureBounds=null;
   ctx.restore();
+  return bounds;
 }

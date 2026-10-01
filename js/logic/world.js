@@ -144,7 +144,8 @@ function completePlacement(x,y){
     toast("Built "+buildingName(building)+".");
   }
   const f=placementFootprint(mode);
-  burst((x+f.w/2)*DATA.tile,(y+f.h/2)*DATA.tile,"#fff3b8",12);
+  const effect=gridToScreen(x+f.w/2,y+f.h/2);
+  burst(effect.x,effect.y,"#fff3b8",12);
   AUDIO.play("place");
   stopMode();
   updateUI();

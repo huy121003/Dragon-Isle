@@ -11,7 +11,7 @@ function unlockLand(x,y,currency){
   }else if(!spendGold(cost))return;
   state.regions.push(region.id);state.expansions+=tiles.length;
   gainPlayerXP(window.DragonEconomy.progression.landXp);
-  burst((x+.5)*DATA.tile,(y+.5)*DATA.tile,"#c9f89b",15);
+  const effect=gridToScreen(x+.5,y+.5);burst(effect.x,effect.y,"#c9f89b",15);
   ui.selection=null;
   AUDIO.play("place");updateUI();saveGame();
 }
@@ -31,20 +31,20 @@ function unlockIsland(index){
 }
 function focusIsland(index){
   const island=DATA.islands[index];if(!island)return;
-  ui.camera.x=(island.x+island.size/2)*DATA.tile;
-  ui.camera.y=(island.y+island.size/2)*DATA.tile;
-  ui.camera.zoom=clamp(Math.min(viewW/(island.size*DATA.tile*2.1),viewH/(island.size*DATA.tile*2.1)),.19,.44);
+  const center=gridToScreen(island.x+island.size/2,island.y+island.size/2);
+  ui.camera.x=center.x;ui.camera.y=center.y;
+  ui.camera.zoom=clamp(Math.min(viewW/(island.size*DATA.tileW*1.15),
+    viewH/(island.size*DATA.tileH*1.15)),.08,.75);
   clampCamera();
   ui.selection=null;closeModal();updateUI();
 }
 function showWorld(){
-  const minX=Math.min(...DATA.islands.map(i=>i.x-i.size*.25))-35;
-  const maxX=Math.max(...DATA.islands.map(i=>i.x+i.size*1.25))+35;
-  const minY=Math.min(...DATA.islands.map(i=>i.y-i.size*.25))-35;
-  const maxY=Math.max(...DATA.islands.map(i=>i.y+i.size*1.25))+55;
-  ui.camera.x=(minX+maxX)*DATA.tile/2;
-  ui.camera.y=(minY+maxY)*DATA.tile/2;
-  ui.camera.zoom=Math.min(viewW/((maxX-minX)*DATA.tile),viewH/((maxY-minY)*DATA.tile));
+  const points=DATA.islands.flatMap(i=>footprintVertices(i.x,i.y,i.size,i.size));
+  const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
+  ui.camera.x=(Math.min(...xs)+Math.max(...xs))/2;
+  ui.camera.y=(Math.min(...ys)+Math.max(...ys))/2;
+  ui.camera.zoom=Math.min(viewW/((Math.max(...xs)-Math.min(...xs))*1.15),
+    viewH/((Math.max(...ys)-Math.min(...ys))*1.15));
   clampCamera();ui.selection=null;closeModal();updateUI();
 }
 function upgradeBuilding(id){

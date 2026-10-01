@@ -168,6 +168,12 @@ function extendCatalog(db,game){
   }
   if(fourSets.size!==ids.length*(ids.length-1)*(ids.length-2)*(ids.length-3)/24)
     throw Error('Incomplete four-element catalog.');
+  const quads=Object.fromEntries(db.species.filter(s=>s.elements.length===4&&
+    new Set(s.elements).size===4).map(s=>[s.elements.slice().sort().join('|'),s.id]));
+  if(db.quads&&(Object.keys(db.quads).length!==Object.keys(quads).length||
+    Object.entries(db.quads).some(([elements,id])=>quads[elements]!==id)))
+    throw Error('The canonical quads map does not match the dragon catalog.');
+  db.quads=quads;
   if(ids.some(id=>doubleElements.elements[id]?.length!==2)||
     Object.keys(doubleElements.elements).length!==ids.length)
     throw Error('Each element needs two Double Element designs.');

@@ -14,9 +14,10 @@ gainPlayerXP(0);
 if(!await saveGame()){showAuthMessage("Unable to save profile. Check the server and reload.");return;}
 authScreen.hidden=true;document.getElementById("game").hidden=false;
 resizeCanvas();
-ui.camera.zoom=clamp(Math.min(viewW/(100*DATA.tile),viewH/(120*DATA.tile)),.23,.42);
-ui.camera.x=(DATA.islands[0].x+DATA.islands[0].size/2)*DATA.tile;
-ui.camera.y=(DATA.islands[0].y+DATA.islands[0].size/2)*DATA.tile;
+const home=DATA.islands[0],homeCenter=gridToScreen(home.x+home.size/2,home.y+home.size/2);
+ui.camera.zoom=clamp(Math.min(viewW/(home.size*DATA.tileW*1.15),
+  viewH/(home.size*DATA.tileH*1.15)),.1,.75);
+ui.camera.x=homeCenter.x;ui.camera.y=homeCenter.y;
 updateUI();
 if(offline.elapsed>=60000)openModal("welcome",offline);
 dom.canvas.addEventListener("pointerdown",pointerDown);

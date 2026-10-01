@@ -6,7 +6,6 @@ const BREED_TIER_WEIGHTS={
   "2+2":[20,80],"2+3":[18,82],"2+4":[16,84],
   "3+3":[16,84],"3+4":[15,85],"4+4":[14,86]
 };
-const FOUR_FULL_INHERIT_BIAS=50;
 function breedingOptions(father,mother){
   if(!father||!mother||father.id===mother.id)return [];
   const F=DATA.species[father.species],M=DATA.species[mother.species];
@@ -28,9 +27,10 @@ function breedingOptions(father,mother){
       if(canInherit(parts)&&DATA.species[id])groups[2].push(id);
     }
   }
-  groups[3]=pool.length<3?[]:FOUR_IDS.filter(function(id){
+  groups[3]=pool.length<4?[]:FOUR_IDS.filter(function(id){
     const parts=DATA.species[id].elements;
-    return parts.filter(e=>pool.includes(e)).length>=3&&canInherit(parts);
+    return parts.every(e=>pool.includes(e))&&canInherit(parts)&&
+      DRAGON_DB.quads[parts.slice().sort().join('|')]===id;
   });
   const readyForDouble=F.elements.length===4&&M.elements.length===4&&
     F.elements[0]===M.elements[0]&&
@@ -44,7 +44,7 @@ function breedingOptions(father,mother){
   const rules=window.DragonEconomy.breeding,avg=(father.level+mother.level)/2;
   const three=groups[2].length?Math.min(rules.threeCap,
     rules.threeBase+Math.floor(avg/10)*rules.threePerTenLevels):0;
-  const four=groups[3].length&&F.elements.length===3&&M.elements.length===3?
+  const four=groups[3].length&&F.elements.length===3&&M.elements.length===3&&pool.length>=4?
     Math.min(rules.fourCap,rules.fourBase+
       Math.floor(Math.max(0,avg-rules.fourGrowthStartLevel)/10)*rules.fourPerTenLevels):0;
   const double=groups[4].length?Math.min(rules.doubleCap,
@@ -56,10 +56,8 @@ function breedingOptions(father,mother){
     if(!ids.length||!weights[index])return [];
     const bias=ids.map(function(id){
       const parts=DATA.species[id].elements;
-      const inherited=parts.filter(e=>pool.includes(e)).length;
-      const match=index===3&&inherited===4?FOUR_FULL_INHERIT_BIAS:1;
-      return match*(1+.3*parts.filter(e=>F.elements.includes(e)&&M.elements.includes(e)).length+
-        .1*(F.elements.includes(parts[0])?1:0)+.1*(M.elements.includes(parts[0])?1:0));
+      return 1+.3*parts.filter(e=>F.elements.includes(e)&&M.elements.includes(e)).length+
+        .1*(F.elements.includes(parts[0])?1:0)+.1*(M.elements.includes(parts[0])?1:0);
     });
     const groupTotal=bias.reduce(function(sum,n){return sum+n;},0);
     return ids.map(function(id,i){return {id:id,chance:weights[index]*bias[i]/groupTotal};});

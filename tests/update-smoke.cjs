@@ -377,7 +377,7 @@ check('guide navigation and game-driven help pages',()=>{
  assert(game.element('sheetBody').innerHTML.includes('Thay đổi gần đây'));
  assert.equal(game.run('ui.guideTab'),'updates');
 });
-check('16 element-ordered islands preserve the original save indices',()=>{
+check('16 element-ordered islands open in two compact rings around home',()=>{
  assert.equal(game.run('DATA.islands.length'),16);
   assert.deepEqual(snapshot(game,'DATA.islands.slice(11).map(i=>i.element)'),['war','pure','legend','primal','time']);
  assert(game.run('DATA.islands.every(i=>i.size===72)'));
@@ -386,18 +386,27 @@ check('16 element-ordered islands preserve the original save indices',()=>{
  assert.equal(game.run('islandRegionTotal(0)'),9);
  const islands=JSON.parse(game.run('JSON.stringify(DATA.islands)'));
  assert.equal(islands[0].x,714);assert.equal(islands[0].y,668);
- assert.equal(islands.filter(i=>i.x<islands[0].x-4).length,6);
- assert.equal(islands.filter(i=>i.x>islands[0].x+4).length,6);
- assert.equal(islands.filter(i=>Math.abs(i.x-islands[0].x)<=4).length,4);
- assert(islands.some(i=>i.y<islands[0].y-80)&&islands.some(i=>i.y>islands[0].y+90));
+ const home=islands[0],step=78;
+ for(let i=1;i<islands.length;i++){
+   const ring=Math.max(Math.abs(islands[i].x-home.x),Math.abs(islands[i].y-home.y))/step;
+   assert.equal(ring,i<=8?1:2,`${islands[i].id} is outside its unlock ring`);
+   assert(islands.slice(0,i).some(other=>
+     Math.max(Math.abs(other.x-islands[i].x),Math.abs(other.y-islands[i].y))===step),
+   `${islands[i].id} is detached from previously unlocked islands`);
+ }
  for(let i=0;i<islands.length;i++)for(let j=i+1;j<islands.length;j++){
    const a=islands[i],b=islands[j];
    const gapX=Math.max(0,Math.max(a.x,b.x)-Math.min(a.x+a.size,b.x+b.size));
    const gapY=Math.max(0,Math.max(a.y,b.y)-Math.min(a.y+a.size,b.y+b.size));
-   assert(Math.hypot(gapX,gapY)>=9,`${a.id} and ${b.id} overlap`);
+   assert(Math.hypot(gapX,gapY)>=6,`${a.id} and ${b.id} overlap`);
  }
- assert(Math.max(...islands.map(i=>i.x+i.size))-Math.min(...islands.map(i=>i.x))<650);
- assert(Math.max(...islands.map(i=>i.y+i.size))-Math.min(...islands.map(i=>i.y))<450);
+ assert(Math.max(...islands.map(i=>i.x+i.size))-Math.min(...islands.map(i=>i.x))<=384);
+ assert(Math.max(...islands.map(i=>i.y+i.size))-Math.min(...islands.map(i=>i.y))<=384);
+ const outline=snapshot(game,'islandOutline(DATA.islands[0],0)');
+ const corners=snapshot(game,'footprintVertices(714,668,72,72)');
+ assert.equal(outline.length,32);
+ for(let edge=0;edge<4;edge++)assert.deepEqual(outline[edge*8],corners[edge]);
+ assert(outline.some((p,n)=>n%8&&p.x!==corners[Math.floor(n/8)].x));
 });
 check('region purchase and placement work',()=>{
  game.run('state.gold=500000;unlockLand(739,691)');
@@ -717,9 +726,9 @@ saved10.land.push('540,460');
 saved10.buildings.push({id:89,type:'farm',level:1,x:540,y:460,stored:false});
 const close=await boot(JSON.stringify(saved10));
 assert.equal(close.run('state.version'),12);
-assert.equal(close.run('state.buildings[2].x'),642);
-assert.equal(close.run('state.buildings[2].y'),568);
-assert(close.run('unlocked(642,568)'));
+assert.equal(close.run('state.buildings[2].x'),725);
+assert.equal(close.run('state.buildings[2].y'),603);
+assert(close.run('unlocked(725,603)'));
 assert.equal(close.run('islandRegionCount(1)'),1);
 console.log('PASS v10 land and buildings move with closer islands');
 check('daylight cycle and gallery resources',()=>{

@@ -284,8 +284,7 @@ function renderHatchery(id){
   if(!b||b.type!=="hatchery"||b.stored){closeModal();return;}
   const incubating=eggsInHatchery(id),waiting=state.eggs.filter(function(egg){return egg.hatcheryId===null;});
   dom.title.textContent="🥚 Hatchery · "+incubating.length+"/"+hatcheryCapacity(b.level);
-  let html='<div class="note">Hatchery level '+b.level+' has '+hatcheryCapacity(b.level)+
-    ' nests. The shell hides the dragon inside. Speed up for one gem per five remaining minutes.</div>';
+  let html='<div class="note">Hatchery level '+b.level+' incubates one egg at a time. Take or sell the previous egg before starting the next. Speed up for one gem per five remaining minutes.</div>';
   if(!incubating.length)html+='<p>No eggs in this Hatchery.</p>';
   incubating.forEach(function(egg){
     const ready=egg.readyAt<=Date.now();
@@ -300,7 +299,7 @@ function renderHatchery(id){
       gemSkipCost(egg.readyAt,Date.now())+' Skip</button>')+'</div>';
   });
   html+='<h3>Stored eggs · '+waiting.length+'</h3>';
-  if(incubating.length>=hatcheryCapacity(b.level))html+='<p>The Hatchery is full. Upgrade it for more nests.</p>';
+  if(incubating.length>=hatcheryCapacity(b.level))html+='<p>The nest is occupied. Take or sell this egg before incubating another.</p>';
   else if(!waiting.length)html+='<p>Buy an egg in the Shop or collect one from the Breeding Cave.</p>';
   else waiting.forEach(function(egg){
     html+='<div class="egg-card">'+eggShellHtml(egg,false)+
@@ -352,7 +351,7 @@ function renderChooseHatchery(eggId){
     return b.type==="hatchery"&&!b.stored&&eggsInHatchery(b.id).length<hatcheryCapacity(b.level);
   });
   let html='<div class="cards">';
-  if(!rooms.length)html+='<div class="note">No Hatchery has an empty nest. Upgrade your Hatchery.</div>';
+  if(!rooms.length)html+='<div class="note">No Hatchery has an empty nest. Take or sell the current egg first.</div>';
   rooms.forEach(function(b){
     html+='<button class="shop-item" data-action="start-incubation" data-id="'+eggId+'" data-building="'+b.id+'">'+
       '<span class="shop-icon">🥚</span><span><b>Hatchery level '+b.level+'</b><small>'+

@@ -71,6 +71,7 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
   assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId===null).length'),1);
   lifecycle.run('state.eggs[0].readyAt=Date.now()-1;autoAssignWaitingEggs();');
   assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId!==null).length'),1);
+  assert.equal(lifecycle.run('hatcheryCapacity(5)'),1);
   lifecycle.run('state.eggs.shift();autoAssignWaitingEggs();');
   assert.equal(lifecycle.run('state.eggs[0].hatcheryId'),3);
   lifecycle.run('state.buildings.push({id:92,type:"cave",stored:false,breeding:null});'+

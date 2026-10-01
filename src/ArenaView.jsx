@@ -163,31 +163,59 @@ function battleSnapshot(before,events,frame){
   return snapshot;
 }
 const effectIcons={fire:'🔥',water:'💧',earth:'◆',wind:'🌀',ice:'❄',thunder:'⚡',
-  nature:'❀',dark:'☾',light:'✦',metal:'⚔',neutral:'✹'};
+  nature:'❀',dark:'☾',light:'✦',metal:'⚔',neutral:'⚔'};
 const illustratedEffects=new Set(['war','pure','legend','primal','time']);
+const effectNames={poison:'POISON',regen:'REGEN',heal:'HEAL',cleanse:'CLEANSE',
+  freeze:'FROZEN',vitality:'MAX HP ↑',damage_up:'DAMAGE ↑',damage_down:'DAMAGE ↓',
+  armor_up:'ARMOR ↑',armor_down:'ARMOR ↓',damage_reduction:'GUARD',accuracy_down:'ACCURACY ↓'};
+function MatchupMark({value}){
+  if(value!==1.5&&value!==.75)return null;
+  const strong=value>1,label=strong?'Strong':'Weak';
+  return <span className={'matchup-mark '+(strong?'strong':'weak')}
+    title={`${label} elemental matchup · ×${value}`} aria-label={`${label} · ×${value}`}>
+    <span aria-hidden="true">{strong?'▲':'▼'}</span> {label.toUpperCase()}</span>;
+}
+function DamageMarks({event}){
+  return <span className="fx-marks">
+    {event.damage>0&&<MatchupMark value={event.matchup}/>}
+    {event.damage>0&&event.critical&&<span className="matchup-mark crit" aria-label="Critical hit · ×1.5">
+      <span aria-hidden="true">✦</span> CRIT</span>}
+  </span>;
+}
 export function SkillEffect({event,frame}){
-  if(!event||(!event.damage&&!event.heal&&!event.special&&!event.skipped))return null;
+  if(!event||(!event.damage&&!event.heal&&!event.special&&!event.skipped&&!event.misses))return null;
   const theme=game()?.data?.elements?.[event.element];
   const element=theme||effectIcons[event.element]?event.element:'neutral';
   const color=theme?.color||'#f7cf80';
   const illustrated=illustratedEffects.has(element);
   const effect=event.effect||'strike';
+  const support=event.special&&!event.damage||!!event.statusTick||!!event.skipped;
+  const self=event.targetSide===event.side||event.statusTick||event.skipped;
   const caption=event.heal?'+'+fmt.format(event.heal)+' HP':event.damage?
-    '−'+fmt.format(event.damage)+(event.critical?' CRIT!':''):
-    event.misses?'MISS'+(event.hits?' · '+event.hits+' HIT':''):
-    event.skipped?'SKIPPED':'STATUS';
+    '−'+fmt.format(event.damage):event.misses?'MISS':
+    event.skipped?'FROZEN':effectNames[effect]||'STATUS';
+  const styleType=event.statusTick||event.skipped?'status-tick':
+    event.special?'special':event.element?'elemental':'normal';
   return <div key={frame} className={'battle-skill-fx element-'+element+' '+
     (event.side==='attack'?'toward-right':'toward-left')+
-    (event.targetSide===event.side?' self-target':'')+
-    (event.critical?' critical':'')+' effect-'+effect+(event.special?' special special-'+
+    (self?' self-target':'')+(support?' support':'')+
+    (event.critical?' critical':'')+(event.misses&&!event.damage?' missed':'')+
+    ' '+styleType+' effect-'+effect+(event.special?' special-'+
       (event.skillId?.endsWith('-double-2')?'mantle':'crown'):'')}
     style={{'--fx':color}} aria-label={`${event.skill}: ${caption}`}>
     <span className="fx-trail"/><span className="fx-projectile"><i>{illustrated?
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href={'#flag-'+element}/></svg>:
       effectIcons[element]}</i></span>
+    {event.special&&<span className="fx-special-seal" aria-hidden="true">
+      {[0,1].map(i=><span key={i}>{illustrated?
+        <svg viewBox="0 0 24 24"><use href={'#flag-'+element}/></svg>:effectIcons[element]||'✦'}</span>)}</span>}
     <span className="fx-impact"><span className="fx-core"/><span className="fx-ring"/>
       {Array.from({length:8},(_,i)=><span key={i} className="fx-particle" style={{'--i':i}}/>)}</span>
-    <strong className="fx-damage">{caption}{event.hits>1&&' · '+event.hits+' HITS'}</strong>
+    <span className={'fx-damage '+(event.heal?'healing':'')} role="status">
+      <strong>{caption}</strong><DamageMarks event={event}/>
+      {event.hits>1&&<small>{event.hits} HITS</small>}
+      {event.misses>0&&event.hits>0&&<small>{event.misses} MISS</small>}
+    </span>
     <small className="fx-skill-name">{event.skill}</small>
   </div>;
 }
@@ -219,7 +247,9 @@ function Battle({arena}){
     [presentation,frame,arena.data?.battle]);
   if(!battle)return null;
   const attacker=battle.attack[battle.activeAttack],defender=battle.defense[battle.activeDefense];
-  const event=presentation?.events[frame-1],impact=event?.damage||event?.heal||event?.special?event:null;
+  const event=presentation?.events[frame-1];
+  const impact=event&&(event.damage||event.heal||event.special||event.skipped||event.misses)?event:null;
+  const attacking=impact&&impact.targetSide!==impact.side&&!impact.statusTick&&!impact.skipped;
   const disabled=arena.busy||arena.animating;
   const skillOptions=attacker.skills.filter(Boolean);
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ BATTLE · TURN {battle.turn}</small>
@@ -232,7 +262,7 @@ function Battle({arena}){
         <div className="battle-hp"><div><span style={{width:(attacker.hp/attacker.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(attacker.hp)} / {fmt.format(attacker.maxHp)} HP</small></div>
         <StatusIcons dragon={attacker}/>
-        <div key={impact?frame:'idle'} className={'battle-dragon '+(impact?.side==='attack'?'lunge':'')+(impact?.side==='defense'?' struck':'')}>
+        <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='attack'?'lunge':'')+(attacking&&impact.side==='defense'?' struck':'')}>
           <Portrait dragon={attacker} large/></div></div>
       <span className="battle-vs">VS</span>
       <div className="battle-side opponent"><div className="battle-name"><b>{defender.nickname} · Lv{defender.level}</b>
@@ -240,7 +270,7 @@ function Battle({arena}){
         <div className="battle-hp"><div><span style={{width:(defender.hp/defender.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(defender.hp)} / {fmt.format(defender.maxHp)} HP</small></div>
         <StatusIcons dragon={defender}/>
-        <div key={impact?frame:'idle'} className={'battle-dragon '+(impact?.side==='defense'?'lunge':'')+(impact?.side==='attack'?' struck':'')}>
+        <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='defense'?'lunge':'')+(attacking&&impact.side==='attack'?' struck':'')}>
           <Portrait dragon={defender} large facing={-1}/></div></div>
       {impact&&<SkillEffect event={impact} frame={frame}/>}
       {arena.pendingSkill&&<div className="battle-charge" aria-live="polite">
@@ -248,17 +278,23 @@ function Battle({arena}){
       </div>}
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
-    <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':'Turn: '+attacker.nickname}</h3></div>
-      <div className="battle-skill-grid">{skillOptions.map(skill=><Button key={skill.index}
+    <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':'Turn: '+attacker.nickname}</h3>
+      <p className="battle-matchup-key">▲ Strong ×1.5 · ▼ Weak ×0.75 · based on the opponent's primary element</p></div>
+      <div className="battle-skill-grid">{skillOptions.map(skill=>{
+        const offensive=skill.element&&(!skill.special||skill.power+skill.bonus>0);
+        const matchup=offensive?game()?.skillMatchup?.(skill.element,defender.species):1;
+        return <Button key={skill.index}
           disabled={disabled||!skill.unlocked||skill.remainingCooldown>0}
           className={'battle-skill '+(skill.unlocked?'':'locked')+(skill.special?' special':'')}
           onClick={()=>send({action:'arena-skill',skill:skill.index})}>
-          <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>{skill.name}</span>
+          <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>
+            <span className="battle-skill-name">{skill.name}</span>
+            {skill.unlocked&&<MatchupMark value={matchup}/>}</span>
           <small>{!skill.unlocked?'Unlocks at Lv'+skill.unlockLevel:
             skill.remainingCooldown?'Cooldown · '+skill.remainingCooldown+' turns':
             skill.special?skill.description+' · CD '+skill.cooldown:
             skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
-            Math.round(skill.power*100)+'% base attack'}</small></Button>)}</div>
+            Math.round(skill.power*100)+'% base attack'}</small></Button>;})}</div>
       <b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
         <Button key={dragon.id} disabled={disabled} onClick={()=>send({action:'arena-switch',id:dragon.id})}>
           <Portrait dragon={dragon}/><span>{dragon.nickname}<small>{fmt.format(dragon.hp)} HP · {badges(dragon.species)}</small></span></Button>)}</div>
@@ -270,7 +306,9 @@ function Battle({arena}){
       {e.switchTo?'🔄 '+e.switchTo+' enters the arena':e.forfeit?'🏳️ Forfeit':
         e.skipped?`${e.actor} missed a turn · Frozen`:
         `${e.actor} used ${e.skill} → ${e.target}: `+
-        (e.heal?'+'+e.heal+' HP':e.damage?'−'+e.damage+' HP':e.misses?'Missed':'Status applied')+
+        (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')+
+        (e.damage&&e.matchup===1.5?' · ▲ Strong':e.damage&&e.matchup===.75?' · ▼ Weak':'')+
+        (e.damage&&e.critical?' · ✦ Crit':'')+
         (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div>
   </div>;
 }

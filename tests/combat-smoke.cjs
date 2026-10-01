@@ -52,5 +52,12 @@ try{
   const expected=Math.min(target(['ice']).hp,combat.damage(fire,target(['ice']),flame,db.typeChart));
   assert.equal(first.side,'attack');
   assert.equal(first.damage,expected,'Arena damage must match shared combat rules');
+  assert.equal(first.matchup,1.5,'Combat event reports the actual target primary matchup');
+  const counter=arena.fight(fighters,[{id:3,species:'water',level:25,nickname:'Water'}]).events[1];
+  assert.equal(counter.side,'defense');
+  assert.equal(counter.skill,'Tidal Surge','Defense should choose its strongest effective attack');
+  assert.equal(counter.matchup,1.5);
+  const neutral=arena.fight(fighters,[{id:4,species:'fire',level:25,nickname:'Mirror'}]).events[1];
+  assert.equal(neutral.skill,'Inferno Burst','Without a counter, defense should favor higher damage');
 }finally{Math.random=random;}
 console.log('PASS element chart, three stats, skills, defense primary and server damage');

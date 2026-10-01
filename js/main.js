@@ -76,6 +76,10 @@ requestAnimationFrame(frame);
 window.DragonGame={
   get state(){return state;},get ui(){return ui;},get account(){return currentAccount;},
   data:DATA,speciesIds:BOOK_SPECIES_IDS,
+  skillMatchup(element,targetSpecies){
+    const target=DATA.species[targetSpecies];
+    return target?window.DragonCombat.matchup(element,target.elements,DRAGON_DB.typeChart):1;
+  },
   xpNeeded:playerXPNeeded,
   action(dataset){handleAction({dataset:{...dataset}});window.dispatchEvent(new Event('dragon-ui-update'));},
   importSave(file){return importSaveJson(file);},

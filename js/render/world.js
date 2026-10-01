@@ -127,98 +127,80 @@ function islandPolygon(points,fill,stroke){
   ctx.closePath();ctx.fillStyle=fill;ctx.fill();
   if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.025;ctx.stroke();}
 }
-/* Landmarks live on the projected grid, behind buildings, with readable silhouettes at overview zoom. */
-function drawIslandLandmark(island,index,time){
-  const kind=island.element||'home',size=island.size,scale=size*DATA.tileW*.12;
-  const positions=[[.14,.11,1],[.74,.08,.53],[.08,.74,.48]];
-  positions.forEach(([dc,dr,ratio],variant)=>{
-    const at=gridToScreen(island.x+size*dc,island.y+size*dr);
-    ctx.save();ctx.translate(at.x,at.y);ctx.scale(scale*ratio,scale*ratio);
-    const color=islandColors(island);
-    ctx.globalAlpha=variant? .86:1;
-    ellipse(0,.12,.48,.145,color.shadow);
-    islandPolygon([[-.48,.1],[0,-.055],[.48,.1],[0,.265]],color.rim,color.accent);
-    const diamond=fill=>islandPolygon([[0,-.8],[.25,-.24],[0,.02],[-.25,-.24]],fill,color.rim);
-    switch(kind){
-    case 'fire':
-      islandPolygon([[-.45,.06],[-.29,-.82],[-.07,-.45],[.05,-1.23],[.35,.05]],'#362c35','#f06b37');
-      islandPolygon([[-.06,-.4],[.05,-1.21],[.18,-.45],[.04,-.59]],'#ff8b42');
-      islandPolygon([[-.16,.05],[.06,-.48],[.2,-.09],[.35,.09]],'#ff643b','#ffcb67');
-      ellipse(.08,-.18,.1,.16,'#ffe084');break;
-    case 'water':
-      ellipse(0,.03,.43,.16,'#1b759b');ellipse(0,-.01,.32,.115,'#9bf3e9');
-      islandPolygon([[-.17,.03],[-.08,-.7],[.08,-.87],[.17,.02]],'#b1f5e9','#f1ffff');
-      islandPolygon([[.12,-.68],[.25,-.93],[.35,-.45],[.16,-.12]],'#6dc8dd');
-      ellipse(-.02,-.64,.09,.085,'#eeffff');break;
-    case 'earth':
-      islandPolygon([[-.42,.08],[-.3,-.68],[-.05,-.95],[.04,-.32],[.27,-.69],[.41,.08]],'#795c4a','#e3be7d');
-      islandPolygon([[-.29,-.66],[-.05,-.95],[.04,-.32],[-.16,-.4]],'#d4ab70');
-      islandPolygon([[.18,-.65],[.3,-.96],[.41,-.55],[.31,-.15]],'#b58d5a');break;
-    case 'wind':
-      islandPolygon([[-.2,.08],[-.11,-.72],[0,-.98],[.11,-.72],[.2,.08]],'#d8eee1','#ffffff');
-      for(let n=0;n<3;n++){
-        const y=-.73+n*.2,wave=Math.sin(time*.0018+n)*.08;
-        ctx.beginPath();ctx.moveTo(-.42,y);
-        ctx.bezierCurveTo(-.12+wave,y-.21,.15-wave,y+.18,.41,y-.13);
-        ctx.strokeStyle=n?'#eefdf0':'#92d7db';ctx.lineWidth=.07-n*.012;ctx.stroke();
-      }break;
-    case 'ice':
-      for(const [x,y,h] of [[-.27,.05,.77],[.08,.08,1.22],[.32,.05,.86]])
-        islandPolygon([[x-.11,y],[x-.07,y-h*.72],[x,y-h],[x+.105,y-h*.55],[x+.1,y]],'#87d4e9','#ecffff');
-      islandPolygon([[.01,-1.12],[.08,-1.22],[.12,-.95]],'#ffffff');break;
-    case 'thunder':
-      ellipse(-.17,-.83,.29,.15,'#525272');ellipse(.12,-.89,.31,.19,'#686781');
-      ellipse(.29,-.77,.2,.13,'#4d4d70');
-      islandPolygon([[.06,-.78],[-.12,-.32],[.03,-.34],[-.13,.07],[.3,-.49],[.1,-.46],[.25,-.78]],
-        '#ffe56b','#fff7bc');break;
-    case 'nature':case 'home':
-      islandPolygon([[-.1,.1],[-.085,-.67],[.06,-.76],[.12,.1]],'#6c4937','#a57948');
-      ellipse(-.24,-.68,.3,.25,'#4f9c56');ellipse(.2,-.73,.32,.28,'#66b663');
-      ellipse(0,-.99,.27,.25,kind==='home'?'#b4de7b':'#388c58');
-      for(const [x,y] of [[-.35,-.3],[.36,-.25]])ellipse(x,y,.08,.09,'#f5dc88');break;
-    case 'dark':
-      islandPolygon([[-.33,.08],[-.21,-.87],[-.06,-.5],[.05,-1.19],[.29,-.53],[.34,.08]],
-        '#372e4e','#b29bd0');
-      ellipse(.08,-.75,.14,.16,'#bd9cdb');ellipse(.14,-.78,.14,.16,'#514461');break;
-    case 'light':
-      islandPolygon([[-.25,.07],[-.18,-.75],[0,-1.12],[.18,-.75],[.25,.07]],'#f0dc9c','#fff7d2');
-      ellipse(0,-.67,.21,.21,'#ffe5a1');ellipse(0,-.67,.105,.105,'#fffbea');
-      for(let n=0;n<8;n++){const a=n*Math.PI/4;
-        ctx.beginPath();ctx.moveTo(Math.cos(a)*.25,Math.sin(a)*.25-.67);
-        ctx.lineTo(Math.cos(a)*.36,Math.sin(a)*.36-.67);
-        ctx.strokeStyle='#ffefad';ctx.lineWidth=.04;ctx.stroke();}break;
-    case 'metal':
-      islandPolygon([[-.31,.07],[-.27,-.68],[-.1,-.91],[.12,-.91],[.29,-.68],[.31,.07]],
-        '#536b77','#d3e4df');
-      ellipse(0,-.46,.27,.27,'#b9ced0');ellipse(0,-.46,.15,.15,'#526e7d');
-      for(let n=0;n<8;n++){const a=n*Math.PI/4;
-        islandPolygon([[Math.cos(a)*.26,Math.sin(a)*.26-.46],
-          [Math.cos(a)*.37,Math.sin(a)*.37-.46],
-          [Math.cos(a+.2)*.37,Math.sin(a+.2)*.37-.46]],'#d3e5dd');}break;
-    case 'war':
-      islandPolygon([[-.35,.09],[-.35,-.64],[0,-.87],[.35,-.64],[.35,.09]],'#743d43','#e7a06f');
-      for(const x of [-.27,.27])islandPolygon([[x-.08,-.6],[x-.08,-.88],[x+.08,-.88],[x+.08,-.6]],'#a6584d');
-      islandPolygon([[0,-1.16],[.33,-1.04],[.22,-.79],[0,-.85]],'#d95a50','#ffe3a2');
-      ctx.beginPath();ctx.moveTo(0,-1.18);ctx.lineTo(0,.06);ctx.strokeStyle='#f6d18d';ctx.lineWidth=.035;ctx.stroke();break;
-    case 'pure':case 'legend':
-      ctx.beginPath();ctx.ellipse(0,-.45,.28,.43,0,0,Math.PI*2);
-      ctx.fillStyle=kind==='pure'?'#9b6cab':'#503678';ctx.fill();
-      ctx.strokeStyle=kind==='pure'?'#fbdaf4':'#d4a9ff';ctx.lineWidth=.085;ctx.stroke();
-      diamond(kind==='pure'?'#f8dcf0':'#9c78d5');
-      ellipse(0,-.45,.095,.12,'#fff0cf');break;
-    case 'primal':
-      for(const x of [-.29,0,.29])islandPolygon([[x-.09,.08],[x-.08,-.57-(x===0?.3:0)],
-        [x,-.73-(x===0?.3:0)],[x+.09,-.57-(x===0?.3:0)],[x+.09,.08]],'#747356','#e8dca5');
-      ellipse(0,-.51,.115,.11,'#cfbd84');break;
-    case 'time':
-      islandPolygon([[-.27,.08],[-.24,-.92],[.24,-.92],[.27,.08]],'#6d6170','#e9d9bd');
-      ctx.beginPath();ctx.ellipse(0,-.48,.25,.27,0,0,Math.PI*2);
-      ctx.fillStyle='#d1bfa4';ctx.fill();ctx.strokeStyle='#fff0d2';ctx.lineWidth=.07;ctx.stroke();
-      ctx.beginPath();ctx.moveTo(0,-.48);ctx.lineTo(0,-.67);
-      ctx.moveTo(0,-.48);ctx.lineTo(.13,-.4);ctx.stroke();break;
+/* A guardian rises from the upper rim. Its head and eyes face into the island. */
+function drawIslandGuardian(island,index,time){
+  const kind=island.element||'nature',form=DATA.dragonForms[kind],element=DATA.elements[kind];
+  if(!form||!element)return;
+  const colors=islandColors(island),stone=blendHex(colors.rim,colors.shadow,.35);
+  const dark=blendHex(colors.shadow,'#182b40',.2),light=blendHex(colors.rim,'#ffffff',.28);
+  const anchor=gridToScreen(island.x,island.y);
+  const unit=island.size*DATA.tileW/460;
+  ctx.save();ctx.translate(anchor.x,anchor.y);ctx.scale(unit,unit);
+  // The broad shoulders wrap around the two edges of the upper corner.
+  for(const side of [-1,1]){
+    ctx.save();ctx.scale(side,1);
+    const reach=form.wing==='none'?59:form.wing==='plate'?66:80;
+    const tip=form.wing==='fin'?[-8,-58]:
+      form.wing==='leaf'?[-15,-79]:form.wing==='feather'?[-28,-85]:
+      form.wing==='crystal'?[-38,-78]:[-35,-72];
+    artFill(ctx,[[16,-40],[35,-58],[reach,tip[1]],
+      [reach+5,tip[0]],[reach*.81,11],[49,27],[32,-10]],
+      form.wing==='none'?stone:dark,colors.shadow,2.3);
+    if(form.wing!=='none'){
+      artFill(ctx,[[34,-51],[reach,tip[1]],[reach*.81,11],[49,17]],
+        form.wing==='crystal'||form.wing==='plate'?light:stone,dark,1.8);
+      artStroke(ctx,[[36,-45],[reach*.74,-23],[reach*.81,11]],element.light,1.7);
     }
+    // Forearms and claws rest on the island edge instead of occupying a land tile.
+    artStroke(ctx,[[21,-18],[37,11],[56,31]],dark,13);
+    artStroke(ctx,[[21,-18],[37,11],[56,31]],stone,9);
+    artFill(ctx,[[47,25],[60,28],[68,35],[57,37],[45,33]],light,dark,1.5);
+    for(let claw=0;claw<3;claw++)
+      artFill(ctx,[[56+claw*4,33],[61+claw*4,40],[54+claw*4,37]],
+        element.light,dark,.8);
     ctx.restore();
-  });
+  }
+  const body=ctx.createLinearGradient(-33,-58,35,22);
+  body.addColorStop(0,light);body.addColorStop(.48,stone);body.addColorStop(1,dark);
+  artFill(ctx,[[-25,20],[-31,-29],[-19,-55],[0,-61],[19,-55],
+    [31,-29],[25,20],[0,27]],body,dark,2.6);
+  artFill(ctx,[[-12,-31],[0,-39],[12,-31],[17,15],[0,21],[-17,15]],
+    stone,dark,1.5);
+  for(const side of [-1,1]){
+    artStroke(ctx,[[side*8,-19],[side*12,5],[side*6,17]],light,1.5);
+  }
+  // A frontal muzzle and lowered pupils make the gaze point down at the island.
+  const jaw=form.head==='square'?23:form.head==='long'?15:19;
+  const snout=form.head==='long'?26:form.head==='beak'?19:14;
+  artFill(ctx,[[-jaw,-68],[-jaw*.7,-83],[0,-91],[jaw*.7,-83],[jaw,-68],
+    [jaw*.78,-47],[0,-37],[-jaw*.78,-47]],body,dark,2.5);
+  artFill(ctx,[[-10,-53],[0,-56],[10,-53],[form.head==='beak'?0:8,-42],
+    [0,-37],[-8,-42]],light,dark,1.3);
+  if(form.head==='beak')artFill(ctx,[[-8,-48],[0,-29],[8,-48]],stone,dark,1.2);
+  for(const side of [-1,1]){
+    ctx.save();ctx.scale(side,1);
+    if(form.crest==='antler'){
+      artStroke(ctx,[[12,-83],[24,-106],[20,-123]],stone,5);
+      artStroke(ctx,[[22,-102],[36,-117]],light,3);
+    }else if(form.crest!=='halo'){
+      const rise=form.crest==='crystal'||form.crest==='stone'?29:
+        form.crest==='gill'?15:form.crest==='curved'?34:25;
+      artFill(ctx,[[10,-83],[16,-83-rise*.65],[25,-83-rise],[23,-75]],
+        form.crest==='flame'||form.crest==='bolt'?element.light:light,dark,1.5);
+    }
+    ctx.globalAlpha=.85+.1*Math.sin(time*.0012+index);
+    artFill(ctx,[[5,-69],[16,-68],[13,-61],[6,-62]],element.light,dark,1);
+    ctx.globalAlpha=1;
+    artOval(ctx,11,-63,2,2.7,dark);
+    artOval(ctx,5,-47,1.5,1.2,dark);
+    ctx.restore();
+  }
+  if(form.crest==='halo'){
+    ctx.beginPath();ctx.ellipse(0,-103,27,9,0,0,Math.PI*2);
+    ctx.strokeStyle=element.light;ctx.lineWidth=3;ctx.stroke();
+  }
+  artFill(ctx,[[-5,-78],[0,-85],[5,-78],[0,-72]],element.light,dark,1);
+  ctx.restore();
 }
 function islandOutline(island,index){
   const corners=footprintVertices(island.x,island.y,island.size,island.size),points=[];
@@ -295,7 +277,7 @@ function drawFloatingIslands(lo,hi,time,drawContents){
     const island=DATA.islands[index];
     const v=footprintVertices(island.x,island.y,island.size,island.size);
     const xs=v.map(p=>p.x),ys=v.map(p=>p.y),depth=island.size*DATA.tileH*.22;
-    const edgeMargin=DATA.tileH*4;
+    const edgeMargin=island.size*DATA.tileW*.3;
     if(Math.max(...xs)+edgeMargin<lo.x||Math.min(...xs)-edgeMargin>hi.x||
       Math.max(...ys)+depth+edgeMargin<lo.y||Math.min(...ys)-edgeMargin>hi.y)return;
     const c=islandColors(island),opened=index<state.unlockedIslands;
@@ -352,7 +334,7 @@ function drawFloatingIslands(lo,hi,time,drawContents){
         }
       }
     }
-    drawIslandLandmark(island,index,time);
+    drawIslandGuardian(island,index,time);
     if(ui.camera.zoom<.25){
       ctx.fillStyle='#f4fbef';ctx.strokeStyle='#243946';ctx.lineWidth=4;
       ctx.textAlign='center';ctx.font='bold '+Math.min(400,Math.max(45,14/ui.camera.zoom))+'px system-ui';

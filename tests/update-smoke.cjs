@@ -741,6 +741,25 @@ check('canvas scene renders without errors',()=>{
  assert(game.drawCalls.some(call=>call[0]==='lineTo'));
  assert(game.drawCalls.some(call=>call[0]==='clip'));
 });
+check('islands and their buildings draw from upper left to lower right',()=>{
+ const order=snapshot(game,'islandDrawOrder()');
+ assert.equal(order.length,16);
+ assert(order.indexOf(7)<order.indexOf(1),'left island must draw before right island at the same height');
+ assert(order.indexOf(1)<order.indexOf(0),'upper island must draw before lower island');
+ const painted=snapshot(game,'(()=>{const landmarks=drawIslandLandmark,build=drawBuilding;'+
+   'const buildings=state.buildings,items=[];showWorld();'+
+   'state.buildings=[{id:901,type:"farm",x:720,y:596,level:1,stored:false},'+
+   '{id:902,type:"farm",x:720,y:674,level:1,stored:false}];'+
+   'drawIslandLandmark=(island,index)=>items.push("island:"+index);'+
+   'drawBuilding=b=>items.push("building:"+b.id);'+
+   'try{drawScene(12345,.016);}finally{drawIslandLandmark=landmarks;'+
+   'drawBuilding=build;state.buildings=buildings;}return items;})()');
+ assert.deepEqual(painted.filter(item=>item.startsWith('island:')),
+   order.map(index=>'island:'+index));
+ assert(painted.indexOf('island:1')<painted.indexOf('building:901'));
+ assert(painted.indexOf('building:901')<painted.indexOf('island:0'));
+ assert(painted.indexOf('island:0')<painted.indexOf('building:902'));
+});
 check('isometric tiles, footprints and touch coordinates share one projection',()=>{
  const configurable=snapshot(game,'(()=>{const old=[DATA.tileW,DATA.tileH,DATA.originX,DATA.originY];'+
    'DATA.tileW=72;DATA.tileH=36;DATA.originX=100;DATA.originY=-50;'+

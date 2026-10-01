@@ -22,22 +22,22 @@ function drawScene(time,dt){
   ctx.translate(-ui.camera.x,-ui.camera.y);
   const margin=DATA.tileW*2,lo=screenToWorld(-margin,-margin),
     hi=screenToWorld(viewW+margin,viewH+margin);
-  drawFloatingIslands(lo,hi,time);
-  drawIslandWeather(lo,hi,time);
   const visible=state.buildings.filter(b=>!b.stored).sort((a,b)=>{
     const af=buildingFootprint(a),bf=buildingFootprint(b);
     return (a.x+af.w-1+a.y+af.h-1)-(b.x+bf.w-1+b.y+bf.h-1)||a.id-b.id;
   });
-  visible.forEach(function(b){
-    const f=buildingFootprint(b),v=footprintVertices(b.x,b.y,f.w,f.h);
-    if(Math.max(...v.map(p=>p.x))<lo.x-margin||Math.min(...v.map(p=>p.x))>hi.x+margin||
-      Math.max(...v.map(p=>p.y))<lo.y-margin||Math.min(...v.map(p=>p.y))>hi.y+margin)return;
-    const index=islandAt(b.x,b.y);
-    ctx.save();ctx.translate(0,islandBob(index,time));drawBuilding(b,time);
-    if(ui.debugIso)drawDebugFootprint(b.x,b.y,f.w,f.h,'#a8efff',true);
-    ctx.restore();
-  });
-  if(ui.mode&&ui.mode.x!==null){
+  drawFloatingIslands(lo,hi,time,function(index){
+    drawIslandWeather(index,time);
+    visible.forEach(function(b){
+      if(islandAt(b.x,b.y)!==index)return;
+      const f=buildingFootprint(b),v=footprintVertices(b.x,b.y,f.w,f.h);
+      if(Math.max(...v.map(p=>p.x))<lo.x-margin||Math.min(...v.map(p=>p.x))>hi.x+margin||
+        Math.max(...v.map(p=>p.y))<lo.y-margin||Math.min(...v.map(p=>p.y))>hi.y+margin)return;
+      ctx.save();ctx.translate(0,islandBob(index,time));drawBuilding(b,time);
+      if(ui.debugIso)drawDebugFootprint(b.x,b.y,f.w,f.h,'#a8efff',true);
+      ctx.restore();
+    });
+    if(!ui.mode||ui.mode.x===null||islandAt(ui.mode.x,ui.mode.y)!==index)return;
     const x=ui.mode.x,y=ui.mode.y;
     if(inside(x,y)){
       const f=placementFootprint(ui.mode),valid=getBuildValid(x,y,ui.mode);
@@ -51,7 +51,7 @@ function drawScene(time,dt){
       if(ui.debugIso)drawDebugFootprint(x,y,f.w,f.h,valid?'#7bffc4':'#ff687d',true);
       ctx.restore();
     }
-  }
+  });
   if(ui.debugIso){
     for(const [index,island] of DATA.islands.slice(0,state.unlockedIslands).entries()){
       ctx.save();ctx.translate(0,islandBob(index,time));

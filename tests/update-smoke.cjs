@@ -311,7 +311,7 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
 check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"open-guide"}})');
  assert.equal(game.run('ui.modal.name'),'guide');
- assert.equal((game.element('sheetBody').innerHTML.match(/data-action="guide-tab"/g)||[]).length,9);
+ assert.equal((game.element('sheetBody').innerHTML.match(/data-action="guide-tab"/g)||[]).length,10);
  game.run('handleAction({dataset:{action:"guide-tab",tab:"elements"}})');
  const chart=game.element('sheetBody').innerHTML;
  assert(chart.includes('Xung khắc hệ')&&chart.includes('War'));

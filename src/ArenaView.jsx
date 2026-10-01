@@ -60,7 +60,7 @@ function Portrait({dragon,large=false,facing=1}){
   return <canvas ref={ref} className={'arena-portrait '+(large?'large':'')} width={large?290:112} height={large?230:96}
     aria-label={'Dragon '+(dragon?.nickname||speciesOf(dragon?.species)?.name||'')}/>;
 }
-function RosterCard({dragon,selected,onClick,disabled}){
+export function RosterCard({dragon,selected,onClick,disabled}){
   const s=speciesOf(dragon.species),rarity=game()?.data?.rarities?.[s?.rarity];
   return <button className={'arena-roster-card '+(selected?'selected':'')} type="button"
     onClick={onClick} disabled={disabled||(!dragon.canBattle&&!selected)} aria-pressed={selected}>
@@ -232,7 +232,7 @@ function StatusIcons({dragon}){
     aria-label={`${names[status.kind]||status.kind}: ${status.turns} actions remaining`}>
     {status.icon||'✦'}<sup>{status.turns}</sup></span>)}</div>;
 }
-function Battle({arena}){
+export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   const presentation=arena.presentation;
   const [frame,setFrame]=useState(0);
   const stageRef=useRef(null);
@@ -253,10 +253,13 @@ function Battle({arena}){
   const event=presentation?.events[frame-1];
   const impact=event&&(event.damage||event.heal||event.special||event.skipped||event.misses)?event:null;
   const attacking=impact&&impact.targetSide!==impact.side&&!impact.statusTick&&!impact.skipped;
-  const disabled=arena.busy||arena.animating;
+  const disabled=arena.busy||arena.animating||(challenge&&!myTurn);
+  const act=(action,payload={})=>challenge?onDuelAction({action,...payload}):
+    send({action:action==='forfeit'?'arena-forfeit':action==='skill'?'arena-skill':'arena-switch',
+      ...payload});
   const skillOptions=attacker.skills.filter(Boolean);
-  return <div className="arena-battle"><div className="battle-top"><div><small>⚔ BATTLE · TURN {battle.turn}</small>
-    <h2>{battle.opponent}</h2></div><Button danger onClick={()=>send({action:'arena-forfeit'})} disabled={disabled}>Forfeit</Button></div>
+  return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>
+    <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')} disabled={arena.busy||arena.animating}>Forfeit</Button></div>
     {arena.error&&<div className="arena-error">{arena.error}</div>}
     <div ref={stageRef} className={'battle-stage '+(impact?'fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
       <div className="battle-crowd"/><div className="battle-sun"/><div className="battle-floor"/>
@@ -281,7 +284,7 @@ function Battle({arena}){
       </div>}
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
-    <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':'Turn: '+attacker.nickname}</h3>
+    <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':challenge&&!myTurn?'Waiting for opponent…':'Turn: '+attacker.nickname}</h3>
       <p className="battle-matchup-key">▲ Strong ×1.5 · ▼ Weak ×0.75 · based on the opponent's primary element</p></div>
       <div className="battle-skill-grid">{skillOptions.map(skill=>{
         const offensive=skill.element&&(!skill.special||skill.power+skill.bonus>0);
@@ -289,7 +292,7 @@ function Battle({arena}){
         return <Button key={skill.index}
           disabled={disabled||!skill.unlocked||skill.remainingCooldown>0}
           className={'battle-skill '+(skill.unlocked?'':'locked')+(skill.special?' special':'')}
-          onClick={()=>send({action:'arena-skill',skill:skill.index})}>
+          onClick={()=>act('skill',challenge?{skillIndex:skill.index}:{skill:skill.index})}>
           <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>
             <span className="battle-skill-name">{skill.name}</span>
             {skill.unlocked&&<MatchupMark value={matchup}/>}</span>
@@ -299,7 +302,7 @@ function Battle({arena}){
             skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
             Math.round(skill.power*100)+'% base attack'}</small></Button>;})}</div>
       <b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
-        <Button key={dragon.id} disabled={disabled} onClick={()=>send({action:'arena-switch',id:dragon.id})}>
+        <Button key={dragon.id} disabled={disabled} onClick={()=>act('switch',challenge?{dragonId:dragon.id}:{id:dragon.id})}>
           <Portrait dragon={dragon}/><span>{dragon.nickname}<small>{fmt.format(dragon.hp)} HP · {badges(dragon.species)}</small></span></Button>)}</div>
     </div>
     <div className="battle-bench"><b>Attack team</b><div>{battle.attack.map((dragon,index)=><span key={dragon.id}

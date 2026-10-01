@@ -5,12 +5,15 @@ window.DragonEconomy={
     levelGems:1,milestoneGemBonus:2,landXp:80,islandXp:300,
     farmEveryLevels:5,maxFarms:12,feedBase:5,feedLinear:2,feedQuadratic:.12,
     goldLevelLinear:.08,goldLevelQuadratic:.0004,
-    foodGoldPrice:5},
+    foodGoldPrice:12},
   breeding:{threeBase:.04,threePerTenLevels:.005,threeCap:.08,
     fourBase:.005,fourPerTenLevels:.001,fourCap:.01,fourMinParentLevel:30,
     doubleBase:.002,doublePerTenLevels:.0005,doubleCap:.004,doubleMinParentLevel:35},
   land:{basePerTile:20,regionMultiplier:1.25},
-  habitat:{goldBase:1200,goldPerUnlockLevel:150,goldLevelFactor:2.4},
-  academy:{baseGold:1500,baseFood:300,baseGems:3,costFactor:2.5,baseUpgradeSeconds:300,timeFactor:2.2},
+  habitat:{goldBase:1800,goldPerUnlockLevel:220,goldLevelFactor:7.5},
+  shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
+    habitatRepeatLinear:.35,habitatRepeatQuadratic:.12,
+    eggBaseMultiplier:1.4,eggUnlockLinear:.16,eggUnlockQuadratic:.01},
+  academy:{baseGold:3000,baseFood:300,baseGems:3,costFactor:2.5,baseUpgradeSeconds:300,timeFactor:2.2},
   visual:{daySeconds:480,weatherParticles:10}
 };

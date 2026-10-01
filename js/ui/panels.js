@@ -52,7 +52,8 @@ function renderShop(){
       const need=ELEMENT_UNLOCK[element]||99,locked=state.player.level<need;
       html+='<button class="shop-item" data-action="choose-build" data-type="habitat" data-element="'+element+'"'+(locked?' disabled':'')+'>'+
         '<span class="shop-icon" style="color:'+e.color+'">'+elementFlag(element,false,'lg')+'</span><span><b>Habitat '+e.name+
-        '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+'</small></span><strong>● '+money(habitatPurchaseCost(element))+'</strong></button>';
+        '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+
+        ' · Purchased '+(state.habitatPurchases[element]||0)+'×</small></span><strong>● '+money(habitatPurchaseCost(element))+'</strong></button>';
     });
     html+='</div>';
   }else if(ui.shopTab==="special"){
@@ -61,9 +62,9 @@ function renderShop(){
     html+='<button class="shop-item" data-action="choose-build" data-type="farm"'+(farms>=limit?' disabled':'')+'><span class="shop-icon">🌱</span>'+
       '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every 5 player levels · four crop levels · 9×6 tiles</small></span><strong>● '+money(DATA.buildings.farm.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="cave"'+(state.buildings.some(b=>b.type==="cave")?' disabled':'')+'><span class="shop-icon">💞</span>'+
-      '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● 250</strong></button>'+ 
-      '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● 1,500</strong></button>'+
-      '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● 500</strong></button>'+ 
+      '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● '+money(DATA.buildings.cave.cost)+'</strong></button>'+
+      '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● '+money(DATA.buildings.academy.cost)+'</strong></button>'+
+      '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● '+money(DATA.buildings.arena.cost)+'</strong></button>'+
       '';
     html+='</div>';
   }else if(ui.shopTab==="decorations"){

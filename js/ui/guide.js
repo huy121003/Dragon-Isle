@@ -3,6 +3,7 @@
 /* The guide reads balance values from the same catalog and rules as gameplay.
    Add a GUIDE_UPDATES entry and amend the relevant section when rules change. */
 const GUIDE_UPDATES=[
+  {date:"01/10/2026",title:"Giá Shop, thời gian lai/ấp và cẩm nang",detail:"Chuồng cấp cao chứa nhiều vàng hơn; giá Chuồng tăng theo số lần mua từng hệ, điều chỉnh giá Shop và tăng thời gian lai/ấp bậc cao. Thêm lối tắt Arena khi đã xây Arena, cờ xung khắc và mô tả Special Skill."},
   {date:"01/10/2026",title:"Sức chứa Chuồng và XP người chơi",detail:"Tăng sức chứa vàng theo level Chuồng; giảm XP cần ở các level đầu để mở hệ mới sớm hơn và hiện XP hiện tại / XP cần trên thanh tiến độ."},
   {date:"01/10/2026",title:"Thu nhập rồng",detail:"Cân bằng tốc độ tăng vàng theo level, chỉ tính rồng ở Chuồng đang hoạt động; chốt thu nhập trước khi bán, chuyển Chuồng hoặc cho ăn."},
   {date:"01/10/2026",title:"Chi tiết cẩm nang",detail:"Thêm bảng 30 Special Skill, giá trứng một hệ và các mốc XP/phần thưởng mẫu; làm rõ điều kiện nhận hệ khi lai."},
@@ -66,7 +67,7 @@ function guideBreeding(){
     'Phần còn lại chia cho 1 và 2 hệ theo bảng dưới nếu có kết quả hợp lệ. Trong mỗi bậc, giống nhận hệ chung của bố mẹ có trọng số cao hơn; tỷ lệ từng giống có thể khác nhau.'
   ])+'<h3>Tỷ lệ chia phần còn lại cho 1 / 2 hệ</h3>'+guideTable(['Số hệ bố mẹ','1 hệ / 2 hệ'],tierRows)+
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Trong Hang','Trong Lồng ấp'],durationRows)+
-    '<h3>Nhận trứng</h3>'+guideList([
+    '<p class="muted">Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([
       'Hang lai không thể mở lượt mới khi chưa lấy trứng của lượt trước. Trứng lai từ Hang đó phải được ấp xong hoặc bán trước khi dùng Hang cho lượt khác.',
       'Lồng ấp hiện chỉ nhận một trứng mỗi lượt: phải lấy hoặc bán trứng cũ, kể cả khi đồng hồ đã hoàn tất. Trứng dư nằm ở Inventory và chờ ô trống.',
       'Khi trứng nở, cần Chuồng còn chỗ và cùng ít nhất một hệ của rồng. Giống mới được ghi vào Dragon Book; công thức của cặp bố mẹ được lưu trong Recipes.'
@@ -82,7 +83,8 @@ function guideIslands(){
       (price.vang?money(price.vang)+' vàng':money(price.gem)+' gem'):'—'];
   });
   const buildings=Object.entries(DATA.buildings).map(([type,b])=>[
-    esc(b.name),String(b.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất']);
+    esc(b.name),type==='hatchery'?'Có sẵn':type==='habitat'?'Theo hệ và lượt mua':money(b.cost)+' vàng',
+    String(b.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất']);
   const capacityRows=Array.from({length:DATA.buildings.habitat.maxLevel},(_,index)=>{
     const level=index+1;
     return [String(level),money(habitatGoldCapacity({type:'habitat',element:'fire',level})),
@@ -94,9 +96,11 @@ function guideIslands(){
     'Chuồng và trứng 1 hệ trong Shop mở theo level hệ bên dưới. Vùng đất mở theo ô vuông và phải nối với vùng đã sở hữu.'
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+
     '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level','Giá trứng 1 hệ'],unlocks)+
-    '<h3>Công trình</h3>'+guideTable(['Loại','Level tối đa','Kho / bán'],buildings)+
+    '<h3>Công trình</h3>'+guideTable(['Loại','Giá khởi điểm','Level tối đa','Kho / bán'],buildings)+
     '<h3>Sức chứa vàng mẫu theo cấp Chuồng</h3>'+guideTable(['Cấp Chuồng','Lửa','Time'],capacityRows)+
     guideList([
+      'Giá Chuồng phụ thuộc hệ được mở khóa và tổng số Chuồng hệ đó từng mua, kể cả những Chuồng đã bán. Ví dụ Chuồng Lửa tiếp theo giá '+money(habitatPurchaseCost('fire'))+' vàng; Chuồng Time tiếp theo giá '+money(habitatPurchaseCost('time'))+' vàng. Shop hiển thị giá thực tế và số lần mua.',
+      'Giá nâng cấp và tiền hoàn khi bán tính trên giá mua của chính Chuồng đó; mua thêm Chuồng không đổi chi phí nâng cấp hoặc giá bán của Chuồng cũ.',
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
       'Số Nông trại tối đa ở level hiện tại: '+farmLimit(state.player.level)+'. Mỗi '+window.DragonEconomy.progression.farmEveryLevels+' level người chơi mở thêm một ô, tối đa '+window.DragonEconomy.progression.maxFarms+'.',
       'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+DATA.buildings.hatchery.maxLevel+'; giới hạn mỗi lượt ấp vẫn là một trứng.'
@@ -122,6 +126,7 @@ function guideResources(){
     'Vàng cơ sở dựa vào bậc hiếm và level rồng; hạnh phúc, đói và cấp Chuồng điều chỉnh tiếp. Khi Chuồng đầy vàng, phải thu trước khi sản xuất tiếp.',
     'Mỗi rồng trong Chuồng hoạt động tạo '+DATA.gemPerDragonPerHour+' gem mỗi giờ, không tăng theo level. Tiến độ gem theo từng rồng được giữ khi chuyển Chuồng; Chuồng đầy gem thì dừng tạo thêm.',
     'Thức ăn dùng để cho rồng ăn và một số nâng cấp. Shop bán với giá '+money(window.DragonEconomy.progression.foodGoldPrice)+' vàng / thức ăn; Nông trại trồng cây để thu hoạch.',
+    'Shop tính giá trứng 1 hệ theo giá gốc của giống và mốc mở hệ; hệ mở muộn có giá cao hơn. Công trình có giá niêm yết; Chuồng tăng giá theo hệ và số lần đã mua, kể cả sau khi bán.',
     'Gem dùng mua đảo, một số trứng và tua thời gian; mỗi 5 phút còn lại khi tua tương ứng khoảng một gem.',
     'Mỗi lần tăng player level nhận vàng, thức ăn và gem; các level chia hết cho 5 có thêm gem.'
   ])+'<h3>Vàng cơ sở theo level rồng · mỗi giờ</h3>'+guideTable(
@@ -139,7 +144,7 @@ function guideResources(){
 }
 function guideArena(){
   return '<h3>Đội hình và lượt đánh</h3>'+guideList([
-    'Xây Arena, chọn đúng ba rồng từ level 10 cho đội tấn công và ba rồng cho đội phòng thủ. Rồng đang lai không tham gia.',
+    'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng ba rồng từ level 10 cho đội tấn công và ba rồng cho đội phòng thủ. Rồng đang lai không tham gia.',
     'Arena đánh theo lượt. Người chơi chọn skill hoặc đổi rồng (tốn một lượt); đội phòng thủ chọn skill đang mở và không hồi chiêu theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
     'Bốn ô skill mở theo level '+DATA.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
     'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân 1,5; ▼ Weak nhân 0,75; skill thường không có hệ nên hệ số là 1.',
@@ -150,24 +155,36 @@ function guideArena(){
   ])+'<div class="guide-callout">Chỉ báo Strong/Weak ở ô skill theo đối thủ đang đứng sân; khi đổi rồng, chúng được tính lại.</div>';
 }
 function guideSpecialSkills(){
-  const labels={poison:'Độc theo lượt',damage_up:'Tăng sát thương',damage_down:'Giảm sát thương',
-    armor_up:'Tăng giáp',armor_down:'Giảm giáp',damage_reduction:'Giảm sát thương nhận',
-    regen:'Hồi máu theo lượt',heal:'Hồi máu tức thì',freeze:'Mất lượt',
-    multi:'Đánh nhiều nhịp',cleanse:'Xóa trạng thái xấu và hồi máu',
-    vitality:'Tăng HP tối đa',accuracy_down:'Giảm độ chính xác'};
+  const detail=function(skill){
+    const e=skill.effect,percent=value=>+(value*100).toFixed(2)+'%',turns=e.duration+' lượt',
+      attack=skill.power>0?'Đòn đánh gây sát thương hệ theo '+percent(skill.power)+' tấn công gốc + '+
+        percent(skill.bonus||0)+' bổ sung, sau đó áp dụng khắc hệ, giáp và chí mạng. ':'Chiêu hỗ trợ thuần, không gây sát thương. ';
+    const effect={
+      poison:()=>`Gây độc lên mục tiêu, mất ${percent(e.value)} HP tối đa mỗi lượt trong ${turns}.`,
+      regen:()=>`Hồi ${percent(e.value)} HP tối đa mỗi lượt trong ${turns}.`,
+      heal:()=>`Hồi ngay ${percent(e.value)} HP tối đa.`,
+      cleanse:()=>`Gỡ các trạng thái bất lợi và hồi ngay ${percent(e.value)} HP tối đa.`,
+      vitality:()=>`Tăng HP tối đa ${percent(e.value)} trong ${turns} và hồi lượng HP tương ứng.`,
+      freeze:()=>`Đóng băng mục tiêu trong ${turns}, khiến mục tiêu mất lượt hành động.`,
+      multi:()=>`Tấn công ${e.hits} nhịp; mỗi nhịp có ${percent(e.missChance)} xác suất hụt và tính sát thương riêng.`,
+      damage_up:()=>`Tăng sát thương gây ra ${percent(e.value)} trong ${turns}.`,
+      damage_down:()=>`Giảm sát thương mục tiêu gây ra ${percent(e.value)} trong ${turns}.`,
+      armor_up:()=>`Tăng giáp của bản thân ${percent(e.value)} trong ${turns}.`,
+      armor_down:()=>`Giảm giáp mục tiêu ${percent(e.value)} trong ${turns}.`,
+      damage_reduction:()=>`Giảm sát thương bản thân nhận vào ${percent(e.value)} trong ${turns}.`,
+      accuracy_down:()=>`Giảm độ chính xác mục tiêu ${percent(e.value)} trong ${turns}.`
+    };
+    return attack+(effect[e.kind]?.()||esc(skill.description))+' Hồi chiêu '+skill.cooldown+' lượt.';
+  };
   const groups=Object.keys(DATA.elements).map(function(element){
-    const rows=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
-      const species=DATA.species[id],skill=skillsForSpecies(species)[3],effect=skill.effect;
-      const amount=effect.kind==='multi'?effect.hits+' nhịp · hụt '+(effect.missChance*100)+'% / nhịp':
-        effect.value!==undefined?+(effect.value*100).toFixed(2)+'%':'—';
-      return [esc(species.name),esc(skill.name),esc(labels[effect.kind]||effect.kind),amount,
-        effect.duration?effect.duration+' lượt':'Tức thì',skill.cooldown+' lượt'];
+    const cards=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
+      const skill=skillsForSpecies(DATA.species[id])[3];
+      return '<article class="guide-special-card"><h4>'+skillHex(skill)+' '+esc(skill.name)+'</h4><p>'+detail(skill)+'</p></article>';
     });
     return '<details class="guide-special-group"><summary>'+elementFlag(element,false,'sm')+' '+
-      esc(DATA.elements[element].name)+' · '+rows.length+' rồng</summary>'+guideTable(
-        ['Rồng','Special Skill','Hiệu ứng','Mức tác dụng','Thời gian','Hồi chiêu'],rows)+'</details>';
+      esc(DATA.elements[element].name)+' · '+cards.length+' chiêu</summary><div class="guide-special-cards">'+cards.join('')+'</div></details>';
   });
-  return '<p>Mỗi hệ có hai rồng Double Element riêng. Ô skill thứ tư của mỗi rồng là chiêu đặc biệt của hệ lặp. Các tên, thông số và hiệu ứng dưới đây đọc từ danh mục skill đang dùng trong Arena.</p>'+
+  return '<p>Mỗi hệ Double Element có hai Special Skill ở ô thứ tư. Biểu tượng, tên và tác dụng lấy từ danh mục skill đang dùng trong Arena.</p>'+
     '<div class="guide-callout">Skill hỗ trợ thuần gây 0 sát thương. Skill có đòn đánh chịu giáp, hệ số khắc hệ và tỉ lệ chí mạng; đòn nhiều nhịp kiểm tra hụt riêng từng nhịp. Cùng một loại trạng thái không cộng dồn.</div>'+groups.join('');
 }
 function guideElements(){
@@ -175,13 +192,12 @@ function guideElements(){
   const rows=ids.map(function(id){
     const strong=ids.filter(target=>chart[id][target]>1);
     const weak=ids.filter(source=>chart[source][id]>1);
-    const flags=items=>items.map(e=>'<span class="guide-element" style="--guide-element:'+esc(DATA.elements[e].color)+'">'+
-      esc(DATA.elements[e].name)+'</span>').join(' ');
-    return ['<b>'+esc(DATA.elements[id].name)+'</b>',flags(strong),flags(weak)];
+    const flags=items=>'<span class="guide-flag-list">'+items.map(e=>elementFlag(e,false,'sm')).join('')+'</span>';
+    return [elementFlag(id,true,'sm'),flags(strong),flags(weak)];
   });
   return '<p>Hệ của skill quyết định hệ mà rồng có thể khắc; hệ chủ đạo của mục tiêu quyết định nó bị khắc bởi hệ nào. Mỗi hệ khắc đúng hai hệ và bị đúng hai hệ khác khắc.</p>'+ 
     guideTable(['Hệ','Đánh mạnh vào ×1,5','Bị khắc bởi ×1,5'],rows)+
-    '<p class="muted">Đánh vào hệ khắc lại mình gây ×0,75 sát thương. Các cặp còn lại ×1. Rồng đa hệ vẫn chỉ dùng hệ đầu tiên để nhận sát thương hệ.</p>';
+    '<p class="muted">Chạm hoặc rê chuột lên cờ để xem tên hệ. Đánh vào hệ khắc lại mình gây ×0,75 sát thương. Các cặp còn lại ×1. Rồng đa hệ vẫn chỉ dùng hệ đầu tiên để nhận sát thương hệ.</p>';
 }
 function guideUpdates(){
   return '<h3>Thay đổi gần đây</h3><div class="guide-updates">'+GUIDE_UPDATES.map(function(item){

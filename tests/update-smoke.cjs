@@ -138,10 +138,55 @@ check('gold scales steadily, active Habitats and higher levels hold more gold',(
    income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:1})')*10);
  assert(income.run('habitatGoldCapacity({type:"habitat",element:"time",level:4})')>
    income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})'));
+ assert(income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})')>=500000);
+ assert(income.run('habitatGoldCapacity({type:"habitat",element:"time",level:4})')>=1000000);
  income.run('buildingById(1).stored=true');
  assert.equal(income.run('habitatIncomePerMinute(buildingById(1))'),0);
  assert.equal(income.run('habitatGemRate(buildingById(1))'),0);
  assert(income.run('dragonDetailHtml(DATA.species.fire,state.dragons[0])').includes('No gold until placed in an active Habitat'));
+});
+const economy=await boot();
+check('Habitat purchase history, resale, old saves and the Arena shortcut',()=>{
+ economy.run('state=newGame();state.gold=100000;syncDock()');
+ assert.equal(economy.element('arenaDockButton').hidden,true);
+ const first=economy.run('habitatPurchaseCost("water")');
+ economy.run('beginMode({kind:"buy",type:"habitat",element:"water"})');
+ const site=snapshot(economy,'(()=>{for(let y=692;y<716;y++)for(let x=738;x<762;x++)'+
+   'if(getBuildValid(x,y,ui.mode))return {x,y};return null})()');
+ assert(site,'Starting island needs a free six by six plot');
+ economy.run('completePlacement('+site.x+','+site.y+')');
+ assert.equal(economy.run('state.habitatPurchases.water'),1);
+ assert.equal(economy.run('state.buildings.find(b=>b.element==="water").purchaseCost'),first);
+ assert(economy.run('habitatPurchaseCost("water")')>first);
+ const owned=snapshot(economy,'state');
+ assert.equal(economy.run('migrateSave('+JSON.stringify(owned)+').habitatPurchases.water'),1);
+ delete owned.habitatPurchases;
+ assert.equal(economy.run('migrateSave('+JSON.stringify(owned)+').habitatPurchases.water'),1);
+ const habitatId=economy.run('state.buildings.find(b=>b.element==="water").id');
+ economy.run('sellBuilding('+habitatId+')');
+ assert.equal(economy.run('state.habitatPurchases.water'),1);
+ assert.equal(economy.run('state.buildings.some(b=>b.element==="water")'),false);
+ assert(economy.run('habitatPurchaseCost("water")')>first);
+ economy.run('state.buildings.push({id:99,type:"arena",level:1,stored:false});syncDock()');
+ assert.equal(economy.element('arenaDockButton').hidden,false);
+ economy.run('state.buildings.at(-1).stored=true;syncDock()');
+ assert.equal(economy.element('arenaDockButton').hidden,true);
+});
+check('Shop prices and high-tier breeding and incubation durations follow the catalog',()=>{
+ assert(economy.run('shopEggPrice(DATA.species.fire).vang')>=700);
+ assert(economy.run('shopEggPrice(DATA.species.time).vang')>economy.run('shopEggPrice(DATA.species.fire).vang'));
+ assert.equal(economy.run('breedingSeconds("epic")'),900);
+ assert.equal(economy.run('breedingSeconds("legendary")'),2700);
+ assert.equal(economy.run('breedingSeconds("mythic")'),5400);
+ assert.equal(economy.run('breedingSeconds("transcendent")'),10800);
+ assert.equal(economy.run('DATA.rarities.transcendent.incubate'),64800);
+ assert.equal(db.species.find(s=>s.doHiem==='mythic').apGiay,32400);
+ economy.run('state=newGame();addEgg(DOUBLE_IDS[0],"shop")');
+ assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),64800000);
+ economy.run('ui.shopTab="special";renderShop()');
+ assert(economy.element('sheetBody').innerHTML.includes('● 2,500'));
+ economy.run('ui.shopTab="habitats";renderShop()');
+ assert(economy.element('sheetBody').innerHTML.includes('Purchased 1×'));
 });
 check('selling, storing, feeding and moving settle old income before rates change',()=>{
  income.run('state=newGame();state.dragons[0].gemProgress=.99;state.lastTick=Date.now()-60000');
@@ -183,9 +228,9 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  assert(!shop.includes('data-action="topup-test"'));
  balance.run('window.DragonGame.action({action:"buy-food",count:"100"})');
  assert.equal(balance.run('state.food'),100);
- assert.equal(balance.run('state.gold'),9500);
+ assert.equal(balance.run('state.gold'),8800);
  balance.run('state.gold=0;renderShop();window.DragonGame.action({action:"buy-food",count:"10"})');
- assert(balance.element('sheetBody').innerHTML.includes('Need 50 more gold'));
+ assert(balance.element('sheetBody').innerHTML.includes('Need 120 more gold'));
  assert.equal(balance.run('state.food'),100);
  assert(balance.element('toast').textContent.includes('Not enough gold'));
  balance.run('state.gold=9500');
@@ -202,7 +247,7 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  balance.run('state.gold=9500');
  balance.run('window.DragonGame.action({action:"plant",id:"'+farmId+'",crop:"dragonfruit"})');
  assert.equal(balance.run('state.buildings.at(-1).crop.id'),'dragonfruit');
- assert.equal(balance.run('state.gold'),7500);
+ assert.equal(balance.run('state.gold'),3500);
  balance.run('state.buildings.at(-1).crop.readyAt=Date.now()-1;harvest(state.buildings.at(-1))');
  assert(balance.run('state.food')>100);
 });
@@ -239,7 +284,8 @@ check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"guide-tab",tab:"elements"}})');
  const chart=game.element('sheetBody').innerHTML;
  assert(chart.includes('Xung khắc hệ')&&chart.includes('War'));
- assert.equal((chart.match(/class="guide-element"/g)||[]).length,60);
+ assert.equal((chart.match(/class="element-flag/g)||[]).length,75);
+ assert(!chart.includes('class="guide-element"'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
  const breeding=game.element('sheetBody').innerHTML;
  assert(breeding.includes('0.2%')&&breeding.includes('Lồng ấp hiện chỉ nhận một trứng'));
@@ -247,12 +293,16 @@ check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
  const special=game.element('sheetBody').innerHTML;
  assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
- assert.equal((special.match(/<td>/g)||[]).length,30*6);
+ assert.equal((special.match(/class="guide-special-card"/g)||[]).length,30);
+ assert.equal((special.match(/class="skill-hex/g)||[]).length,30);
+ assert(!special.includes('Cinderheart Sovereign')&&!special.includes('<table'));
  assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
+ assert(special.includes('5.5% HP tối đa mỗi lượt trong 3 lượt'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"resources"}})');
  assert(game.element('sheetBody').innerHTML.includes('XP và thưởng khi lên Player Level'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"islands"}})');
  assert(game.element('sheetBody').innerHTML.includes('Giá trứng 1 hệ'));
+ assert(game.element('sheetBody').innerHTML.includes('tổng số Chuồng hệ đó từng mua'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"updates"}})');
  assert(game.element('sheetBody').innerHTML.includes('Thay đổi gần đây'));
  assert.equal(game.run('ui.guideTab'),'updates');
@@ -291,7 +341,7 @@ check('Academy uses placement and upgrade gates/cost formula',()=>{
  game.run('state.player.level=30;state.gold=500000;state.food=100000;state.gems=1000;'+
    'state.buildings.push({id:91,type:"academy",level:1,x:738,y:703,stored:false,upgradeEnds:0})');
  assert(game.run('academyUpgradeCost(2).gold')>game.run('academyUpgradeCost(1).gold')*2);
- assert.equal(game.run('academyUpgradeCost(1).gold'),3750);
+ assert.equal(game.run('academyUpgradeCost(1).gold'),7500);
  assert.equal(game.run('upgradeSeconds({type:"academy",level:2})'),660);
  game.run('beginMode({kind:"move",id:91})');
  assert.equal(game.run('ui.mode.kind'),'move');

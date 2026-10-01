@@ -274,9 +274,9 @@
   "breedingTimes": {
     "common": 120,
     "rare": 300,
-    "epic": 600,
-    "legendary": 1200,
-    "mythic": 2400
+    "epic": 900,
+    "legendary": 2700,
+    "mythic": 5400
   },
   "nicknames": [
     "Alex",
@@ -593,49 +593,49 @@
       "maxLevel": 4,
       "name": "Dragon Habitat",
       "icon": "⌂",
-      "cost": 200,
+      "cost": 500,
       "sellRate": 0.5
     },
     "farm": {
       "maxLevel": 4,
       "name": "Farm",
       "icon": "✿",
-      "cost": 150,
+      "cost": 300,
       "sellRate": 0.5
     },
     "hatchery": {
       "maxLevel": 5,
       "name": "Hatchery",
       "icon": "◉",
-      "cost": 200,
+      "cost": 750,
       "sellRate": 0.5
     },
     "cave": {
       "maxLevel": 1,
       "name": "Breeding Cave",
       "icon": "♧",
-      "cost": 250,
+      "cost": 1200,
       "sellRate": 0.5
     },
     "arena": {
       "maxLevel": 1,
       "name": "Arena",
       "icon": "⚔",
-      "cost": 500,
+      "cost": 2500,
       "sellRate": 0.5
     },
     "decor": {
       "maxLevel": 1,
       "name": "Flagpole",
       "icon": "⚑",
-      "cost": 75,
+      "cost": 300,
       "sellRate": 0.5
     },
     "academy": {
       "maxLevel": 5,
       "name": "Dragon Academy",
       "icon": "✦",
-      "cost": 1500,
+      "cost": 5000,
       "sellRate": 0
     }
   },
@@ -645,28 +645,28 @@
       "name": "Wheat",
       "duration": 60,
       "yield": 10,
-      "cost": 10
+      "cost": 20
     },
     {
       "id": "carrot",
       "name": "Carrot",
       "duration": 300,
       "yield": 60,
-      "cost": 50
+      "cost": 130
     },
     {
       "id": "pumpkin",
       "name": "Pumpkin",
       "duration": 1800,
       "yield": 400,
-      "cost": 250
+      "cost": 750
     },
     {
       "id": "dragonfruit",
       "name": "Dragon Fruit",
       "duration": 14400,
       "yield": 3500,
-      "cost": 2000
+      "cost": 6000
     }
   ],
   "skills": {

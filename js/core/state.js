@@ -2,7 +2,7 @@
 
 /* STATE: Chỉ dữ liệu tiến trình nằm trong save; camera, sheet và thao tác kéo là tạm thời. */
 const SAVE_KEY = "dragon-isle-save";
-const SAVE_VERSION = 11;
+const SAVE_VERSION = 12;
 function newGame(){
   const land = [];
   const origin=DATA.islands[0],startX=origin.x+DATA.islandRegionSize,startY=origin.y+DATA.islandRegionSize;
@@ -17,7 +17,7 @@ function newGame(){
       upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null},
       {id:3,type:"hatchery",element:null,x:startX,y:startY,level:1,stored:false,
         storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null}],
-    dragons:[{id:2,species:"fire",nickname:uniqueNickname([]),level:1,xp:0,feedProgress:0,
+    dragons:[{id:2,species:"fire",nickname:uniqueNickname([]),level:1,stars:0,xp:0,feedProgress:0,
       hunger:10,happiness:80,habitatId:1,gemProgress:0}]};
 }
 /* Tên cá thể lấy ngẫu nhiên và không trùng, kể cả khi số dragons vượt danh sách mẫu. */
@@ -200,8 +200,9 @@ function academyUpgradeCost(level){
 function dragonFeedProgress(dragon){return clamp(Math.floor(Number(dragon.feedProgress)||0),0,3);}
 function stageOf(dragon){return dragon.level<10?"Young":dragon.level<30?"Adult":"Elder";}
 function dragonStats(dragon){
-  const stats=DRAGON_DATA.getStats(DATA.species[dragon.species].detail,dragon.level);
-  return {hp:stats.hp,attack:stats.tanCong,defense:stats.phongThu};
+  const species=DATA.species[dragon.species];
+  return window.DragonCombat.stats(species.elements,species.rarity,dragon.level,
+    DRAGON_DB.elements,DRAGON_DB.rarities,dragon.stars);
 }
 function dragonIncome(dragon,building){
   const base = DATA.rarities[DATA.species[dragon.species].rarity].income;

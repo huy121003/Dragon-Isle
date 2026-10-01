@@ -40,6 +40,9 @@ function RarityGem({id,element}){
 function badges(id){return (speciesOf(id)?.elements||[]).map((element,index)=>{
   return <ElementFlag key={index} id={element} primary={index===0}/>;
 });}
+function Stars({count=0}){return <span className="arena-stars" aria-label={`${count} of 5 stars`}>
+  {'★'.repeat(Math.max(0,Math.min(5,count)))}{'☆'.repeat(5-Math.max(0,Math.min(5,count)))}
+</span>;}
 function Portrait({dragon,large=false,facing=1}){
   const ref=useRef(null);
   useEffect(()=>{
@@ -62,7 +65,7 @@ function RosterCard({dragon,selected,onClick,disabled}){
   return <button className={'arena-roster-card '+(selected?'selected':'')} type="button"
     onClick={onClick} disabled={disabled||(!dragon.canBattle&&!selected)} aria-pressed={selected}>
     <span className="roster-art" style={{'--rarity':rarity?.color||'#b8adcc'}}><Portrait dragon={dragon}/></span>
-    <span className="roster-copy"><b>{dragon.nickname}</b><small title={s?.name}>{s?.name} · Lv{dragon.level}</small>
+    <span className="roster-copy"><b>{dragon.nickname}</b><small title={s?.name}>{s?.name} · Lv{dragon.level}</small><Stars count={dragon.stars||0}/>
       <span className="arena-element-row">{badges(dragon.species)}<RarityGem id={s?.rarity} element={s?.elements?.[0]}/></span>
       {dragon.battleReason&&<small className="arena-rarity">{dragon.battleReason}</small>}</span>
     <span className="arena-check">{selected?'✓':'+'}</span>
@@ -72,7 +75,7 @@ function TeamSlots({title,ids,dragons}){
   return <div className="arena-team-slots"><b>{title} · {ids.length}/3</b><div>{[0,1,2].map(i=>{
     const dragon=dragons.find(d=>d.id===ids[i]);
     return <span className={'arena-team-slot '+(!dragon?'empty':'')} key={i} title={dragon?.nickname||'Empty'}>
-      {dragon?<><Portrait dragon={dragon}/><span className="arena-slot-marks">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span><small>{dragon.nickname}</small></>:<strong>+</strong>}
+      {dragon?<><Portrait dragon={dragon}/><span className="arena-slot-marks">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span><small>{dragon.nickname}</small><Stars count={dragon.stars||0}/></>:<strong>+</strong>}
     </span>;
   })}</div></div>;
 }
@@ -116,7 +119,7 @@ function ArenaSetup({arena}){
         <div className="arena-opponent-head"><span className="opponent-emblem">🛡</span><div><b>{opponent.username}</b><small>Trainer · Level {opponent.level} · Wins {fmt.format(opponent.wins||0)} / Losses {fmt.format(opponent.losses||0)}</small></div></div>
         <div className="arena-enemy-team">{opponent.team.map(dragon=><div key={dragon.id} className="arena-enemy-dragon">
           <Portrait dragon={dragon} facing={-1}/><b>{dragon.nickname}</b>
-          <small>{speciesOf(dragon.species)?.name} · Lv{dragon.level}</small>
+          <small>{speciesOf(dragon.species)?.name} · Lv{dragon.level}</small><Stars count={dragon.stars||0}/>
           <span className="arena-element-row">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span></div>)}</div>
         <Button type="primary" size="large" block disabled={arena.busy||wait>0||data.attack.length!==3}
           onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>⚔ Start battle</Button>
@@ -257,7 +260,7 @@ function Battle({arena}){
     {arena.error&&<div className="arena-error">{arena.error}</div>}
     <div ref={stageRef} className={'battle-stage '+(impact?'fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
       <div className="battle-crowd"/><div className="battle-sun"/><div className="battle-floor"/>
-      <div className="battle-side player"><div className="battle-name"><b>{attacker.nickname} · Lv{attacker.level}</b>
+      <div className="battle-side player"><div className="battle-name"><b>{attacker.nickname} · Lv{attacker.level}</b><Stars count={attacker.stars||0}/>
         <span className="arena-element-row">{badges(attacker.species)}<RarityGem id={speciesOf(attacker.species)?.rarity} element={speciesOf(attacker.species)?.elements?.[0]}/></span></div>
         <div className="battle-hp"><div><span style={{width:(attacker.hp/attacker.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(attacker.hp)} / {fmt.format(attacker.maxHp)} HP</small></div>
@@ -265,7 +268,7 @@ function Battle({arena}){
         <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='attack'?'lunge':'')+(attacking&&impact.side==='defense'?' struck':'')}>
           <Portrait dragon={attacker} large/></div></div>
       <span className="battle-vs">VS</span>
-      <div className="battle-side opponent"><div className="battle-name"><b>{defender.nickname} · Lv{defender.level}</b>
+      <div className="battle-side opponent"><div className="battle-name"><b>{defender.nickname} · Lv{defender.level}</b><Stars count={defender.stars||0}/>
         <span className="arena-element-row">{badges(defender.species)}<RarityGem id={speciesOf(defender.species)?.rarity} element={speciesOf(defender.species)?.elements?.[0]}/></span></div>
         <div className="battle-hp"><div><span style={{width:(defender.hp/defender.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(defender.hp)} / {fmt.format(defender.maxHp)} HP</small></div>

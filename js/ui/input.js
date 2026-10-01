@@ -250,6 +250,7 @@ function handleAction(button){
     case "unlock-land-gem":unlockLand(Number(button.dataset.x),Number(button.dataset.y),"gem");break;
     case "collect":collect(buildingById(id));break;
     case "feed":feedDragon(id);break;
+    case "upgrade-star":upgradeDragonStar(id);break;
     case "sell-dragon":sellDragon(id);break;
     case "inspect-dragon":ui.selection={type:"dragon",id:id};updateInspector();break;
     case "assign-menu":if(dragonBusy(id))toast("Breeding dragons cannot change Habitats.");

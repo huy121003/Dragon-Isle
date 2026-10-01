@@ -85,7 +85,7 @@ function hatchEgg(eggId,habitatId){
   }
   advanceWorld(Date.now());
   const nickname=uniqueNickname(state.dragons.map(function(d){return d.nickname;}));
-  const dragon={id:state.nextId++,species:egg.species,nickname:nickname,level:1,xp:0,hunger:10,
+  const dragon={id:state.nextId++,species:egg.species,nickname:nickname,level:1,stars:0,xp:0,hunger:10,
     happiness:80,habitatId:home.id};
   state.dragons.push(dragon);
   state.eggs=state.eggs.filter(function(item){return item.id!==egg.id;});

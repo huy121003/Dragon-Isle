@@ -28,6 +28,13 @@ const rare=combat.stats(['fire','water'],'rare',25,db.elements,db.rarities);
 assert(fireHigher.hp>fire.hp&&fireHigher.attack>fire.attack&&fireHigher.defense>fire.defense);
 assert(rare.hp>fire.hp&&rare.attack>fire.attack);
 assert.deepEqual(Object.keys(fire),['hp','attack','defense']);
+for(let stars=1;stars<=5;stars++){
+  const enhanced=combat.stats(['fire'],'common',25,db.elements,db.rarities,stars);
+  for(const stat of ['hp','attack','defense'])
+    assert.equal(enhanced[stat],Math.round(fire[stat]*(1+stars*.05)));
+}
+assert.deepEqual(combat.stats(['fire'],'common',25,db.elements,db.rarities,99),
+  combat.stats(['fire'],'common',25,db.elements,db.rarities,5));
 const normal=game.skills.neutral[0];
 const flame={...game.skills.elemental.fire[0],element:'fire'};
 assert.equal(combat.skillPower(fire.attack,normal),fire.attack*normal.power);
@@ -52,6 +59,8 @@ try{
   const expected=Math.min(target(['ice']).hp,combat.damage(fire,target(['ice']),flame,db.typeChart));
   assert.equal(first.side,'attack');
   assert.equal(first.damage,expected,'Arena damage must match shared combat rules');
+  const starred=arena.fight([{...fighters[0],stars:5}],defenders).events[0];
+  assert(starred.damage>first.damage,'Arena must use enhanced attack on the server');
   assert.equal(first.matchup,1.5,'Combat event reports the actual target primary matchup');
   const counter=arena.fight(fighters,[{id:3,species:'water',level:25,nickname:'Water'}]).events[1];
   assert.equal(counter.side,'defense');

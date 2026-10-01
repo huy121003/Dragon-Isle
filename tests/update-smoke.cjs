@@ -219,6 +219,37 @@ check('selling, storing, feeding and moving settle old income before rates chang
  assert(Math.abs(income.run('buildingById(1).storedGold')-oldRate)<.05);
  assert(income.run('dragonIncomePerMinute(state.dragons[0],buildingById(1))')>oldRate);
 });
+check('five dragon stars consume only qualified duplicates and raise all combat stats',()=>{
+ const stars=balance;
+ stars.run('state=newGame();state.gold=10000000;state.food=1000000;state.gems=1000;state.lastTick=Date.now();');
+ const original=snapshot(stars,'dragonStats(state.dragons[0])');
+ assert(stars.run('dragonDetailHtml(DATA.species.fire,state.dragons[0])').includes('aria-label="0 of 5 stars"'));
+ stars.run('state.dragons.push({id:50,species:"water",level:100,stars:0},'+
+   '{id:51,species:"fire",level:100,stars:1},'+
+   '{id:52,species:"fire",level:29,stars:0})');
+ assert.equal(stars.run('starDonors(state.dragons[0]).length'),0);
+ assert.equal(stars.run('upgradeDragonStar(2)'),false);
+ for(let rank=0;rank<5;rank++){
+   const rule=JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).progression.starUpgrades[rank];
+   stars.run('for(let i=0;i<'+rule.dragons+';i++)state.dragons.push({id:1000+'+rank+'*100+i,'+
+     'species:"fire",nickname:"Donor "+i,level:'+rule.level+',stars:0,habitatId:null})');
+   assert.equal(stars.run('starDonors(state.dragons.find(d=>d.id===2)).length'),rule.dragons);
+   assert.equal(stars.run('upgradeDragonStar(2)'),true);
+   assert.equal(stars.run('state.dragons.find(d=>d.id===2).stars'),rank+1);
+   assert.equal(stars.run('state.dragons.filter(d=>d.id>=1000).length'),0);
+   const enhanced=snapshot(stars,'dragonStats(state.dragons.find(d=>d.id===2))');
+   for(const stat of ['hp','attack','defense'])
+     assert.equal(enhanced[stat],Math.round(original[stat]*(1+(rank+1)*.05)));
+ }
+ assert.equal(stars.run('upgradeDragonStar(2)'),false);
+ assert.equal(stars.run('state.dragons.length'),4,'Target and ineligible dragons remain');
+ assert(stars.run('dragonDetailHtml(DATA.species.fire,state.dragons.find(d=>d.id===2))')
+   .includes('aria-label="5 of 5 stars"'));
+ const legacy=snapshot(stars,'newGame()');legacy.version=11;delete legacy.dragons[0].stars;
+ assert.equal(stars.run('migrateSave('+JSON.stringify(legacy)+').dragons[0].stars'),0);
+ legacy.dragons[0].stars=999;
+ assert.equal(stars.run('migrateSave('+JSON.stringify(legacy)+').dragons[0].stars'),5);
+});
 check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  balance.run('state.player.level=1;state.gold=10000;state.food=0;');
  assert.equal(balance.run('farmLimit(state.player.level)'),1);
@@ -583,17 +614,17 @@ await (async()=>{
  const old={...current,version:8,regions:['0:3:3'],land:['735,735'],buildings:[{...current.buildings[0],x:747,y:747},
    {...current.buildings[1],x:735,y:735}],dragons:[{...current.dragons[0],species:'special_time'}]};
  const m=await boot(JSON.stringify(old));
-   assert.equal(m.run('state.version'),11);
+   assert.equal(m.run('state.version'),12);
    assert.equal(m.run('state.dragons[0].species'),'light>dark');
    assert.equal(m.run('islandAt(state.buildings[0].x,state.buildings[0].y)'),0);
- console.log('PASS v8 save and Special migrate to v11');
+ console.log('PASS v8 save and Special migrate to v12');
 })();
 const old={...JSON.parse(game.run('JSON.stringify(state)')),version:8,regions:['0:3:3'],land:[],buildings:[]};
 const migrated=await boot(JSON.stringify(old));
-assert.equal(migrated.run('state.version'),11);
+assert.equal(migrated.run('state.version'),12);
 const v7={...old,version:7,regions:['0:1:1','0:3:3'],land:[],buildings:[]};
 const migratedV7=await boot(JSON.stringify(v7));
-assert.equal(migratedV7.run('state.version'),11);
+assert.equal(migratedV7.run('state.version'),12);
 assert(migratedV7.run('islandRegionCount(0)')>=1);
 console.log('PASS v7 purchased land migrates through both layouts');
 const saved9=JSON.parse(game.run('JSON.stringify(newGame())'));
@@ -603,7 +634,7 @@ saved9.buildings[0].x=505;saved9.buildings[0].y=505;
 saved9.buildings[1].x=494;saved9.buildings[1].y=494;
 saved9.buildings.push({id:88,type:'farm',level:1,x:635,y:505,stored:false});
 const moved=await boot(JSON.stringify(saved9));
-assert.equal(moved.run('state.version'),11);
+assert.equal(moved.run('state.version'),12);
 assert.equal(moved.run('state.buildings[0].x'),749);
 assert.equal(moved.run('state.buildings[0].y'),703);
 assert.equal(moved.run('islandAt(state.buildings[2].x,state.buildings[2].y)'),1);
@@ -615,7 +646,7 @@ saved10.version=10;saved10.unlockedIslands=2;saved10.regions=['1:0:0'];
 saved10.land.push('540,460');
 saved10.buildings.push({id:89,type:'farm',level:1,x:540,y:460,stored:false});
 const close=await boot(JSON.stringify(saved10));
-assert.equal(close.run('state.version'),11);
+assert.equal(close.run('state.version'),12);
 assert.equal(close.run('state.buildings[2].x'),642);
 assert.equal(close.run('state.buildings[2].y'),568);
 assert(close.run('unlocked(642,568)'));

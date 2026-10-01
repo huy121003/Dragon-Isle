@@ -70,6 +70,9 @@ async function launch(port){
     assert.equal((await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookieA,
       'X-Dragon-Account':idA,'Content-Type':'application/json'},
       body:JSON.stringify({...state,version:11})})).status,200,'Save v11 được chấp nhận');
+    assert.equal((await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookieA,
+      'X-Dragon-Account':idA,'Content-Type':'application/json'},
+      body:JSON.stringify({...state,version:12})})).status,200,'Save v12 được chấp nhận');
     assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:cookieB,'X-Dragon-Account':idB}})).json()),null);
     assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:cookieA,'X-Dragon-Account':idA}})).json()).gold,123);
     assert.equal((await fetch(base+'/data/profiles/'+idA+'.json')).status,403);

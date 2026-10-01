@@ -162,7 +162,8 @@ function renderDragons(){
     const feedCost=dragonFeedCost(d.level);
     html+='<div class="dragon-card" data-action="dragon-detail" data-id="'+d.id+'" role="button" tabindex="0">'+
       dragonPortrait(s.id,d.level,'small')+
-      '<div class="dragon-info"><b>'+esc(d.nickname)+' · Level '+d.level+'</b><span class="dragon-summary">'+
+      '<div class="dragon-info"><b>'+esc(d.nickname)+' · Level '+d.level+'</b>'+dragonStars(d.stars)+
+      '<span class="dragon-summary">'+
       elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span><small>'+esc(s.name)+' · '+stageOf(d)+
       ' · '+(home?(home.stored?"Stored Habitat":buildingName(home)):"No Habitat")+
       (home&&!home.stored?' · '+goldPerMinute(dragonIncomePerMinute(d,home))+' gold/min':'')+
@@ -208,7 +209,7 @@ function renderHabitat(id){
   ds.forEach(function(d){
     const s=DATA.species[d.species],stats=dragonStats(d);
     html+='<button class="shop-item" data-action="dragon-detail" data-id="'+d.id+'">'+
-      dragonPortrait(s.id,d.level,'small')+'<span><b>'+esc(d.nickname)+' · Lv'+d.level+'</b><small>'+esc(s.name)+
+      dragonPortrait(s.id,d.level,'small')+'<span><b>'+esc(d.nickname)+' · Lv'+d.level+'</b>'+dragonStars(d.stars)+'<small>'+esc(s.name)+
       ' · '+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+(dragonBusy(d.id)?' · 💞 Breeding':'')+'</small><small>🪙 '+goldPerMinute(dragonIncomePerMinute(d,b))+
       '/min · ❤️ '+stats.hp+' · ⚔️ '+stats.attack+' · 🛡️ '+stats.defense+'</small></span></button>';
   });

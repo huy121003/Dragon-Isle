@@ -18,20 +18,20 @@ function skillUnlocked(dragon,skill){
   const species=DATA.species[dragon.species];
   return dragon.level>=skillUnlockLevel(species.detail.skillIds.indexOf(skill.id));
 }
-function speciesStats(species,level){
-  return window.DragonCombat.stats(species.elements,species.rarity,level,DRAGON_DB.elements,DRAGON_DB.rarities);
+function speciesStats(species,level,stars=0){
+  return window.DragonCombat.stats(species.elements,species.rarity,level,DRAGON_DB.elements,DRAGON_DB.rarities,stars);
 }
-function elementalBonus(skill,level,species){
-  return skill.element?Math.round(speciesStats(species,level).attack*skill.bonus):0;
+function elementalBonus(skill,level,species,stars=0){
+  return skill.element?Math.round(speciesStats(species,level,stars).attack*skill.bonus):0;
 }
-function skillPowerPreview(species,level,skill){
-  return Math.round(window.DragonCombat.skillPower(speciesStats(species,level).attack,skill));
+function skillPowerPreview(species,level,skill,stars=0){
+  return Math.round(window.DragonCombat.skillPower(speciesStats(species,level,stars).attack,skill));
 }
 function calculateSkillDamage(attacker,defender,skill,variance){
   if(!skillUnlocked(attacker,skill))return 0;
   const attackSpecies=DATA.species[attacker.species],defenseSpecies=DATA.species[defender.species];
-  const actor=speciesStats(attackSpecies,attacker.level);
-  const target={...speciesStats(defenseSpecies,defender.level),parts:defenseSpecies.elements};
+  const actor=speciesStats(attackSpecies,attacker.level,attacker.stars);
+  const target={...speciesStats(defenseSpecies,defender.level,defender.stars),parts:defenseSpecies.elements};
   return window.DragonCombat.damage(actor,target,skill,DRAGON_DB.typeChart,variance);
 }
 function matchupFor(species){

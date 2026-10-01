@@ -1,23 +1,81 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dragon Isle · Motion Gallery</title><style>
-:root{font:14px system-ui;color:#203d51;background:#dbeaf0}*{box-sizing:border-box}body{margin:0;padding:20px}header{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:16px}h1{margin:0 0 5px}p{margin:0 0 18px}.grid{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}.group{background:#fff;border:1px solid #bccfd7;border-radius:15px;padding:11px;box-shadow:0 6px 16px #31566a26}.group h2{font-size:15px;margin:2px 0 9px}.stage{display:flex;gap:4px}.stage>div{width:33.33%;min-width:0;text-align:center}.stage canvas{width:100%;height:auto;aspect-ratio:1;background:radial-gradient(#f4faf6,#dce9eb);border-radius:9px}.stage small{font-size:10px}.toolbar{display:flex;gap:8px}button{padding:8px 12px;border:0;border-radius:9px;background:#315d72;color:white;cursor:pointer}@media(max-width:500px){body{padding:10px}.grid{grid-template-columns:1fr 1fr;gap:7px}.group{padding:6px}.group h2{font-size:11px}.stage{gap:1px}.stage small{font-size:8px}header{align-items:flex-start}}
-</style></head><body><header><div><h1>Dragon Motion Gallery</h1><p>Ten pure silhouettes and hybrid tiers at young, adult and elder stages.</p></div><div class="toolbar"><button id="pause">Pause</button><button id="quality">Quality: high</button></div></header><main class="grid" id="gallery"></main><canvas id="island" width="1" height="1" hidden></canvas><div id="stage" hidden></div>
-<script src="../js/data/db-cache.js"></script><script src="../data/economy.js"></script><script src="../js/data/dragon-rules.js"></script><script src="../js/data/catalog.js"></script><script src="../js/core/state.js"></script><script src="../js/render/world.js"></script><script src="../js/render/dragon-anatomy.js"></script><script src="../js/render/dragon-tertiary.js"></script><script src="../js/render/dragon-motion.js"></script><script src="../js/render/dragon-art.js"></script>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dragon Isle · Design Gallery</title>
+<style>
+:root{font:14px system-ui;color:#203d51;background:#dbeaf0}*{box-sizing:border-box}body{margin:0;padding:20px}
+header,.toolbar,.pager{max-width:1280px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{margin:0 0 4px}p{margin:0 0 12px}.toolbar{margin:12px auto 18px;justify-content:flex-start}
+button,select,input{padding:8px 11px;border:1px solid #9ab6c4;border-radius:9px;background:#fff;color:#203d51;font:inherit}
+button{background:#315d72;color:#fff;cursor:pointer}button:disabled{opacity:.45;cursor:default}
+input{min-width:220px;flex:1;max-width:330px}.grid{max-width:1280px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}
+.group{background:#fff;border:1px solid #bccfd7;border-radius:15px;padding:11px;box-shadow:0 6px 16px #31566a26}
+.group h2{font-size:14px;margin:2px 0 4px;overflow-wrap:anywhere}.group>small{display:block;min-height:32px;color:#527287}
+.stage{display:flex;gap:3px}.stage>div{width:33.33%;min-width:0;text-align:center}
+.stage canvas{width:100%;height:auto;aspect-ratio:1;background:radial-gradient(#f4faf6,#dce9eb);border-radius:9px}
+.stage small{font-size:10px}.pager{justify-content:center;margin:18px auto}
+@media(max-width:560px){body{padding:10px}.grid{grid-template-columns:1fr 1fr;gap:7px}.group{padding:6px}.group h2{font-size:11px}.stage{gap:1px}.stage small{font-size:8px}}
+</style></head><body>
+<header><div><h1>Dragon Design Gallery</h1><p>All catalog species · ordered affinities · Baby / Young / Adult · live motion</p></div><span id="count"></span></header>
+<div class="toolbar"><input id="search" placeholder="Search species name or ID" aria-label="Search species">
+  <select id="primary" aria-label="Primary element"><option value="">All primary elements</option></select>
+  <select id="tier" aria-label="Tier"><option value="">All tiers</option><option value="1">1 element</option><option value="2">2 elements</option><option value="3">3 elements</option><option value="4">4 elements</option><option value="double">Double Element</option></select>
+  <button id="pause">Pause</button><button id="quality">Quality: high</button></div>
+<main class="grid" id="gallery"></main><div class="pager"><button id="previous">‹ Previous</button><span id="page"></span><button id="next">Next ›</button></div>
+<canvas id="island" width="1" height="1" hidden></canvas><div id="stage" hidden></div>
+<script src="../js/data/db-cache.js"></script><script src="../data/economy.js"></script><script src="../js/data/dragon-rules.js"></script><script src="../js/data/catalog.js"></script><script src="../js/core/state.js"></script><script src="../js/render/world.js"></script><script src="../js/render/dragon-anatomy.js"></script><script src="../js/render/dragon-motion.js"></script><script src="../js/render/dragon-design.js"></script><script src="../js/render/dragon-art.js"></script>
 <script>
-state=newGame();const examples=['fire','water','earth','wind','ice','thunder','nature','dark','light','metal','fire>water','water>earth>wind',FOUR_IDS[0]];
-const gallery=document.getElementById('gallery'),cards=[];
-for(const id of examples){const s=DATA.species[id];if(!s)continue;const card=document.createElement('article');card.className='group';card.innerHTML='<h2></h2><div class="stage"></div>';card.querySelector('h2').textContent=s.name+' · '+s.elements.length+' elements';
-  for(const level of [1,15,40]){const box=document.createElement('div'),canvas=document.createElement('canvas');canvas.width=150;canvas.height=140;box.append(canvas);const label=document.createElement('small');label.textContent=level===1?'Young':level===15?'Adult':'Elder';box.append(label);card.querySelector('.stage').append(box);cards.push({canvas,id,level,visible:true});}
-  gallery.append(card);
+state=newGame();
+const all=BOOK_SPECIES_IDS.map(id=>DATA.species[id]),gallery=document.getElementById('gallery');
+const search=document.getElementById('search'),primary=document.getElementById('primary'),tier=document.getElementById('tier');
+for(const id of Object.keys(DATA.elements)){
+  const option=document.createElement('option');option.value=id;option.textContent=DATA.elements[id].name;
+  primary.append(option);
 }
-let running=true,quality=true,last=0;
-const observer=new IntersectionObserver(entries=>entries.forEach(e=>{const canvases=e.target.querySelectorAll('canvas');cards.forEach(card=>{if([...canvases].includes(card.canvas))card.visible=e.isIntersecting;});}));
-document.querySelectorAll('.group').forEach(node=>observer.observe(node));
-function frame(time){requestAnimationFrame(frame);if(!running||time-last<33)return;last=time;
-  for(const card of cards){if(!card.visible)continue;const c=card.canvas.getContext('2d');c.clearRect(0,0,150,140);
-    drawDragon(c,{dragon:{id:0,species:card.id,level:card.level,hunger:10,happiness:80},x:79,y:103,time,scale:quality?.72:.62,activity:{id:'walk'}});}
+let page=0,running=true,quality=true,last=0,cards=[];
+const perPage=24,observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+  const card=cards.find(item=>item.node===entry.target);if(card)card.visible=entry.isIntersecting;
+}));
+function filtered(){
+  const q=search.value.trim().toLowerCase();
+  return all.filter(s=>(!q||s.name.toLowerCase().includes(q)||s.id.includes(q))&&
+    (!primary.value||s.elements[0]===primary.value)&&
+    (!tier.value||(tier.value==='double'?s.rarity==='transcendent':
+      s.rarity!=='transcendent'&&s.elements.length===Number(tier.value))));
 }
-requestAnimationFrame(frame);
+function render(){
+  cards.forEach(card=>observer.unobserve(card.node));cards=[];gallery.replaceChildren();
+  const list=filtered(),pages=Math.max(1,Math.ceil(list.length/perPage));page=Math.max(0,Math.min(page,pages-1));
+  document.getElementById('count').textContent=list.length+' / '+all.length+' species';
+  document.getElementById('page').textContent='Page '+(page+1)+' / '+pages;
+  document.getElementById('previous').disabled=page===0;
+  document.getElementById('next').disabled=page>=pages-1;
+  for(const s of list.slice(page*perPage,(page+1)*perPage)){
+    const node=document.createElement('article');node.className='group';
+    const title=document.createElement('h2');title.textContent=s.name;node.append(title);
+    const info=document.createElement('small');info.textContent=s.elements.join(' + ')+
+      (s.rarity==='transcendent'?' · Double Element':'');node.append(info);
+    const stage=document.createElement('div');stage.className='stage';
+    const canvases=[];
+    for(const [level,label] of [[1,'Baby'],[15,'Young'],[40,'Adult']]){
+      const box=document.createElement('div'),canvas=document.createElement('canvas');
+      canvas.width=150;canvas.height=140;box.append(canvas);
+      const caption=document.createElement('small');caption.textContent=label;box.append(caption);
+      stage.append(box);canvases.push({canvas,level});
+    }
+    node.append(stage);gallery.append(node);cards.push({node,id:s.id,canvases,visible:true});observer.observe(node);
+  }
+}
+for(const field of [search,primary,tier])field.addEventListener(field===search?'input':'change',()=>{page=0;render();});
+document.getElementById('previous').onclick=()=>{page--;render();window.scrollTo(0,0);};
+document.getElementById('next').onclick=()=>{page++;render();window.scrollTo(0,0);};
 document.getElementById('pause').onclick=e=>{running=!running;e.target.textContent=running?'Pause':'Play';};
 document.getElementById('quality').onclick=e=>{quality=!quality;e.target.textContent='Quality: '+(quality?'high':'low');};
+function frame(time){requestAnimationFrame(frame);if(!running||time-last<33)return;last=time;
+  for(const card of cards){if(!card.visible)continue;for(const {canvas,level} of card.canvases){
+    const c=canvas.getContext('2d');c.clearRect(0,0,150,140);
+    drawDragon(c,{dragon:{id:0,species:card.id,level,hunger:10,happiness:80},
+      x:79,y:103,time,scale:quality?.72:.62,activity:{id:'walk'}});
+  }}
+}
+render();requestAnimationFrame(frame);
 </script></body></html>

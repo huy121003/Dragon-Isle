@@ -72,7 +72,8 @@ function dragonDetailHtml(species,dragon){
     dragonPortrait(species.id,level,'large')+
     '<div class="dragon-detail-heading"><h3>'+esc(dragon?dragon.nickname:species.name)+'</h3>'+rarityGem(species.rarity,species.elements[0])+
     '</div><p class="muted">'+(dragon?esc(species.name)+' · Level '+level+' · '+stageOf(dragon):
-    'Sample stats · Level 1')+'</p><div class="element-list">'+elementBadges(species,'lg')+'</div>'+
+    'Sample stats · Level 1')+'</p><div class="element-list">'+elementBadges(species,'lg')+
+    (species.rarity==='transcendent'?'<b class="double-affinity">'+esc(DATA.elements[species.elements[0]].name)+' ×2 · Double Element</b>':'')+'</div>'+
     '<h4>⚔️ Four skills · unlock at levels 10 / 15 / 20 / 25</h4><div class="skills-grid">';
   skillList.forEach(function(skill,index){
     const required=skillUnlockLevel(index),unlocked=!!dragon&&dragon.level>=required;
@@ -83,12 +84,14 @@ function dragonDetailHtml(species,dragon){
     }
     const element=skill.element?DATA.elements[skill.element]:null;
     const extra=elementalBonus(skill,level,species);
+    const description=skill.special?esc(skill.description)+' · Cooldown '+skill.cooldown+' turns':
+      element?'100% base attack + '+Math.round(skill.bonus*100)+'% elemental attack ('+extra+')':
+        Math.round(skill.power*100)+'% base attack';
     html+='<div class="skill-card" style="--element:'+(element?element.color:'#8194a1')+'">'+
       skillHex(skill)+'<div><b>'+esc(skill.name)+'</b><small>'+ 
-      (element?esc(element.name):'Neutral')+' · '+
-      (element?'100% base attack + '+Math.round(skill.bonus*100)+'% elemental attack ('+extra+')':
-        Math.round(skill.power*100)+'% base attack')+
-      '</small><strong>Attack preview '+money(skillPowerPreview(species,level,skill))+'</strong></div></div>';
+      (element?esc(element.name):'Neutral')+' · '+description+
+      '</small><strong>'+(skill.special&&skill.power===0?'Support skill · no damage':
+        'Attack preview '+money(skillPowerPreview(species,level,skill)))+'</strong></div></div>';
   });
   html+='</div><div class="stat-grid"><div><span>🪙 Gold/min</span><b>'+goldPerMinute(gold)+'</b></div>'+
     '<div><span>❤️ HP</span><b>'+money(stats.hp)+'</b></div>'+

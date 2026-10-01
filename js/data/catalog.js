@@ -42,7 +42,9 @@ const speciesStore=Object.create(null);
 DRAGON_DB.species.forEach(function(raw){speciesStore[raw.id]=adaptSpecies(raw);});
 const elementIds=Object.keys(DATA.elements);
 const elementOrder=Object.fromEntries(elementIds.map(function(id,index){return [id,index];}));
-const fourSpecies=DRAGON_DB.species.filter(function(s){return s.elements.length===4;});
+const fourSpecies=DRAGON_DB.species.filter(function(s){
+  return s.elements.length===4&&new Set(s.elements).size===4;
+});
 const fourBySet=Object.fromEntries(fourSpecies.map(function(s){
   return [s.elements.slice().sort().join("|"),s.id];
 }));
@@ -80,6 +82,8 @@ DATA.species=new Proxy(speciesStore,{get:function(target,id){
 }});
 const TRIPLE_IDS=DRAGON_DB.species.filter(function(s){return s.elements.length===3;}).map(function(s){return s.id;});
 const FOUR_IDS=fourSpecies.map(function(s){return s.id;});
+const DOUBLE_IDS=DRAGON_DB.species.filter(function(s){return s.doHiem==="transcendent";})
+  .map(function(s){return s.id;});
 const BOOK_SPECIES_IDS=DRAGON_DB.species.map(function(s){return s.id;});
 const OLD_SPECIES_IDS={
   ember:"fire",aqua:"water",pebble:"earth",breeze:"wind",frost:"ice",spark:"thunder",

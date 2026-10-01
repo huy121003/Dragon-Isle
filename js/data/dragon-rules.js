@@ -20,6 +20,8 @@ function typeMultiplier(attackElement, defenderElements) {
 
 function rarityOf(elements) {
   const n = elements.length;
+  if(n===4&&elements[0]===elements[1]&&
+    new Set(elements).size===3)return 'transcendent';
   if (n === 1) return 'common';
   if (n === 2) return elements.some(e => e === 'dark' || e === 'light' || e === 'metal' || ELEMENTS[e].epicHybrid) ? 'epic' : 'rare';
   if (n === 3) return 'legendary';
@@ -43,7 +45,9 @@ function buildDragon(elements) {
   const R = RARITY[rarityId];
 
   // --- Chỉ số gốc: pha theo trọng số 60/40, 50/30/20, ... ---
-  const w = WEIGHTS[Math.min(els.length, 4)];
+  // The repeated affinity owns two slots, but the base blend stays comparable
+  // to the corresponding three-element dragon before applying the middle tier.
+  const w = rarityId==='transcendent'?[.25,.25,.3,.2]:WEIGHTS[Math.min(els.length, 4)];
   const chiSo = { hp: 0, tanCong: 0, phongThu: 0 };
   E.forEach((e, i) => Object.keys(chiSo).forEach(k => { chiSo[k] += e.chiSo[k] * w[i]; }));
   Object.keys(chiSo).forEach(k => { chiSo[k] = Math.round(chiSo[k] * R.heSoChiSo * 10) / 10; });
@@ -79,7 +83,9 @@ function buildDragon(elements) {
     id: els.join('>'),
     ten: tenRong(els),
     elements: els,
-    soHe: els.length,
+    soHe: new Set(els).size,
+    slotCount: els.length,
+    doubleElement: rarityId==='transcendent'?els[0]:null,
     icon: e0.icon,
     iconPhu: E.slice(1).map(e => e.icon),
     doHiem: rarityId,

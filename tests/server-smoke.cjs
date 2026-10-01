@@ -37,7 +37,7 @@ async function launch(port){
     assert.equal((await fetch(base+'/data/progress.json')).status,403);
     const catalog=await (await fetch(base+'/data/dragons.json')).json();
     assert.equal(Object.keys(catalog.elements).length,15);
-    assert.equal(catalog.species.length,1715);
+    assert.equal(catalog.species.length,1770);
     const economy=await fetch(base+'/data/economy.js');
     assert.equal(economy.status,200);
     assert((await economy.text()).includes('DragonEconomy'));

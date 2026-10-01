@@ -141,6 +141,16 @@ function battleSnapshot(before,events,frame){
   const snapshot={...before,attack:before.attack.map(f=>({...f})),
     defense:before.defense.map(f=>({...f})),events:before.events.concat(events.slice(0,frame))};
   for(const event of events.slice(0,frame)){
+    if(event.state){
+      for(const side of ['attack','defense'])for(const state of event.state[side]){
+        const f=snapshot[side].find(dragon=>dragon.id===state.id);
+        if(f){f.hp=state.hp;f.maxHp=state.maxHp;f.statuses=state.statuses;
+          f.skills=f.skills.map((skill,i)=>skill?{...skill,remainingCooldown:state.cooldowns[i]||0}:null);}
+      }
+      snapshot.activeAttack=event.state.activeAttack;
+      snapshot.activeDefense=event.state.activeDefense;
+      continue;
+    }
     if(event.switchTo){
       const side=event.side,index=snapshot[side].findIndex(f=>f.nickname===event.switchTo);
       if(index>=0)snapshot[side==='attack'?'activeAttack':'activeDefense']=index;
@@ -156,22 +166,40 @@ const effectIcons={fire:'🔥',water:'💧',earth:'◆',wind:'🌀',ice:'❄',th
   nature:'❀',dark:'☾',light:'✦',metal:'⚔',neutral:'✹'};
 const illustratedEffects=new Set(['war','pure','legend','primal','time']);
 export function SkillEffect({event,frame}){
-  if(!event?.damage)return null;
+  if(!event||(!event.damage&&!event.heal&&!event.special&&!event.skipped))return null;
   const theme=game()?.data?.elements?.[event.element];
   const element=theme||effectIcons[event.element]?event.element:'neutral';
   const color=theme?.color||'#f7cf80';
   const illustrated=illustratedEffects.has(element);
+  const effect=event.effect||'strike';
+  const caption=event.heal?'+'+fmt.format(event.heal)+' HP':event.damage?
+    '−'+fmt.format(event.damage)+(event.critical?' CRIT!':''):
+    event.misses?'MISS'+(event.hits?' · '+event.hits+' HIT':''):
+    event.skipped?'SKIPPED':'STATUS';
   return <div key={frame} className={'battle-skill-fx element-'+element+' '+
-    (event.side==='attack'?'toward-right':'toward-left')+(event.critical?' critical':'')}
-    style={{'--fx':color}} aria-label={`${event.skill}: ${fmt.format(event.damage)} damage`}>
+    (event.side==='attack'?'toward-right':'toward-left')+
+    (event.targetSide===event.side?' self-target':'')+
+    (event.critical?' critical':'')+' effect-'+effect+(event.special?' special special-'+
+      (event.skillId?.endsWith('-double-2')?'mantle':'crown'):'')}
+    style={{'--fx':color}} aria-label={`${event.skill}: ${caption}`}>
     <span className="fx-trail"/><span className="fx-projectile"><i>{illustrated?
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href={'#flag-'+element}/></svg>:
       effectIcons[element]}</i></span>
     <span className="fx-impact"><span className="fx-core"/><span className="fx-ring"/>
       {Array.from({length:8},(_,i)=><span key={i} className="fx-particle" style={{'--i':i}}/>)}</span>
-    <strong className="fx-damage">−{fmt.format(event.damage)}{event.critical?' CRIT!':''}</strong>
+    <strong className="fx-damage">{caption}{event.hits>1&&' · '+event.hits+' HITS'}</strong>
     <small className="fx-skill-name">{event.skill}</small>
   </div>;
+}
+function StatusIcons({dragon}){
+  const names={damage_up:'Damage ↑',damage_down:'Damage ↓',armor_up:'Armor ↑',
+    armor_down:'Armor ↓',damage_reduction:'Damage resistance',poison:'Poison',
+    freeze:'Frozen',regen:'Regeneration',vitality:'Maximum HP ↑',accuracy_down:'Accuracy ↓'};
+  return <div className="battle-statuses" aria-label="Active statuses">{(dragon.statuses||[]).map(status=><span
+    key={status.kind} className={'battle-status status-'+status.kind}
+    title={`${names[status.kind]||status.kind}: ${status.turns} actions remaining`}
+    aria-label={`${names[status.kind]||status.kind}: ${status.turns} actions remaining`}>
+    {status.icon||'✦'}<sup>{status.turns}</sup></span>)}</div>;
 }
 function Battle({arena}){
   const presentation=arena.presentation;
@@ -191,7 +219,7 @@ function Battle({arena}){
     [presentation,frame,arena.data?.battle]);
   if(!battle)return null;
   const attacker=battle.attack[battle.activeAttack],defender=battle.defense[battle.activeDefense];
-  const event=presentation?.events[frame-1],impact=event?.damage?event:null;
+  const event=presentation?.events[frame-1],impact=event?.damage||event?.heal||event?.special?event:null;
   const disabled=arena.busy||arena.animating;
   const skillOptions=attacker.skills.filter(Boolean);
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ BATTLE · TURN {battle.turn}</small>
@@ -203,6 +231,7 @@ function Battle({arena}){
         <span className="arena-element-row">{badges(attacker.species)}<RarityGem id={speciesOf(attacker.species)?.rarity} element={speciesOf(attacker.species)?.elements?.[0]}/></span></div>
         <div className="battle-hp"><div><span style={{width:(attacker.hp/attacker.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(attacker.hp)} / {fmt.format(attacker.maxHp)} HP</small></div>
+        <StatusIcons dragon={attacker}/>
         <div key={impact?frame:'idle'} className={'battle-dragon '+(impact?.side==='attack'?'lunge':'')+(impact?.side==='defense'?' struck':'')}>
           <Portrait dragon={attacker} large/></div></div>
       <span className="battle-vs">VS</span>
@@ -210,6 +239,7 @@ function Battle({arena}){
         <span className="arena-element-row">{badges(defender.species)}<RarityGem id={speciesOf(defender.species)?.rarity} element={speciesOf(defender.species)?.elements?.[0]}/></span></div>
         <div className="battle-hp"><div><span style={{width:(defender.hp/defender.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(defender.hp)} / {fmt.format(defender.maxHp)} HP</small></div>
+        <StatusIcons dragon={defender}/>
         <div key={impact?frame:'idle'} className={'battle-dragon '+(impact?.side==='defense'?'lunge':'')+(impact?.side==='attack'?' struck':'')}>
           <Portrait dragon={defender} large facing={-1}/></div></div>
       {impact&&<SkillEffect event={impact} frame={frame}/>}
@@ -219,11 +249,16 @@ function Battle({arena}){
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
     <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':'Turn: '+attacker.nickname}</h3></div>
-      <div className="battle-skill-grid">{skillOptions.map(skill=><Button key={skill.index} disabled={disabled||!skill.unlocked}
-          className={'battle-skill '+(skill.unlocked?'':'locked')} onClick={()=>send({action:'arena-skill',skill:skill.index})}>
+      <div className="battle-skill-grid">{skillOptions.map(skill=><Button key={skill.index}
+          disabled={disabled||!skill.unlocked||skill.remainingCooldown>0}
+          className={'battle-skill '+(skill.unlocked?'':'locked')+(skill.special?' special':'')}
+          onClick={()=>send({action:'arena-skill',skill:skill.index})}>
           <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>{skill.name}</span>
-          <small>{skill.unlocked?(skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
-            Math.round(skill.power*100)+'% base attack'):'Unlocks at Lv'+skill.unlockLevel}</small></Button>)}</div>
+          <small>{!skill.unlocked?'Unlocks at Lv'+skill.unlockLevel:
+            skill.remainingCooldown?'Cooldown · '+skill.remainingCooldown+' turns':
+            skill.special?skill.description+' · CD '+skill.cooldown:
+            skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
+            Math.round(skill.power*100)+'% base attack'}</small></Button>)}</div>
       <b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
         <Button key={dragon.id} disabled={disabled} onClick={()=>send({action:'arena-switch',id:dragon.id})}>
           <Portrait dragon={dragon}/><span>{dragon.nickname}<small>{fmt.format(dragon.hp)} HP · {badges(dragon.species)}</small></span></Button>)}</div>
@@ -232,7 +267,11 @@ function Battle({arena}){
       className={'battle-bench-dragon '+(index===battle.activeAttack?'active':'')+(dragon.hp<=0?' fainted':'')}>
       <Portrait dragon={dragon}/><small>{dragon.nickname}<br/>{Math.round(dragon.hp/dragon.maxHp*100)}% HP</small></span>)}</div></div>
     <div className="battle-feed"><b>Recent moves</b>{battle.events.slice(-4).reverse().map((e,i)=><p key={i}>
-      {e.switchTo?'🔄 '+e.switchTo+' enters the arena':e.forfeit?'🏳️ Forfeit':`${e.actor} used ${e.skill} → ${e.target}: −${e.damage} HP`}</p>)}</div>
+      {e.switchTo?'🔄 '+e.switchTo+' enters the arena':e.forfeit?'🏳️ Forfeit':
+        e.skipped?`${e.actor} missed a turn · Frozen`:
+        `${e.actor} used ${e.skill} → ${e.target}: `+
+        (e.heal?'+'+e.heal+' HP':e.damage?'−'+e.damage+' HP':e.misses?'Missed':'Status applied')+
+        (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div>
   </div>;
 }
 export default function ArenaView({arena}){

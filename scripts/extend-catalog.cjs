@@ -1,5 +1,6 @@
 /* Extend the existing JSON catalog with elemental species using its original dragon builder. */
 const expansion=require('../data/elements-expansion.json');
+const doubleElements=require('../data/double-elements.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const rootNames={fire:'Ember',water:'Pearl',earth:'Granite',wind:'Zephyr',ice:'Rime',
   thunder:'Storm',nature:'Briar',dark:'Dusk',light:'Dawn',metal:'Iron',
@@ -45,6 +46,8 @@ function extendCatalog(db,game){
       throw Error('Unbalanced element chart: '+id);
   }
   db.khac=Object.fromEntries(ids.map(id=>[id,ids.filter(target=>expansion.wins[id].includes(target))]));
+  db.rarities[doubleElements.rarity.id]=clone(doubleElements.rarity);
+  game.breedingTimes[doubleElements.rarity.id]=3200;
   globalThis.DragonDatabase=db;
   // Use the same factory, rarity, colors, stats, passive and skills as all existing dragons.
   const rulesPath=require.resolve('../js/data/dragon-rules.js');
@@ -147,6 +150,34 @@ function extendCatalog(db,game){
       ids.some(e=>e!==a&&(local[a][e]<minimumPerPair||
         local[a][e]>maximumPerPair)))
       throw Error('Unbalanced four-element species for '+a);
+  }
+  if(ids.some(id=>doubleElements.elements[id]?.length!==2)||
+    Object.keys(doubleElements.elements).length!==ids.length)
+    throw Error('Each element needs two Double Element designs.');
+  for(const [index,primary] of ids.entries()){
+    doubleElements.elements[primary].forEach((design,variant)=>{
+      const partners=doubleElements.partnerOffsets[variant].map(offset=>ids[(index+offset)%ids.length]);
+      if(new Set([primary,...partners]).size!==3)throw Error('Invalid Double Element partners.');
+      const parts=[primary,primary,...partners],id=parts.join('>');
+      const skillId=primary+'-double-'+(variant+1);
+      const skill={id:skillId,name:design.skill.name,icon:db.elements[primary].icon,
+        power:design.skill.power,bonus:design.skill.bonus,cooldown:design.skill.cooldown,
+        effect:clone(design.skill.effect),description:design.skill.description,special:true};
+      game.skills.elemental[primary].push(skill);
+      const dragon=rules.buildDragon(parts);
+      dragon.ten=design.name;
+      dragon.doubleElement=primary;
+      dragon.doubleForm=design.form;
+      dragon.skillIds=[primary+'-1',partners[0]+'-1',partners[1]+'-1',skillId];
+      dragon.hienTuong=design.name+' channels '+db.elements[primary].ten+
+        ' twice, with '+partners.map(e=>db.elements[e].ten).join(' and ')+'.';
+      dragon.moTa=dragon.hienTuong;
+      dragon.sachGhi='Double Element: '+db.elements[primary].ten+
+        '; additional: '+partners.map(e=>db.elements[e].ten).join(', ')+
+        '. Special Skill: '+skill.name+' — '+skill.description;
+      if(seen.has(id))throw Error('Duplicate Double Element species: '+id);
+      db.species.push(dragon);seen.add(id);
+    });
   }
   return {db,game};
 }

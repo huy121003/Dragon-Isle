@@ -76,14 +76,9 @@ function updateInspector(){
     const island=DATA.islands[s.index],previous=s.index-1;
     if(!island){ui.selection=null;return;}
     const ready=s.index===state.unlockedIslands&&islandComplete(previous);
-    const element=island.element&&DATA.elements[island.element];
-    const guardian=island.element?DATA.species[island.element]?.name||element.name+' Dragon':'Origin Guardian';
     dom.inspector.innerHTML='<div class="panel"><div class="panel-head"><h3>'+esc(island.name)+'</h3><button class="btn icon" data-action="clear-selection">×</button></div>'+
-      '<p>'+(element?esc(element.name)+' element':'Starting island')+' · Guardian: '+esc(guardian)+'</p>'+
-      '<p>'+esc(island.description||'')+'</p>'+
       '<p>'+island.size+'×'+island.size+' tiles · '+islandRegionTotal(s.index)+' land regions of '+DATA.islandRegionSize+'×'+DATA.islandRegionSize+' tiles.</p>'+
-      (s.index<state.unlockedIslands?'<p>'+islandRegionCount(s.index)+'/'+islandRegionTotal(s.index)+' regions unlocked.</p>':
-      ready?'<p>Unlock for ♦ '+money(island.gemCost)+' gems. The center region opens with the island.</p><button class="btn primary" data-action="unlock-island" data-id="'+s.index+'">Unlock island</button>':
+      (ready?'<p>Unlock for ♦ '+money(island.gemCost)+' gems. The center region opens with the island.</p><button class="btn primary" data-action="unlock-island" data-id="'+s.index+'">Unlock island</button>':
       '<p>Complete '+esc(DATA.islands[previous].name)+' ('+islandRegionCount(previous)+'/'+islandRegionTotal(previous)+' regions) first.</p>')+'</div>';
     return;
   }

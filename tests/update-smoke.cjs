@@ -741,34 +741,18 @@ check('canvas scene renders without errors',()=>{
  assert(game.drawCalls.some(call=>call[0]==='lineTo'));
  assert(game.drawCalls.some(call=>call[0]==='clip'));
 });
-check('every island has one elemental guardian on its upper rim',()=>{
- assert(game.run('DATA.islands.every(i=>DATA.dragonForms[i.element||"nature"]&&DATA.elements[i.element||"nature"])'));
- assert(game.run('DATA.islands.every(i=>!!i.description)'));
- assert.equal(game.run('typeof drawIslandLandmark'),'undefined');
- const seen=snapshot(game,'(()=>{const guardian=drawIslandGuardian,seen=[];'+
-   'drawIslandGuardian=(island,index)=>seen.push(index);'+
-   'try{const home=DATA.islands[0],top=gridToScreen(home.x,home.y);'+
-   'drawFloatingIslands({x:top.x-20,y:top.y-900},'+
-   '{x:top.x+20,y:top.y-850},1200);}finally{drawIslandGuardian=guardian;}return seen;})()');
- assert(seen.includes(0),'the guardian remains visible above the island surface');
- game.run('renderIslands()');
- assert(game.element('sheetBody').innerHTML.includes('Guardian: Flame Dragon'));
- assert(game.element('sheetBody').innerHTML.includes('Warm volcanic stone'));
- game.run('ui.selection={type:"island",index:0};updateInspector();ui.selection=null');
- assert(game.element('inspector').innerHTML.includes('Origin Guardian'));
-});
 check('islands and their buildings draw from upper left to lower right',()=>{
  const order=snapshot(game,'islandDrawOrder()');
  assert.equal(order.length,16);
  assert(order.indexOf(7)<order.indexOf(1),'left island must draw before right island at the same height');
  assert(order.indexOf(1)<order.indexOf(0),'upper island must draw before lower island');
- const painted=snapshot(game,'(()=>{const guardian=drawIslandGuardian,build=drawBuilding;'+
+ const painted=snapshot(game,'(()=>{const landmarks=drawIslandLandmark,build=drawBuilding;'+
    'const buildings=state.buildings,items=[];showWorld();'+
    'state.buildings=[{id:901,type:"farm",x:720,y:596,level:1,stored:false},'+
    '{id:902,type:"farm",x:720,y:674,level:1,stored:false}];'+
-   'drawIslandGuardian=(island,index)=>items.push("island:"+index);'+
+   'drawIslandLandmark=(island,index)=>items.push("island:"+index);'+
    'drawBuilding=b=>items.push("building:"+b.id);'+
-   'try{drawScene(12345,.016);}finally{drawIslandGuardian=guardian;'+
+   'try{drawScene(12345,.016);}finally{drawIslandLandmark=landmarks;'+
    'drawBuilding=build;state.buildings=buildings;}return items;})()');
  assert.deepEqual(painted.filter(item=>item.startsWith('island:')),
    order.map(index=>'island:'+index));

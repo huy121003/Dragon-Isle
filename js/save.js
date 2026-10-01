@@ -308,9 +308,11 @@ function migrateSave(raw){
   result.dragons=result.dragons.filter(function(d){
     return d&&Number.isInteger(d.id)&&DATA.species[mapSpecies(d.species)];
   }).map(function(d){
-    const out=Object.assign({level:1,xp:0,feedProgress:0,hunger:10,happiness:80,habitatId:null,gemProgress:0},d);
+    const out=Object.assign({level:1,stars:0,xp:0,feedProgress:0,hunger:10,happiness:80,habitatId:null,gemProgress:0},d);
     out.species=mapSpecies(out.species);
     out.level=clamp(Number(out.level)||1,1,DATA.progression.dragonMaxLevel);
+    out.stars=Number.isFinite(Number(out.stars))?
+      clamp(Math.floor(Number(out.stars)),0,DATA.progression.starUpgrades.length):0;
     out.feedProgress=raw.version<6?
       clamp(Math.floor((Math.max(0,Number(d.xp)||0)/dragonXPNeeded(out.level))*4),0,3):
       dragonFeedProgress(out);

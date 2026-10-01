@@ -3,6 +3,7 @@
 /* The guide reads balance values from the same catalog and rules as gameplay.
    Add a GUIDE_UPDATES entry and amend the relevant section when rules change. */
 const GUIDE_UPDATES=[
+  {date:"01/10/2026",title:"Nâng sao rồng",detail:"Mỗi rồng có 0–5 sao. Mỗi sao tăng 5% HP, tấn công và giáp; nâng sao tiêu hao vàng, thức ăn, gem và rồng cùng giống đạt level yêu cầu."},
   {date:"01/10/2026",title:"Giá Shop, thời gian lai/ấp và cẩm nang",detail:"Chuồng cấp cao chứa nhiều vàng hơn; giá Chuồng tăng theo số lần mua từng hệ, điều chỉnh giá Shop và tăng thời gian lai/ấp bậc cao. Thêm lối tắt Arena khi đã xây Arena, cờ xung khắc và mô tả Special Skill."},
   {date:"01/10/2026",title:"Sức chứa Chuồng và XP người chơi",detail:"Tăng sức chứa vàng theo level Chuồng; giảm XP cần ở các level đầu để mở hệ mới sớm hơn và hiện XP hiện tại / XP cần trên thanh tiến độ."},
   {date:"01/10/2026",title:"Thu nhập rồng",detail:"Cân bằng tốc độ tăng vàng theo level, chỉ tính rồng ở Chuồng đang hoạt động; chốt thu nhập trước khi bán, chuyển Chuồng hoặc cho ăn."},
@@ -41,6 +42,9 @@ function guideStart(){
 }
 function guideDragons(){
   const level=DATA.progression.skillUnlockLevels,academy=DATA.progression.academyCaps;
+  const starRows=DATA.progression.starUpgrades.map((rule,index)=>[
+    String(index+1)+' ★','+'+((index+1)*5)+'%',String(rule.dragons)+' rồng cùng giống, Lv'+rule.level+'+',
+    money(rule.gold),money(rule.food),money(rule.gems)]);
   return '<h3>Giống, hệ và chỉ số</h3>'+guideList([
     'Game có '+Object.keys(DATA.elements).length+' hệ và '+BOOK_SPECIES_IDS.length+' giống trong Dragon Book. Hệ đầu tiên là hệ chủ đạo; rồng 2 hệ đảo thứ tự là hai giống khác nhau.',
     'Rồng 3 hệ giữ hệ chủ đạo và một cặp hệ phụ duy nhất; rồng 4 hệ có bốn hệ khác nhau. Double Element có bốn slot nhưng chỉ ba hệ thật: hệ chủ đạo lặp hai lần.',
@@ -50,7 +54,10 @@ function guideDragons(){
     'Bốn vị trí skill mở lần lượt ở level '+level.join(', ')+'. Skill thường dựa trên phần trăm tấn công gốc; skill hệ dùng tấn công gốc cộng phần sát thương hệ.',
     'Giới hạn level mặc định là 30; Dragon Academy nâng giới hạn lần lượt thành '+academy.join(', ')+'. Level tối đa của rồng là '+DATA.progression.dragonMaxLevel+'.',
     'Double Element có ba skill hệ và một special skill của hệ lặp. Special có hồi chiêu; skill hồi máu hoặc phòng thủ thuần không gây sát thương.'
-  ])+'<div class="guide-callout">Vào Dragons để xem thức ăn, skill và chỉ số của rồng; Dragon Book ghi thông tin từng giống đã khám phá.</div>';
+  ])+'<h3>Nâng sao rồng</h3><p>Mỗi rồng bắt đầu với ☆☆☆☆☆. Mỗi sao cộng thêm 5% vào HP, tấn công và giáp theo chỉ số ở level hiện tại; tối đa ★★★★★ (+25%). Nâng sao không tăng sản lượng vàng hoặc gem.</p>'+
+    guideTable(['Sao mới','Chỉ số','Rồng hiến tế','Vàng','Thức ăn','Gem'],starRows)+
+    '<p>Rồng hiến tế phải cùng đúng giống, 0 sao, không đang lai và đạt level yêu cầu. Game chọn rồng chưa vào Chuồng trước, sau đó chọn level thấp nhất đủ điều kiện. Rồng được chọn sẽ mất vĩnh viễn; rồng nâng sao vẫn giữ nguyên level và Chuồng.</p>'+
+    '<div class="guide-callout">Vào Dragons để xem thức ăn, skill, chỉ số và nâng sao của từng rồng; Dragon Book ghi thông tin giống đã khám phá.</div>';
 }
 function guideBreeding(){
   const rules=window.DragonEconomy.breeding;

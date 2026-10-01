@@ -32,7 +32,7 @@ function sameOrigin(req){
   catch(error){return false;}
 }
 function validSave(value){return value&&typeof value==='object'&&!Array.isArray(value)&&
-  Number.isInteger(value.version)&&value.version>=1&&value.version<=11&&
+  Number.isInteger(value.version)&&value.version>=1&&value.version<=12&&
   Array.isArray(value.dragons)&&Array.isArray(value.buildings)&&Array.isArray(value.land)&&
   Array.isArray(value.eggs)&&Number.isFinite(value.savedAt)&&value.savedAt>0;}
 /* ADMIN: Cho phép đặt số dư chính xác, nhận 0 và từ chối số âm/số lẻ/giá trị quá lớn. */

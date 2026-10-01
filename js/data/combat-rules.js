@@ -2,15 +2,18 @@
 (function(root){
 'use strict';
 const WEIGHTS={1:[1],2:[.6,.4],3:[.5,.3,.2],4:[.4,.3,.2,.1]};
-function stats(parts,rarity,level,elements,rarities){
+function stats(parts,rarity,level,elements,rarities,stars=0){
   const l=Math.max(1,Math.min(100,Number(level)||1));
   const weights=rarity==='transcendent'?[.25,.25,.3,.2]:WEIGHTS[parts.length];
   const factor=rarities[rarity].heSoChiSo;
   const base=key=>parts.reduce((sum,id,i)=>sum+elements[id].chiSo[key]*weights[i],0)*factor;
   const growth=1+.07*(l-1)+.0003*(l-1)**2;
   const hpGrowth=1+.08*(l-1)+.00035*(l-1)**2;
-  return {hp:Math.round(base('hp')*5*hpGrowth),attack:Math.round(base('tanCong')*growth),
-    defense:Math.round(base('phongThu')*growth)};
+  const starLevel=Number.isFinite(Number(stars))?Math.max(0,Math.min(5,Math.floor(Number(stars)))):0;
+  const starMultiplier=1+starLevel*.05;
+  return {hp:Math.round(Math.round(base('hp')*5*hpGrowth)*starMultiplier),
+    attack:Math.round(Math.round(base('tanCong')*growth)*starMultiplier),
+    defense:Math.round(Math.round(base('phongThu')*growth)*starMultiplier)};
 }
 function matchup(skillElement,defenderParts,chart){
   return skillElement?chart[skillElement][defenderParts[0]]:1;

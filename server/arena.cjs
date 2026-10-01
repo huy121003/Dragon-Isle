@@ -21,7 +21,7 @@ function createArena({profilesDir,dataDir,auth}){
     ids.every(Number.isInteger)&&new Set(ids).size===ids.length&&
     ids.every(id=>p?.dragons?.some(d=>d.id===id&&eligible(p,d)));
   const summary=(p,ids)=>ids.map(id=>p.dragons.find(d=>d.id===id)).filter(Boolean)
-    .map(d=>({id:d.id,species:d.species,level:d.level,nickname:d.nickname,
+    .map(d=>({id:d.id,species:d.species,level:d.level,stars:d.stars||0,nickname:d.nickname,
       canBattle:eligible(p,d),battleReason:d.level<MIN_BATTLE_LEVEL?
         'Requires level '+MIN_BATTLE_LEVEL:breeding(p,d.id)?'Breeding':null}));
   const species=id=>{
@@ -37,7 +37,7 @@ function createArena({profilesDir,dataDir,auth}){
   };
   function fighter(d){
     const s=species(d.species);if(!s)return null;
-    const stats=combat.stats(s.parts,s.rarity,d.level,elements,rarities);
+    const stats=combat.stats(s.parts,s.rarity,d.level,elements,rarities,d.stars);
     const skills=(catalog.species.find(x=>x.id===d.species)?.skillIds||
       (s.parts.length===1?['claw','slam',s.parts[0]+'-1',s.parts[0]+'-2']:
         (s.parts.length===2?['claw','slam']:s.parts.length===3?['claw']:[]).concat(s.parts.map(e=>e+'-1'))));
@@ -88,7 +88,7 @@ function createArena({profilesDir,dataDir,auth}){
     return {ok:true};
   }
   function publicBattle(b){
-    const view=f=>({id:f.id,species:f.species,level:f.level,nickname:f.nickname,
+    const view=f=>({id:f.id,species:f.species,level:f.level,stars:f.stars||0,nickname:f.nickname,
       hp:f.hp,maxHp:combat.effectiveMaxHp(f),statuses:statusSnapshot(f),
       skills:f.skills.map((skill,i)=>skill?{
         index:i,name:skill.name,element:skill.element||null,power:skill.power,

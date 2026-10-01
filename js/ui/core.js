@@ -171,7 +171,7 @@ function updateUI(){
 }
 /* UI: Đồng bộ mục được chọn ở thanh điều hướng để biết người chơi đang ở đâu. */
 function syncDock(){
-  const section={shop:"open-shop",dragons:"open-dragons",book:"open-book",inventory:"open-inventory",islands:"open-islands"};
+  const section={shop:"open-shop",dragons:"open-dragons",book:"open-book",inventory:"open-inventory",islands:"open-islands",guide:"open-guide"};
   const name=ui.modal&&ui.modal.name;
   const origin=name==="book-detail"&&ui.returnModal?ui.returnModal.name:
     name==="shop-egg-detail"?"shop":name;

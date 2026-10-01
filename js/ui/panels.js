@@ -18,6 +18,7 @@ function renderModal(){
   if(name==="arena"){renderArena();return;}
   if(name==="islands"){renderIslands();return;}
   if(name==="book"){renderBook();return;}
+  if(name==="guide"){renderGuide();return;}
   if(name==="book-detail"){renderBookDetail(ui.modal.extra);return;}
   if(name==="recipes"){renderRecipes();return;}
   if(name==="reveal"){renderReveal(ui.modal.extra);return;}
@@ -359,7 +360,17 @@ function renderChooseHatchery(eggId){
   });
   dom.body.innerHTML=html+"</div>";
 }
-/* UI: Kết quả dự đoán luôn cộng đúng 100%, tên chưa khám phá chỉ hiện dấu hỏi. */
+/* Preserve tiny per-species probabilities instead of rounding them to 0.00%. */
+function breedingChanceLabel(chance){
+  const percent=chance*100;
+  if(percent===0)return '0%';
+  if(percent>=1)return percent.toFixed(2)+'%';
+  if(percent>=.1)return percent.toFixed(3)+'%';
+  if(percent>=.01)return percent.toFixed(4)+'%';
+  if(percent>=.001)return percent.toFixed(5)+'%';
+  return percent.toPrecision(3)+'%';
+}
+/* UI: Tier totals add to 100%; individual dragon odds keep their precision. */
 function renderBreeding(id){
   const cave=buildingById(id);
   if(!cave||cave.type!=="cave"||cave.stored){closeModal();return;}
@@ -382,6 +393,14 @@ function renderBreeding(id){
       '<button class="btn primary" data-action="skip-timer" data-kind="breed" data-id="'+id+'">♦ '+
         gemSkipCost(cave.breeding.readyAt,Date.now())+' Skip</button>')+'</div>';
     renderDragonPortraits();
+    return;
+  }
+  const pendingEgg=state.eggs.find(function(egg){return egg.source==="breed"&&(egg.caveId===cave.id||!egg.caveId);});
+  if(pendingEgg){
+    dom.body.innerHTML='<div class="note">The previous bred egg is still waiting. Hatch or sell it before starting another breeding turn.</div>'+
+      '<div class="actions"><button class="btn primary" data-action="'+(pendingEgg.hatcheryId?'hatchery-menu':'open-inventory')+'"'+
+      (pendingEgg.hatcheryId?' data-id="'+pendingEgg.hatcheryId+'"':'')+'>'+(
+        pendingEgg.hatcheryId?'Open Hatchery':'View egg in Inventory')+'</button></div>';
     return;
   }
   const available=state.dragons.filter(function(d){
@@ -427,26 +446,36 @@ function renderBreeding(id){
       ['3 elements',s=>s.elements.length===3],
       ['4 elements',s=>s.elements.length===4&&s.rarity!=="transcendent"],
       ['Double Element',s=>s.rarity==="transcendent"]];
-    const exact=tiers.map(function(tier){return options.filter(function(o){
-      return tier[1](DATA.species[o.id]);
-    }).reduce(function(sum,o){return sum+o.chance;},0)*100;});
+    const byTier=tiers.map(function(tier){return options.filter(function(o){return tier[1](DATA.species[o.id]);})
+      .sort(function(a,b){return b.chance-a.chance;});});
+    const exact=byTier.map(function(group){return group.reduce(function(sum,o){return sum+o.chance;},0)*100;});
     const hundredths=exact.map(function(n){return n*100;});
     const totals=hundredths.map(Math.floor);
     let remainder=10000-totals.reduce(function(sum,n){return sum+n;},0);
     const fractional=tiers.map(function(_,i){return i;}).sort(function(a,b){return hundredths[b]%1-hundredths[a]%1;});
     for(let i=0;i<remainder;i++)totals[fractional[i]]++;
-    html+='<div class="breed-chances"><h3>Offspring probabilities</h3>'+
-      totals.map(function(n,i){return '<span><b>'+(n/100).toFixed(2)+'%</b><small>'+tiers[i][0]+'</small></span>';}).join('')+'</div>'+
-      '<details class="breed-outcomes"><summary>View '+options.length+' possible outcomes</summary>';
-    options.forEach(function(option){
-      const s=DATA.species[option.id],known=state.discovered.includes(s.id);
-      html+='<div class="egg-card">'+eggShellHtml({species:s.id},false)+
-        '<div><b>'+(known?esc(s.name):'Undiscovered result')+'</b><small>'+ 
-        (known?elementBadges(s)+rarityGem(s.rarity,s.elements[0]):'Revealed when the egg hatches')+'</small></div><strong>'+ 
-        (option.chance*100).toFixed(option.chance<.0001?3:2)+'%</strong>'+
-        (known?'<button class="btn" data-action="book-detail" data-species="'+s.id+'">Xem</button>':'')+'</div>';
+    html+='<section class="breed-probabilities"><h3>Offspring probabilities</h3>'+
+      '<p class="muted">Chance for the selected parents. Each breed makes one roll. A tier shows the combined chance of all its possible dragons.</p>'+
+      '<div class="breed-chances">'+totals.map(function(n,i){return '<div class="breed-chance '+
+        (n?'':'unavailable')+'"><small>'+tiers[i][0]+'</small><b>'+(n/100).toFixed(2)+
+        '%</b><span>'+byTier[i].length+' possible '+(byTier[i].length===1?'dragon':'dragons')+'</span></div>';}).join('')+'</div></section>'+
+      '<div class="breed-results"><h3>Possible dragons <small>('+options.length+')</small></h3>'+
+      '<p class="muted">Open a tier to see each dragon’s exact chance. Names remain hidden until they hatch.</p>';
+    byTier.forEach(function(group,index){
+      if(!group.length)return;
+      html+='<details class="breed-tier-outcomes"><summary><span>'+tiers[index][0]+
+        ' · '+group.length+' possible</span><b>'+(totals[index]/100).toFixed(2)+'%</b></summary><div class="breed-result-list">';
+      group.forEach(function(option){
+        const s=DATA.species[option.id],known=state.discovered.includes(s.id);
+        html+='<div class="egg-card">'+eggShellHtml({species:s.id},false)+
+          '<div><b>'+(known?esc(s.name):'Undiscovered result')+'</b><small>'+
+          (known?elementBadges(s)+rarityGem(s.rarity,s.elements[0]):'Revealed when the egg hatches')+'</small></div><strong>'+
+          breedingChanceLabel(option.chance)+'</strong>'+
+          (known?'<button class="btn" data-action="book-detail" data-species="'+s.id+'">View</button>':'')+'</div>';
+      });
+      html+='</div></details>';
     });
-    html+='</details><div class="actions"><button class="btn good" data-action="start-breeding" data-id="'+id+
+    html+='</div><div class="actions"><button class="btn good" data-action="start-breeding" data-id="'+id+
       '" data-father="'+father.id+'" data-mother="'+mother.id+'">Start breeding</button></div>';
   }
   html+='<div class="actions"><button class="btn" data-action="open-recipes">View known breeding recipes</button></div>';

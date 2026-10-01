@@ -15,10 +15,9 @@ function renderDragonPortraits(){
     const c=canvas.getContext('2d');
     c.clearRect(0,0,canvas.width,canvas.height);
     const level=Number(canvas.dataset.artLevel)||1;
-    const stage=level<10?.74:level<30?1:1.22;
-    const scale=Math.min(canvas.width/142,canvas.height/114)/stage;
+    const placement=dragonPortraitPlacement(canvas.width,canvas.height,level);
     drawDragon(c,{dragon:{id:0,species:species.id,level:level},
-      x:canvas.width*.54,y:canvas.height*.74,time:900,scale:scale});
+      ...placement,time:900});
   });
 }
 /* UI: Cờ hệ và viên đá bậc gọn; title/aria-label giữ tên đầy đủ. */

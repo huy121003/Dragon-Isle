@@ -373,6 +373,16 @@ check('articulated wings, head and tail change across frames',()=>{
   }
   balance.drawCalls.length=0;
 });
+check('dragon portraits leave room for the tail ring and the head',()=>{
+  for(const [width,height] of [[92,78],[240,172],[290,230]]){
+    for(const level of [1,15,40]){
+      const placement=snapshot(balance,'dragonPortraitPlacement('+width+','+height+','+level+')');
+      const stage=level<10?.74:level<30?1:1.2,actual=placement.scale*stage*1.05;
+      assert(placement.x-94*actual>=0,width+'×'+height+' tail should remain in frame');
+      assert(placement.x+60*actual<=width,width+'×'+height+' head should remain in frame');
+    }
+  }
+});
 check('rare breeding, 100000 roll Monte Carlo',()=>{
  game.run('state.dragons[0].species="fire>water>earth";state.dragons[0].level=35;'+
   'state.dragons[1].species="wind>ice>thunder";state.dragons[1].level=35');

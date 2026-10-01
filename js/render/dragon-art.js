@@ -1,6 +1,11 @@
 "use strict";
 
 /* World, cards, book, breeding preview and Arena all call this same renderer. */
+function dragonPortraitPlacement(width,height,level){
+  const stage=level<10?.74:level<30?1:1.2;
+  return {x:width*.60,y:height*.74,
+    scale:Math.min(width/168,height/124)/stage};
+}
 function drawDragon(context,params){
   const dragon=params.dragon,species=DATA.species[dragon.species];
   if(!species)return;

@@ -302,15 +302,14 @@ function paintHabitat(b,time,night){
   paintHabitatBiome(e,theme,time,night);
   const dragons=occupants(b),n=dragons.length;
   dragons.forEach((d,i)=>{
-    const busy=dragonBusy(d.id),phase=time*.0007+d.id*2.17;
-    const activity=busy?{id:'breed'}:dragonActivity(d,Date.now());
+    const phase=time*.0007+d.id*2.17;
     const lane=(i-(n-1)/2)*Math.min(.32,.65/Math.max(1,n-1));
-    const walk=busy||activity.id==='sleep'?0:Math.sin(phase)*.045;
+    const motion=DATA.dragonForms[DATA.species[d.species].elements[0]].motion;
+    const travel=n>2?.04:motion==='hover'||motion==='swim'?.05:.08;
+    const walk=Math.sin(phase)*travel;
     ctx.save();ctx.scale(1/structureUnit,1/structureUnit);
     drawDragon(ctx,{dragon:d,x:(lane+walk)*structureUnit,y:-.035*structureUnit,
-      time:busy?0:time,facing:busy?1:(Math.cos(phase)<0?-1:1),
-      scale:n>2?.43:.53,activity});ctx.restore();
-    if(busy){ctx.font='bold .19px system-ui';ctx.fillStyle='#ffd5ec';ctx.fillText('♥',lane,-.38);}
+      time,facing:Math.cos(phase)<0?-1:1,scale:n>2?.43:.53});ctx.restore();
   });
   if(!n){ctx.fillStyle=theme.accent;ctx.textAlign='center';ctx.font='bold .28px system-ui';
     ctx.fillText(DATA.elements[e]?.mark||'✦',0,.11);}
@@ -446,7 +445,7 @@ function paintCave(b,time,night){
         const d=dragonById(id);if(!d)continue;
         ctx.save();ctx.scale(1/structureUnit,1/structureUnit);
         drawDragon(ctx,{dragon:d,x:(i? .14:-.14)*structureUnit,y:.11*structureUnit,
-          time:0,scale:.33,facing:i?-1:1});ctx.restore();
+          time,scale:.33,facing:i?-1:1});ctx.restore();
       }
       ctx.font='bold .17px system-ui';ctx.fillStyle='#ffe3ee';ctx.textAlign='center';
       ctx.fillText('♥',0,-.37+Math.sin(time*.005)*.025);

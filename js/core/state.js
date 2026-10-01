@@ -35,7 +35,7 @@ const ui = {modal:null,shopTab:"special",bookTab:"all",bookPage:0,
   breedFatherElements:[],breedMotherElements:[],breedFatherQuery:"",breedMotherQuery:"",
   dragonElements:[],bookElements:[],fixedDay:false,dayOffset:0,
   returnModal:null,
-  breedDraft:{father:null,mother:null},selection:null,mode:null,pointers:new Map(),gesture:null,jumps:new Map(),
+  breedDraft:{father:null,mother:null},selection:null,mode:null,pointers:new Map(),gesture:null,
   camera:{x:DATA.size*DATA.tile/2,y:DATA.size*DATA.tile/2,zoom:.9},
   toastTimer:0,particleCursor:0,particles:Array.from({length:110},function(){return {life:0};})};
 const dom = {
@@ -195,14 +195,6 @@ function academyUpgradeCost(level){
 }
 function dragonFeedProgress(dragon){return clamp(Math.floor(Number(dragon.feedProgress)||0),0,3);}
 function stageOf(dragon){return dragon.level<10?"Young":dragon.level<30?"Adult":"Elder";}
-/* STATE: Hoạt động nghỉ/ngủ, vui và nhảy được tính ổn định từ đồng hồ; không ghi 50+ bộ elementsn giờ into save. */
-function dragonActivity(dragon,now){
-  const phase=Math.floor((now+dragon.id*1379)/18000)%8;
-  if(dragon.hunger>=85||phase===0||(daylightAt(now)<.18&&phase%3===0))return {id:"sleep",label:"💤 Sleeping"};
-  if(dragon.happiness>=65&&phase===4)return {id:"happy",label:"💖 Happy"};
-  if(phase===2||phase===6)return {id:"jump",label:"🐾 Jumping"};
-  return {id:"walk",label:"🐾 Walking"};
-}
 function dragonStats(dragon){
   const stats=DRAGON_DATA.getStats(DATA.species[dragon.species].detail,dragon.level);
   return {hp:stats.hp,attack:stats.tanCong,defense:stats.phongThu};

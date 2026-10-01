@@ -73,8 +73,9 @@ document.getElementById('quality').onclick=e=>{quality=!quality;e.target.textCon
 function frame(time){requestAnimationFrame(frame);if(!running||time-last<33)return;last=time;
   for(const card of cards){if(!card.visible)continue;for(const {canvas,level} of card.canvases){
     const c=canvas.getContext('2d');c.clearRect(0,0,150,140);
+    const placement=dragonPortraitPlacement(150,140,level);
     drawDragon(c,{dragon:{id:0,species:card.id,level,hunger:10,happiness:80},
-      x:79,y:103,time,scale:quality?.72:.62,activity:{id:'walk'}});
+      ...placement,time,scale:placement.scale*(quality?1:.88)});
   }}
 }
 render();requestAnimationFrame(frame);

@@ -1,17 +1,16 @@
 "use strict";
 /* Persistent joint springs give appendages follow-through without storing animation in saves. */
 const dragonMotion=new Map();
-const MOTION_CONFIG={spring:85,damping:12,blendMs:220,maxStep:.05,segments:5};
-function dragonPose(dragon,time,activity,x){
+const MOTION_CONFIG={spring:85,damping:12,maxStep:.05,segments:5,
+  pace:{stride:.006,heavy:.0035,prowl:.005,hover:.004,swim:.0038,jitter:.008}};
+function dragonPose(dragon,time,form,x,locomotion){
   const id=dragon.id||0,key=id||('gallery:'+dragon.species);
   let pose=dragonMotion.get(key);
-  if(!pose){pose={last:time,state:activity.id,blend:1,tail:Array(MOTION_CONFIG.segments).fill(0),
+  if(!pose){pose={last:time,tail:Array(MOTION_CONFIG.segments).fill(0),
     velocity:Array(MOTION_CONFIG.segments).fill(0),neck:0,neckVelocity:0};dragonMotion.set(key,pose);}
   const dt=Math.max(0,Math.min(MOTION_CONFIG.maxStep,(time-pose.last)/1000));pose.last=time;
-  if(pose.state!==activity.id){pose.previous=pose.state;pose.state=activity.id;pose.blend=0;}
-  pose.blend=Math.min(1,pose.blend+dt*1000/MOTION_CONFIG.blendMs);
-  const phase=time*.003+id*1.37;
-  const target=activity.id==='sleep'?0:Math.sin(phase)*(.35+(activity.id==='happy'?.25:0));
+  const phase=time*(MOTION_CONFIG.pace[form.motion]||MOTION_CONFIG.pace.stride)+id*1.37;
+  const target=Math.sin(phase)*.5;
   for(let n=0;n<pose.tail.length;n++){
     const next=n?pose.tail[n-1]*.88:target;
     pose.velocity[n]+=(next-pose.tail[n])*MOTION_CONFIG.spring*dt;
@@ -22,7 +21,11 @@ function dragonPose(dragon,time,activity,x){
   pose.neckVelocity+=(look*.22-pose.neck)*MOTION_CONFIG.spring*dt;
   pose.neckVelocity*=Math.exp(-MOTION_CONFIG.damping*dt);
   pose.neck+=pose.neckVelocity*dt;
-  pose.phase=phase;pose.breath=1+Math.sin(phase*.65)*.018;
+  pose.phase=phase;pose.stepPhase=locomotion?phase:0;pose.locomotion=locomotion;
+  pose.breath=1+Math.sin(phase*.65)*.018;
+  pose.bob=!locomotion?0:form.motion==='hover'?Math.sin(phase)*3:
+    form.motion==='swim'?Math.sin(phase)*1.7:
+    form.motion==='heavy'?Math.sin(phase*2)*.6:Math.sin(phase*2)*1.1;
   const flap=(phase*1.7)%(Math.PI*2),down=Math.max(0,Math.sin(flap));
   pose.flap=Math.pow(down,1.8)-Math.pow(Math.max(0,-Math.sin(flap)),.6)*.45;
   return pose;

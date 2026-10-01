@@ -107,6 +107,7 @@ function guideIslands(){
     '<h3>Công trình</h3>'+guideTable(['Loại','Giá khởi điểm','Level tối đa','Kho / bán'],buildings)+
     '<h3>Sức chứa vàng mẫu theo cấp Chuồng</h3>'+guideTable(['Cấp Chuồng','Lửa','Time'],capacityRows)+
     guideList([
+      'Chuồng cấp 1–4 chứa lần lượt 2, 3, 4 và 5 rồng cùng hệ phù hợp.',
       'Giá Chuồng phụ thuộc hệ được mở khóa và tổng số Chuồng hệ đó từng mua, kể cả những Chuồng đã bán. Ví dụ Chuồng Lửa tiếp theo giá '+money(habitatPurchaseCost('fire'))+' vàng; Chuồng Time tiếp theo giá '+money(habitatPurchaseCost('time'))+' vàng. Shop hiển thị giá thực tế và số lần mua.',
       'Giá nâng cấp và tiền hoàn khi bán tính trên giá mua của chính Chuồng đó; mua thêm Chuồng không đổi chi phí nâng cấp hoặc giá bán của Chuồng cũ.',
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',

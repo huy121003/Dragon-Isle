@@ -187,6 +187,29 @@ check('gold scales steadily, active Habitats and higher levels hold more gold',(
  assert(income.run('dragonDetailHtml(DATA.species.fire,state.dragons[0])').includes('No gold until placed in an active Habitat'));
 });
 const economy=await boot();
+check('Habitat levels hold 2, 3, 4 and 5 dragons for assignment and hatching',()=>{
+ assert.deepEqual(snapshot(economy,'[1,2,3,4].map(habitatCapacity)'),[2,3,4,5]);
+ for(let level=1;level<=4;level++){
+   economy.run('state=newGame();buildingById(1).level='+level+';'+
+     'for(let i=0;i<'+(level+1)+';i++)state.dragons.push({...state.dragons[0],'+
+     'id:100+i,nickname:"Extra "+i,habitatId:null});');
+   for(let i=0;i<level;i++)economy.run('assignDragon('+(100+i)+',1)');
+   assert.equal(economy.run('occupants(buildingById(1)).length'),level+1);
+   assert.equal(economy.run('habitatHasRoom(buildingById(1))'),false);
+   economy.run('assignDragon('+(100+level)+',1);renderHabitat(1)');
+   assert.equal(economy.run('dragonById('+(100+level)+').habitatId'),null);
+   assert(economy.element('sheetBody').innerHTML.includes('<b>'+(level+1)+'/'+(level+1)+'</b>'));
+ }
+ economy.run('state=newGame();addEgg("fire","shop");state.eggs[0].readyAt=Date.now()-1;'+
+   'hatchEgg(state.eggs[0].id,1)');
+ assert.equal(economy.run('occupants(buildingById(1)).length'),2);
+ economy.run('addEgg("fire","shop");state.eggs[0].readyAt=Date.now()-1;'+
+   'hatchEgg(state.eggs[0].id,1)');
+ assert.equal(economy.run('state.eggs.length'),1,'A full level-one Habitat blocks hatching');
+ economy.run('buildingById(1).level=2;hatchEgg(state.eggs[0].id,1)');
+ assert.equal(economy.run('occupants(buildingById(1)).length'),3);
+ assert.equal(economy.run('state.eggs.length'),0);
+});
 check('Habitat purchase history, resale, old saves and the Arena shortcut',()=>{
  economy.run('state=newGame();state.gold=100000;syncDock()');
  assert.equal(economy.element('arenaDockButton').hidden,true);

@@ -12,7 +12,7 @@ function drawDragon(context,params){
   const form=DATA.dragonForms[species.elements[0]],colors=species.detail.mau;
   if(!form)return;
   const time=params.time||0,level=dragon.level||1;
-  const pose=dragonPose(dragon,time,form,params.x,params.locomotion!==false);
+  const pose=dragonPose(dragon,time,form,params.x,params.locomotion!==false,params.stepPhase);
   const stage=level<10?.74:level<30?1:1.2;
   const scale=(params.scale||1)*stage*(species.rarity==='transcendent'?1.05:1);
   const float=form.motion==='hover'||form.motion==='swim';

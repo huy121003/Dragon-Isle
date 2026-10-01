@@ -9,7 +9,8 @@ function newGame(){
   for(let y=startY;y<startY+DATA.islandRegionSize;y++)
     for(let x=startX;x<startX+DATA.islandRegionSize;x++)land.push(x+","+y);
   return {version:SAVE_VERSION,lastTick:Date.now(),savedAt:Date.now(),nextId:4,player:{level:1,xp:0},
-    gold:500,food:50,gems:10,expansions:0,land:land,regions:[],unlockedIslands:1,
+    gold:window.DragonEconomy.starting.gold,food:window.DragonEconomy.starting.food,
+    gems:10,expansions:0,land:land,regions:[],unlockedIslands:1,
     habitatPurchases:{fire:1},
     eggs:[],discovered:["fire"],recipes:[],
     buildings:[{id:1,type:"habitat",element:"fire",x:startX+11,y:startY+11,level:1,stored:false,
@@ -289,7 +290,7 @@ function landCost(x,y){
   const region=regionOf(x,y),opened=region?islandRegionCount(region.index):0;
   const prices=window.DragonEconomy.land;
   const islandFactor=prices.firstIslandMultiplier+prices.islandStep*(region?.index||0);
-  return Math.round(prices.basePerTile*islandFactor*Math.pow(prices.regionMultiplier,opened));
+  return prices.basePerTile*islandFactor*Math.pow(prices.regionMultiplier,opened);
 }
 function expansionTiles(x,y){
   const r=regionOf(x,y),tiles=[];
@@ -300,5 +301,5 @@ function expansionTiles(x,y){
   }
   return tiles;
 }
-function expansionCost(x,y){return landCost(x,y)*expansionTiles(x,y).length;}
+function expansionCost(x,y){return Math.round(landCost(x,y)*expansionTiles(x,y).length);}
 function cropById(id){return DATA.crops.find(function(c){return c.id===id;});}

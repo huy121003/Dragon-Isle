@@ -121,7 +121,8 @@ function drawDragonLimbs(c,form,p,pose,time,id,w,h,far){
     const x=xs[i],phase=pose.stepPhase+(i?Math.PI:0)+(far?Math.PI:0);
     const stride=!pose.locomotion?0:hover?2:
       form.motion==='heavy'?5:form.motion==='jitter'?9:7;
-    const swing=Math.cos(phase)*stride;
+    // During the planted half-cycle the foot moves backward relative to the body.
+    const swing=-Math.cos(phase)*stride;
     const lift=!pose.locomotion?0:hover?Math.sin(phase)*2:
       Math.pow(Math.max(0,Math.sin(phase)),1.3)*(form.motion==='heavy'?5:8);
     const lean=far?-5:3,foot=hover?12:24;

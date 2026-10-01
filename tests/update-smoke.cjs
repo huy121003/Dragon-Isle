@@ -63,6 +63,15 @@ assert.equal(Object.keys(db.quads).length,1365,'Canonical four-element sets must
 require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
 const balance=await boot();
 const lifecycle=await boot();
+check('new accounts receive starter gold and food without changing existing saves',()=>{
+ const fresh=snapshot(game,'newGame()');
+ assert.equal(fresh.gold,3000);
+ assert.equal(fresh.food,500);
+ fresh.gold=126;fresh.food=37;
+ const restored=snapshot(game,'migrateSave('+JSON.stringify(fresh)+')');
+ assert.equal(restored.gold,126);
+ assert.equal(restored.food,37);
+});
 check('only habitats can be sold or stored and ready eggs block the next turn',()=>{
   lifecycle.run('state=newGame();state.buildings.push({id:91,type:"farm",x:740,y:704,level:1,stored:false});'+
     'storeBuilding(91);sellBuilding(91);');
@@ -410,12 +419,13 @@ check('16 element-ordered islands open in two compact rings around home',()=>{
  assert(outline.some((p,n)=>n%8&&p.x!==corners[Math.floor(n/8)].x));
 });
 check('region purchase and placement work',()=>{
- game.run('state.gold=500000;unlockLand(739,691)');
+ game.run('state.gold=500000;var firstLandPrice=expansionCost(739,691);unlockLand(739,691)');
+ assert.equal(game.run('firstLandPrice'),418);
  assert(game.run('state.regions.includes("0:1:0")'));
  assert(game.run('unlocked(744,680)'));
  assert(game.run('footprintValid(744,678,{w:6,h:6})'));
  assert.equal(game.run('islandRegionCount(0)'),2);
- assert(game.run('landCost(739,691)')>20);
+ assert(game.run('expansionCost(715,670)')>418);
 });
 check('island unlock and land expansion costs increase by island and progress',()=>{
  const g=game;
@@ -425,6 +435,7 @@ check('island unlock and land expansion costs increase by island and progress',(
  for(let i=2;i<16;i++)assert(g.run('islandUnlockCost('+i+')')>g.run('islandUnlockCost('+(i-1)+')'));
  assert.equal(g.run('DATA.islands.some(i=>Object.hasOwn(i,"gemCost"))'),false);
  g.run('state=newGame();state.regions.push("1:1:1")');
+ assert.equal(g.run('expansionCost(739,691)'),418);
  const home=g.run('landCost(715,670)'),fire=g.run('landCost(715,592)');
  assert(fire>home,'The next island costs more per tile at the same expansion count');
  g.run('state.regions.push("0:0:0")');
@@ -640,6 +651,21 @@ check('body-specific leg steps animate in habitats while Arena keeps a grounded 
   assert.deepEqual(observed.slice(-2),[1800,1800]);
   assert(observed.slice(0,-2).length>0&&observed.slice(0,-2).every(time=>time===1500));
   balance.drawCalls.length=0;
+});
+check('dragon feet plant backward and gait follows travel through a turn',()=>{
+ const quarter=snapshot(balance,'[0,Math.PI/2,Math.PI,Math.PI*1.5,Math.PI*2]'+
+   '.map(dragonTravelPhase)');
+ assert(quarter.every((n,i)=>i===0||n>quarter[i-1]));
+ const toe=angle=>{
+   balance.drawCalls.length=0;
+   balance.run('drawDragonLimbs(ctx,DATA.dragonForms.fire,DATA.species.fire.detail.mau,'+
+     '{stepPhase:'+angle+',locomotion:true},0,2,DATA.dragonForms.fire.width,'+
+     'DATA.dragonForms.fire.height,false)');
+   return balance.drawCalls.filter(call=>call[0]==='lineTo')[1][1];
+ };
+ assert(toe(Math.PI+.2)>toe(Math.PI+1.2),
+   'Planted foot must slide backward while the body travels forward');
+ assert(toe(.2)<toe(1.2),'Lifted foot must swing forward');
 });
 check('dragon portraits leave room for the tail ring and the head',()=>{
   for(const [width,height] of [[92,78],[240,172],[290,230]]){

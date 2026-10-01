@@ -83,6 +83,7 @@ function hatchEgg(eggId,habitatId){
     toast("No matching Habitat has room. Build, move dragons, or upgrade one before hatching.");
     return;
   }
+  advanceWorld(Date.now());
   const nickname=uniqueNickname(state.dragons.map(function(d){return d.nickname;}));
   const dragon={id:state.nextId++,species:egg.species,nickname:nickname,level:1,xp:0,hunger:10,
     happiness:80,habitatId:home.id};

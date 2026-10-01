@@ -49,9 +49,10 @@ const dom = {
 const ctx = dom.canvas.getContext("2d",{alpha:false});
 const fmt = new Intl.NumberFormat("en-US");
 const fmtShort = new Intl.NumberFormat("en-US",{maximumFractionDigits:1});
+const fmtGold = new Intl.NumberFormat("en-US",{maximumFractionDigits:2});
 function money(n){return fmt.format(Math.floor(Math.max(0,n)));}
-function goldDecimal(n){return money(n);}
-function goldPerMinute(n){return fmt.format(Math.round(Math.max(0,n)));}
+function goldDecimal(n){return fmtGold.format(Math.max(0,n));}
+function goldPerMinute(n){return fmtShort.format(Math.max(0,n));}
 function headerGold(n){
   if(n>=1000000)return fmtShort.format(n/1000000)+"m";
   if(n>=10000)return fmtShort.format(n/1000)+"k";
@@ -167,8 +168,9 @@ function habitatHasRoom(building){return building.type==="habitat"&&!building.st
   occupants(building).length<habitatCapacity(building.level);}
 function playerXPNeeded(level){
   const rules=window.DragonEconomy.progression;
-  const factor=level<=20?rules.earlyXpFactor:Math.min(1,
-    rules.earlyXpFactor+(1-rules.earlyXpFactor)*(level-20)/(rules.fullXpLevel-20));
+  const early=rules.earlyXpUntilLevel;
+  const factor=level<=early?rules.earlyXpFactor:Math.min(1,
+    rules.earlyXpFactor+(1-rules.earlyXpFactor)*(level-early)/(rules.fullXpLevel-early));
   return Math.floor((100+75*Math.pow(level,1.4))*factor);
 }
 function dragonXPNeeded(level){return Math.ceil(DATA.progression.xpBase*Math.pow(level,DATA.progression.xpExponent));}
@@ -201,19 +203,25 @@ function dragonStats(dragon){
 }
 function dragonIncome(dragon,building){
   const base = DATA.rarities[DATA.species[dragon.species].rarity].income;
-  return base*Math.pow(1.15,dragon.level-1)*(0.5+dragon.happiness/100)*
+  const steps=Math.max(0,Math.min(DATA.progression.dragonMaxLevel,dragon.level)-1);
+  const rates=window.DragonEconomy.progression;
+  const growth=1+rates.goldLevelLinear*steps+rates.goldLevelQuadratic*steps*steps;
+  return base*growth*(0.5+dragon.happiness/100)*
     (1+0.1*building.level)*(dragon.hunger>=100?.5:1);
 }
 /* LOGIC: Gold gốc trong dữ liệu là gold/hour; hiển thị và tích lũy theo phút. */
 function dragonIncomePerMinute(dragon,building){
-  return Math.max(1,Math.round(dragonIncome(dragon,building)/60));
+  return dragonIncome(dragon,building)/60;
 }
 function habitatIncomePerMinute(building){
+  if(!building||building.type!=="habitat"||building.stored)return 0;
   return occupants(building).reduce(function(sum,d){return sum+dragonIncomePerMinute(d,building);},0);
 }
 function habitatGoldCapacity(building){
   const unlock=ELEMENT_UNLOCK[building.element]||1;
-  return (600+100*(unlock-1))*Math.pow(2,building.level-1);
+  const rules=window.DragonEconomy.habitat;
+  return Math.round((rules.goldBase+rules.goldPerUnlockLevel*(unlock-1))*
+    Math.pow(rules.goldLevelFactor,building.level-1));
 }
 function habitatGemCapacity(building){
   const unlock=ELEMENT_UNLOCK[building.element]||1;
@@ -233,8 +241,10 @@ function shopEggPrice(species){
   return base.vang?{vang:Math.ceil(base.vang*scale/10)*10}:{gem:Math.ceil(base.gem*scale)};
 }
 /* GEM: Mỗi cá thể hoàn thành một chu kỳ riêng, không cộng gộp giờ lẻ của nhiều dragons. */
-function habitatGemRate(building){return occupants(building).length*DATA.gemPerDragonPerHour;}
+function habitatGemRate(building){return !building||building.type!=="habitat"||building.stored?0:
+  occupants(building).length*DATA.gemPerDragonPerHour;}
 function gemNextSeconds(building){
+  if(!building||building.type!=="habitat"||building.stored)return 0;
   if((building.storedGems||0)>=habitatGemCapacity(building))return 0;
   const dragons=occupants(building);
   if(!dragons.length)return 0;

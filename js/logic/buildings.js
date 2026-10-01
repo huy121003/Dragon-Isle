@@ -103,6 +103,7 @@ function storeBuilding(id){
   if(b.type==="habitat"&&occupants(b).some(function(d){return dragonBusy(d.id);})){
     toast("Wait for breeding dragons before storing this Habitat.");return;
   }
+  advanceWorld(Date.now());
   b.stored=true;ui.selection=null;
   toast(buildingName(b)+" was stored. Dragons stop producing gold and gems while it is stored.");
   updateUI();saveGame();
@@ -129,6 +130,7 @@ function sellDragon(id){
   const species=DATA.species[dragon.species];
   const price=Math.max(25,Math.round((species.detail.giaBan||100)*(1+(dragon.level-1)*.04)));
   if(!window.confirm("Sell "+dragon.nickname+" for "+money(price)+" gold?"))return;
+  advanceWorld(Date.now());
   state.dragons=state.dragons.filter(d=>d.id!==id);
   state.gold+=price;ui.selection=null;
   toast("Sold dragon for "+money(price)+" gold.");
@@ -140,6 +142,7 @@ function assignDragon(dragonId,buildingId){
   if(!d||!b||!habitatHasRoom(b)||!DATA.species[d.species].elements.includes(b.element)){
     toast("The Habitat is full or its element does not match.");return;
   }
+  advanceWorld(Date.now());
   d.habitatId=b.id;
   toast("Moved "+d.nickname+" into "+buildingName(b)+".");
   openModal("dragons");saveGame();

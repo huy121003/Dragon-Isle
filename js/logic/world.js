@@ -122,6 +122,7 @@ function completePlacement(x,y){
   }else if(mode.kind==="inventory"){
     const building=buildingById(mode.id);
     if(!building||!building.stored){stopMode();return;}
+    advanceWorld(Date.now());
     building.x=x;building.y=y;building.stored=false;
     ui.selection={type:"building",id:building.id};
     toast("Stored building placed.");
@@ -148,6 +149,7 @@ function completePlacement(x,y){
 function buildingName(b){return b.type==="habitat"?DATA.elements[b.element].name+" Habitat":DATA.buildings[b.type].name;}
 function collect(building){
   if(!building||building.type!=="habitat"||building.stored)return;
+  advanceWorld(Date.now());
   const amount=Math.max(0,Number(building.storedGold)||0);
   const gems=Math.max(0,Math.floor(Number(building.storedGems)||0));
   if(amount<.005&&!gems){toast("Gold and gems are still being produced.");return;}
@@ -170,6 +172,7 @@ function feedDragon(id){
   if(d.level>=dragonLevelCap()){toast("Dragon level cap: "+dragonLevelCap()+". Upgrade the Dragon Academy to raise it.");return;}
   const cost=dragonFeedCost(d.level);
   if(state.food<cost){toast("Requires "+money(cost)+" food to feed "+d.nickname+".");return;}
+  advanceWorld(Date.now());
   state.food-=cost;
   d.hunger=clamp(d.hunger-8,0,100);
   d.happiness=clamp(d.happiness+5,0,100);

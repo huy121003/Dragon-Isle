@@ -3,6 +3,8 @@
 /* The guide reads balance values from the same catalog and rules as gameplay.
    Add a GUIDE_UPDATES entry and amend the relevant section when rules change. */
 const GUIDE_UPDATES=[
+  {date:"01/10/2026",title:"Sức chứa Chuồng và XP người chơi",detail:"Tăng sức chứa vàng theo level Chuồng; giảm XP cần ở các level đầu để mở hệ mới sớm hơn và hiện XP hiện tại / XP cần trên thanh tiến độ."},
+  {date:"01/10/2026",title:"Thu nhập rồng",detail:"Cân bằng tốc độ tăng vàng theo level, chỉ tính rồng ở Chuồng đang hoạt động; chốt thu nhập trước khi bán, chuyển Chuồng hoặc cho ăn."},
   {date:"01/10/2026",title:"Chi tiết cẩm nang",detail:"Thêm bảng 30 Special Skill, giá trứng một hệ và các mốc XP/phần thưởng mẫu; làm rõ điều kiện nhận hệ khi lai."},
   {date:"01/10/2026",title:"Hướng dẫn và tỷ lệ lai",detail:"Thêm cẩm nang theo chủ đề và bảng tỷ lệ trong Hang lai: tổng từng bậc, tỷ lệ từng giống và xác suất hiếm."},
   {date:"01/10/2026",title:"Arena và chiến đấu",detail:"Đòn đánh hiển thị Strong, Weak, Crit; đội phòng thủ chọn skill theo sát thương và hiệu ứng thực tế."},
@@ -81,6 +83,11 @@ function guideIslands(){
   });
   const buildings=Object.entries(DATA.buildings).map(([type,b])=>[
     esc(b.name),String(b.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất']);
+  const capacityRows=Array.from({length:DATA.buildings.habitat.maxLevel},(_,index)=>{
+    const level=index+1;
+    return [String(level),money(habitatGoldCapacity({type:'habitat',element:'fire',level})),
+      money(habitatGoldCapacity({type:'habitat',element:'time',level}))];
+  });
   return '<h3>Đất, đảo và hệ mở khóa</h3>'+guideList([
     'Đảo mở tuần tự: cần mở hết vùng của đảo trước, đủ level người chơi và gem của đảo kế tiếp.',
     'Mở một vùng đất nhận '+window.DragonEconomy.progression.landXp+' XP người chơi; mua đảo mới nhận '+window.DragonEconomy.progression.islandXp+' XP.',
@@ -88,6 +95,7 @@ function guideIslands(){
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+
     '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level','Giá trứng 1 hệ'],unlocks)+
     '<h3>Công trình</h3>'+guideTable(['Loại','Level tối đa','Kho / bán'],buildings)+
+    '<h3>Sức chứa vàng mẫu theo cấp Chuồng</h3>'+guideTable(['Cấp Chuồng','Lửa','Time'],capacityRows)+
     guideList([
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
       'Số Nông trại tối đa ở level hiện tại: '+farmLimit(state.player.level)+'. Mỗi '+window.DragonEconomy.progression.farmEveryLevels+' level người chơi mở thêm một ô, tối đa '+window.DragonEconomy.progression.maxFarms+'.',
@@ -98,18 +106,28 @@ function guideResources(){
   const crops=DATA.crops.map((crop,index)=>[esc(crop.name),'Farm Lv'+(index+1),money(crop.cost)+' vàng',
     duration(crop.duration),money(crop.yield)+' thức ăn']);
   const progression=window.DragonEconomy.progression;
+  const rarityEntries=Object.entries(DATA.rarities);
+  const goldRows=[1,10,30,50,100].map(function(level){
+    const steps=level-1,scale=1+progression.goldLevelLinear*steps+
+      progression.goldLevelQuadratic*steps*steps;
+    return [String(level),...rarityEntries.map(([,rarity])=>money(Math.round(rarity.income*scale)))];
+  });
   const xpRows=[1,5,10,20,30,40,50].map(level=>[
     String(level)+' → '+(level+1),money(playerXPNeeded(level))+' XP',
     money(progression.levelGoldBase+progression.levelGoldStep*(level+1))+' vàng',
     money(progression.levelFoodBase+progression.levelFoodStep*(level+1))+' thức ăn',
     String(progression.levelGems+((level+1)%5===0?progression.milestoneGemBonus:0))+' gem']);
   return '<h3>Tiền, thức ăn và gem</h3>'+guideList([
-    'Chuồng chứa vàng và gem do rồng tạo ra; phải thu khi đầy để sản xuất tiếp. Vàng chịu ảnh hưởng bởi level/bậc rồng, hạnh phúc, level Chuồng và tình trạng đói.',
-    'Mỗi rồng tạo '+DATA.gemPerDragonPerHour+' gem mỗi giờ khi ở Chuồng đang hoạt động và còn sức chứa gem.',
+    'Chỉ rồng đang ở Chuồng hoạt động trên đảo mới tạo vàng và gem. Chuồng đã cất, rồng chưa có Chuồng hoặc rồng đã bán không tạo thu nhập. Tài nguyên đã tích trong Chuồng vẫn giữ lại sau khi bán hoặc chuyển rồng.',
+    'Vàng cơ sở dựa vào bậc hiếm và level rồng; hạnh phúc, đói và cấp Chuồng điều chỉnh tiếp. Khi Chuồng đầy vàng, phải thu trước khi sản xuất tiếp.',
+    'Mỗi rồng trong Chuồng hoạt động tạo '+DATA.gemPerDragonPerHour+' gem mỗi giờ, không tăng theo level. Tiến độ gem theo từng rồng được giữ khi chuyển Chuồng; Chuồng đầy gem thì dừng tạo thêm.',
     'Thức ăn dùng để cho rồng ăn và một số nâng cấp. Shop bán với giá '+money(window.DragonEconomy.progression.foodGoldPrice)+' vàng / thức ăn; Nông trại trồng cây để thu hoạch.',
     'Gem dùng mua đảo, một số trứng và tua thời gian; mỗi 5 phút còn lại khi tua tương ứng khoảng một gem.',
     'Mỗi lần tăng player level nhận vàng, thức ăn và gem; các level chia hết cho 5 có thêm gem.'
-  ])+'<h3>XP và thưởng khi lên Player Level</h3>'+guideTable(['Từ → đến','XP cần','Vàng thưởng','Thức ăn thưởng','Gem thưởng'],xpRows)+
+  ])+'<h3>Vàng cơ sở theo level rồng · mỗi giờ</h3>'+guideTable(
+    ['Level',...rarityEntries.map(([,rarity])=>esc(rarity.name))],goldRows)+
+    '<p class="muted">Các giá trị mẫu trước hệ số hạnh phúc, đói, cấp Chuồng và sức chứa; sản lượng thực tế hiện trên Chuồng và thẻ rồng.</p>'+
+    '<h3>XP và thưởng khi lên Player Level</h3>'+guideTable(['Từ → đến','XP cần','Vàng thưởng','Thức ăn thưởng','Gem thưởng'],xpRows)+
     '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level tối đa là 60; trứng nở, thu hoạch, mở đất và đảo đều có thể cho XP.</p>'+
     '<h3>Cây trồng ở Nông trại</h3>'+guideTable(['Cây','Mở tại','Chi phí','Thời gian','Thu hoạch Lv1'],crops)+
     '<p class="muted">Nông trại cấp cao tăng lượng thu hoạch thêm 20% cho mỗi level trên 1.</p>'+ 

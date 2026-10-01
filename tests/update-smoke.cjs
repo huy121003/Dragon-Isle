@@ -223,6 +223,7 @@ check('selling, storing, feeding and moving settle old income before rates chang
 check('five dragon stars consume only qualified duplicates and raise all combat stats',()=>{
  const stars=balance;
  stars.run('state=newGame();state.gold=10000000;state.food=1000000;state.gems=1000;state.lastTick=Date.now();');
+ assert.deepEqual(snapshot(stars,'DATA.progression.starUpgrades.map(rule=>rule.dragons)'),[2,4,6,8,10]);
  const original=snapshot(stars,'dragonStats(state.dragons[0])');
  assert(stars.run('dragonDetailHtml(DATA.species.fire,state.dragons[0])').includes('aria-label="0 of 5 stars"'));
  stars.run('state.dragons.push({id:50,species:"water",level:100,stars:0},'+
@@ -322,7 +323,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  const same=outcomes('fire>water>earth','fire>water>earth',5);
  assert.equal(four(same).length,0,'Three shared elements cannot produce four-element dragons');
  const overlap=outcomes('fire>water>earth','fire>wind>ice',30);
- assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.005)<1e-9);
+ assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.015)<1e-9);
  const focused=outcomes('fire>water>earth','fire>water>wind',30);
  const fullyInherited=four(focused).filter(o=>o.id.split('>').every(e=>
    ['fire','water','earth','wind'].includes(e)));
@@ -338,7 +339,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  const doubles=double(outcomes(fireFours[0],fireFours[1],40));
  assert.equal(doubles.length,2,'Both Double variants of the shared primary are possible');
  assert(doubles.every(o=>o.id.startsWith('fire>fire>')));
- assert(Math.abs(chance(doubles)-.002)<1e-9);
+ assert(Math.abs(chance(doubles)-.006)<1e-9);
  assert.equal(double(outcomes(fireFours[0],waterFour,100)).length,0);
  assert.equal(double(outcomes(fireFours[0],'fire>water>earth',100)).length,0);
  assert.equal(four(outcomes(fireFours[0],fireFours[1],100)).length,0);
@@ -358,7 +359,7 @@ check('guide navigation and game-driven help pages',()=>{
  assert(!chart.includes('class="guide-element"'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
  const breeding=game.element('sheetBody').innerHTML;
- assert(breeding.includes('0.2%')&&breeding.includes('Lồng ấp hiện chỉ nhận một trứng'));
+ assert(breeding.includes('0.6%')&&breeding.includes('Lồng ấp hiện chỉ nhận một trứng'));
  assert(breeding.includes('Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
  const special=game.element('sheetBody').innerHTML;
@@ -415,6 +416,23 @@ check('region purchase and placement work',()=>{
  assert(game.run('footprintValid(744,678,{w:6,h:6})'));
  assert.equal(game.run('islandRegionCount(0)'),2);
  assert(game.run('landCost(739,691)')>20);
+});
+check('island unlock and land expansion costs increase by island and progress',()=>{
+ const g=game;
+ assert.equal(g.run('islandUnlockCost(0)'),0);
+ assert.equal(g.run('islandUnlockCost(1)'),74);
+ assert.equal(g.run('islandUnlockCost(15)'),645);
+ for(let i=2;i<16;i++)assert(g.run('islandUnlockCost('+i+')')>g.run('islandUnlockCost('+(i-1)+')'));
+ assert.equal(g.run('DATA.islands.some(i=>Object.hasOwn(i,"gemCost"))'),false);
+ g.run('state=newGame();state.regions.push("1:1:1")');
+ const home=g.run('landCost(715,670)'),fire=g.run('landCost(715,592)');
+ assert(fire>home,'The next island costs more per tile at the same expansion count');
+ g.run('state.regions.push("0:0:0")');
+ assert(g.run('landCost(715,670)')>home,'Each unlocked region raises the next land price');
+ g.run('state.regions=["0:1:1","0:0:0","0:0:1","0:1:0","0:2:0","0:2:1","0:0:2","0:1:2","0:2:2"];'+
+   'state.gems=1000;state.player.level=60;unlockIsland(1)');
+ assert.equal(g.run('state.gems'),926);
+ assert.equal(g.run('state.unlockedIslands'),2);
 });
 check('Academy uses placement and upgrade gates/cost formula',()=>{
  game.run('state.player.level=30;state.gold=500000;state.food=100000;state.gems=1000;'+
@@ -550,7 +568,7 @@ check('Double Element breeding needs qualified parents and preserves probability
   const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons[1])');
   const double=odds.filter(o=>db.species.find(s=>s.id===o.id)?.doHiem==='transcendent');
   assert(double.some(o=>o.id==='fire>fire>water>thunder'),JSON.stringify(double));
-  assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.0025)<1e-9);
+  assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.007)<1e-9);
   assert(Math.abs(odds.reduce((total,o)=>total+o.chance,0)-1)<1e-9);
   balance.run('state.dragons[1].species=FOUR_IDS.find(id=>DATA.species[id].elements[0]==="earth");');
   assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].rarity==="transcendent").length'),0);
@@ -639,7 +657,7 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
  const odds=JSON.parse(game.run('JSON.stringify(breedingOptions(state.dragons[0],state.dragons[1]))'));
  const sum=odds.reduce((a,o)=>a+o.chance,0);assert(Math.abs(sum-1)<1e-9);
  const tier=n=>odds.filter(o=>o.id.split('>').length===n).reduce((a,o)=>a+o.chance,0);
- assert(Math.abs(tier(3)-.055)<1e-9);assert(Math.abs(tier(4)-.005)<1e-9);
+ assert(Math.abs(tier(3)-.13)<1e-9);assert(Math.abs(tier(4)-.015)<1e-9);
  const results=[0,0,0,0];let seed=234553;
  for(let i=0;i<100000;i++){
    seed=(seed*1664525+1013904223)>>>0;const roll=seed/4294967296;
@@ -664,7 +682,7 @@ check('100000 rolls for 3, 4, 5 and 6 parent-union elements',()=>{
     JSON.stringify({id:502,species:b,level:35})+')');
   let cumulative=0;const thresholds=options.map(o=>(cumulative+=o.chance));
   const p4=options.filter(o=>o.id.split('>').length===4).reduce((n,o)=>n+o.chance,0);
-  assert(Math.abs(p4-(size===3?0:.005))<1e-9);
+  assert(Math.abs(p4-(size===3?0:.015))<1e-9);
   assert(options.filter(o=>o.id.split('>').length===4).every(o=>
     o.id.split('>').every(e=>new Set(a.split('>').concat(b.split('>'))).has(e))));
   let seed=234553,observed=0;

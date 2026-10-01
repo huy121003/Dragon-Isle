@@ -82,7 +82,7 @@ function updateInspector(){
       '<p>'+esc(island.description||'')+'</p>'+
       '<p>'+island.size+'×'+island.size+' tiles · '+islandRegionTotal(s.index)+' land regions of '+DATA.islandRegionSize+'×'+DATA.islandRegionSize+' tiles.</p>'+
       (s.index<state.unlockedIslands?'<p>'+islandRegionCount(s.index)+'/'+islandRegionTotal(s.index)+' regions unlocked.</p>':
-      ready?'<p>Unlock for ♦ '+money(island.gemCost)+' gems. The center region opens with the island.</p><button class="btn primary" data-action="unlock-island" data-id="'+s.index+'">Unlock island</button>':
+      ready?'<p>Unlock for ♦ '+money(islandUnlockCost(s.index))+' gems. The center region opens with the island.</p><button class="btn primary" data-action="unlock-island" data-id="'+s.index+'">Unlock island</button>':
       '<p>Complete '+esc(DATA.islands[previous].name)+' ('+islandRegionCount(previous)+'/'+islandRegionTotal(previous)+' regions) first.</p>')+'</div>';
     return;
   }

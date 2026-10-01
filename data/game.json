@@ -209,11 +209,11 @@
   "progression": {
     "dragonMaxLevel": 100,
     "starUpgrades": [
-      {"dragons": 10, "level": 30, "gold": 50000, "food": 5000, "gems": 10},
-      {"dragons": 15, "level": 40, "gold": 150000, "food": 15000, "gems": 25},
-      {"dragons": 20, "level": 50, "gold": 350000, "food": 35000, "gems": 50},
-      {"dragons": 25, "level": 60, "gold": 750000, "food": 75000, "gems": 100},
-      {"dragons": 30, "level": 70, "gold": 1500000, "food": 150000, "gems": 200}
+      {"dragons": 2, "level": 30, "gold": 50000, "food": 5000, "gems": 10},
+      {"dragons": 4, "level": 40, "gold": 150000, "food": 15000, "gems": 25},
+      {"dragons": 6, "level": 50, "gold": 350000, "food": 35000, "gems": 50},
+      {"dragons": 8, "level": 60, "gold": 750000, "food": 75000, "gems": 100},
+      {"dragons": 10, "level": 70, "gold": 1500000, "food": 150000, "gems": 200}
     ],
     "breedLevel": 5,
     "skillUnlockLevels": [
@@ -946,8 +946,7 @@
       "description": "A sheltered beginning where young dragons grow above the clouds.",
       "x": 714,
       "y": 668,
-      "size": 72,
-      "gemCost": 0
+      "size": 72
     },
     {
       "id": "fire",
@@ -956,8 +955,7 @@
       "description": "Warm volcanic stone and glowing embers shelter Fire dragons.",
       "x": 714,
       "y": 590,
-      "size": 72,
-      "gemCost": 80
+      "size": 72
     },
     {
       "id": "water",
@@ -966,8 +964,7 @@
       "description": "Cool pools and flowing currents shelter Water dragons.",
       "x": 792,
       "y": 590,
-      "size": 72,
-      "gemCost": 120
+      "size": 72
     },
     {
       "id": "earth",
@@ -976,8 +973,7 @@
       "description": "Layered stone and fertile soil shelter Earth dragons.",
       "x": 792,
       "y": 668,
-      "size": 72,
-      "gemCost": 160
+      "size": 72
     },
     {
       "id": "wind",
@@ -986,8 +982,7 @@
       "description": "Open ridges and steady updrafts shelter Wind dragons.",
       "x": 792,
       "y": 746,
-      "size": 72,
-      "gemCost": 200
+      "size": 72
     },
     {
       "id": "ice",
@@ -996,8 +991,7 @@
       "description": "Frosted rock and bright crystal shelter Ice dragons.",
       "x": 714,
       "y": 746,
-      "size": 72,
-      "gemCost": 240
+      "size": 72
     },
     {
       "id": "thunder",
@@ -1006,8 +1000,7 @@
       "description": "Charged clouds and crackling stone shelter Thunder dragons.",
       "x": 636,
       "y": 746,
-      "size": 72,
-      "gemCost": 280
+      "size": 72
     },
     {
       "id": "nature",
@@ -1016,8 +1009,7 @@
       "description": "Roots, leaves and soft moss shelter Nature dragons.",
       "x": 636,
       "y": 668,
-      "size": 72,
-      "gemCost": 320
+      "size": 72
     },
     {
       "id": "dark",
@@ -1026,8 +1018,7 @@
       "description": "Quiet shadows and violet stone shelter Dark dragons.",
       "x": 636,
       "y": 590,
-      "size": 72,
-      "gemCost": 360
+      "size": 72
     },
     {
       "id": "light",
@@ -1036,8 +1027,7 @@
       "description": "Sunlit rock and warm radiance shelter Light dragons.",
       "x": 714,
       "y": 512,
-      "size": 72,
-      "gemCost": 400
+      "size": 72
     },
     {
       "id": "metal",
@@ -1046,8 +1036,7 @@
       "description": "Veins of iron and polished stone shelter Metal dragons.",
       "x": 870,
       "y": 590,
-      "size": 72,
-      "gemCost": 440
+      "size": 72
     },
     {
       "id": "war",
@@ -1057,7 +1046,6 @@
       "x": 870,
       "y": 746,
       "size": 72,
-      "gemCost": 480,
       "playerLevel": 24
     },
     {
@@ -1068,7 +1056,6 @@
       "x": 792,
       "y": 824,
       "size": 72,
-      "gemCost": 520,
       "playerLevel": 28
     },
     {
@@ -1079,7 +1066,6 @@
       "x": 636,
       "y": 824,
       "size": 72,
-      "gemCost": 560,
       "playerLevel": 33
     },
     {
@@ -1090,7 +1076,6 @@
       "x": 558,
       "y": 746,
       "size": 72,
-      "gemCost": 600,
       "playerLevel": 39
     },
     {
@@ -1101,7 +1086,6 @@
       "x": 558,
       "y": 590,
       "size": 72,
-      "gemCost": 640,
       "playerLevel": 45
     }
   ],

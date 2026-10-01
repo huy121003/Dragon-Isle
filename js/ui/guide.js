@@ -84,7 +84,7 @@ function guideBreeding(){
 function guideIslands(){
   const islands=DATA.islands.map((island,index)=>[
     (index+1)+'. '+esc(island.name),esc(island.element?DATA.elements[island.element].name:'Khởi đầu'),
-    island.playerLevel?'Lv'+island.playerLevel:'—',index?money(island.gemCost)+' 💎':'Có sẵn']);
+    island.playerLevel?'Lv'+island.playerLevel:'—',index?money(islandUnlockCost(index))+' 💎':'Có sẵn']);
   const unlocks=Object.entries(DATA.elementUnlocks).map(function([element,level]){
     const egg=DATA.species[element],price=egg?.detail.giaTrung?shopEggPrice(egg):null;
     return [esc(DATA.elements[element].name),String(level),price?

@@ -308,6 +308,47 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
  assert.equal((html.match(/class="breed-chance /g)||[]).length,5);
  assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons.at(-1)).reduce((sum,o)=>sum+o.chance,0)'),1);
 });
+check('four-element and Double breeding follow the parent recipes',()=>{
+ const outcomes=(father,mother,level)=>snapshot(balance,'breedingOptions('+
+   JSON.stringify({id:101,species:father,level})+','+
+   JSON.stringify({id:102,species:mother,level})+')');
+ const four=options=>options.filter(o=>{
+   const parts=o.id.split('>');return parts.length===4&&new Set(parts).size===4;
+ });
+ const double=options=>options.filter(o=>o.id.split('>').length===4&&
+   new Set(o.id.split('>')).size===3);
+ const chance=options=>options.reduce((sum,o)=>sum+o.chance,0);
+ const same=outcomes('fire>water>earth','fire>water>earth',5);
+ assert(four(same).length>0,'Three shared elements can produce four-element dragons');
+ assert(Math.abs(chance(four(same))-.005)<1e-9);
+ assert(four(same).every(o=>o.id.split('>').filter(e=>
+   ['fire','water','earth'].includes(e)).length>=3));
+ const overlap=outcomes('fire>water>earth','fire>wind>ice',30);
+ assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.005)<1e-9);
+ const focused=outcomes('fire>water>earth','fire>water>wind',30);
+ const fullyInherited=four(focused).filter(o=>o.id.split('>').every(e=>
+   ['fire','water','earth','wind'].includes(e)));
+ const mutated=four(focused).filter(o=>!fullyInherited.includes(o));
+ assert.equal(fullyInherited.length,1);
+ assert(fullyInherited[0].chance>Math.max(...mutated.map(o=>o.chance)),
+   'The exact four inherited elements should be favored over a new element');
+ assert(four(outcomes('fire>water>earth','fire>wind>ice',100)).length>0);
+ assert.equal(four(outcomes('fire>water>earth','water>ice',100)).length,0);
+ const fireFours=snapshot(balance,'FOUR_IDS.filter(id=>DATA.species[id].elements[0]==="fire")');
+ const waterFour=snapshot(balance,'FOUR_IDS.find(id=>DATA.species[id].elements[0]==="water")');
+ assert.equal(double(outcomes(fireFours[0],fireFours[1],39)).length,0);
+ const doubles=double(outcomes(fireFours[0],fireFours[1],40));
+ assert.equal(doubles.length,2,'Both Double variants of the shared primary are possible');
+ assert(doubles.every(o=>o.id.startsWith('fire>fire>')));
+ assert(Math.abs(chance(doubles)-.002)<1e-9);
+ assert.equal(double(outcomes(fireFours[0],waterFour,100)).length,0);
+ assert.equal(double(outcomes(fireFours[0],'fire>water>earth',100)).length,0);
+ assert.equal(four(outcomes(fireFours[0],fireFours[1],100)).length,0);
+ const doubleParent=double(outcomes(fireFours[0],fireFours[1],40))[0].id;
+ assert.equal(double(outcomes(doubleParent,fireFours[0],40)).length,2);
+ for(const options of [same,overlap,outcomes(fireFours[0],fireFours[1],40)])
+   assert(Math.abs(chance(options)-1)<1e-9);
+});
 check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"open-guide"}})');
  assert.equal(game.run('ui.modal.name'),'guide');
@@ -426,8 +467,8 @@ check('five pure species use their element names',()=>{
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
 });
-check('1770 unique species and no retired Special category',()=>{
- assert.equal(db.species.length,1770);
+check('2985 unique species and no retired Special category',()=>{
+ assert.equal(db.species.length,2985);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
  assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.length>2));
  assert.equal(db.species.find(s=>s.id==='fire').ten,'Flame Dragon');
@@ -439,10 +480,10 @@ check('1770 unique species and no retired Special category',()=>{
  assert.equal(game.run('BOOK_SPECIES_IDS.some(x=>x.startsWith("special_"))'),false);
  game.run('openModal("book")');assert(!game.element('sheetBody').innerHTML.includes('>Special<'));
 });
-check('ordered pairs, unique secondary triples and balanced four-element species',()=>{
+check('ordered pairs, unique triples and complete four-element catalog',()=>{
  const elements=Object.keys(db.elements);
  const groups=Object.fromEntries([1,2,3,4].map(n=>[n,db.species.filter(s=>s.elements.length===n)]));
- assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,180]);
+ assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,1395]);
  const byId=new Map(db.species.map(s=>[s.id,s]));
  for(const a of elements)for(const b of elements){
    if(a===b)continue;
@@ -456,15 +497,20 @@ check('ordered pairs, unique secondary triples and balanced four-element species
  assert.equal(game.run('DATA.species["fire>time>water"].id'),'fire>water>time');
  const fours=groups[4].filter(s=>s.doHiem==='mythic'),
    quartets=fours.map(s=>s.elements.slice().sort().join('|'));
+ const legacyFours=fours.slice(0,150);
+ assert.equal(fours.length,1365);
  assert.equal(new Set(quartets).size,fours.length);
+ for(let i=0;i<elements.length;i++)for(let j=i+1;j<elements.length;j++)
+   for(let k=j+1;k<elements.length;k++)for(let l=k+1;l<elements.length;l++)
+     assert(quartets.includes([elements[i],elements[j],elements[k],elements[l]].sort().join('|')));
  const existing=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'))).species
    .filter(s=>s.elements.length===4);
  for(const s of existing)assert.equal(byId.get(s.id)?.ten,s.ten,
    'Previously owned dragon IDs and names must survive');
  for(const a of elements){
-   const primary=fours.filter(s=>s.elements[0]===a);
+   const primary=legacyFours.filter(s=>s.elements[0]===a);
    assert.equal(primary.length,10,a+' has 10 dominant dragons');
-   assert.equal(fours.filter(s=>s.elements.slice(1).includes(a)).length,30,
+   assert.equal(legacyFours.filter(s=>s.elements.slice(1).includes(a)).length,30,
      a+' appears exactly 30 times as an additional element');
    for(const b of elements){
      if(a===b)continue;
@@ -484,22 +530,22 @@ check('ordered pairs, unique secondary triples and balanced four-element species
  }
  for(const a of ['war','pure','legend','primal','time'])
    for(let slot=1;slot<=3;slot++){
-     const count=fours.filter(s=>s.elements[slot]===a).length;
+   const count=legacyFours.filter(s=>s.elements[slot]===a).length;
      assert(count>=9&&count<=11,a+' is balanced across secondary positions');
    }
 });
 check('Double Element breeding needs qualified parents and preserves probability',()=>{
-  balance.run('state=newGame();state.dragons[0].species="fire>water>thunder";'+
-    'state.dragons[0].level=34;state.dragons.push({...state.dragons[0],id:906,'+
-    'species:"fire>water>nature",level:45});');
+  balance.run('state=newGame();const fireParents=FOUR_IDS.filter(id=>DATA.species[id].elements[0]==="fire");'+
+    'state.dragons[0].species=fireParents[0];state.dragons[0].level=39;'+
+    'state.dragons.push({...state.dragons[0],id:906,species:fireParents[1],level:50});');
   assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].rarity==="transcendent").length'),0);
-  balance.run('state.dragons[0].level=45;');
+  balance.run('state.dragons[0].level=50;');
   const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons[1])');
   const double=odds.filter(o=>db.species.find(s=>s.id===o.id)?.doHiem==='transcendent');
   assert(double.some(o=>o.id==='fire>fire>water>thunder'),JSON.stringify(double));
   assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.0025)<1e-9);
   assert(Math.abs(odds.reduce((total,o)=>total+o.chance,0)-1)<1e-9);
-  balance.run('state.dragons[1].species="earth>nature>dark";');
+  balance.run('state.dragons[1].species=FOUR_IDS.find(id=>DATA.species[id].elements[0]==="earth");');
   assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].rarity==="transcendent").length'),0);
 });
 check('30 Double Element designs draw at baby, young and adult stages',()=>{
@@ -528,7 +574,7 @@ check('every catalog species draws with the rebuilt renderer',()=>{
     if(id.indexOf('>')<0)silhouettes.add(JSON.stringify(balance.drawCalls
       .filter(call=>call[0]==='moveTo'||call[0]==='lineTo').slice(0,30)));
   }
-  assert.equal(ids.length,1770);
+  assert.equal(ids.length,2985);
   assert.equal(silhouettes.size,15,'Every primary element needs distinct geometry');
   balance.drawCalls.length=0;
 });
@@ -586,7 +632,7 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
  const odds=JSON.parse(game.run('JSON.stringify(breedingOptions(state.dragons[0],state.dragons[1]))'));
  const sum=odds.reduce((a,o)=>a+o.chance,0);assert(Math.abs(sum-1)<1e-9);
  const tier=n=>odds.filter(o=>o.id.split('>').length===n).reduce((a,o)=>a+o.chance,0);
- assert(Math.abs(tier(3)-.055)<1e-9);assert(tier(4)>=.005&&tier(4)<=.01);
+ assert(Math.abs(tier(3)-.055)<1e-9);assert(Math.abs(tier(4)-.005)<1e-9);
  const results=[0,0,0,0];let seed=234553;
  for(let i=0;i<100000;i++){
    seed=(seed*1664525+1013904223)>>>0;const roll=seed/4294967296;
@@ -596,8 +642,7 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
  assert(Math.abs(results[3]/100000-tier(4))<.0015);
  console.log('    1/2/3/4 elements: '+results.map(n=>(n/1000).toFixed(2)+'%').join(' / '));
  game.run('state.dragons[1].level=29');
- assert.equal(game.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>o.id.split("> ").length===4).length'),0);
- assert.equal(game.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].elements.length===4).length'),0);
+ assert(game.run('breedingOptions(state.dragons[0],state.dragons[1]).some(o=>DATA.species[o.id].rarity==="mythic")'));
 });
 check('hex skill icons, flags in three sizes',()=>{
  const detail=game.run('dragonDetailHtml(DATA.species.fire,{...state.dragons[0],species:"fire",level:30})');

@@ -68,10 +68,10 @@ function guideBreeding(){
     esc(DATA.rarities[id]?.name||id),duration(seconds),duration(DATA.rarities[id].incubate)]);
   return '<h3>Điều kiện và tỷ lệ</h3>'+guideList([
     'Hai cá thể khác nhau từ level '+DATA.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
-    'Con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ.',
+    'Thông thường con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ. Rồng 4 hệ và Double Element có thể có hệ phụ mới theo điều kiện bên dưới.',
     'Nếu có kết quả 3 hệ: tỷ lệ gốc '+(rules.threeBase*100)+'%, cộng '+(rules.threePerTenLevels*100)+' điểm % mỗi 10 level trung bình, tối đa '+(rules.threeCap*100)+'%.',
-    'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ không trùng hệ, cả hai từ level '+rules.fourMinParentLevel+'. Tỷ lệ '+(rules.fourBase*100)+'% ban đầu, tối đa '+(rules.fourCap*100)+'%.',
-    'Double Element cần hai bố mẹ từ level '+rules.doubleMinParentLevel+', mỗi bên có ít nhất 3 hệ khác nhau, cùng mang hệ Double và đủ hệ phụ của một giống trong danh mục. Tỷ lệ '+(rules.doubleBase*100)+'% ban đầu, tối đa '+(rules.doubleCap*100)+'%.',
+    'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ. Rồng con có ít nhất 3 hệ nằm trong tập hợp hệ của bố mẹ; hệ thứ tư có thể là hệ mới. Đã có đủ '+FOUR_IDS.length+' tổ hợp 4 hệ; nếu đủ cả 4 hệ trong bố mẹ, giống đó được ưu tiên hơn giống cần hệ mới. Tỷ lệ '+(rules.fourBase*100)+'% ban đầu, tăng theo level trung bình từ '+rules.fourGrowthStartLevel+' và tối đa '+(rules.fourCap*100)+'%.',
+    'Double Element cần hai bố mẹ đều có 4 ô hệ, mỗi bên có ít nhất 3 hệ khác nhau, cùng hệ chủ đạo và từ level '+rules.doubleMinParentLevel+'. Hai giống Double của hệ chủ đạo đó đều có cơ hội xuất hiện, kể cả khi hệ phụ không có trong bố mẹ. Tỷ lệ '+(rules.doubleBase*100)+'% ban đầu, tối đa '+(rules.doubleCap*100)+'%.',
     'Phần còn lại chia cho 1 và 2 hệ theo bảng dưới nếu có kết quả hợp lệ. Trong mỗi bậc, giống nhận hệ chung của bố mẹ có trọng số cao hơn; tỷ lệ từng giống có thể khác nhau.'
   ])+'<h3>Tỷ lệ chia phần còn lại cho 1 / 2 hệ</h3>'+guideTable(['Số hệ bố mẹ','1 hệ / 2 hệ'],tierRows)+
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Trong Hang','Trong Lồng ấp'],durationRows)+

@@ -151,6 +151,23 @@ function extendCatalog(db,game){
         local[a][e]>maximumPerPair)))
       throw Error('Unbalanced four-element species for '+a);
   }
+  // Preserve the existing 150 recipes, then complete every unordered four-element set.
+  // A stable order spreads the new primary affinities without changing old dragon IDs.
+  const missing=[];
+  for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)
+    for(let k=j+1;k<ids.length;k++)for(let l=k+1;l<ids.length;l++){
+      const quartet=[ids[i],ids[j],ids[k],ids[l]];
+      if(!fourSets.has(quartet.slice().sort().join('|')))missing.push(quartet);
+    }
+  missing.sort((a,b)=>jitter(a.join('|'))-jitter(b.join('|')));
+  for(const quartet of missing){
+    const primary=quartet.reduce((best,e)=>perPrimary[e]<perPrimary[best]?e:best);
+    append([primary,...orderSecondary(quartet.filter(e=>e!==primary))]);
+    perPrimary[primary]++;
+    fourSets.add(quartet.slice().sort().join('|'));
+  }
+  if(fourSets.size!==ids.length*(ids.length-1)*(ids.length-2)*(ids.length-3)/24)
+    throw Error('Incomplete four-element catalog.');
   if(ids.some(id=>doubleElements.elements[id]?.length!==2)||
     Object.keys(doubleElements.elements).length!==ids.length)
     throw Error('Each element needs two Double Element designs.');

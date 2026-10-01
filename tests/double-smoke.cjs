@@ -50,7 +50,7 @@ for(const primary of elements){
       assert(triple[stat]<value[stat]&&value[stat]<upper[stat],s.id+' '+stat);
   }
 }
-assert.equal(species.length+1740,catalog.species.length);
+assert.equal(species.length+2955,catalog.species.length);
 assert(config.elements.fire[0].skill.effect.kind==='poison');
 
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dragon-double-test-'));

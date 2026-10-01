@@ -168,7 +168,8 @@ function buildingById(id){return state.buildings.find(function(b){return b.id===
 function dragonById(id){return state.dragons.find(function(d){return d.id===id;});}
 function occupants(building){return state.dragons.filter(function(d){return d.habitatId===building.id;});}
 function maxBuildingLevel(building){return DATA.buildings[building.type].maxLevel;}
-function habitatCapacity(level){return Math.min(4,level);}
+function habitatCapacity(level){return Math.min(DATA.buildings.habitat.maxLevel+1,
+  Math.max(1,Math.floor(level||1))+1);}
 function hatcheryCapacity(level){return Math.min(DATA.buildings.hatchery.maxLevel,Math.max(1,Math.floor(level||1)));}
 function habitatHasRoom(building){return building.type==="habitat"&&!building.stored&&!building.upgradeEnds&&
   occupants(building).length<habitatCapacity(building.level);}

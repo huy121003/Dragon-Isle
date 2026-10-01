@@ -78,7 +78,7 @@ function updateInspector(){
     const ready=s.index===state.unlockedIslands&&islandComplete(previous);
     const element=island.element&&DATA.elements[island.element];
     dom.inspector.innerHTML='<div class="panel"><div class="panel-head"><h3>'+esc(island.name)+'</h3><button class="btn icon" data-action="clear-selection">×</button></div>'+
-      '<p>'+(element?esc(element.name)+' element':'Starting island')+' · Landmark: '+esc(island.landmark||'')+'</p>'+
+      '<p>'+(element?esc(element.name)+' element':'Starting island')+'</p>'+
       '<p>'+esc(island.description||'')+'</p>'+
       '<p>'+island.size+'×'+island.size+' tiles · '+islandRegionTotal(s.index)+' land regions of '+DATA.islandRegionSize+'×'+DATA.islandRegionSize+' tiles.</p>'+
       (s.index<state.unlockedIslands?'<p>'+islandRegionCount(s.index)+'/'+islandRegionTotal(s.index)+' regions unlocked.</p>':

@@ -279,10 +279,17 @@ function upgradeSeconds(building){
   const times=DATA.upgradeTimes[building.type];
   return times?times[Math.min(building.level-1,times.length-1)]:0;
 }
+function islandUnlockCost(index){
+  if(index<=0)return 0;
+  const prices=window.DragonEconomy.island;
+  return Math.round(prices.baseGemCost+prices.linearGemCost*index+
+    prices.quadraticGemCost*index*index);
+}
 function landCost(x,y){
   const region=regionOf(x,y),opened=region?islandRegionCount(region.index):0;
   const prices=window.DragonEconomy.land;
-  return Math.round(prices.basePerTile*Math.pow(prices.regionMultiplier,opened));
+  const islandFactor=prices.firstIslandMultiplier+prices.islandStep*(region?.index||0);
+  return Math.round(prices.basePerTile*islandFactor*Math.pow(prices.regionMultiplier,opened));
 }
 function expansionTiles(x,y){
   const r=regionOf(x,y),tiles=[];

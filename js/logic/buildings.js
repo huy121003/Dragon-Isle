@@ -20,8 +20,9 @@ function unlockIsland(index){
   const previous=index-1,island=DATA.islands[index];
   if(!islandComplete(previous)){toast("Fully unlock "+DATA.islands[previous].name+" before buying the next island.");return;}
   if(state.player.level<(island.playerLevel||1)){toast("Requires player level "+island.playerLevel+" to unlock "+island.name+".");return;}
-  if(state.gems<island.gemCost){toast("Requires "+island.gemCost+" gems to unlock "+island.name+".");return;}
-  state.gems-=island.gemCost;state.unlockedIslands++;
+  const cost=islandUnlockCost(index);
+  if(state.gems<cost){toast("Requires "+cost+" gems to unlock "+island.name+".");return;}
+  state.gems-=cost;state.unlockedIslands++;
   ui.cloudReveal={index,startedAt:performance.now()};
   const middle=Math.floor(island.size/DATA.islandRegionSize/2);
   state.regions.push(index+":"+middle+":"+middle);

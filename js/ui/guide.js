@@ -3,6 +3,7 @@
 /* The guide reads balance values from the same catalog and rules as gameplay.
    Add a GUIDE_UPDATES entry and amend the relevant section when rules change. */
 const GUIDE_UPDATES=[
+  {date:"01/10/2026",title:"Chi tiết cẩm nang",detail:"Thêm bảng 30 Special Skill, giá trứng một hệ và các mốc XP/phần thưởng mẫu; làm rõ điều kiện nhận hệ khi lai."},
   {date:"01/10/2026",title:"Hướng dẫn và tỷ lệ lai",detail:"Thêm cẩm nang theo chủ đề và bảng tỷ lệ trong Hang lai: tổng từng bậc, tỷ lệ từng giống và xác suất hiếm."},
   {date:"01/10/2026",title:"Arena và chiến đấu",detail:"Đòn đánh hiển thị Strong, Weak, Crit; đội phòng thủ chọn skill theo sát thương và hiệu ứng thực tế."},
   {date:"01/10/2026",title:"15 hệ và Double Element",detail:"Bổ sung năm hệ War, Pure, Legend, Primal, Time và 30 rồng Double Element với skill đặc biệt."}
@@ -14,6 +15,7 @@ const GUIDE_SECTIONS=[
   ["islands","🗺️ Đảo & công trình",guideIslands],
   ["resources","🎒 Tài nguyên & vật phẩm",guideResources],
   ["arena","⚔️ Đấu trường",guideArena],
+  ["special","✦ Special Skill",guideSpecialSkills],
   ["elements","🔰 Xung khắc hệ",guideElements],
   ["updates","✨ Cập nhật",guideUpdates]
 ];
@@ -55,7 +57,7 @@ function guideBreeding(){
     esc(DATA.rarities[id]?.name||id),duration(seconds),duration(DATA.rarities[id].incubate)]);
   return '<h3>Điều kiện và tỷ lệ</h3>'+guideList([
     'Hai cá thể khác nhau từ level '+DATA.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
-    'Con chỉ dùng hệ có trong bố mẹ và nhận ít nhất một hệ từ mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ.',
+    'Con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ.',
     'Nếu có kết quả 3 hệ: tỷ lệ gốc '+(rules.threeBase*100)+'%, cộng '+(rules.threePerTenLevels*100)+' điểm % mỗi 10 level trung bình, tối đa '+(rules.threeCap*100)+'%.',
     'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ không trùng hệ, cả hai từ level '+rules.fourMinParentLevel+'. Tỷ lệ '+(rules.fourBase*100)+'% ban đầu, tối đa '+(rules.fourCap*100)+'%.',
     'Double Element cần hai bố mẹ từ level '+rules.doubleMinParentLevel+', mỗi bên có ít nhất 3 hệ khác nhau, cùng mang hệ Double và đủ hệ phụ của một giống trong danh mục. Tỷ lệ '+(rules.doubleBase*100)+'% ban đầu, tối đa '+(rules.doubleCap*100)+'%.',
@@ -72,8 +74,11 @@ function guideIslands(){
   const islands=DATA.islands.map((island,index)=>[
     (index+1)+'. '+esc(island.name),esc(island.element?DATA.elements[island.element].name:'Khởi đầu'),
     island.playerLevel?'Lv'+island.playerLevel:'—',index?money(island.gemCost)+' 💎':'Có sẵn']);
-  const unlocks=Object.entries(DATA.elementUnlocks).map(([element,level])=>[
-    esc(DATA.elements[element].name),String(level)]);
+  const unlocks=Object.entries(DATA.elementUnlocks).map(function([element,level]){
+    const egg=DATA.species[element],price=egg?.detail.giaTrung?shopEggPrice(egg):null;
+    return [esc(DATA.elements[element].name),String(level),price?
+      (price.vang?money(price.vang)+' vàng':money(price.gem)+' gem'):'—'];
+  });
   const buildings=Object.entries(DATA.buildings).map(([type,b])=>[
     esc(b.name),String(b.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất']);
   return '<h3>Đất, đảo và hệ mở khóa</h3>'+guideList([
@@ -81,7 +86,7 @@ function guideIslands(){
     'Mở một vùng đất nhận '+window.DragonEconomy.progression.landXp+' XP người chơi; mua đảo mới nhận '+window.DragonEconomy.progression.islandXp+' XP.',
     'Chuồng và trứng 1 hệ trong Shop mở theo level hệ bên dưới. Vùng đất mở theo ô vuông và phải nối với vùng đã sở hữu.'
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+
-    '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level'],unlocks)+
+    '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level','Giá trứng 1 hệ'],unlocks)+
     '<h3>Công trình</h3>'+guideTable(['Loại','Level tối đa','Kho / bán'],buildings)+
     guideList([
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
@@ -92,13 +97,21 @@ function guideIslands(){
 function guideResources(){
   const crops=DATA.crops.map((crop,index)=>[esc(crop.name),'Farm Lv'+(index+1),money(crop.cost)+' vàng',
     duration(crop.duration),money(crop.yield)+' thức ăn']);
+  const progression=window.DragonEconomy.progression;
+  const xpRows=[1,5,10,20,30,40,50].map(level=>[
+    String(level)+' → '+(level+1),money(playerXPNeeded(level))+' XP',
+    money(progression.levelGoldBase+progression.levelGoldStep*(level+1))+' vàng',
+    money(progression.levelFoodBase+progression.levelFoodStep*(level+1))+' thức ăn',
+    String(progression.levelGems+((level+1)%5===0?progression.milestoneGemBonus:0))+' gem']);
   return '<h3>Tiền, thức ăn và gem</h3>'+guideList([
     'Chuồng chứa vàng và gem do rồng tạo ra; phải thu khi đầy để sản xuất tiếp. Vàng chịu ảnh hưởng bởi level/bậc rồng, hạnh phúc, level Chuồng và tình trạng đói.',
     'Mỗi rồng tạo '+DATA.gemPerDragonPerHour+' gem mỗi giờ khi ở Chuồng đang hoạt động và còn sức chứa gem.',
     'Thức ăn dùng để cho rồng ăn và một số nâng cấp. Shop bán với giá '+money(window.DragonEconomy.progression.foodGoldPrice)+' vàng / thức ăn; Nông trại trồng cây để thu hoạch.',
     'Gem dùng mua đảo, một số trứng và tua thời gian; mỗi 5 phút còn lại khi tua tương ứng khoảng một gem.',
     'Mỗi lần tăng player level nhận vàng, thức ăn và gem; các level chia hết cho 5 có thêm gem.'
-  ])+'<h3>Cây trồng ở Nông trại</h3>'+guideTable(['Cây','Mở tại','Chi phí','Thời gian','Thu hoạch Lv1'],crops)+
+  ])+'<h3>XP và thưởng khi lên Player Level</h3>'+guideTable(['Từ → đến','XP cần','Vàng thưởng','Thức ăn thưởng','Gem thưởng'],xpRows)+
+    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level tối đa là 60; trứng nở, thu hoạch, mở đất và đảo đều có thể cho XP.</p>'+
+    '<h3>Cây trồng ở Nông trại</h3>'+guideTable(['Cây','Mở tại','Chi phí','Thời gian','Thu hoạch Lv1'],crops)+
     '<p class="muted">Nông trại cấp cao tăng lượng thu hoạch thêm 20% cho mỗi level trên 1.</p>'+ 
     '<h3>Inventory và trứng</h3>'+guideList([
       'Inventory hiện chứa trứng đang chờ ô ấp và các Chuồng đã cất. Chuồng cất giữ level, nhưng rồng trong đó ngừng tạo vàng và gem.',
@@ -117,6 +130,27 @@ function guideArena(){
     'Special Skill có thể hồi máu, tẩy trạng thái xấu, tăng HP tối đa hoặc đánh 2–3 nhịp có tỷ lệ hụt từng nhịp. Hiệu ứng cùng loại không cộng dồn: làm mới thời gian theo giá trị lớn hơn và giữ mức tác dụng mạnh hơn.',
     'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận tính là thua và chờ 15 phút trước trận tiếp theo.'
   ])+'<div class="guide-callout">Chỉ báo Strong/Weak ở ô skill theo đối thủ đang đứng sân; khi đổi rồng, chúng được tính lại.</div>';
+}
+function guideSpecialSkills(){
+  const labels={poison:'Độc theo lượt',damage_up:'Tăng sát thương',damage_down:'Giảm sát thương',
+    armor_up:'Tăng giáp',armor_down:'Giảm giáp',damage_reduction:'Giảm sát thương nhận',
+    regen:'Hồi máu theo lượt',heal:'Hồi máu tức thì',freeze:'Mất lượt',
+    multi:'Đánh nhiều nhịp',cleanse:'Xóa trạng thái xấu và hồi máu',
+    vitality:'Tăng HP tối đa',accuracy_down:'Giảm độ chính xác'};
+  const groups=Object.keys(DATA.elements).map(function(element){
+    const rows=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
+      const species=DATA.species[id],skill=skillsForSpecies(species)[3],effect=skill.effect;
+      const amount=effect.kind==='multi'?effect.hits+' nhịp · hụt '+(effect.missChance*100)+'% / nhịp':
+        effect.value!==undefined?+(effect.value*100).toFixed(2)+'%':'—';
+      return [esc(species.name),esc(skill.name),esc(labels[effect.kind]||effect.kind),amount,
+        effect.duration?effect.duration+' lượt':'Tức thì',skill.cooldown+' lượt'];
+    });
+    return '<details class="guide-special-group"><summary>'+elementFlag(element,false,'sm')+' '+
+      esc(DATA.elements[element].name)+' · '+rows.length+' rồng</summary>'+guideTable(
+        ['Rồng','Special Skill','Hiệu ứng','Mức tác dụng','Thời gian','Hồi chiêu'],rows)+'</details>';
+  });
+  return '<p>Mỗi hệ có hai rồng Double Element riêng. Ô skill thứ tư của mỗi rồng là chiêu đặc biệt của hệ lặp. Các tên, thông số và hiệu ứng dưới đây đọc từ danh mục skill đang dùng trong Arena.</p>'+
+    '<div class="guide-callout">Skill hỗ trợ thuần gây 0 sát thương. Skill có đòn đánh chịu giáp, hệ số khắc hệ và tỉ lệ chí mạng; đòn nhiều nhịp kiểm tra hụt riêng từng nhịp. Cùng một loại trạng thái không cộng dồn.</div>'+groups.join('');
 }
 function guideElements(){
   const ids=Object.keys(DATA.elements),chart=DRAGON_DB.typeChart;

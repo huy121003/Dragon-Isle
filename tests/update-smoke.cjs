@@ -178,7 +178,7 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
 check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"open-guide"}})');
  assert.equal(game.run('ui.modal.name'),'guide');
- assert.equal((game.element('sheetBody').innerHTML.match(/data-action="guide-tab"/g)||[]).length,8);
+ assert.equal((game.element('sheetBody').innerHTML.match(/data-action="guide-tab"/g)||[]).length,9);
  game.run('handleAction({dataset:{action:"guide-tab",tab:"elements"}})');
  const chart=game.element('sheetBody').innerHTML;
  assert(chart.includes('Xung khắc hệ')&&chart.includes('War'));
@@ -186,6 +186,16 @@ check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
  const breeding=game.element('sheetBody').innerHTML;
  assert(breeding.includes('0.2%')&&breeding.includes('Lồng ấp hiện chỉ nhận một trứng'));
+ assert(breeding.includes('Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
+ const special=game.element('sheetBody').innerHTML;
+ assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
+ assert.equal((special.match(/<td>/g)||[]).length,30*6);
+ assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"resources"}})');
+ assert(game.element('sheetBody').innerHTML.includes('XP và thưởng khi lên Player Level'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"islands"}})');
+ assert(game.element('sheetBody').innerHTML.includes('Giá trứng 1 hệ'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"updates"}})');
  assert(game.element('sheetBody').innerHTML.includes('Thay đổi gần đây'));
  assert.equal(game.run('ui.guideTab'),'updates');

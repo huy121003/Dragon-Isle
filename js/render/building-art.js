@@ -15,6 +15,11 @@ function nestSlots(level){
     5:[[-.26,.19],[0,.2],[.26,.19],[-.14,-.08],[.14,-.08]]}
     [Math.min(5,Math.max(1,level))];
 }
+function hatcheryEggScale(level,unitX,unitY){
+  // Size against the projected nest, not a fixed number of screen pixels.
+  const width=level>=4?.0048:level===3?.006:level===2?.0075:.01;
+  return Math.min(unitX*width,unitY*.012);
+}
 function structurePoly(points,fill,stroke,line=0){
   trackStructure(points);
   ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
@@ -393,7 +398,7 @@ function paintHatchery(b,time,night){
     structureLine([[x-r*.8,y+.06],[x,y+.085],[x+r*.8,y+.06]],'#f9e2a1',.014);
     if(eggs[i]){ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
       drawEgg(ctx,eggs[i],x*structureUnitX,(y-.02)*structureUnitY,time,
-        Math.min(.85,structureUnit/130));ctx.restore();}
+        hatcheryEggScale(b.level,structureUnitX,structureUnitY));ctx.restore();}
   });
   structureLantern(-.36,-.05,'#ffcf88',time,night);
 }

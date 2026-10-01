@@ -288,7 +288,8 @@ function renderHatchery(id){
   if(!b||b.type!=="hatchery"||b.stored){closeModal();return;}
   const incubating=eggsInHatchery(id),waiting=state.eggs.filter(function(egg){return egg.hatcheryId===null;});
   dom.title.textContent="🥚 Hatchery · "+incubating.length+"/"+hatcheryCapacity(b.level);
-  let html='<div class="note">Hatchery level '+b.level+' incubates one egg at a time. Take or sell the previous egg before starting the next. Speed up for one gem per five remaining minutes.</div>';
+  let html='<div class="note">Hatchery level '+b.level+' has '+hatcheryCapacity(b.level)+
+    ' incubation '+(hatcheryCapacity(b.level)===1?'nest':'nests')+'. Ready eggs occupy their nests until hatched or sold. Speed up for one gem per five remaining minutes.</div>';
   if(!incubating.length)html+='<p>No eggs in this Hatchery.</p>';
   incubating.forEach(function(egg){
     const ready=egg.readyAt<=Date.now();
@@ -303,7 +304,7 @@ function renderHatchery(id){
       gemSkipCost(egg.readyAt,Date.now())+' Skip</button>')+'</div>';
   });
   html+='<h3>Stored eggs · '+waiting.length+'</h3>';
-  if(incubating.length>=hatcheryCapacity(b.level))html+='<p>The nest is occupied. Take or sell this egg before incubating another.</p>';
+  if(incubating.length>=hatcheryCapacity(b.level))html+='<p>All nests are occupied. Hatch or sell a ready egg to free a nest.</p>';
   else if(!waiting.length)html+='<p>Buy an egg in the Shop or collect one from the Breeding Cave.</p>';
   else waiting.forEach(function(egg){
     html+='<div class="egg-card">'+eggShellHtml(egg,false)+

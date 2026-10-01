@@ -742,7 +742,8 @@ check('isometric tiles, footprints and touch coordinates share one projection',(
    game.run('ui.camera.zoom='+zoom+';focusIsland(0);ui.camera.zoom='+zoom);
    for(const [c,r] of [[714,668],[747,705],[470,470]]){
      const hit=snapshot(game,'(()=>{const p=gridToScreen('+c+'+.5,'+r+'+.5);'+
-       'const s=worldToScreen(p.x,p.y);return screenCell(s.x,s.y);})()');
+       'const s=worldToScreen(p.x,p.y+islandBob(islandAt('+c+','+r+')));'+
+       'return screenCell(s.x,s.y);})()');
      assert.deepEqual(hit,{x:c,y:r});
    }
  }
@@ -753,15 +754,27 @@ check('isometric tiles, footprints and touch coordinates share one projection',(
  game.run('ui.debugIso=true;drawScene(1200,.016);ui.debugIso=false');
  assert(game.drawCalls.some(call=>call[0]==='arc'));
 });
+check('floating island motion keeps buildings, placement and touch targets together',()=>{
+ const motion=snapshot(game,'[islandBob(0,1200),islandBob(0,3400),islandBob(1,1200)]');
+ assert(Math.abs(motion[0]-motion[1])>5);
+ assert(Math.abs(motion[0]-motion[2])>5);
+ for(const time of [1200,3400,5800])for(const zoom of [.08,.4,1.6]){
+   game.run('ui.renderTime='+time+';ui.camera.zoom='+zoom);
+   const hit=snapshot(game,'(()=>{const p=gridToScreen(750.5,704.5);'+
+     'const s=worldToScreen(p.x,p.y+islandBob(0,'+time+'));'+
+     'return screenCell(s.x,s.y);})()');
+   assert.deepEqual(hit,{x:750,y:704});
+ }
+});
 check('mouse and touch placement follows the same cell at zoom and device pixel ratios',()=>{
  for(const [zoom,ratio,kind] of [[.08,1,'mouse'],[.5,2,'touch'],[2,2,'mouse']]){
    game.run('state=newGame();focusIsland(0);ui.camera.zoom='+zoom+';'+
      'window.devicePixelRatio='+ratio+';resizeCanvas();'+
      'ui.mode={kind:"move",id:1,x:state.buildings[0].x,y:state.buildings[0].y};');
    const start=snapshot(game,'(()=>{const b=state.buildings[0],p=gridToScreen(b.x+.5,b.y+.5);'+
-     'return worldToScreen(p.x,p.y);})()');
+     'return worldToScreen(p.x,p.y+islandBob(islandAt(b.x,b.y)));})()');
    const end=snapshot(game,'(()=>{const b=state.buildings[0],p=gridToScreen(b.x+1.5,b.y+.5);'+
-     'return worldToScreen(p.x,p.y);})()');
+     'return worldToScreen(p.x,p.y+islandBob(islandAt(b.x,b.y)));})()');
    const event=(p)=>JSON.stringify({clientX:p.x,clientY:p.y,pointerId:1,pointerType:kind});
    game.run('pointerDown({...'+event(start)+',preventDefault(){}});'+
      'pointerMove({...'+event(end)+',preventDefault(){}});'+
@@ -803,6 +816,21 @@ check('all building art remains within its diamond base width',()=>{
    '}ui.debugIso=false;return out;})()');
  for(const item of bounds)assert(item.min>=-.561&&item.max<=.561,
    `${item.type} level ${item.level} projects outside its base: ${item.min}..${item.max}`);
+});
+check('low building silhouettes and larger habitat dragons retain the exact base',()=>{
+ const compressed=snapshot(game,'(()=>{const b={id:950,type:"academy",x:740,y:700,level:1};'+
+   'const f=buildingFootprint(b),v=footprintVertices(b.x,b.y,f.w,f.h);'+
+   'const height=Math.max(...v.map(p=>p.y))-Math.min(...v.map(p=>p.y));'+
+   'const original=ctx.scale,scales=[];ctx.scale=(x,y)=>{scales.push([x,y]);original(x,y);};'+
+   'drawBuilding(b,12345);ctx.scale=original;return {height,scale:scales[0]};})()');
+ assert(Math.abs(compressed.scale[1]-compressed.height/.4*.48)<1e-8);
+ const dragons=snapshot(game,'(()=>{const previous=state.dragons,original=drawDragon,out=[];'+
+   'const first=previous[0];drawDragon=(context,params)=>out.push(params.scale);'+
+   'state.dragons=[first];drawBuilding(state.buildings[0],12345);'+
+   'state.dragons=[first,...[1,2,3].map(i=>({...first,id:1000+i}))];'+
+   'drawBuilding(state.buildings[0],12345);state.dragons=previous;drawDragon=original;return out;})()');
+ assert.equal(dragons[0],1.35);
+ assert.deepEqual(dragons.slice(1),[.86,.86,.86,.86]);
 });
 check('all ten habitat environments render with dragons',()=>{
  const before=game.drawCalls.length;

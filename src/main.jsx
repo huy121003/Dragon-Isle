@@ -210,6 +210,7 @@ function App(){
   const xpLabel=state.player.level>=60?'MAX LEVEL':
     `${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
+  if(state.buildings.some(b=>b.type==='arena'&&!b.stored))buttons.push(['⚔️','Arena','open-arena']);
   return <>
     <header className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><div className="hud-xp-track" role="progressbar" aria-label="Player experience" aria-valuemin={0} aria-valuenow={state.player.level>=60?60:Math.floor(state.player.xp)} aria-valuemax={state.player.level>=60?60:xpNeeded}><span className="hud-xp-fill" style={{width:xp+'%'}}/><span className="hud-xp-label">{xpLabel}</span></div></div></div>
       <div className="hud-resources"><Card size="small"><span>🪙</span><b>{txt('goldAmount')}</b><small>{txt('incomeRate')}</small></Card>

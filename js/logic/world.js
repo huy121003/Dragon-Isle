@@ -133,6 +133,10 @@ function completePlacement(x,y){
     if(!spendGold(price))return;
     const building={id:state.nextId++,type:type,element:mode.element||null,x:x,y:y,level:1,
       stored:false,storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null};
+    if(type==='habitat'){
+      building.purchaseCost=price;
+      state.habitatPurchases[mode.element]=(state.habitatPurchases[mode.element]||0)+1;
+    }
     state.buildings.push(building);
     if(type==="hatchery")autoAssignWaitingEggs();
     ui.selection={type:"building",id:building.id};

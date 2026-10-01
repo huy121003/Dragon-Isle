@@ -47,7 +47,7 @@ function extendCatalog(db,game){
   }
   db.khac=Object.fromEntries(ids.map(id=>[id,ids.filter(target=>expansion.wins[id].includes(target))]));
   db.rarities[doubleElements.rarity.id]=clone(doubleElements.rarity);
-  game.breedingTimes[doubleElements.rarity.id]=3200;
+  game.breedingTimes[doubleElements.rarity.id]=10800;
   globalThis.DragonDatabase=db;
   // Use the same factory, rarity, colors, stats, passive and skills as all existing dragons.
   const rulesPath=require.resolve('../js/data/dragon-rules.js');
@@ -179,6 +179,8 @@ function extendCatalog(db,game){
       db.species.push(dragon);seen.add(id);
     });
   }
+  // Species metadata follows the rarity's current incubation clock, including legacy catalog entries.
+  for(const dragon of db.species)dragon.apGiay=db.rarities[dragon.doHiem].apGiay;
   return {db,game};
 }
 module.exports=extendCatalog;

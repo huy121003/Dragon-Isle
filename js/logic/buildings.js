@@ -116,7 +116,8 @@ function sellBuilding(id){
   if(b.type==="habitat"&&occupants(b).some(function(d){return dragonBusy(d.id);})){
     toast("Wait for breeding dragons before selling the Habitat.");return;
   }
-  const refund=Math.round(buildingPurchaseCost(b.type,b.element)*Math.pow(1.8,b.level-1)*DATA.buildings[b.type].sellRate);
+  const refund=Math.round((b.purchaseCost||habitatPurchaseCost(b.element,0))*
+    Math.pow(1.8,b.level-1)*DATA.buildings[b.type].sellRate);
   if(!window.confirm("Sell "+buildingName(b)+" for "+money(refund)+" gold?"))return;
   state.gold+=refund+(b.storedGold||0);
   state.gems+=Math.max(0,Math.floor(Number(b.storedGems)||0));

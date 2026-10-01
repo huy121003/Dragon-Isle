@@ -218,6 +218,11 @@ function migrateSave(raw){
         out.y=DATA.legacyGridOffset+out.y*DATA.legacyGridScale;
       }
       out.level=clamp(Number(out.level)||1,1,DATA.buildings[out.type].maxLevel);
+      if(out.type==='habitat'){
+        const unlock=ELEMENT_UNLOCK[out.element]||1;
+        const legacyCost=Math.round(200*(1+.09*(unlock-1))/10)*10;
+        out.purchaseCost=Math.max(1,Math.floor(Number(out.purchaseCost)||legacyCost));
+      }
       out.storedGold=Math.max(0,Number(out.storedGold)||0);
       out.storedGems=out.type==="habitat"?Math.max(0,Math.floor(Number(out.storedGems)||0)):0;
       out.upgradeEnds=Number(out.upgradeEnds)||0;
@@ -231,6 +236,12 @@ function migrateSave(raw){
       }
       return out;
     });
+  const purchased=raw.habitatPurchases&&typeof raw.habitatPurchases==='object'?raw.habitatPurchases:{};
+  result.habitatPurchases=Object.fromEntries(Object.keys(DATA.elements).map(function(element){
+    const present=result.buildings.filter(b=>b.type==='habitat'&&b.element===element).length;
+    return [element,Math.min(10000,Math.max(element==='fire'?1:0,present,
+      Math.floor(Number(purchased[element])||0)))];
+  }));
   /* SAVE: Bố trí lại công trình cũ theo diện tích mới; cấp và tiến trình vẫn giữ nguyên. */
   if(raw.version<5){
     const owned=new Set(result.land),placed=[];

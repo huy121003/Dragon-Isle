@@ -598,7 +598,7 @@
       "hao": "#B26BFF",
       "heSoChiSo": 1.3,
       "vangGio": 400,
-      "apGiay": 2100,
+      "apGiay": 3600,
       "giaTrung": {
         "gem": 15
       },
@@ -611,7 +611,7 @@
       "hao": "#FFD24D",
       "heSoChiSo": 1.5,
       "vangGio": 1000,
-      "apGiay": 7200,
+      "apGiay": 10800,
       "giaTrung": {
         "gem": 80
       },
@@ -624,7 +624,7 @@
       "hao": "rainbow",
       "heSoChiSo": 1.8,
       "vangGio": 2500,
-      "apGiay": 21600,
+      "apGiay": 32400,
       "giaTrung": null,
       "banGia": 60000,
       "cauVong": [

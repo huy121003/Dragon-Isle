@@ -289,8 +289,9 @@ function islandUnlockCost(index){
 function landCost(x,y){
   const region=regionOf(x,y),opened=region?islandRegionCount(region.index):0;
   const prices=window.DragonEconomy.land;
-  const islandFactor=prices.firstIslandMultiplier+prices.islandStep*(region?.index||0);
-  return prices.basePerTile*islandFactor*Math.pow(prices.regionMultiplier,opened);
+  const progress=prices.firstIslandMultiplier*Math.pow(prices.regionMultiplier,opened);
+  const islandPremium=prices.islandStep*(region?.index||0);
+  return prices.basePerTile*(progress+islandPremium);
 }
 function expansionTiles(x,y){
   const r=regionOf(x,y),tiles=[];

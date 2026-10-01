@@ -453,12 +453,12 @@ check('16 element-ordered islands open in two compact rings around home',()=>{
 });
 check('region purchase and placement work',()=>{
  game.run('state.gold=500000;var firstLandPrice=expansionCost(739,691);unlockLand(739,691)');
- assert.equal(game.run('firstLandPrice'),418);
+ assert.equal(game.run('firstLandPrice'),421);
  assert(game.run('state.regions.includes("0:1:0")'));
  assert(game.run('unlocked(744,680)'));
  assert(game.run('footprintValid(744,678,{w:6,h:6})'));
  assert.equal(game.run('islandRegionCount(0)'),2);
- assert(game.run('expansionCost(715,670)')>418);
+ assert(game.run('expansionCost(715,670)')>421);
 });
 check('island unlock and land expansion costs increase by island and progress',()=>{
  const g=game;
@@ -468,11 +468,23 @@ check('island unlock and land expansion costs increase by island and progress',(
  for(let i=2;i<16;i++)assert(g.run('islandUnlockCost('+i+')')>g.run('islandUnlockCost('+(i-1)+')'));
  assert.equal(g.run('DATA.islands.some(i=>Object.hasOwn(i,"gemCost"))'),false);
  g.run('state=newGame();state.regions.push("1:1:1")');
- assert.equal(g.run('expansionCost(739,691)'),418);
+ assert.equal(g.run('expansionCost(739,691)'),421);
  const home=g.run('landCost(715,670)'),fire=g.run('landCost(715,592)');
  assert(fire>home,'The next island costs more per tile at the same expansion count');
  g.run('state.regions.push("0:0:0")');
  assert(g.run('landCost(715,670)')>home,'Each unlocked region raises the next land price');
+ const bands=snapshot(g,'(()=>{state=newGame();state.land=[];return DATA.islands.map((island,index)=>{'+
+   'const ids=Array.from({length:9},(_,n)=>index+":"+Math.floor(n/3)+":"+(n%3));'+
+   'const prices=[];for(let opened=1;opened<=8;opened++){state.regions=ids.slice(0,opened);'+
+   'prices.push(Math.round(landCost(island.x+1,island.y+1)*DATA.islandRegionSize**2));}'+
+   'return prices;});})()');
+ assert.equal(bands[0][0],421,'Origin Island starts at a few hundred gold');
+ for(let i=0;i<bands.length;i++){
+   for(let opened=1;opened<8;opened++)
+     assert(bands[i][opened]>bands[i][opened-1],`Island ${i} must get pricier with expansion`);
+   if(i)assert(bands[i][0]>bands[i-1][7],
+     `Island ${i} must cost more than the last expansion on island ${i-1}`);
+ }
  g.run('state.regions=["0:1:1","0:0:0","0:0:1","0:1:0","0:2:0","0:2:1","0:0:2","0:1:2","0:2:2"];'+
    'state.gems=1000;state.player.level=60;unlockIsland(1)');
  assert.equal(g.run('state.gems'),926);

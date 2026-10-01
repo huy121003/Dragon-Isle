@@ -11,7 +11,7 @@ window.DragonEconomy={
     fourBase:.015,fourPerTenLevels:.002,fourCap:.03,fourGrowthStartLevel:30,
     doubleBase:.006,doublePerTenLevels:.001,doubleCap:.012,doubleMinParentLevel:40},
   island:{baseGemCost:60,linearGemCost:12,quadraticGemCost:1.8},
-  land:{basePerTile:.7,regionMultiplier:1.22,firstIslandMultiplier:.85,islandStep:.045},
+  land:{basePerTile:.7,regionMultiplier:1.10,firstIslandMultiplier:.95,islandStep:1.10},
   habitat:{goldBase:1800,goldPerUnlockLevel:220,goldLevelFactor:7.5},
   shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
     habitatRepeatLinear:.35,habitatRepeatQuadratic:.12,

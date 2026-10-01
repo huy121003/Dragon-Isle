@@ -331,7 +331,8 @@ function paintHabitat(b,time,night){
     const point=gridToScreen(c,r),center=buildingCenter(b);
     ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
     drawDragon(ctx,{dragon:d,x:point.x-center.x,y:point.y-center.y-.035*structureUnitY,
-      time,facing:Math.cos(phase)<0?-1:1,scale:n>2?.86:n===2?1.08:1.35});ctx.restore();
+      time,facing:Math.cos(phase)<0?-1:1,stepPhase:dragonTravelPhase(phase),
+      scale:n>2?.86:n===2?1.08:1.35});ctx.restore();
   });
   if(!n){ctx.fillStyle=theme.accent;ctx.textAlign='center';ctx.font='bold .28px system-ui';
     ctx.fillText(DATA.elements[e]?.mark||'✦',0,.11);}

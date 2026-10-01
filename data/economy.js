@@ -1,5 +1,6 @@
 /* Editable economy and animation constants shared by the browser modules. */
 window.DragonEconomy={
+  starting:{gold:3000,food:500},
   progression:{earlyXpFactor:.22,earlyXpUntilLevel:20,fullXpLevel:45,
     levelGoldBase:100,levelGoldStep:50,levelFoodBase:20,levelFoodStep:10,
     levelGems:1,milestoneGemBonus:2,landXp:80,islandXp:300,
@@ -10,7 +11,7 @@ window.DragonEconomy={
     fourBase:.015,fourPerTenLevels:.002,fourCap:.03,fourGrowthStartLevel:30,
     doubleBase:.006,doublePerTenLevels:.001,doubleCap:.012,doubleMinParentLevel:40},
   island:{baseGemCost:60,linearGemCost:12,quadraticGemCost:1.8},
-  land:{basePerTile:20,regionMultiplier:1.20,firstIslandMultiplier:.85,islandStep:.045},
+  land:{basePerTile:.7,regionMultiplier:1.22,firstIslandMultiplier:.85,islandStep:.045},
   habitat:{goldBase:1800,goldPerUnlockLevel:220,goldLevelFactor:7.5},
   shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
     habitatRepeatLinear:.35,habitatRepeatQuadratic:.12,

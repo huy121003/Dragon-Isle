@@ -64,7 +64,8 @@ function beginMode(mode){
   ui.selection=null;dom.inspector.innerHTML="";
   dom.bar.classList.add("visible");
   const f=placementFootprint(mode);
-  dom.barText.textContent=mode.kind==="buy"?"Drag or tap to build "+(mode.type==="habitat"?"Habitat "+DATA.elements[mode.element].name:DATA.buildings[mode.type].name)+" · "+f.w+"×"+f.h+" tiles":
+  dom.barText.textContent=mode.kind==="buy"?"Tap a free plot to place "+(mode.type==="habitat"?"Habitat "+DATA.elements[mode.element].name:DATA.buildings[mode.type].name)+" · "+f.w+"×"+f.h+" tiles · "+
+    (mode.type==="premiumCave"?"♦ ":"● ")+money(buildingPurchaseCost(mode.type,mode.element))+" on placement":
     mode.kind==="inventory"?"Drag or tap a tile to place a stored building":"Drag or tap a tile to move this building";
   closeModal();
 }

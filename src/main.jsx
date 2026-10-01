@@ -8,7 +8,19 @@ import {inlineStyle} from './inline-style.mjs';
 import './ui.css';
 const $=id=>document.getElementById(id);
 const game=()=>window.DragonGame;
-const send=data=>game()?.action(data);
+const commerceActions=new Set(['buy-food','plant','harvest']);
+function send(data){
+  const modalName=game()?.ui.modal?.name;
+  const keepScroll=commerceActions.has(data.action)&&['shop','crops'].includes(modalName);
+  const scroller=keepScroll?document.querySelector('.commerce-modal .ant-modal-body'):null;
+  const scrollTop=scroller?.scrollTop;
+  game()?.action(data);
+  if(scroller&&game()?.ui.modal?.name===modalName)
+    requestAnimationFrame(()=>{
+      const current=document.querySelector('.commerce-modal .ant-modal-body');
+      if(current&&game()?.ui.modal?.name===modalName)current.scrollTop=scrollTop;
+    });
+}
 const read=id=>$(id)?.innerHTML||'';
 const txt=id=>$(id)?.textContent||'';
 
@@ -240,6 +252,7 @@ function App(){
   const xpLabel=state.player.level>=60?'MAX LEVEL':
     `${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
+  const commerceModal=['shop','crops'].includes(ui?.modal?.name);
   if(state.buildings.some(b=>b.type==='arena'&&!b.stored))buttons.push(['⚔️','Arena','open-arena']);
   if(state.dragons.filter(dragon=>dragon.level>=10).length>=3)
     buttons.push(['🗡️','Thách đấu','open-challenge']);
@@ -253,11 +266,11 @@ function App(){
     </header>
     {read('timersBar')&&<div className="react-timers"><LegacyContent html={read('timersBar')}/></div>}
     {ui?.selection&&!ui?.mode&&read('inspector')&&<aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
-    {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>Cancel</Button></Space></Card></div>}
+    {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>{ui.mode.fromShop?'Back to Shop':'Cancel'}</Button></Space></Card></div>}
     <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={ui?.modal?.name===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
       <span>{icon}</span><b>{label}</b>{action==='open-book'&&<small>{txt('collectionProgress')}</small>}</Button>)}</nav>
-    <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
-      width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden styles={{body:{maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>
+    <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal':commerceModal?'commerce-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
+      width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden styles={{body:{height:commerceModal?'min(66dvh, 560px)':undefined,maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>
       {ui?.modal?.name==='arena'?<ArenaView arena={ui.arena}/>:<LegacyContent html={read('sheetBody')}/>}
     </Modal>
     <Modal className="game-modal arena-modal" title="🗡️ Thách đấu" open={challengeOpen||!!challenge?.match}

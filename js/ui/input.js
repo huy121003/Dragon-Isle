@@ -166,7 +166,10 @@ function handleAction(button){
     case "arena-refresh":loadArena();break;
     case "close-modal":closeModal();break;
     case "clear-selection":ui.selection=null;updateInspector();break;
-    case "cancel-mode":stopMode();break;
+    case "cancel-mode":{
+      const backToShop=ui.mode?.fromShop;
+      stopMode();if(backToShop)openModal("shop");break;
+    }
     case "shop-tab":ui.shopTab=button.dataset.tab;renderShop();break;
     case "toggle-fixed-day":
       ui.fixedDay=!ui.fixedDay;
@@ -202,7 +205,7 @@ function handleAction(button){
       openModal(back.name,back.extra);break;
     }
     case "open-recipes":openModal("recipes");break;
-    case "choose-build":beginMode({kind:"buy",type:button.dataset.type,element:button.dataset.element||null});break;
+    case "choose-build":beginMode({kind:"buy",type:button.dataset.type,element:button.dataset.element||null,fromShop:true});break;
     case "place-inventory":beginMode({kind:"inventory",id:id});break;
     case "buy-egg":buyEgg(button.dataset.species);break;
     case "egg-find-home":openModal("choose-hatchery",id);break;
@@ -258,7 +261,7 @@ function handleAction(button){
       else openModal("assign",id);break;
     case "assign":assignDragon(Number(button.dataset.dragon),Number(button.dataset.building));break;
     case "crop-menu":openModal("crops",id);break;
-    case "plant":if(plantCrop(id,button.dataset.crop))closeModal();break;
+    case "plant":plantCrop(id,button.dataset.crop);break;
     case "harvest":harvest(buildingById(id));break;
     case "upgrade":upgradeBuilding(id);break;
     case "move":beginMode({kind:"move",id:id});break;

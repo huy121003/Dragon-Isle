@@ -331,7 +331,7 @@ function paintHabitat(b,time,night){
     const point=gridToScreen(c,r),center=buildingCenter(b);
     ctx.save();ctx.scale(1/structureUnitX,1/structureUnitY);
     drawDragon(ctx,{dragon:d,x:point.x-center.x,y:point.y-center.y-.035*structureUnitY,
-      time,facing:Math.cos(phase)<0?-1:1,scale:n>2?.43:.53});ctx.restore();
+      time,facing:Math.cos(phase)<0?-1:1,scale:n>2?.86:n===2?1.08:1.35});ctx.restore();
   });
   if(!n){ctx.fillStyle=theme.accent;ctx.textAlign='center';ctx.font='bold .28px system-ui';
     ctx.fillText(DATA.elements[e]?.mark||'✦',0,.11);}
@@ -489,7 +489,8 @@ function drawBuilding(b,time){
   const center=gridToScreen(b.x+f.w/2,b.y+f.h/2);
   const width=Math.max(...v.map(p=>p.x))-Math.min(...v.map(p=>p.x));
   const height=Math.max(...v.map(p=>p.y))-Math.min(...v.map(p=>p.y));
-  const unitX=width/1.02,unitY=height/.4,unit=Math.min(unitX,unitY);
+  // The base occupies the exact footprint; vertical art is shorter to preserve sightlines.
+  const unitX=width/1.02,unitY=height/.4*.48,unit=Math.min(unitX,unitY);
   const night=1-daylightAt(Date.now());
   const anchor=v[2];
   ctx.save();ctx.translate(anchor.x,anchor.y);ctx.scale(unitX,unitY);

@@ -63,8 +63,8 @@ function dragonDetailHtml(species,dragon){
   const level=dragon?dragon.level:1;
   const stats=speciesStats(species,level),rarity=DATA.rarities[species.rarity];
   const house=dragon?buildingById(dragon.habitatId):null;
-  const gold=dragon&&house&&!house.stored?dragonIncomePerMinute(dragon,house):
-    Math.max(1,Math.round(rarity.income/60));
+  const active=dragon&&house&&house.type==="habitat"&&!house.stored;
+  const gold=dragon?(active?dragonIncomePerMinute(dragon,house):0):rarity.income/60;
   const matchup=matchupFor(species);
   const skillList=skillsForSpecies(species);
   let html='<div class="dragon-detail" style="--rarity:'+rarity.color+'">'+
@@ -97,8 +97,9 @@ function dragonDetailHtml(species,dragon){
     '<div><span>⚔️ base attack</span><b>'+money(stats.attack)+'</b></div>'+
     '<div><span>🛡️ Defense</span><b>'+money(stats.defense)+'</b></div></div>'+
     '<small class="muted">Base attack at the shown level, before skill power. '+
-    (dragon&&house&&!house.stored?'Actual gold at '+esc(buildingName(house)):
-    'Base gold before happiness and Habitat bonuses')+'</small>'+
+    (dragon?(active?'Actual gold at '+esc(buildingName(house)):
+      'No gold until placed in an active Habitat'):
+      'Level 1 base rate before happiness and Habitat bonuses')+'</small>'+
     '<div class="matchup"><h4>Element matchups · '+elementFlag(species.elements[0],true)+'</h4><p>Can counter ×1.5: '+matchupBadges(matchup.strong)+
     '</p><p>Primary weak to ×1.5: '+matchupBadges(matchup.weak)+'</p></div>'+
     '<p class="muted">'+esc(species.detail.hienTuong)+'</p>';

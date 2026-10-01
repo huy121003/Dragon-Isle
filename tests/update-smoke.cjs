@@ -20,7 +20,7 @@ async function boot(saveValue,options={}){
     if(!elements.has(id))elements.set(id,{
       id,style:{},dataset:{},innerHTML:'',textContent:'',scrollLeft:0,scrollTop:0,
       classList:{add(){},remove(){},toggle(){}},
-      addEventListener(){},getBoundingClientRect(){return {left:0,top:0,width:800,height:600};},
+      addEventListener(){},setAttribute(name,value){this[name]=String(value);},getBoundingClientRect(){return {left:0,top:0,width:800,height:600};},
       getContext(){return canvasCtx;},appendChild(){},remove(){},setPointerCapture(){}
     });
     return elements.get(id);
@@ -102,6 +102,9 @@ check('battle preview, multiple attacking elements and colored skill symbols',()
  assert(detail.includes('100% base attack + '));
 });
 check('early player XP, level rewards and dragon feeding costs',()=>{
+ assert.equal(balance.run('playerXPNeeded(1)'),38);
+ assert.equal(balance.run('playerXPNeeded(20)'),1115);
+ assert.equal(balance.run('Array.from({length:4},(_,i)=>playerXPNeeded(i+1)).reduce((a,b)=>a+b,0)'),337);
  assert(balance.run('playerXPNeeded(1)')<100);
  assert(balance.run('playerXPNeeded(20)')<2000);
  assert(balance.run('playerXPNeeded(21)')>balance.run('playerXPNeeded(20)'));
@@ -116,6 +119,60 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  balance.run('state.player.level=4;state.player.xp=0;gainPlayerXP(playerXPNeeded(4))');
  assert.equal(balance.run('state.player.level'),5);
  assert.equal(balance.run('state.gems'),before.gems+4);
+ balance.run('state.player.level=3;state.player.xp=150;gainPlayerXP(0)');
+ assert.equal(balance.run('state.player.level'),4);
+ assert.equal(balance.run('state.player.xp'),52);
+ balance.run('state.player.level=5;state.player.xp=0');
+ balance.run('updateHeader()');
+ assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(5)')+' XP');
+ balance.run('state.player.level=60;updateHeader()');
+ assert.equal(balance.element('xpText').textContent,'MAX LEVEL');
+ assert.equal(balance.element('xpFill').style.width,'100%');
+});
+const income=await boot();
+check('gold scales steadily, active Habitats and higher levels hold more gold',()=>{
+ const ratios=snapshot(income,'[1,10,30,50,100].map(level=>dragonIncome({...state.dragons[0],level},buildingById(1)))');
+ assert(ratios.every((n,i)=>i===0||n>ratios[i-1]));
+ assert(ratios[4]<ratios[0]*15,'Level 100 should not explode exponentially');
+ assert(income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})')>
+   income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:1})')*10);
+ assert(income.run('habitatGoldCapacity({type:"habitat",element:"time",level:4})')>
+   income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})'));
+ income.run('buildingById(1).stored=true');
+ assert.equal(income.run('habitatIncomePerMinute(buildingById(1))'),0);
+ assert.equal(income.run('habitatGemRate(buildingById(1))'),0);
+ assert(income.run('dragonDetailHtml(DATA.species.fire,state.dragons[0])').includes('No gold until placed in an active Habitat'));
+});
+check('selling, storing, feeding and moving settle old income before rates change',()=>{
+ income.run('state=newGame();state.dragons[0].gemProgress=.99;state.lastTick=Date.now()-60000');
+ const expected=income.run('dragonIncomePerMinute(state.dragons[0],buildingById(1))');
+ income.run('sellDragon(state.dragons[0].id)');
+ const house=()=>snapshot(income,'{gold:buildingById(1).storedGold,gems:buildingById(1).storedGems}');
+ assert(Math.abs(house().gold-expected)<.05);
+ assert.equal(house().gems,1);
+ assert.equal(income.run('habitatIncomePerMinute(buildingById(1))'),0);
+ assert.equal(income.run('habitatGemRate(buildingById(1))'),0);
+ const before=house();
+ income.run('advanceWorld(Date.now()+3600000)');
+ assert.deepEqual(house(),before);
+ const saleBalance=income.run('state.gold'),gemBalance=income.run('state.gems');
+ income.run('collect(buildingById(1))');
+ assert(Math.abs(income.run('state.gold')-saleBalance-before.gold)<.0001);
+ assert.equal(income.run('state.gems'),gemBalance+1);
+ income.run('state=newGame();state.lastTick=Date.now()-60000;storeBuilding(1)');
+ const stored=income.run('buildingById(1).storedGold');
+ assert(stored>0);
+ income.run('advanceWorld(Date.now()+60000)');
+ assert.equal(income.run('buildingById(1).storedGold'),stored);
+ income.run('state=newGame();state.buildings.push({...buildingById(1),id:92,x:750,y:700,storedGold:0,storedGems:0});'+
+   'state.lastTick=Date.now()-60000;assignDragon(state.dragons[0].id,92)');
+ assert(income.run('buildingById(1).storedGold')>0);
+ assert.equal(income.run('buildingById(92).storedGold'),0);
+ income.run('state=newGame();state.dragons[0].feedProgress=3;state.food=100;state.lastTick=Date.now()-60000');
+ const oldRate=income.run('dragonIncomePerMinute(state.dragons[0],buildingById(1))');
+ income.run('feedDragon(state.dragons[0].id)');
+ assert(Math.abs(income.run('buildingById(1).storedGold')-oldRate)<.05);
+ assert(income.run('dragonIncomePerMinute(state.dragons[0],buildingById(1))')>oldRate);
 });
 check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  balance.run('state.player.level=1;state.gold=10000;state.food=0;');

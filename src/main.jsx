@@ -34,6 +34,7 @@ function convert(node,key){
       danger={danger} disabled={node.disabled} className={node.className}
       title={node.title||undefined} aria-label={node.getAttribute('aria-label')||undefined}
       aria-pressed={node.getAttribute('aria-pressed')||undefined}
+      role={node.getAttribute('role')||undefined} aria-selected={node.getAttribute('aria-selected')||undefined}
       onClick={()=>send({...d})}>{children()}</Button>;
   }
   if(tag==='canvas'&&d.dragonArt){
@@ -205,7 +206,7 @@ function App(){
   if(!account)return <Auth onDone={()=>{}}/>;
   if(!state)return <div className="react-loading"><Spin size="large" tip="Loading dragon island"/></div>;
   const xp=state.player.level>=60?100:Math.min(100,Math.round(state.player.xp/game().xpNeeded(state.player.level)*100));
-  const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory']];
+  const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
   return <>
     <header className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><Progress percent={xp} showInfo={false} size="small"/></div></div>
       <div className="hud-resources"><Card size="small"><span>🪙</span><b>{txt('goldAmount')}</b><small>{txt('incomeRate')}</small></Card>

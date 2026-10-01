@@ -145,6 +145,13 @@ function handleAction(button){
     case "open-book":openModal("book");break;
     case "open-inventory":openModal("inventory");break;
     case "open-islands":openModal("islands");break;
+    case "open-guide":openModal("guide");break;
+    case "guide-tab":
+      if(GUIDE_SECTIONS.some(section=>section[0]===button.dataset.tab)){
+        ui.guideTab=button.dataset.tab;renderGuide();dom.body.scrollTop=0;
+        window.dispatchEvent(new Event('dragon-ui-update'));
+      }
+      break;
     case "show-world":showWorld();break;
     case "focus-island":focusIsland(id);break;
     case "unlock-island":unlockIsland(id);break;

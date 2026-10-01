@@ -71,6 +71,7 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
   assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId===null).length'),1);
   lifecycle.run('state.eggs[0].readyAt=Date.now()-1;autoAssignWaitingEggs();');
   assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId!==null).length'),1);
+  assert.equal(lifecycle.run('hatcheryCapacity(5)'),1);
   lifecycle.run('state.eggs.shift();autoAssignWaitingEggs();');
   assert.equal(lifecycle.run('state.eggs[0].hatcheryId'),3);
   lifecycle.run('state.buildings.push({id:92,type:"cave",stored:false,breeding:null});'+
@@ -78,6 +79,9 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
     'state.eggs.push({id:93,species:"fire",source:"breed",caveId:92,hatcheryId:null});'+
     'startBreeding(92,state.dragons[0].id,77);');
   assert.equal(lifecycle.run('buildingById(92).breeding'),null);
+  lifecycle.run('renderBreeding(92)');
+  assert(lifecycle.element('sheetBody').innerHTML.includes('previous bred egg'));
+  assert(!lifecycle.element('sheetBody').innerHTML.includes('data-action="start-breeding"'));
 });
 
 check('battle preview, multiple attacking elements and colored skill symbols',()=>{
@@ -164,7 +168,27 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
  const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons.at(-1))');
  assert(Math.abs(odds.filter(o=>o.id.includes('>')).reduce((n,o)=>n+o.chance,0)-.75)<1e-9);
  balance.run('renderBreeding(state.buildings.at(-1).id)');
- assert(balance.element('sheetBody').innerHTML.includes('75.00%'));
+ const html=balance.element('sheetBody').innerHTML;
+ assert(html.includes('75.00%'));
+ assert(html.includes('breed-probabilities')&&html.includes('breed-tier-outcomes'));
+ assert.equal(balance.run('breedingChanceLabel(.000000015)'),'0.00000150%');
+ assert.equal((html.match(/class="breed-chance /g)||[]).length,5);
+ assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons.at(-1)).reduce((sum,o)=>sum+o.chance,0)'),1);
+});
+check('guide navigation and game-driven help pages',()=>{
+ game.run('handleAction({dataset:{action:"open-guide"}})');
+ assert.equal(game.run('ui.modal.name'),'guide');
+ assert.equal((game.element('sheetBody').innerHTML.match(/data-action="guide-tab"/g)||[]).length,8);
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"elements"}})');
+ const chart=game.element('sheetBody').innerHTML;
+ assert(chart.includes('Xung khắc hệ')&&chart.includes('War'));
+ assert.equal((chart.match(/class="guide-element"/g)||[]).length,60);
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
+ const breeding=game.element('sheetBody').innerHTML;
+ assert(breeding.includes('0.2%')&&breeding.includes('Lồng ấp hiện chỉ nhận một trứng'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"updates"}})');
+ assert(game.element('sheetBody').innerHTML.includes('Thay đổi gần đây'));
+ assert.equal(game.run('ui.guideTab'),'updates');
 });
 check('16 element-ordered islands preserve the original save indices',()=>{
  assert.equal(game.run('DATA.islands.length'),16);

@@ -58,6 +58,7 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 | `js/data/db-cache.js` | Bản cache tạo từ JSON để `file://` vẫn chạy |
 | `js/core/`, `js/logic/` | Trạng thái, tiền vàng, trứng, lai, công trình, chiêu và đồng hồ |
 | `js/render/`, `js/ui/` | Canvas đảo/rồng và giao diện thông tin, Sổ tay, chuồng; `dragon-anatomy.js` chứa nét vẽ dùng chung, `dragon-design.js` dựng bộ khung và chi tiết hệ ở điểm neo |
+| `js/ui/guide.js` | Tab Hướng dẫn: các mục đọc luật và cân bằng từ dữ liệu đang chạy; `GUIDE_UPDATES` lưu lịch sử thay đổi cho người chơi |
 | `js/auth.js`, `js/save.js`, `js/audio.js`, `js/main.js` | Đăng nhập, lưu hồ sơ, âm thanh, vòng lặp game |
 | `src/main.jsx`, `src/ui.css` | Giao diện React và theme Ant Design, màn hình quản trị, bộ nối thao tác Canvas |
 | `dist/` | Đầu ra do Vite build, không lưu trong repository; Node phục vụ trực tiếp |
@@ -66,6 +67,8 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 | `tests/` | Kiểm thử game và máy chủ |
 
 Dữ liệu loài được quản lý trong các tệp JSON thuộc `data/`; `scripts/extend-catalog.cjs` mở rộng danh mục khi build và khi Arena tải dữ liệu. `npm run build` tự tạo cache và build React; `npm test` cũng build trước khi kiểm tra. Chạy `node server.cjs` để thử game; mở `/debug/gallery.html` để xem rồng theo hệ và tuổi.
+
+Khi đổi cơ chế game, cập nhật nội dung mục liên quan trong `js/ui/guide.js` và thêm một mục mới ở đầu `GUIDE_UPDATES`. Các bảng hệ, đảo, thời gian và tham số cân bằng trong Hướng dẫn đọc trực tiếp từ danh mục và luật đang chạy.
 
 ## Bản cập nhật đảo và rồng
 

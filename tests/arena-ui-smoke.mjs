@@ -15,8 +15,11 @@ const server=await createServer({server:{middlewareMode:true},appType:'custom',l
 try{
   const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/ArenaView.jsx');
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
-    water:{name:'Water Dragon',elements:['water'],rarity:'common'}};
-  globalThis.window={DragonGame:{data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
+    water:{name:'Water Dragon',elements:['water'],rarity:'common'},
+    ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
+  globalThis.window={DragonGame:{skillMatchup:(element,target)=>
+    element==='fire'&&target==='water'?.75:element==='fire'&&target==='ice'?1.5:1,
+    data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
     water:{mark:'💧',name:'Water',color:'#48e'},earth:{mark:'◆',name:'Earth',color:'#a86'},
     wind:{mark:'🌀',name:'Wind',color:'#6ab'},ice:{mark:'❄',name:'Ice',color:'#9ce'},
     war:{name:'War',color:'#d64e33'},pure:{name:'Pure',color:'#db71c9'},
@@ -62,6 +65,16 @@ try{
   const fighting=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,data:{...data,battle}}}));
   assert.match(fighting,/battle-stage/);assert.match(fighting,/battle-skill-grid/);
   assert.match(fighting,/Flame Slash/);assert.match(fighting,/Milo/);
+  assert.match(fighting,/matchup-mark weak/);assert.match(fighting,/▼.*WEAK/);
+  const strongBattle={...battle,defense:[{...battle.defense[0],species:'ice'}]};
+  const strongMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
+    data:{...data,battle:strongBattle}}}));
+  assert.match(strongMenu,/matchup-mark strong/);assert.match(strongMenu,/▲.*STRONG/);
+  const supportBattle={...battle,attack:[{...dragon,skills:[{...dragon.skills[0],
+    special:true,power:0,bonus:0,description:'Heal',effect:{kind:'heal',target:'self'}}]}]};
+  const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
+    data:{...data,battle:supportBattle}}}));
+  assert.doesNotMatch(supportMenu,/matchup-mark weak/);
   assert(fighting.indexOf('battle-stage')<fighting.indexOf('battle-controls')&&
     fighting.indexOf('battle-controls')<fighting.indexOf('battle-bench'),
     'Chọn chiêu và đổi rồng phải nằm ngay dưới sân đấu');
@@ -85,9 +98,27 @@ try{
   }
   const counterEffect=renderToStaticMarkup(React.createElement(SkillEffect,{frame:2,
     event:{damage:300,element:'thunder',skill:'Sky Thunder',side:'defense',critical:true}}));
-  assert.match(counterEffect,/toward-left critical/);assert.match(counterEffect,/CRIT!/);
+  assert.match(counterEffect,/toward-left critical/);assert.match(counterEffect,/✦<\/span> CRIT/);
+  const strongCrit=renderToStaticMarkup(React.createElement(SkillEffect,{frame:3,
+    event:{damage:345,matchup:1.5,element:'fire',skill:'Inferno',side:'attack',critical:true}}));
+  assert.match(strongCrit,/−345/);assert.match(strongCrit,/matchup-mark strong/);
+  assert.match(strongCrit,/matchup-mark crit/);
+  const weak=renderToStaticMarkup(React.createElement(SkillEffect,{frame:4,
+    event:{damage:88,matchup:.75,element:'fire',skill:'Ember',side:'attack'}}));
+  assert.match(weak,/matchup-mark weak/);assert.doesNotMatch(weak,/matchup-mark crit/);
+  const normal=renderToStaticMarkup(React.createElement(SkillEffect,{frame:5,
+    event:{damage:99,matchup:1,element:null,skill:'Claw',side:'attack'}}));
+  assert.match(normal,/element-neutral toward-right normal/);
+  assert.doesNotMatch(normal,/matchup-mark (strong|weak)/);
+  const support=renderToStaticMarkup(React.createElement(SkillEffect,{frame:6,
+    event:{damage:0,heal:120,element:'pure',skill:'Restoration',side:'attack',targetSide:'attack',
+      special:true,skillId:'pure-double-1',effect:'heal'}}));
+  assert.match(support,/self-target support/);assert.match(support,/fx-special-seal/);
+  assert.match(support,/\+120 HP/);assert.doesNotMatch(support,/matchup-mark/);
   assert.equal(renderToStaticMarkup(React.createElement(SkillEffect,{event:{switchTo:'Alex'}})),'');
   const styles=readFileSync(new URL('../src/arena.css',import.meta.url),'utf8');
+  assert(styles.includes('.battle-skill-fx.normal .fx-projectile'));
+  assert(styles.includes('.battle-skill-fx.support .fx-trail'));
   for(const element of ['war','pure','legend','primal','time'])
     assert(styles.includes('.element-'+element+' .fx-projectile'));
   const reducedMotion=styles.match(/@media\(prefers-reduced-motion:reduce\)\{[^\n]+/i)?.[0]||'';

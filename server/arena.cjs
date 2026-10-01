@@ -56,7 +56,7 @@ function createArena({profilesDir,dataDir,auth}){
         if(!left.some(f=>f.hp>0)||!right.some(f=>f.hp>0))break;
         const f=active(b,side),ready=readySkills(f);
         if(!ready.length)throw Object.assign(new Error('This dragon has no unlocked skills.'),{status:400});
-        const chosen=ready[Math.floor(Math.random()*ready.length)];
+        const chosen=side==='defense'?chooseDefenseSkill(b):ready[Math.floor(Math.random()*ready.length)];
         strike(b,side,chosen.skill,chosen.index);
       }
     }
@@ -128,6 +128,34 @@ function createArena({profilesDir,dataDir,auth}){
     return f.skills.map((skill,index)=>({skill,index})).filter(({skill,index})=>
       skill&&f.level>=game.progression.skillUnlockLevels[index]&&!(f.cooldowns?.[index]>0));
   }
+  function chooseDefenseSkill(b){
+    const actor=active(b,'defense'),target=active(b,'attack'),ready=readySkills(actor);
+    if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
+    const incoming=Math.max(1,...readySkills(target).map(({skill})=>
+      combat.battleDamage(target,actor,skill,catalog.typeChart)));
+    const score=({skill})=>{
+      const effect=skill.effect,kind=effect?.kind;
+      const hitDamage=combat.battleDamage(actor,target,skill,catalog.typeChart);
+      const hits=kind==='multi'?effect.hits:1;
+      const accuracy=1-Math.min(.75,(kind==='multi'?effect.missChance:0)+
+        combat.statusValue(actor,'accuracy_down'));
+      let value=Math.min(target.hp,hitDamage*hits*accuracy);
+      const already=kind&&actor.statuses.some(status=>status.kind===kind);
+      const enemyHas=kind&&target.statuses.some(status=>status.kind===kind);
+      const missing=Math.max(0,combat.effectiveMaxHp(actor)-actor.hp);
+      if(kind==='heal'||kind==='cleanse')value+=Math.min(missing,actor.maxHp*effect.value)*1.1;
+      else if(kind==='regen'&&!already)value+=Math.min(missing,actor.maxHp*effect.value*effect.duration)*.8;
+      else if(kind==='vitality'&&!already)value+=actor.maxHp*effect.value*.7;
+      else if(kind==='freeze'&&!enemyHas)value+=incoming*.55*accuracy;
+      else if(kind==='poison'&&!enemyHas)value+=Math.min(target.hp,target.maxHp*effect.value*effect.duration)*.5*accuracy;
+      else if(kind==='damage_up'&&!already)value+=hitDamage*.4+incoming*effect.value*.5;
+      else if(['armor_up','damage_reduction'].includes(kind)&&!already)value+=incoming*effect.value*.8;
+      else if(['armor_down','damage_down','accuracy_down'].includes(kind)&&!enemyHas)
+        value+=incoming*(effect.value||.2)*.5*accuracy;
+      return value;
+    };
+    return ready.reduce((best,item)=>score(item)>score(best)?item:best);
+  }
   function strike(b,side,skill,skillIndex){
     const actor=active(b,side),other=side==='attack'?'defense':'attack',target=active(b,other);
     if(!actor||actor.hp<=0||!target||target.hp<=0)return;
@@ -183,6 +211,7 @@ function createArena({profilesDir,dataDir,auth}){
         target:beneficiary.nickname,targetSide:beneficiary===actor?side:other,
         skill:skill.name,skillId:skill.id,element:skill.element||null,
         effect:effect?.kind||null,special:!!skill.special,damage,critical,hits,misses,
+        matchup:attempts?combat.matchup(skill.element,target.parts,catalog.typeChart):null,
         heal:Math.max(0,beneficiary.hp-before),remaining:beneficiary.hp,
         knockout:target.hp===0});
     }
@@ -247,15 +276,13 @@ function createArena({profilesDir,dataDir,auth}){
       if(!b)throw Object.assign(new Error('No battle in progress.'),{status:409});
       if(!Number.isInteger(body?.expectedTurn)||body.expectedTurn!==b.turn)
         throw Object.assign(new Error('The turn changed. Reload the Arena.'),{status:409});
-      const actor=active(b,'attack'),defender=active(b,'defense');
+      const actor=active(b,'attack');
       if(body.action==='switch'){
         const index=b.attack.findIndex(f=>f.id===body.dragonId&&f.hp>0);
         if(index<0||index===b.activeAttack)throw Object.assign(new Error('The replacement must be alive and different from the active dragon.'),{status:400});
         b.activeAttack=index;
         b.events.push({turn:b.turn,side:'attack',switchTo:b.attack[index].nickname});
-        const skills=readySkills(defender);
-        if(!skills.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
-        const chosen=skills[Math.floor(Math.random()*skills.length)];
+        const chosen=chooseDefenseSkill(b);
         strike(b,'defense',chosen.skill,chosen.index);
       }else if(body.action==='skill'){
         const index=body.skillIndex;
@@ -268,9 +295,7 @@ function createArena({profilesDir,dataDir,auth}){
         const chosen=actor.skills[index];
         strike(b,'attack',chosen,index);
         if(alive(b.defense)&&alive(b.attack)){
-          const ready=readySkills(active(b,'defense'));
-          if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
-          const ai=ready[Math.floor(Math.random()*ready.length)];
+          const ai=chooseDefenseSkill(b);
           strike(b,'defense',ai.skill,ai.index);
         }
       }else if(body.action==='forfeit'){

@@ -22,6 +22,7 @@ function unlockIsland(index){
   if(state.player.level<(island.playerLevel||1)){toast("Requires player level "+island.playerLevel+" to unlock "+island.name+".");return;}
   if(state.gems<island.gemCost){toast("Requires "+island.gemCost+" gems to unlock "+island.name+".");return;}
   state.gems-=island.gemCost;state.unlockedIslands++;
+  ui.cloudReveal={index,startedAt:performance.now()};
   const middle=Math.floor(island.size/DATA.islandRegionSize/2);
   state.regions.push(index+":"+middle+":"+middle);
   gainPlayerXP(window.DragonEconomy.progression.islandXp);

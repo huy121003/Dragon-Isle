@@ -127,117 +127,40 @@ function islandPolygon(points,fill,stroke){
   ctx.closePath();ctx.fillStyle=fill;ctx.fill();
   if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.025;ctx.stroke();}
 }
-/* One low landmark at the upper corner identifies each island without covering its land. */
-function drawIslandFeature(island,index,time){
-  const kind=island.element||'home',c=islandColors(island);
-  const at=gridToScreen(island.x+island.size*.1,island.y+island.size*.1);
-  const unit=island.size*DATA.tileW/460;
-  const poly=(points,fill,edge=c.shadow)=>{
-    ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
-    for(const [x,y] of points.slice(1))ctx.lineTo(x,y);
-    ctx.closePath();ctx.fillStyle=fill;ctx.fill();
-    if(edge){ctx.strokeStyle=edge;ctx.lineWidth=1.1;ctx.lineJoin='round';ctx.stroke();}
-  };
-  const line=(points,color,width=1.5)=>{
-    ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
-    for(const [x,y] of points.slice(1))ctx.lineTo(x,y);
-    ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.stroke();
-  };
-  ctx.save();ctx.translate(at.x,at.y);ctx.scale(unit,unit);
-  ellipse(0,15,43,9,c.shadow);
-  switch(kind){
-  case 'fire':
-    poly([[-43,14],[-27,-9],[-15,-32],[-11,-44],[12,-44],[18,-29],[43,14]],
-      '#633d36');
-    poly([[-43,14],[-27,-9],[-15,-32],[-11,-44],[0,-36],[2,14]],'#a4583c');
-    ellipse(0,-43,13,4,'#392d35');ellipse(0,-43,8,2.5,'#ff9a42');
-    line([[2,-40],[9,-19],[4,-7],[16,8]],'#ef7141',2.7);
-    for(let n=0;n<3;n++)ellipse(-6+n*6+Math.sin(time*.001+n)*2,
-      -53-n*7,3+n*.6,2.5,'#796d70');break;
-  case 'water':
-    poly([[-40,12],[-33,-25],[-13,-37],[15,-36],[37,-20],[40,12]],'#4b8791');
-    poly([[-13,-37],[15,-36],[25,-19],[-17,-18]],'#9cd2c4');
-    poly([[-12,-19],[12,-20],[18,11],[-17,11]],'#45acc7');
-    for(const x of [-6,2,9])line([[x,-18],[x-2,3],[x+2,10]],'#ccf5ed',1.7);
-    ellipse(0,12,27,5,'#78d6df');break;
-  case 'earth':
-    poly([[-45,14],[-37,-6],[-23,-14],[-21,-34],[19,-35],[22,-15],[38,-8],[44,14]],
-      '#8d694f');
-    poly([[-22,-35],[20,-35],[26,-27],[-25,-26]],'#dfbc81');
-    line([[-35,0],[-22,-5],[7,-3],[19,4],[38,2]],'#be996e',2);
-    poly([[-31,9],[-26,-2],[-13,-2],[-10,9]],'#b29167');break;
-  case 'wind':
-    poly([[-21,14],[-9,-30],[9,-30],[21,14]],'#d0d7c1');
-    poly([[-9,-30],[9,-30],[14,-23],[-13,-23]],'#edf3dc');
-    poly([[-13,-32],[0,-40],[13,-32]],'#7d9b94');
-    ctx.save();ctx.translate(0,-28);ctx.rotate(time*.00045);
-    for(let n=0;n<4;n++){
-      ctx.save();ctx.rotate(n*Math.PI/2);
-      poly([[-3,-3],[-5,-24],[4,-26],[4,-4]],'#f2f4d9','#8eb5a3');
-      ctx.restore();
-    }
-    ctx.restore();ellipse(0,-28,4,4,'#f6e7ac');break;
-  case 'ice':
-    for(const [x,w,h] of [[-28,14,43],[3,17,59],[28,12,38]]){
-      poly([[x-w,13],[x-w*.55,-h*.62],[x,-h],[x+w,13]],'#8ec9e1');
-      poly([[x-w*.55,-h*.62],[x,-h],[x+2,6]],'#e5f8fb');
-    }break;
-  case 'thunder':
-    poly([[-33,14],[-21,-17],[-8,-35],[2,-18],[15,-51],[32,14]],'#5a546f');
-    poly([[15,-51],[32,14],[3,10]],'#8c7d91');
-    poly([[1,-50],[-9,-18],[2,-19],[-8,8],[20,-27],[7,-25],[17,-50]],
-      '#ffdf75','#8f7664');break;
-  case 'nature':case 'home':
-    poly([[-11,14],[-9,-25],[-2,-41],[8,-40],[12,14]],'#74563d');
-    line([[0,-8],[-15,-29]],'#8c6b48',4);
-    line([[2,-18],[17,-37]],'#8c6b48',3);
-    for(const [x,y,rx,ry] of [[-20,-36,20,16],[0,-46,25,19],[22,-33,20,17]])
-      ellipse(x,y,rx,ry,kind==='home'?'#a6ce78':'#4a9c67');
-    ellipse(3,-55,17,11,kind==='home'?'#d7e69b':'#8dc782');break;
-  case 'dark':
-    poly([[-44,14],[-31,-21],[-8,-40],[17,-32],[42,14]],'#574a68');
-    poly([[-25,12],[-19,-13],[-5,-25],[12,-18],[25,12]],'#261f36');
-    line([[-36,3],[-25,-15],[-9,-31]],'#9885a7',2);
-    ellipse(2,1,7,3,'#67527d');break;
-  case 'light':
-    poly([[-39,14],[-24,-21],[-5,-33],[17,-25],[40,14]],'#d4b983');
-    poly([[-5,-33],[17,-25],[31,14],[0,13]],'#f3dfac');
-    ellipse(3,-44,13,13,'#fff1b8');ellipse(3,-44,6,6,'#fffbe2');
-    line([[-16,1],[-4,-12],[13,-11]],'#fff4d5',2);break;
-  case 'metal':
-    poly([[-42,14],[-31,-15],[-10,-29],[14,-35],[39,14]],'#657985');
-    poly([[-10,-29],[14,-35],[39,14],[3,9]],'#aabcc2');
-    for(const path of [[[-31,3],[-12,-7],[9,0]],[[1,-17],[16,-25],[26,-5]]])
-      line(path,'#e2d2a3',3);
-    for(const [x,y] of [[-18,-3],[15,-16],[26,5]])ellipse(x,y,3,2,'#f4e7ba');break;
-  case 'war':
-    poly([[-35,14],[-29,-17],[-19,-17],[-19,-29],[19,-29],[19,-17],[29,-17],[35,14]],
-      '#86544e');
-    poly([[-19,-29],[19,-29],[22,-21],[-22,-21]],'#c48668');
-    for(const x of [-15,0,15])poly([[x-4,-29],[x-4,-36],[x+4,-36],[x+4,-29]],'#995a50');
-    poly([[-7,14],[-7,-5],[7,-5],[7,14]],'#493a40');break;
-  case 'pure':
-    for(const [x,w,h] of [[-24,12,37],[0,17,57],[25,12,42]]){
-      poly([[x-w,14],[x-w*.65,-h*.5],[x,-h],[x+w,14]],'#ba94bf');
-      poly([[x-w*.65,-h*.5],[x,-h],[x+1,10]],'#f7def0');
-    }break;
-  case 'legend':
-    for(const [x,h] of [[-27,31],[-2,49],[24,37]]){
-      poly([[x-8,14],[x-7,-h],[x+6,-h+3],[x+9,14]],'#6b598c');
-      line([[x-4,-h+8],[x+3,-h+12]],'#b9a4d6',2);
-    }break;
-  case 'primal':
-    poly([[-42,14],[-28,-12],[-6,-19],[18,-13],[41,14]],'#74745c');
-    for(let n=0;n<5;n++){
-      const x=-25+n*12,h=16+(2-Math.abs(2-n))*6;
-      line([[x,5],[x-4,-h],[x+3,-h-5]],'#ddd2aa',3.7);
-    }
-    line([[-34,6],[32,8]],'#cfbd92',3);break;
-  case 'time':
-    poly([[-35,14],[-24,-11],[-17,-11],[-10,-29],[17,-29],[23,-10],[36,14]],'#9a8b84');
-    ellipse(0,-28,20,7,'#d5c5ad');
-    line([[0,-28],[6,-54]],'#e7d7bc',3);
-    line([[0,-28],[15,-25]],'#645862',2);break;
+/* Purchased islands reveal their terrain; unreached islands remain under dense cloud. */
+function islandCloudOpacity(index,time){
+  if(index>=state.unlockedIslands)return 1;
+  const reveal=ui.cloudReveal;
+  if(!reveal||reveal.index!==index)return 0;
+  return Math.max(0,Math.min(1,1-(time-reveal.startedAt)/1800));
+}
+function drawIslandClouds(island,index,time,rim,bottom,opacity){
+  const center=gridToScreen(island.x+island.size/2,island.y+island.size/2);
+  const side=island.size*DATA.tileW*.08,down=island.size*DATA.tileH*.09;
+  const disperse=(1-opacity)*DATA.tileW*3;
+  ctx.save();ctx.globalAlpha=opacity;
+  // Opaque coverage follows the same rocky outline, including both visible cliff faces.
+  ctx.beginPath();ctx.moveTo(rim[8].x,rim[8].y);
+  for(let n=9;n<=24;n++)ctx.lineTo(rim[n].x,rim[n].y);
+  for(let n=24;n>=8;n--)ctx.lineTo(bottom[n].x,bottom[n].y);
+  ctx.closePath();ctx.fillStyle='#eaf5fc';ctx.fill();
+  islandOutlinePath(rim);ctx.fillStyle='#f8fcff';ctx.fill();
+  ctx.save();islandOutlinePath(rim);ctx.clip();
+  for(let row=0;row<4;row++)for(let col=0;col<4;col++){
+    const p=gridToScreen(island.x+(col+.5)*island.size/4,
+      island.y+(row+.5)*island.size/4);
+    const drift=Math.sin(time*.00035+index+row*2+col)*DATA.tileW*.2;
+    ellipse(p.x+drift+(p.x<center.x?-disperse:disperse),p.y-down*.35,
+      side*1.7,down*(1.4+islandHash(col+row*4,index)*.45),
+      (row+col)%3?'#ffffff':'#eaf6fd');
+  }
+  ctx.restore();
+  // Rounded wisps soften the diamond rim without spilling across neighboring islands.
+  ctx.globalAlpha=opacity*.85;
+  for(let n=0;n<rim.length;n+=2){
+    const p=rim[n],outward=p.x<center.x?-disperse:disperse;
+    ellipse(p.x+outward,p.y-down*.2,side*.65,down*.56,
+      n%4?'#f9fdff':'#e8f5fb');
   }
   ctx.restore();
 }
@@ -353,9 +276,6 @@ function drawFloatingIslands(lo,hi,time,drawContents){
     islandOutlinePath(rim);
     ctx.fillStyle=top;ctx.fill();ctx.strokeStyle=c.rim;ctx.lineWidth=DATA.tileH*.38;ctx.stroke();
     drawIslandGround(island,index,time,c);
-    if(!opened){
-      islandOutlinePath(rim);ctx.fillStyle='#1b283a45';ctx.fill();
-    }
     for(let row=0;row<3;row++)for(let col=0;col<3;col++){
       const r={index,col,row,x:island.x+col*DATA.islandRegionSize,
         y:island.y+row*DATA.islandRegionSize,id:index+':'+col+':'+row};
@@ -373,7 +293,8 @@ function drawFloatingIslands(lo,hi,time,drawContents){
         }
       }
     }
-    drawIslandFeature(island,index,time);
+    const cloudOpacity=islandCloudOpacity(index,time);
+    if(cloudOpacity>0)drawIslandClouds(island,index,time,rim,bottom,cloudOpacity);
     if(ui.camera.zoom<.25){
       ctx.fillStyle='#f4fbef';ctx.strokeStyle='#243946';ctx.lineWidth=4;
       ctx.textAlign='center';ctx.font='bold '+Math.min(400,Math.max(45,14/ui.camera.zoom))+'px system-ui';

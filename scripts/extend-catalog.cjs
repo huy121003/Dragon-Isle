@@ -2,20 +2,31 @@
 const expansion=require('../data/elements-expansion.json');
 const doubleElements=require('../data/double-elements.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
-const rootNames={fire:'Ember',water:'Pearl',earth:'Granite',wind:'Zephyr',ice:'Rime',
-  thunder:'Storm',nature:'Briar',dark:'Dusk',light:'Dawn',metal:'Iron',
-  war:'Crimson Marshal',pure:'Rose Oracle',legend:'Eternal Warden',
-  primal:'Firstborn Guardian',time:'Chronicle Keeper'};
-const traits={fire:'Cinder',water:'Tide',earth:'Citadel',wind:'Gale',ice:'Glacier',
-  thunder:'Bolt',nature:'Grove',dark:'Eclipse',light:'Halo',metal:'Forge',
-  war:'Banner',pure:'Prism',legend:'Infinity',primal:'Fang',time:'Hourglass'};
-const domains={fire:'Ash',water:'Abyss',earth:'Mountain',wind:'Sky',ice:'Winter',
-  thunder:'Tempest',nature:'Canopy',dark:'Twilight',light:'Aurora',metal:'Foundry',
-  war:'Siege',pure:'Sanctum',legend:'Stars',primal:'Origins',time:'Ages'};
-const titles={fire:'Phoenix',water:'Leviathan',earth:'Colossus',wind:'Skyborn',ice:'Winterborn',
-  thunder:'Stormcaller',nature:'Lifebringer',dark:'Nightkeeper',light:'Sunkeeper',
-  metal:'Ironbound',war:'Conqueror',pure:'Oracle',legend:'Immortal',
-  primal:'Firstborn',time:'Timekeeper'};
+const physical={
+  fire:{adjective:'Volcanic',noun:'Flare',pure:'Wildfire'},
+  water:{adjective:'Tidal',noun:'Surge',pure:'Tidal Wave'},
+  earth:{adjective:'Seismic',noun:'Fault',pure:'Earthquake'},
+  wind:{adjective:'Aeolian',noun:'Cloud',pure:'Cloud'},
+  ice:{adjective:'Cryogenic',noun:'Frost',pure:'Icefall'},
+  thunder:{adjective:'Electrified',noun:'Discharge',pure:'Lightning'},
+  nature:{adjective:'Biogenic',noun:'Bloom',pure:'Spring Bloom'},
+  dark:{adjective:'Nocturnal',noun:'Umbra',pure:'Nightfall'},
+  light:{adjective:'Solar',noun:'Halo',pure:'Sunrise'},
+  metal:{adjective:'Magnetic',noun:'Flux',pure:'Magnetic Storm'},
+  war:{adjective:'Ballistic',noun:'Shockwave',pure:'Shockwave'},
+  pure:{adjective:'Prismatic',noun:'Refraction',pure:'Iridescence'},
+  legend:{adjective:'Cosmic',noun:'Nebula',pure:'Supernova'},
+  primal:{adjective:'Primordial',noun:'Uplift',pure:'Tectonic Uplift'},
+  time:{adjective:'Temporal',noun:'Chronological Drift',pure:'Time Dilation'}
+};
+function phenomenonName(parts){
+  const [primary,secondary,third,fourth]=parts;
+  if(!secondary)return physical[primary].pure+' Dragon';
+  const terms=[physical[primary].adjective,physical[secondary].noun];
+  if(third)terms.unshift(physical[third].adjective);
+  if(fourth)terms.unshift(physical[fourth].adjective);
+  return terms.join(' ')+' Dragon';
+}
 function extendCatalog(db,game){
   if(db.elements[expansion.elements[0].id])return {db,game};
   const originalIds=Object.keys(db.elements);
@@ -24,7 +35,7 @@ function extendCatalog(db,game){
     const base=clone(db.elements[d.base]);
     base.id=d.id;base.ten=d.name;base.icon=d.icon;
     base.epicHybrid=!!d.epicHybrid;
-    base.moTa=d.name+' dragons channel '+domains[d.id].toLowerCase()+
+    base.moTa=d.name+' dragons channel '+physical[d.id].noun.toLowerCase()+
       ' through their distinctive form, breath and elemental techniques.';
     base.chiSo={hp:d.stats[0],tanCong:d.stats[1],phongThu:d.stats[2]};
     Object.assign(base.mau,{chinh:d.color,sang:d.light,toi:d.dark,bung:d.light,
@@ -57,10 +68,7 @@ function extendCatalog(db,game){
     const id=parts.join('>');
     if(seen.has(id))return;
     const dragon=rules.buildDragon(parts);
-    const name=parts.length===1?db.elements[parts[0]].ten+' Dragon':
-      rootNames[parts[0]]+' '+traits[parts[1]]+
-      (parts.length>=3?' of the '+domains[parts[2]]:'')+
-      (parts.length>=4?', '+titles[parts[3]]:'');
+    const name=phenomenonName(parts);
     dragon.ten=name;dragon.hienTuong=name+' commands '+parts.length+
       ' elemental forces, led by '+db.elements[parts[0]].ten+'.';
     dragon.moTa=dragon.hienTuong;
@@ -151,23 +159,8 @@ function extendCatalog(db,game){
         local[a][e]>maximumPerPair)))
       throw Error('Unbalanced four-element species for '+a);
   }
-  // Preserve the existing 150 recipes, then complete every unordered four-element set.
-  // A stable order spreads the new primary affinities without changing old dragon IDs.
-  const missing=[];
-  for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)
-    for(let k=j+1;k<ids.length;k++)for(let l=k+1;l<ids.length;l++){
-      const quartet=[ids[i],ids[j],ids[k],ids[l]];
-      if(!fourSets.has(quartet.slice().sort().join('|')))missing.push(quartet);
-    }
-  missing.sort((a,b)=>jitter(a.join('|'))-jitter(b.join('|')));
-  for(const quartet of missing){
-    const primary=quartet.reduce((best,e)=>perPrimary[e]<perPrimary[best]?e:best);
-    append([primary,...orderSecondary(quartet.filter(e=>e!==primary))]);
-    perPrimary[primary]++;
-    fourSets.add(quartet.slice().sort().join('|'));
-  }
-  if(fourSets.size!==ids.length*(ids.length-1)*(ids.length-2)*(ids.length-3)/24)
-    throw Error('Incomplete four-element catalog.');
+  if(fourSets.size!==ids.length*targetPerPrimary)
+    throw Error('The four-element catalog must contain exactly 150 recipes.');
   const quads=Object.fromEntries(db.species.filter(s=>s.elements.length===4&&
     new Set(s.elements).size===4).map(s=>[s.elements.slice().sort().join('|'),s.id]));
   if(db.quads&&(Object.keys(db.quads).length!==Object.keys(quads).length||
@@ -188,11 +181,11 @@ function extendCatalog(db,game){
         effect:clone(design.skill.effect),description:design.skill.description,special:true};
       game.skills.elemental[primary].push(skill);
       const dragon=rules.buildDragon(parts);
-      dragon.ten=design.name;
+      dragon.ten='Resonant '+phenomenonName([primary,...partners]);
       dragon.doubleElement=primary;
       dragon.doubleForm=design.form;
       dragon.skillIds=[primary+'-1',partners[0]+'-1',partners[1]+'-1',skillId];
-      dragon.hienTuong=design.name+' channels '+db.elements[primary].ten+
+      dragon.hienTuong=dragon.ten+' channels '+db.elements[primary].ten+
         ' twice, with '+partners.map(e=>db.elements[e].ten).join(' and ')+'.';
       dragon.moTa=dragon.hienTuong;
       dragon.sachGhi='Double Element: '+db.elements[primary].ten+

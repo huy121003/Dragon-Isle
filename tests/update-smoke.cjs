@@ -59,7 +59,7 @@ function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+'
 const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
-assert.equal(Object.keys(db.quads).length,1365,'Canonical four-element sets must be in dragons.json');
+assert.equal(Object.keys(db.quads).length,150,'Exactly 150 four-element recipes must be in dragons.json');
 require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
 const balance=await boot();
 const lifecycle=await boot();
@@ -331,16 +331,18 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  const chance=options=>options.reduce((sum,o)=>sum+o.chance,0);
  const same=outcomes('fire>water>earth','fire>water>earth',5);
  assert.equal(four(same).length,0,'Three shared elements cannot produce four-element dragons');
- const overlap=outcomes('fire>water>earth','fire>wind>ice',30);
+ assert.equal(four(outcomes('fire>water>earth','fire>water>wind',30)).length,0,
+   'A four-element set missing from the 150 recipes cannot appear');
+ const overlap=outcomes('fire>earth>ice','fire>earth>dark',30);
  assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.015)<1e-9);
- const focused=outcomes('fire>water>earth','fire>water>wind',30);
+ const focused=outcomes('fire>earth>ice','fire>earth>dark',30);
  const fullyInherited=four(focused).filter(o=>o.id.split('>').every(e=>
-   ['fire','water','earth','wind'].includes(e)));
+   ['fire','earth','ice','dark'].includes(e)));
  const mutated=four(focused).filter(o=>!fullyInherited.includes(o));
  assert.equal(fullyInherited.length,1);
  assert.equal(mutated.length,0,'No fourth element can appear outside the parents');
- assert.equal(snapshot(balance,'DRAGON_DB.quads["earth|fire|water|wind"]'),fullyInherited[0].id);
- assert(four(outcomes('fire>water>earth','fire>wind>ice',100)).length>0);
+ assert.equal(snapshot(balance,'DRAGON_DB.quads["dark|earth|fire|ice"]'),fullyInherited[0].id);
+ assert(four(outcomes('fire>earth>ice','fire>earth>dark',100)).length>0);
  assert.equal(four(outcomes('fire>water>earth','water>ice',100)).length,0);
  const fireFours=snapshot(balance,'FOUR_IDS.filter(id=>DATA.species[id].elements[0]==="fire")');
  const waterFour=snapshot(balance,'FOUR_IDS.find(id=>DATA.species[id].elements[0]==="water")');
@@ -493,22 +495,24 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
 });
-check('five pure species use their element names',()=>{
+check('five advanced pure species use physical phenomena',()=>{
   const ids=['war','pure','legend','primal','time'];
   assert.deepEqual(snapshot(game,'DATA.islands.slice(11).map(island=>island.element)'),ids);
   for(const id of ids){
     assert.equal(db.species.find(s=>s.id===id).ten,
-      id.charAt(0).toUpperCase()+id.slice(1)+' Dragon');
+      ({war:'Shockwave',pure:'Iridescence',legend:'Supernova',primal:'Tectonic Uplift',time:'Time Dilation'})[id]+' Dragon');
     assert(game.run('DATA.species['+JSON.stringify(id)+'].name').endsWith(' Dragon'));
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
 });
-check('2985 unique species and no retired Special category',()=>{
- assert.equal(db.species.length,2985);
+check('1770 unique phenomenon-named species and no retired Special category',()=>{
+ assert.equal(db.species.length,1770);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
- assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.length>2));
- assert.equal(db.species.find(s=>s.id==='fire').ten,'Flame Dragon');
- assert.equal(db.species.find(s=>s.id==='thunder').ten,'Electric Dragon');
+ assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.endsWith(' Dragon')));
+ assert(db.species.filter(s=>s.doHiem==='transcendent').every(s=>s.ten.startsWith('Resonant ')));
+ assert(db.species.filter(s=>s.id.includes('>war')).every(s=>s.ten!=='War Dragon'));
+ assert.equal(db.species.find(s=>s.id==='fire').ten,'Wildfire Dragon');
+ assert.equal(db.species.find(s=>s.id==='thunder').ten,'Lightning Dragon');
  assert.equal(db.species.find(s=>s.id==='fire>water').ten,'Geyser Dragon');
  assert.equal(db.species.find(s=>s.id==='water>fire').ten,'Steam Eruption Dragon');
  assert.equal(db.species.find(s=>s.id==='light>dark').ten,'Penumbral Eclipse Dragon');
@@ -516,10 +520,10 @@ check('2985 unique species and no retired Special category',()=>{
  assert.equal(game.run('BOOK_SPECIES_IDS.some(x=>x.startsWith("special_"))'),false);
  game.run('openModal("book")');assert(!game.element('sheetBody').innerHTML.includes('>Special<'));
 });
-check('ordered pairs, unique triples and complete four-element catalog',()=>{
+check('ordered pairs, unique triples and 150 balanced four-element species',()=>{
  const elements=Object.keys(db.elements);
  const groups=Object.fromEntries([1,2,3,4].map(n=>[n,db.species.filter(s=>s.elements.length===n)]));
- assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,1395]);
+ assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,180]);
  const byId=new Map(db.species.map(s=>[s.id,s]));
  for(const a of elements)for(const b of elements){
    if(a===b)continue;
@@ -534,11 +538,10 @@ check('ordered pairs, unique triples and complete four-element catalog',()=>{
  const fours=groups[4].filter(s=>s.doHiem==='mythic'),
    quartets=fours.map(s=>s.elements.slice().sort().join('|'));
  const legacyFours=fours.slice(0,150);
- assert.equal(fours.length,1365);
+ assert.equal(fours.length,150);
  assert.equal(new Set(quartets).size,fours.length);
- for(let i=0;i<elements.length;i++)for(let j=i+1;j<elements.length;j++)
-   for(let k=j+1;k<elements.length;k++)for(let l=k+1;l<elements.length;l++)
-     assert(quartets.includes([elements[i],elements[j],elements[k],elements[l]].sort().join('|')));
+ assert.deepEqual(new Set(quartets),new Set(Object.keys(db.quads)));
+ assert.equal(db.quads['earth|fire|water|wind'],undefined,'Unlisted sets are not invented');
  const existing=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'))).species
    .filter(s=>s.elements.length===4);
  for(const s of existing)assert.equal(byId.get(s.id)?.ten,s.ten,
@@ -610,7 +613,7 @@ check('every catalog species draws with the rebuilt renderer',()=>{
     if(id.indexOf('>')<0)silhouettes.add(JSON.stringify(balance.drawCalls
       .filter(call=>call[0]==='moveTo'||call[0]==='lineTo').slice(0,30)));
   }
-  assert.equal(ids.length,2985);
+  assert.equal(ids.length,1770);
   assert.equal(silhouettes.size,15,'Every primary element needs distinct geometry');
   balance.drawCalls.length=0;
 });
@@ -698,8 +701,8 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
 check('100000 rolls for 3, 4, 5 and 6 parent-union elements',()=>{
  const pairs=[
   ['fire>water>earth','fire>water>earth',3],
-  ['fire>water>earth','fire>water>wind',4],
-  ['fire>water>earth','fire>wind>ice',5],
+  ['fire>earth>ice','fire>earth>dark',4],
+  ['fire>water>wind','fire>thunder>ice',5],
   ['fire>water>earth','wind>ice>thunder',6]
  ];
  for(const [a,b,size] of pairs){

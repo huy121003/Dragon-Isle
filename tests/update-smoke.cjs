@@ -59,6 +59,7 @@ function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+'
 const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
+assert.equal(Object.keys(db.quads).length,1365,'Canonical four-element sets must be in dragons.json');
 require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
 const balance=await boot();
 const lifecycle=await boot();
@@ -319,10 +320,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
    new Set(o.id.split('>')).size===3);
  const chance=options=>options.reduce((sum,o)=>sum+o.chance,0);
  const same=outcomes('fire>water>earth','fire>water>earth',5);
- assert(four(same).length>0,'Three shared elements can produce four-element dragons');
- assert(Math.abs(chance(four(same))-.005)<1e-9);
- assert(four(same).every(o=>o.id.split('>').filter(e=>
-   ['fire','water','earth'].includes(e)).length>=3));
+ assert.equal(four(same).length,0,'Three shared elements cannot produce four-element dragons');
  const overlap=outcomes('fire>water>earth','fire>wind>ice',30);
  assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.005)<1e-9);
  const focused=outcomes('fire>water>earth','fire>water>wind',30);
@@ -330,8 +328,8 @@ check('four-element and Double breeding follow the parent recipes',()=>{
    ['fire','water','earth','wind'].includes(e)));
  const mutated=four(focused).filter(o=>!fullyInherited.includes(o));
  assert.equal(fullyInherited.length,1);
- assert(fullyInherited[0].chance>Math.max(...mutated.map(o=>o.chance)),
-   'The exact four inherited elements should be favored over a new element');
+ assert.equal(mutated.length,0,'No fourth element can appear outside the parents');
+ assert.equal(snapshot(balance,'DRAGON_DB.quads["earth|fire|water|wind"]'),fullyInherited[0].id);
  assert(four(outcomes('fire>water>earth','fire>wind>ice',100)).length>0);
  assert.equal(four(outcomes('fire>water>earth','water>ice',100)).length,0);
  const fireFours=snapshot(balance,'FOUR_IDS.filter(id=>DATA.species[id].elements[0]==="fire")');
@@ -644,6 +642,33 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
  game.run('state.dragons[1].level=29');
  assert(game.run('breedingOptions(state.dragons[0],state.dragons[1]).some(o=>DATA.species[o.id].rarity==="mythic")'));
 });
+check('100000 rolls for 3, 4, 5 and 6 parent-union elements',()=>{
+ const pairs=[
+  ['fire>water>earth','fire>water>earth',3],
+  ['fire>water>earth','fire>water>wind',4],
+  ['fire>water>earth','fire>wind>ice',5],
+  ['fire>water>earth','wind>ice>thunder',6]
+ ];
+ for(const [a,b,size] of pairs){
+  const options=snapshot(balance,'breedingOptions('+
+    JSON.stringify({id:501,species:a,level:35})+','+
+    JSON.stringify({id:502,species:b,level:35})+')');
+  let cumulative=0;const thresholds=options.map(o=>(cumulative+=o.chance));
+  const p4=options.filter(o=>o.id.split('>').length===4).reduce((n,o)=>n+o.chance,0);
+  assert(Math.abs(p4-(size===3?0:.005))<1e-9);
+  assert(options.filter(o=>o.id.split('>').length===4).every(o=>
+    o.id.split('>').every(e=>new Set(a.split('>').concat(b.split('>'))).has(e))));
+  let seed=234553,observed=0;
+  for(let i=0;i<100000;i++){
+    seed=(seed*1664525+1013904223)>>>0;
+    const roll=seed/4294967296;
+    let lo=0,hi=thresholds.length-1;
+    while(lo<hi){const mid=(lo+hi)>>1;if(roll<thresholds[mid])hi=mid;else lo=mid+1;}
+    if(options[lo].id.split('>').length===4)observed++;
+  }
+  assert(Math.abs(observed/100000-p4)<.0015,`Union ${size}: ${observed/100000} vs ${p4}`);
+ }
+});
 check('hex skill icons, flags in three sizes',()=>{
  const detail=game.run('dragonDetailHtml(DATA.species.fire,{...state.dragons[0],species:"fire",level:30})');
  assert(detail.includes('class="skill-hex'));assert(!detail.includes('skill-icon'));
@@ -704,22 +729,61 @@ check('daylight cycle and gallery resources',()=>{
 });
 check('canvas scene renders without errors',()=>{
  game.run('ui.fixedDay=false;showWorld();drawScene(12345,.016)');
- assert(game.drawCalls.some(call=>call[0]==='strokeRect'));
+ assert(game.drawCalls.some(call=>call[0]==='lineTo'));
  assert(game.drawCalls.some(call=>call[0]==='clip'));
 });
-check('floating islands keep buildings and hit targets aligned',()=>{
- const actual=snapshot(game,'[islandBob(0,1200),islandBob(0,4300),islandBob(1,1200)]');
- assert(Math.abs(actual[0]-actual[1])>5);
- assert(Math.abs(actual[0]-actual[2])>5);
- game.run('performance.now=()=>1200');
- const tapped=snapshot(game,'(()=>{const island=DATA.islands[0],T=DATA.tile;'+
-   'const p=worldToScreen((island.x+4.5)*T,(island.y+.5)*T+islandBob(0,1200));'+
-   'return screenCell(p.x,p.y);})()');
- assert.equal(tapped.x,714+4);assert.equal(tapped.y,668);
- const before=game.drawCalls.length;
- game.run('drawScene(1200,.016)');
- const transforms=game.drawCalls.slice(before).filter(call=>call[0]==='translate');
- assert(transforms.some(call=>Math.abs(call[1])<.001&&Math.abs(call[2]-actual[0])<.001));
+check('isometric tiles, footprints and touch coordinates share one projection',()=>{
+ const configurable=snapshot(game,'(()=>{const old=[DATA.tileW,DATA.tileH,DATA.originX,DATA.originY];'+
+   'DATA.tileW=72;DATA.tileH=36;DATA.originX=100;DATA.originY=-50;'+
+   'const p=gridToScreen(3,4),back=worldToGrid(p.x,p.y);'+
+   '[DATA.tileW,DATA.tileH,DATA.originX,DATA.originY]=old;return {p,back};})()');
+ assert.deepEqual(configurable,{p:{x:64,y:76},back:{c:3,r:4}});
+ for(const zoom of [.08,.25,.5,1,2]){
+   game.run('ui.camera.zoom='+zoom+';focusIsland(0);ui.camera.zoom='+zoom);
+   for(const [c,r] of [[714,668],[747,705],[470,470]]){
+     const hit=snapshot(game,'(()=>{const p=gridToScreen('+c+'+.5,'+r+'+.5);'+
+       'const s=worldToScreen(p.x,p.y);return screenCell(s.x,s.y);})()');
+     assert.deepEqual(hit,{x:c,y:r});
+   }
+ }
+ const v=snapshot(game,'footprintVertices(740,700,12,9)');
+ assert.equal(v.length,4);
+ assert.equal(v[0].x+v[2].x,v[1].x+v[3].x);
+ assert.equal(v[0].y+v[2].y,v[1].y+v[3].y);
+ game.run('ui.debugIso=true;drawScene(1200,.016);ui.debugIso=false');
+ assert(game.drawCalls.some(call=>call[0]==='arc'));
+});
+check('mouse and touch placement follows the same cell at zoom and device pixel ratios',()=>{
+ for(const [zoom,ratio,kind] of [[.08,1,'mouse'],[.5,2,'touch'],[2,2,'mouse']]){
+   game.run('state=newGame();focusIsland(0);ui.camera.zoom='+zoom+';'+
+     'window.devicePixelRatio='+ratio+';resizeCanvas();'+
+     'ui.mode={kind:"move",id:1,x:state.buildings[0].x,y:state.buildings[0].y};');
+   const start=snapshot(game,'(()=>{const b=state.buildings[0],p=gridToScreen(b.x+.5,b.y+.5);'+
+     'return worldToScreen(p.x,p.y);})()');
+   const end=snapshot(game,'(()=>{const b=state.buildings[0],p=gridToScreen(b.x+1.5,b.y+.5);'+
+     'return worldToScreen(p.x,p.y);})()');
+   const event=(p)=>JSON.stringify({clientX:p.x,clientY:p.y,pointerId:1,pointerType:kind});
+   game.run('pointerDown({...'+event(start)+',preventDefault(){}});'+
+     'pointerMove({...'+event(end)+',preventDefault(){}});'+
+     'pointerUp({...'+event(end)+',preventDefault(){}});');
+   assert.equal(game.run('state.buildings[0].x'),750);
+   assert.equal(game.run('state.buildings[0].y'),703);
+   assert.equal(game.run('dom.canvas.width'),800*ratio);
+ }
+});
+check('depth sorting uses the farthest grid cell for every footprint',()=>{
+ const order=snapshot(game,'(()=>{const original=drawBuilding,order=[];'+
+   'const saved=state.buildings;'+
+   'state.buildings=[{id:81,type:"farm",x:748,y:701,level:1,stored:false},'+
+   '{id:82,type:"academy",x:742,y:698,level:1,stored:false},'+
+   '{id:83,type:"decor",x:756,y:705,level:1,stored:false}];'+
+   'drawBuilding=b=>order.push(b.id);drawScene(1200,.016);'+
+   'drawBuilding=original;state.buildings=saved;return order;})()');
+ const footprints=JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).footprints;
+ const buildings=[{id:81,type:'farm',x:748,y:701},{id:82,type:'academy',x:742,y:698},
+   {id:83,type:'decor',x:756,y:705}];
+ const depth=b=>b.x+footprints[b.type][0][0]-1+b.y+footprints[b.type][0][1]-1;
+ assert.deepEqual(order,buildings.sort((a,b)=>depth(a)-depth(b)).map(b=>b.id));
 });
 check('every new building silhouette renders by day and night',()=>{
  const before=game.drawCalls.length;
@@ -729,12 +793,30 @@ check('every new building silhouette renders by day and night',()=>{
    'ui.fixedDay=true;drawBuilding(b,12345);ui.fixedDay=false;drawBuilding(b,24680);}');
  assert(game.drawCalls.length>before+400);
 });
+check('all building art remains within its diamond base width',()=>{
+ const bounds=snapshot(game,'(()=>{const out=[];ui.debugIso=true;'+
+   'for(const type of ["habitat","farm","hatchery","academy","arena","cave","decor"])'+
+   'for(let level=1;level<=Math.min(5,DATA.buildings[type].maxLevel);level++){' +
+   'const b={id:910,type,element:"fire",x:740,y:699,level,stored:false,'+
+   'crop:type==="farm"?{id:"wheat",readyAt:Date.now()-1}:null};'+
+   'out.push({type,level,...drawBuilding(b,12345)});'+
+   '}ui.debugIso=false;return out;})()');
+ for(const item of bounds)assert(item.min>=-.561&&item.max<=.561,
+   `${item.type} level ${item.level} projects outside its base: ${item.min}..${item.max}`);
+});
 check('all ten habitat environments render with dragons',()=>{
  const before=game.drawCalls.length;
  game.run('for(const [i,element] of Object.keys(DATA.elements).entries()){' +
    'const b={id:state.dragons[0].habitatId,type:"habitat",element,x:738+i,y:700,'+
    'level:2,stored:false,storedGold:1,storedGems:1};drawBuilding(b,12345+i*350);}');
  assert(game.drawCalls.length>before+300);
+});
+check('reset centers the camera on the projected home island',()=>{
+ game.run('factoryReset()');
+ const position=snapshot(game,'(()=>{const home=DATA.islands[0];'+
+   'return {camera:ui.camera,center:gridToScreen(home.x+home.size/2,home.y+home.size/2)};})()');
+ assert.equal(position.camera.x,position.center.x);
+ assert.equal(position.camera.y,position.center.y);
 });
 console.log('PASS update smoke suite');
 })().catch(error=>{console.error(error.stack||error);process.exitCode=1;});

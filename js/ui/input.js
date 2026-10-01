@@ -39,7 +39,7 @@ function pointerDown(event){
   },500);
 }
 function pointerMove(event){
-  const hover=localPoint(event);ui.pointerWorld=screenToIslandWorld(hover.x,hover.y);
+  const hover=localPoint(event);ui.pointerWorld=screenToWorld(hover.x,hover.y);
   if(!ui.pointers.has(event.pointerId))return;
   event.preventDefault();
   const p=localPoint(event);
@@ -172,6 +172,7 @@ function handleAction(button){
       ui.fixedDay=!ui.fixedDay;
       try{localStorage.setItem('dragon-isle-fixed-day',ui.fixedDay?'1':'0');}catch(error){}
       renderShop();break;
+    case "toggle-iso-debug":ui.debugIso=!ui.debugIso;renderShop();break;
     case "book-tab":ui.bookTab=button.dataset.tab;ui.bookPage=0;renderBook();dom.body.scrollTop=0;break;
     case "book-page":ui.bookPage=Number(button.dataset.page)||0;renderBook();dom.body.scrollTop=0;break;
     case "element-filter":{

@@ -10,6 +10,8 @@ const DATA={
   legacyGridScale:GAME_CONFIG.legacyGridScale,
   habitatThemes:GAME_CONFIG.habitatThemes,
   size:GAME_CONFIG.size,tile:GAME_CONFIG.tile,
+  tileW:GAME_CONFIG.tileW||64,tileH:GAME_CONFIG.tileH||32,
+  originX:GAME_CONFIG.originX||0,originY:GAME_CONFIG.originY||0,
   islands:GAME_CONFIG.islands,elementUnlocks:GAME_CONFIG.elementUnlocks,
   islandRegionSize:GAME_CONFIG.islandRegionSize||24,environment:GAME_CONFIG.environment,
   testResources:GAME_CONFIG.testResources,nicknames:GAME_CONFIG.nicknames,
@@ -45,7 +47,7 @@ const elementOrder=Object.fromEntries(elementIds.map(function(id,index){return [
 const fourSpecies=DRAGON_DB.species.filter(function(s){
   return s.elements.length===4&&new Set(s.elements).size===4;
 });
-const fourBySet=Object.fromEntries(fourSpecies.map(function(s){
+const fourBySet=DRAGON_DB.quads||Object.fromEntries(fourSpecies.map(function(s){
   return [s.elements.slice().sort().join("|"),s.id];
 }));
 function canonicalSpeciesId(id){

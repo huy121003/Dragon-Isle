@@ -81,7 +81,7 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
   assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId===null).length'),1);
   lifecycle.run('state.eggs[0].readyAt=Date.now()-1;autoAssignWaitingEggs();');
   assert.equal(lifecycle.run('state.eggs.filter(e=>e.hatcheryId!==null).length'),1);
-  assert.equal(lifecycle.run('hatcheryCapacity(5)'),1);
+  assert.deepEqual(snapshot(lifecycle,'[1,2,3,4,5].map(hatcheryCapacity)'),[1,2,3,4,5]);
   lifecycle.run('state.eggs.shift();autoAssignWaitingEggs();');
   assert.equal(lifecycle.run('state.eggs[0].hatcheryId'),3);
   lifecycle.run('state.buildings.push({id:92,type:"cave",stored:false,breeding:null});'+
@@ -92,6 +92,37 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
   lifecycle.run('renderBreeding(92)');
   assert(lifecycle.element('sheetBody').innerHTML.includes('previous bred egg'));
   assert(!lifecycle.element('sheetBody').innerHTML.includes('data-action="start-breeding"'));
+});
+check('upgraded hatchery fills all nests and keeps ready eggs occupying slots',()=>{
+ const g=lifecycle;
+ g.run('state=newGame();buildingById(3).level=5;for(let i=0;i<6;i++)addEgg("fire","shop");');
+ assert.equal(g.run('eggsInHatchery(3).length'),5);
+ assert.equal(g.run('state.eggs.filter(e=>e.hatcheryId===null).length'),1);
+ g.run('state.eggs[0].readyAt=Date.now()-1;autoAssignWaitingEggs();');
+ assert.equal(g.run('eggsInHatchery(3).length'),5,'A ready egg still occupies a nest');
+ const before=snapshot(g,'state.eggs.filter(e=>e.hatcheryId===3).map(e=>e.readyAt)');
+ assert(before.every(n=>n>0),'Each egg has its own incubation timer');
+ g.run('state.eggs.shift();autoAssignWaitingEggs();');
+ assert.equal(g.run('eggsInHatchery(3).length'),5,'A waiting egg fills the free nest');
+ g.run('state=newGame();addEgg("fire","shop");addEgg("water","shop");'+
+   'buildingById(3).upgradeEnds=Date.now()-1;finishUpgrades(Date.now());');
+ assert.equal(g.run('eggsInHatchery(3).length'),2,'Increasing capacity pulls waiting eggs');
+ assert.equal(g.run('buildingById(3).level'),2);
+ g.run('buildingById(3).level=3');
+ g.run('renderHatchery(3)');
+ assert(g.element('sheetBody').innerHTML.includes('2/3')||
+   g.element('sheetBody').innerHTML.includes('3 incubation nests'));
+});
+check('hatchery eggs scale with nests and do not overlap at level five',()=>{
+ const sizes=snapshot(game,'[1,2,3,4,5].map(level=>({level,scale:hatcheryEggScale(level,900,500)}))');
+ assert(sizes.every(({scale})=>scale>.85),'Eggs should be visibly larger than the old fixed scale');
+ assert(sizes[0].scale>sizes[4].scale,'A single nest has more room than five nests');
+ const final=sizes[4].scale,slots=snapshot(game,'nestSlots(5)');
+ for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++){
+   if(Math.abs(slots[i][1]-slots[j][1])>.1)continue;
+   assert(Math.abs(slots[i][0]-slots[j][0])>26*final/900,
+     'Adjacent eggs should not overlap inside the five-nest hatchery');
+ }
 });
 
 check('battle preview, multiple attacking elements and colored skill symbols',()=>{
@@ -370,7 +401,7 @@ check('guide navigation and game-driven help pages',()=>{
  assert(!chart.includes('class="guide-element"'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
  const breeding=game.element('sheetBody').innerHTML;
- assert(breeding.includes('0.6%')&&breeding.includes('Lồng ấp hiện chỉ nhận một trứng'));
+ assert(breeding.includes('0.6%')&&breeding.includes('mỗi ô ấp một trứng độc lập'));
  assert(breeding.includes('Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
  const special=game.element('sheetBody').innerHTML;
@@ -495,12 +526,12 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
 });
-check('five advanced pure species use physical phenomena',()=>{
+check('all single-element dragons are named after their element',()=>{
   const ids=['war','pure','legend','primal','time'];
   assert.deepEqual(snapshot(game,'DATA.islands.slice(11).map(island=>island.element)'),ids);
   for(const id of ids){
     assert.equal(db.species.find(s=>s.id===id).ten,
-      ({war:'Shockwave',pure:'Iridescence',legend:'Supernova',primal:'Tectonic Uplift',time:'Time Dilation'})[id]+' Dragon');
+      id.charAt(0).toUpperCase()+id.slice(1)+' Dragon');
     assert(game.run('DATA.species['+JSON.stringify(id)+'].name').endsWith(' Dragon'));
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
@@ -511,8 +542,8 @@ check('1770 unique phenomenon-named species and no retired Special category',()=
  assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.endsWith(' Dragon')));
  assert(db.species.filter(s=>s.doHiem==='transcendent').every(s=>s.ten.startsWith('Resonant ')));
  assert(db.species.filter(s=>s.id.includes('>war')).every(s=>s.ten!=='War Dragon'));
- assert.equal(db.species.find(s=>s.id==='fire').ten,'Wildfire Dragon');
- assert.equal(db.species.find(s=>s.id==='thunder').ten,'Lightning Dragon');
+ for(const element of Object.keys(db.elements))assert.equal(
+   db.species.find(s=>s.id===element).ten,db.elements[element].ten+' Dragon');
  assert.equal(db.species.find(s=>s.id==='fire>water').ten,'Geyser Dragon');
  assert.equal(db.species.find(s=>s.id==='water>fire').ten,'Steam Eruption Dragon');
  assert.equal(db.species.find(s=>s.id==='light>dark').ten,'Penumbral Eclipse Dragon');

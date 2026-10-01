@@ -3,25 +3,25 @@ const expansion=require('../data/elements-expansion.json');
 const doubleElements=require('../data/double-elements.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const physical={
-  fire:{adjective:'Volcanic',noun:'Flare',pure:'Wildfire'},
-  water:{adjective:'Tidal',noun:'Surge',pure:'Tidal Wave'},
-  earth:{adjective:'Seismic',noun:'Fault',pure:'Earthquake'},
-  wind:{adjective:'Aeolian',noun:'Cloud',pure:'Cloud'},
-  ice:{adjective:'Cryogenic',noun:'Frost',pure:'Icefall'},
-  thunder:{adjective:'Electrified',noun:'Discharge',pure:'Lightning'},
-  nature:{adjective:'Biogenic',noun:'Bloom',pure:'Spring Bloom'},
-  dark:{adjective:'Nocturnal',noun:'Umbra',pure:'Nightfall'},
-  light:{adjective:'Solar',noun:'Halo',pure:'Sunrise'},
-  metal:{adjective:'Magnetic',noun:'Flux',pure:'Magnetic Storm'},
-  war:{adjective:'Ballistic',noun:'Shockwave',pure:'Shockwave'},
-  pure:{adjective:'Prismatic',noun:'Refraction',pure:'Iridescence'},
-  legend:{adjective:'Cosmic',noun:'Nebula',pure:'Supernova'},
-  primal:{adjective:'Primordial',noun:'Uplift',pure:'Tectonic Uplift'},
-  time:{adjective:'Temporal',noun:'Chronological Drift',pure:'Time Dilation'}
+  fire:{adjective:'Volcanic',noun:'Flare'},
+  water:{adjective:'Tidal',noun:'Surge'},
+  earth:{adjective:'Seismic',noun:'Fault'},
+  wind:{adjective:'Aeolian',noun:'Cloud'},
+  ice:{adjective:'Cryogenic',noun:'Frost'},
+  thunder:{adjective:'Electrified',noun:'Discharge'},
+  nature:{adjective:'Biogenic',noun:'Bloom'},
+  dark:{adjective:'Nocturnal',noun:'Umbra'},
+  light:{adjective:'Solar',noun:'Halo'},
+  metal:{adjective:'Magnetic',noun:'Flux'},
+  war:{adjective:'Ballistic',noun:'Shockwave'},
+  pure:{adjective:'Prismatic',noun:'Refraction'},
+  legend:{adjective:'Cosmic',noun:'Nebula'},
+  primal:{adjective:'Primordial',noun:'Uplift'},
+  time:{adjective:'Temporal',noun:'Chronological Drift'}
 };
 function phenomenonName(parts){
   const [primary,secondary,third,fourth]=parts;
-  if(!secondary)return physical[primary].pure+' Dragon';
+  if(!secondary)return primary.charAt(0).toUpperCase()+primary.slice(1)+' Dragon';
   const terms=[physical[primary].adjective,physical[secondary].noun];
   if(third)terms.unshift(physical[third].adjective);
   if(fourth)terms.unshift(physical[fourth].adjective);

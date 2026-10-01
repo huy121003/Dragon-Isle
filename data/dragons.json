@@ -1218,7 +1218,7 @@
   "species": [
     {
       "id": "fire",
-      "ten": "Wildfire Dragon",
+      "ten": "Fire Dragon",
       "elements": [
         "fire"
       ],
@@ -1298,7 +1298,7 @@
     },
     {
       "id": "water",
-      "ten": "Tidal Wave Dragon",
+      "ten": "Water Dragon",
       "elements": [
         "water"
       ],
@@ -1378,7 +1378,7 @@
     },
     {
       "id": "earth",
-      "ten": "Earthquake Dragon",
+      "ten": "Earth Dragon",
       "elements": [
         "earth"
       ],
@@ -1458,7 +1458,7 @@
     },
     {
       "id": "wind",
-      "ten": "Cloud Dragon",
+      "ten": "Wind Dragon",
       "elements": [
         "wind"
       ],
@@ -1538,7 +1538,7 @@
     },
     {
       "id": "ice",
-      "ten": "Icefall Dragon",
+      "ten": "Ice Dragon",
       "elements": [
         "ice"
       ],
@@ -1618,7 +1618,7 @@
     },
     {
       "id": "thunder",
-      "ten": "Lightning Dragon",
+      "ten": "Thunder Dragon",
       "elements": [
         "thunder"
       ],
@@ -1698,7 +1698,7 @@
     },
     {
       "id": "nature",
-      "ten": "Spring Bloom Dragon",
+      "ten": "Nature Dragon",
       "elements": [
         "nature"
       ],
@@ -1778,7 +1778,7 @@
     },
     {
       "id": "dark",
-      "ten": "Nightfall Dragon",
+      "ten": "Dark Dragon",
       "elements": [
         "dark"
       ],
@@ -1858,7 +1858,7 @@
     },
     {
       "id": "light",
-      "ten": "Sunrise Dragon",
+      "ten": "Light Dragon",
       "elements": [
         "light"
       ],
@@ -1938,7 +1938,7 @@
     },
     {
       "id": "metal",
-      "ten": "Magnetic Storm Dragon",
+      "ten": "Metal Dragon",
       "elements": [
         "metal"
       ],

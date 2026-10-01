@@ -77,7 +77,7 @@ function guideBreeding(){
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Trong Hang','Trong Lồng ấp'],durationRows)+
     '<p class="muted">Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([
       'Hang lai không thể mở lượt mới khi chưa lấy trứng của lượt trước. Trứng lai từ Hang đó phải được ấp xong hoặc bán trước khi dùng Hang cho lượt khác.',
-      'Lồng ấp hiện chỉ nhận một trứng mỗi lượt: phải lấy hoặc bán trứng cũ, kể cả khi đồng hồ đã hoàn tất. Trứng dư nằm ở Inventory và chờ ô trống.',
+      'Lồng ấp có 1–'+DATA.buildings.hatchery.maxLevel+' ô theo level, mỗi ô ấp một trứng độc lập. Trứng hoàn tất vẫn chiếm ô cho đến khi nở hoặc được bán; trứng dư ở Inventory tự vào ô trống.',
       'Khi trứng nở, cần Chuồng còn chỗ và cùng ít nhất một hệ của rồng. Giống mới được ghi vào Dragon Book; công thức của cặp bố mẹ được lưu trong Recipes.'
     ])+'<div class="guide-callout">Trong Hang lai, tỷ lệ theo bậc là tổng các giống cùng bậc; mở từng nhóm để xem tỷ lệ chính xác của từng giống.</div>';
 }
@@ -111,7 +111,7 @@ function guideIslands(){
       'Giá nâng cấp và tiền hoàn khi bán tính trên giá mua của chính Chuồng đó; mua thêm Chuồng không đổi chi phí nâng cấp hoặc giá bán của Chuồng cũ.',
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
       'Số Nông trại tối đa ở level hiện tại: '+farmLimit(state.player.level)+'. Mỗi '+window.DragonEconomy.progression.farmEveryLevels+' level người chơi mở thêm một ô, tối đa '+window.DragonEconomy.progression.maxFarms+'.',
-      'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+DATA.buildings.hatchery.maxLevel+'; giới hạn mỗi lượt ấp vẫn là một trứng.'
+      'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+DATA.buildings.hatchery.maxLevel+'; mỗi level mở thêm một ô ấp trứng.'
     ]);
 }
 function guideResources(){

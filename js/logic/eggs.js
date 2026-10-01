@@ -5,12 +5,13 @@ function eggById(id){return state.eggs.find(function(egg){return egg.id===id;});
 function eggsInHatchery(id){return state.eggs.filter(function(egg){return egg.hatcheryId===id;});}
 function freeHatchery(){
   return state.buildings.find(function(b){
-    return b.type==="hatchery"&&!b.stored&&eggsInHatchery(b.id).length===0;
+    return b.type==="hatchery"&&!b.stored&&
+      eggsInHatchery(b.id).length<hatcheryCapacity(b.level);
   });
 }
 function assignIncubation(egg,house){
   if(!egg||egg.hatcheryId!==null||!house||house.type!=="hatchery"||house.stored||
-    eggsInHatchery(house.id).length>0)return false;
+    eggsInHatchery(house.id).length>=hatcheryCapacity(house.level))return false;
   egg.hatcheryId=house.id;
   egg.startedAt=Date.now();
   egg.readyAt=egg.startedAt+DATA.rarities[DATA.species[egg.species].rarity].incubate*1000;

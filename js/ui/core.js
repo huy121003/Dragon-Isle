@@ -136,7 +136,8 @@ function updateInspector(){
       gemSkipCost(b.crop.readyAt,Date.now())+' Skip</button>';
   }else if(b.type==="hatchery"){
     const eggs=eggsInHatchery(b.id),ready=eggs.filter(function(e){return e.readyAt<=Date.now();}).length;
-    body+='<p>'+eggs.length+' active egg · '+ready+' ready to hatch. Collect the egg before starting the next incubation.</p>'+
+    body+='<p>'+eggs.length+'/'+hatcheryCapacity(b.level)+' nests occupied · '+ready+
+      ' ready to hatch. Ready eggs occupy a nest until collected or sold.</p>'+
       '<div class="actions"><button class="btn good" data-action="hatchery-menu" data-id="'+b.id+
       '">Manage eggs</button></div>';
   }else if(b.type==="cave"){

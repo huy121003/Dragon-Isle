@@ -57,7 +57,7 @@ function renderShop(){
     });
     html+='</div>';
   }else if(ui.shopTab==="special"){
-    html+='<div class="cards">';
+    html+='<div class="note">Chọn công trình để đặt trên đảo. Vàng hoặc gem chỉ bị trừ khi đặt thành công; có thể quay lại Shop trước khi đặt.</div><div class="cards special-shop-cards">';
     const farms=farmCount(),limit=farmLimit(state.player.level);
     html+='<button class="shop-item" data-action="choose-build" data-type="farm"'+(farms>=limit?' disabled':'')+'><span class="shop-icon">🌱</span>'+
       '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every 5 player levels · four crop levels · 9×6 tiles</small></span><strong>● '+money(DATA.buildings.farm.cost)+'</strong></button>'+
@@ -257,17 +257,22 @@ function renderCrops(id){
   const b=buildingById(id);
   if(!b||b.type!=="farm"){closeModal();return;}
   dom.title.textContent="🌱 Plant crop · Farm level "+b.level;
-  let html='<div class="cards">';
+  let html='<div class="cards crop-shop-cards">';
   DATA.crops.forEach(function(c,index){
     const yieldAmount=Math.round(c.yield*(1+(b.level-1)*.2));
     const locked=index>=b.level;
     html+='<button class="shop-item" data-action="plant" data-id="'+id+'" data-crop="'+c.id+'"'+
-      (locked?' disabled':'')+'>'+
+      (locked||b.crop?' disabled':'')+'>'+
       '<span class="shop-icon">🌿</span><span><b>'+c.name+'</b><small>'+duration(c.duration)+' → '+
       money(yieldAmount)+' food</small></span><strong>'+
       (locked?'Unlocks at level '+(index+1):state.gold<c.cost?'Need '+money(c.cost-state.gold)+' gold':'● '+money(c.cost))+'</strong></button>';
   });
-  dom.body.innerHTML=html+"</div>";
+  html+='</div>';
+  if(b.crop)html+='<div class="panel crop-progress"><b>'+esc(cropById(b.crop.id).name)+' is growing</b><p>'+
+    inlineTimer(b.crop.startedAt,b.crop.readyAt)+'</p><div class="actions">'+
+    (b.crop.readyAt<=Date.now()?'<button class="btn good" data-action="harvest" data-id="'+id+'">Harvest</button>':'')+
+    '<button class="btn" data-action="close-modal">Done</button></div></div>';
+  dom.body.innerHTML=html;
 }
 function renderAssign(dragonId){
   const d=dragonById(dragonId);

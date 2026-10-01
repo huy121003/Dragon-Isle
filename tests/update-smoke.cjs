@@ -347,6 +347,35 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  balance.run('state.buildings.at(-1).crop.readyAt=Date.now()-1;harvest(state.buildings.at(-1))');
  assert(balance.run('state.food')>100);
 });
+const commerce=await boot();
+check('Shop purchase and Farm planting keep their panels stable',()=>{
+ commerce.run('state=newGame();state.gold=10000;ui.shopTab="supplies";openModal("shop");dom.body.scrollTop=72;'+
+   'handleAction({dataset:{action:"buy-food",count:"10"}})');
+ assert.equal(commerce.run('ui.modal.name'), 'shop');
+ assert.equal(commerce.run('ui.shopTab'), 'supplies');
+ assert.equal(commerce.run('dom.body.scrollTop'),72);
+ assert(commerce.element('sheetBody').innerHTML.includes('data-count="10"'));
+ commerce.run('ui.shopTab="special";renderShop();handleAction({dataset:{action:"choose-build",type:"farm"}})');
+ assert.equal(commerce.run('ui.modal'),null,'Placement temporarily exposes the island');
+ assert.equal(commerce.run('ui.mode.fromShop'),true);
+ assert(commerce.element('placementText').textContent.includes('on placement'));
+ assert.equal(commerce.run('state.gold'),9880,'Choosing a plot does not charge before placement');
+ commerce.run('handleAction({dataset:{action:"cancel-mode"}})');
+ assert.equal(commerce.run('ui.modal.name'),'shop');
+ assert.equal(commerce.run('ui.shopTab'),'special');
+ commerce.run('state.buildings.push({id:91,type:"farm",level:1,x:740,y:704,stored:false,crop:null});'+
+   'openModal("crops",91);dom.body.scrollTop=48;'+
+   'handleAction({dataset:{action:"plant",id:"91",crop:"wheat"}})');
+ assert.equal(commerce.run('ui.modal.name'),'crops');
+ assert.equal(commerce.run('dom.body.scrollTop'),48);
+ assert.equal(commerce.run('buildingById(91).crop.id'),'wheat');
+ assert(commerce.element('sheetBody').innerHTML.includes('crop-progress'));
+ assert(commerce.element('sheetBody').innerHTML.includes('data-action="plant" data-id="91" data-crop="wheat" disabled'));
+ commerce.run('buildingById(91).crop.readyAt=Date.now()-1;'+
+   'handleAction({dataset:{action:"harvest",id:"91"}})');
+ assert.equal(commerce.run('ui.modal.name'),'crops');
+ assert.equal(commerce.run('buildingById(91).crop'),null);
+});
 check('Hatchery movement and XP for land and island',()=>{
  const g=balance;
  g.run('state= newGame();addEgg("fire");beginMode({kind:"move",id:3});completePlacement(750,692)');

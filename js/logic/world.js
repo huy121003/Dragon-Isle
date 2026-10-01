@@ -103,8 +103,9 @@ function buildLockReason(type,element){
   if(type==="habitat"&&!DATA.elements[element])return "Unknown Habitat element.";
   if(type==="habitat"&&state.player.level<(ELEMENT_UNLOCK[element]||99))
     return "Habitat "+(DATA.elements[element]?.name||"element")+" unlocks at level "+ELEMENT_UNLOCK[element]+".";
-  if((type==="cave"||type==="arena"||type==="academy")&&state.buildings.some(b=>b.type===type))
-    return "Only one "+DATA.buildings[type].name+" is allowed per island.";
+  if((type==="cave"||type==="premiumCave"||type==="arena"||type==="academy")&&
+    state.buildings.some(b=>b.type===type))
+    return "Only one "+DATA.buildings[type].name+" can be owned.";
   return "";
 }
 function completePlacement(x,y){
@@ -130,7 +131,10 @@ function completePlacement(x,y){
     const type=mode.type,price=buildingPurchaseCost(type,mode.element);
     const reason=buildLockReason(type,mode.element);
     if(reason){toast(reason);stopMode();return;}
-    if(!spendGold(price))return;
+    if(type==='premiumCave'){
+      if(state.gems<price){toast("Not enough gems.");return;}
+      state.gems-=price;
+    }else if(!spendGold(price))return;
     const building={id:state.nextId++,type:type,element:mode.element||null,x:x,y:y,level:1,
       stored:false,storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null};
     if(type==='habitat'){

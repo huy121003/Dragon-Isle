@@ -413,6 +413,91 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  for(const options of [same,overlap,outcomes(fireFours[0],fireFours[1],40)])
    assert(Math.abs(chance(options)-1)<1e-9);
 });
+const premium=await boot();
+check('Celestial Sanctuary costs gems once and persists through saves',()=>{
+ premium.run('state=newGame();state.gems=119;ui.shopTab="special";renderShop()');
+ assert(premium.element('sheetBody').innerHTML.includes('data-type="premiumCave"'));
+ assert(premium.element('sheetBody').innerHTML.includes('♦ 120'));
+ premium.run('beginMode({kind:"buy",type:"premiumCave"})');
+ const site=snapshot(premium,'(()=>{for(let y=692;y<716;y++)for(let x=738;x<762;x++)'+
+   'if(getBuildValid(x,y,ui.mode))return {x,y};return null})()');
+ assert(site,'The starting island needs a free premium cave plot');
+ premium.run('completePlacement('+site.x+','+site.y+')');
+ assert.equal(premium.run('state.buildings.filter(b=>b.type==="premiumCave").length'),0);
+ assert.equal(premium.run('state.gems'),119);
+ premium.run('state.gems=120;completePlacement('+site.x+','+site.y+')');
+ assert.equal(premium.run('state.gems'),0);
+ assert.equal(premium.run('state.gold'),3000,'Gem purchase must not charge gold');
+ assert.equal(premium.run('state.buildings.filter(b=>b.type==="premiumCave").length'),1);
+ assert(premium.run('buildLockReason("premiumCave")'));
+ premium.run('storeBuilding(state.buildings.at(-1).id);sellBuilding(state.buildings.at(-1).id)');
+ assert.equal(premium.run('state.buildings.filter(b=>b.type==="premiumCave").length'),1);
+ assert.equal(premium.run('state.buildings.at(-1).stored'),false);
+ assert.equal(premium.run('migrateSave(state).buildings.filter(b=>b.type==="premiumCave").length'),1);
+});
+check('premium breeding boosts every 3+ element result relatively and keeps 100% odds',()=>{
+ const evaluate=(father,mother)=>snapshot(premium,'(()=>{const father='+JSON.stringify({id:101,species:father,level:40})+
+   ',mother='+JSON.stringify({id:102,species:mother,level:40})+';return ['+
+   'breedingOptions(father,mother),breedingOptions(father,mother,{type:"premiumCave"})];})()');
+ for(const pair of [['fire>earth>ice','fire>earth>dark'],
+   ...[snapshot(premium,'FOUR_IDS.filter(id=>DATA.species[id].elements[0]==="fire").slice(0,2)')]]){
+   const [regular,enhanced]=evaluate(...pair),base=new Map(regular.map(o=>[o.id,o.chance]));
+   assert(Math.abs(enhanced.reduce((sum,o)=>sum+o.chance,0)-1)<1e-9);
+   assert(enhanced.some(o=>o.id.split('>').length>=3));
+   for(const option of enhanced){
+     if(option.id.split('>').length>=3)
+       assert(Math.abs(option.chance/base.get(option.id)-1.2)<1e-9,option.id);
+   }
+   assert(enhanced.filter(o=>o.id.split('>').length<=2).reduce((sum,o)=>sum+o.chance,0)<
+     regular.filter(o=>o.id.split('>').length<=2).reduce((sum,o)=>sum+o.chance,0));
+ }
+ assert.equal(premium.run('breedingSeconds("epic",1,{type:"premiumCave"})'),720);
+ assert.equal(premium.run('breedingSeconds("epic",1)'),900);
+});
+check('premium cave shares busy rules and has its own breeding turn',()=>{
+ premium.run('state=newGame();state.dragons[0].species="fire>earth>ice";state.dragons[0].level=40;'+
+   'state.dragons.push({...state.dragons[0],id:92,species:"fire>earth>dark",nickname:"Other"});'+
+   'state.buildings.push({id:93,type:"premiumCave",level:1,x:750,y:692,stored:false,breeding:null},'+
+   '{id:94,type:"cave",level:1,x:738,y:707,stored:false,breeding:null});renderBreeding(93)');
+ assert(premium.element('sheetBody').innerHTML.includes('16.80%'));
+ assert(premium.element('sheetBody').innerHTML.includes('2.04%'));
+ assert(premium.element('sheetBody').innerHTML.includes('premium-breeding-banner'));
+ premium.run('startBreeding(93,2,92)');
+ const round=snapshot(premium,'buildingById(93).breeding');
+ assert(round&&round.result);
+ assert.equal(round.readyAt-round.startedAt,premium.run(
+   'breedingSeconds(DATA.species[buildingById(93).breeding.result].rarity,1,buildingById(93))*1000'));
+ const restored=snapshot(premium,'(()=>{const old=JSON.parse(JSON.stringify(state));'+
+   'delete old.buildings.find(b=>b.id===93).breeding.startedAt;return migrateSave(old).buildings.find(b=>b.id===93).breeding;})()');
+ assert.equal(restored.startedAt,round.startedAt,'Saved premium timer uses its shorter duration');
+ assert.equal(premium.run('dragonBusy(2)'),true);
+ assert(premium.run('activeTimers().some(t=>t.kind==="breed"&&t.id===93)'));
+ premium.run('startBreeding(94,2,92)');
+ assert.equal(premium.run('buildingById(94).breeding'),null);
+ premium.run('renderBreeding(93)');
+ assert(premium.element('sheetBody').innerHTML.includes('premium-breeding'));
+ assert(premium.element('sheetBody').innerHTML.includes('breed-parents'));
+ premium.run('buildingById(93).breeding.readyAt=Date.now()-1;renderBreeding(93)');
+ assert(premium.element('sheetBody').innerHTML.includes('breed-ready-egg'));
+ premium.run('collectBreeding(93)');
+ assert.equal(premium.run('state.eggs.at(-1).caveId'),93);
+ assert.equal(premium.run('buildingById(93).breeding'),null);
+ premium.run('startBreeding(94,2,92)');
+ assert(premium.run('!!buildingById(94).breeding'),'The other cave runs independently');
+});
+check('both breeding buildings render larger parents and a larger ready egg',()=>{
+ const captured=snapshot(premium,'(()=>{const seen=[],originalDragon=drawDragon,originalEgg=drawEgg;'+
+   'drawDragon=(context,params)=>seen.push({kind:"dragon",scale:params.scale});'+
+   'drawEgg=(context,egg,x,y,time,scale)=>seen.push({kind:"egg",scale});'+
+   'try{for(const type of ["cave","premiumCave"]){const b={id:98,type,level:1,x:738,y:692,'+
+   'breeding:{fatherId:2,motherId:92,result:"fire",readyAt:Date.now()+10000}};'+
+   'drawBuilding(b,1800);b.breeding.readyAt=Date.now()-1;drawBuilding(b,1800);}}'+
+   'finally{drawDragon=originalDragon;drawEgg=originalEgg;}return seen;})()');
+ assert.equal(captured.filter(item=>item.kind==='dragon').length,4);
+ assert.equal(captured.filter(item=>item.kind==='egg').length,2);
+ assert(captured.filter(item=>item.kind==='dragon').every(item=>item.scale>1.2));
+ assert(captured.filter(item=>item.kind==='egg').every(item=>item.scale>=3));
+});
 check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"open-guide"}})');
  assert.equal(game.run('ui.modal.name'),'guide');
@@ -969,7 +1054,7 @@ check('depth sorting uses the farthest grid cell for every footprint',()=>{
 });
 check('every new building silhouette renders by day and night',()=>{
  const before=game.drawCalls.length;
- game.run('for(const kind of ["habitat","farm","hatchery","academy","arena","cave","decor"]){'+
+ game.run('for(const kind of ["habitat","farm","hatchery","academy","arena","cave","premiumCave","decor"]){'+
    'const b={id:500,type:kind,element:"fire",x:740,y:699,level:1,stored:false,'+
    'crop:kind==="farm"?{id:"wheat",readyAt:Date.now()-1}:null};'+
    'ui.fixedDay=true;drawBuilding(b,12345);ui.fixedDay=false;drawBuilding(b,24680);}');
@@ -977,7 +1062,7 @@ check('every new building silhouette renders by day and night',()=>{
 });
 check('all building art remains within its diamond base width',()=>{
  const bounds=snapshot(game,'(()=>{const out=[];ui.debugIso=true;'+
-   'for(const type of ["habitat","farm","hatchery","academy","arena","cave","decor"])'+
+   'for(const type of ["habitat","farm","hatchery","academy","arena","cave","premiumCave","decor"])'+
    'for(let level=1;level<=Math.min(5,DATA.buildings[type].maxLevel);level++){' +
    'const b={id:910,type,element:"fire",x:740,y:699,level,stored:false,'+
    'crop:type==="farm"?{id:"wheat",readyAt:Date.now()-1}:null};'+

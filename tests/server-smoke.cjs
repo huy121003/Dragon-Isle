@@ -212,7 +212,7 @@ async function launch(port){
     assert.equal(choices.dragons.find(d=>d.id===6).battleReason,'Breeding');
     assert(choices.opponents.some(u=>u.id===idB));
     const breedingLow=JSON.parse(JSON.stringify(low));
-    breedingLow.buildings.push({id:7,type:'cave',level:1,x:204,y:182,stored:false,
+    breedingLow.buildings.push({id:7,type:'premiumCave',level:1,x:204,y:182,stored:false,
       breeding:{fatherId:2,motherId:2,readyAt:Date.now()+3600_000}});
     assert.equal((await putProfile(idB,cookiePlayer,breedingLow)).status,200);
     assert(!(await (await arenaCall('list','GET',cookieAdmin)).json()).opponents.some(u=>u.id===idB),

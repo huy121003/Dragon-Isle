@@ -6,7 +6,7 @@ const BREED_TIER_WEIGHTS={
   "2+2":[20,80],"2+3":[18,82],"2+4":[16,84],
   "3+3":[16,84],"3+4":[15,85],"4+4":[14,86]
 };
-function breedingOptions(father,mother){
+function breedingOptions(father,mother,cave){
   if(!father||!mother||father.id===mother.id)return [];
   const F=DATA.species[father.species],M=DATA.species[mother.species];
   if(!F||!M)return [];
@@ -49,9 +49,11 @@ function breedingOptions(father,mother){
       Math.floor(Math.max(0,avg-rules.fourGrowthStartLevel)/10)*rules.fourPerTenLevels):0;
   const double=groups[4].length?Math.min(rules.doubleCap,
     rules.doubleBase+Math.floor((avg-rules.doubleMinParentLevel)/10)*rules.doublePerTenLevels):0;
-  const low=1-three-four-double,base=BREED_TIER_WEIGHTS[tierKey];
+  const rareFactor=cave?.type==='premiumCave'?rules.premiumRareFactor:1;
+  const boostedThree=three*rareFactor,boostedFour=four*rareFactor,boostedDouble=double*rareFactor;
+  const low=1-boostedThree-boostedFour-boostedDouble,base=BREED_TIER_WEIGHTS[tierKey];
   const two=groups[1].length?low*base[1]/(base[0]+base[1]):0;
-  const weights=[low-two,two,three,four,double];
+  const weights=[low-two,two,boostedThree,boostedFour,boostedDouble];
   return groups.flatMap(function(ids,index){
     if(!ids.length||!weights[index])return [];
     const bias=ids.map(function(id){
@@ -63,18 +65,20 @@ function breedingOptions(father,mother){
     return ids.map(function(id,i){return {id:id,chance:weights[index]*bias[i]/groupTotal};});
   });
 }
-function breedingSeconds(rarity,level){
-  return DATA.breedingTimes[rarity];
+function breedingSeconds(rarity,level,cave){
+  const base=DATA.breedingTimes[rarity];
+  return cave?.type==='premiumCave'?Math.round(base*window.DragonEconomy.breeding.premiumTimeFactor):base;
 }
+function isBreedingCave(building){return building?.type==='cave'||building?.type==='premiumCave';}
 function dragonBusy(id){
   return state.buildings.some(function(b){
-    return b.type==="cave"&&b.breeding&&b.breeding.readyAt>Date.now()&&
+    return isBreedingCave(b)&&b.breeding&&b.breeding.readyAt>Date.now()&&
       (b.breeding.fatherId===id||b.breeding.motherId===id);
   });
 }
 function startBreeding(caveId,fatherId,motherId){
   const cave=buildingById(caveId),father=dragonById(fatherId),mother=dragonById(motherId);
-  if(!cave||cave.type!=="cave"||cave.stored||cave.breeding||
+  if(!isBreedingCave(cave)||cave.stored||cave.breeding||
     state.eggs.some(function(egg){return egg.source==="breed"&&(egg.caveId===cave.id||!egg.caveId);})||
     !father||!mother||
     father.id===mother.id||dragonBusy(father.id)||dragonBusy(mother.id)){
@@ -83,20 +87,21 @@ function startBreeding(caveId,fatherId,motherId){
   if(father.level<DATA.progression.breedLevel||mother.level<DATA.progression.breedLevel){
     toast("Both dragons must reach level "+DATA.progression.breedLevel+" to breed.");return;
   }
-  const options=breedingOptions(father,mother),roll=Math.random();
+  const options=breedingOptions(father,mother,cave),roll=Math.random();
+  if(!options.length){toast("No possible offspring for these dragons.");return;}
   let total=0,result=options[options.length-1];
   for(const option of options){total+=option.chance;if(roll<total){result=option;break;}}
   const species=DATA.species[result.id];
   cave.breeding={fatherId:father.id,motherId:mother.id,
     fatherSpecies:father.species,motherSpecies:mother.species,
     result:result.id,startedAt:Date.now(),readyAt:0};
-  cave.breeding.readyAt=cave.breeding.startedAt+breedingSeconds(species.rarity,cave.level)*1000;
+  cave.breeding.readyAt=cave.breeding.startedAt+breedingSeconds(species.rarity,cave.level,cave)*1000;
   toast("Breeding has started.");
   AUDIO.play("place");openModal("breeding",cave.id);saveGame();
 }
 function collectBreeding(caveId){
   const cave=buildingById(caveId);
-  if(!cave||!cave.breeding||cave.breeding.readyAt>Date.now()){
+  if(!isBreedingCave(cave)||!cave.breeding||cave.breeding.readyAt>Date.now()){
     toast("Breeding is not finished.");return;
   }
   const breeding=cave.breeding;

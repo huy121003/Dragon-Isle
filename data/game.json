@@ -73,6 +73,12 @@
         9
       ]
     ],
+    "premiumCave": [
+      [
+        12,
+        9
+      ]
+    ],
     "arena": [
       [
         12,
@@ -627,6 +633,13 @@
       "icon": "♧",
       "cost": 1200,
       "sellRate": 0.5
+    },
+    "premiumCave": {
+      "maxLevel": 1,
+      "name": "Celestial Breeding Sanctuary",
+      "icon": "✧",
+      "cost": 120,
+      "sellRate": 0
     },
     "arena": {
       "maxLevel": 1,

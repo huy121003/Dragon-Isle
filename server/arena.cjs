@@ -14,7 +14,7 @@ function createArena({profilesDir,dataDir,auth}){
   require('../scripts/extend-catalog.cjs')(catalog,game);
   const elements=catalog.elements,rarities=catalog.rarities;
   const unlocked=p=>p?.buildings?.some(b=>b.type==='arena'&&!b.stored);
-  const breeding=(p,id)=>p.buildings?.some(b=>b.type==='cave'&&b.breeding&&
+  const breeding=(p,id)=>p.buildings?.some(b=>['cave','premiumCave'].includes(b.type)&&b.breeding&&
     b.breeding.readyAt>Date.now()&&(b.breeding.fatherId===id||b.breeding.motherId===id));
   const eligible=(p,d)=>d.level>=MIN_BATTLE_LEVEL&&d.level<=100&&!breeding(p,d.id);
   const owned=(p,ids)=>Array.isArray(ids)&&ids.length===TEAM_SIZE&&

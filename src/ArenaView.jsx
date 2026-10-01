@@ -44,11 +44,11 @@ function Portrait({dragon,large=false,facing=1}){
   const ref=useRef(null);
   useEffect(()=>{
     if(!dragon||!ref.current)return;
-    if(!large){game()?.paint(ref.current,dragon.species,dragon.level,{time:900,facing});return;}
+    if(!large){game()?.paint(ref.current,dragon.species,dragon.level,{time:900,facing,locomotion:false});return;}
     let animation,visible=true;
     const draw=time=>{
       if(!visible)return;
-      game()?.paint(ref.current,dragon.species,dragon.level,{time,facing});
+      game()?.paint(ref.current,dragon.species,dragon.level,{time,facing,locomotion:false});
       animation=requestAnimationFrame(draw);
     };
     animation=requestAnimationFrame(draw);

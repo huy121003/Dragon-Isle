@@ -346,7 +346,7 @@ check('every catalog species draws with the rebuilt renderer',()=>{
     const id=ids[index],level=[1,15,40][index%3];
     balance.drawCalls.length=0;
     balance.run('drawDragon(ctx,{dragon:{id:0,species:'+JSON.stringify(id)+',level:'+level+
-      '},x:150,y:150,time:2200,scale:1,activity:{id:"walk"}})');
+      '},x:150,y:150,time:2200,scale:1})');
     assert(balance.drawCalls.some(call=>call[0]==='fill'),id+' needs a painted body');
     const slots=db.species[index].elements.length;
     const segments=balance.drawCalls.filter(call=>call[0]==='arc'&&call[3]===16);
@@ -366,11 +366,36 @@ check('articulated wings, head and tail change across frames',()=>{
     for(const time of [900,2200]){
       balance.drawCalls.length=0;
       balance.run('drawDragon(ctx,{dragon:{id:0,species:'+JSON.stringify(id)+
-        ',level:40},x:120,y:120,time:'+time+',scale:1,activity:{id:"walk"}})');
+        ',level:40},x:120,y:120,time:'+time+',scale:1})');
       frames.push(JSON.stringify(balance.drawCalls));
     }
     assert.notEqual(frames[0],frames[1],id+' needs motion between frames');
   }
+  balance.drawCalls.length=0;
+});
+check('body-specific leg steps animate in habitats while Arena keeps a grounded stance',()=>{
+  for(const id of ['fire','earth','ice','thunder','war','wind','time']){
+    const render=(time,locomotion)=>{
+      balance.drawCalls.length=0;
+      balance.run('var form=DATA.dragonForms['+JSON.stringify(id)+'];'+
+        'var d={id:88,species:'+JSON.stringify(id)+',level:15};'+
+        'var pose=dragonPose(d,'+time+',form,0,'+locomotion+');'+
+        'drawDragonLimbs(ctx,form,DATA.species[d.species].detail.mau,pose,'+time+',d.id,form.width,form.height,false)');
+      return JSON.stringify(balance.drawCalls.filter(call=>call[0]==='moveTo'||call[0]==='lineTo'));
+    };
+    assert.notEqual(render(900,true),render(1300,true),id+' should change foot position');
+    assert.equal(render(900,false),render(1300,false),id+' should stand in Arena');
+  }
+  balance.run('state.dragons[0].hunger=100;var observedTimes=[];'+
+    'var originalDragonDraw=drawDragon;drawDragon=function(c,p){observedTimes.push(p.time);originalDragonDraw(c,p)};'+
+    'paintHabitat(state.buildings[0],1500,0);'+
+    'var parents=[state.dragons[0].id,77];'+
+    'state.dragons.push({...state.dragons[0],id:77});'+
+    'paintCave({id:91,breeding:{fatherId:parents[0],motherId:parents[1],readyAt:Date.now()+10000}},1800,0);'+
+    'drawDragon=originalDragonDraw;');
+  const observed=snapshot(balance,'observedTimes');
+  assert.deepEqual(observed.slice(-2),[1800,1800]);
+  assert(observed.slice(0,-2).length>0&&observed.slice(0,-2).every(time=>time===1500));
   balance.drawCalls.length=0;
 });
 check('dragon portraits leave room for the tail ring and the head',()=>{

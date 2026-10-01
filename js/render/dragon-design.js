@@ -114,22 +114,28 @@ function drawTailAffinityRing(c,elements,time,tailSwing,seed){
 }
 function drawDragonLimbs(c,form,p,pose,time,id,w,h,far){
   if(!form.legs)return;
-  const four=form.legs===4,hover=form.motion==='hover';
-  const xs=four?[-w*.67,w*.6]:[-w*.38,w*.42];
+  const four=form.legs===4,hover=form.motion==='hover'||form.motion==='swim';
+  const xs=four?[-w*.67,w*.6]:[w*.3];
   for(let i=0;i<xs.length;i++){
-    const x=xs[i],swing=hover?Math.sin(time*.002+id+i)*1.5:
-      Math.sin(time*(form.motion==='heavy'?.0024:.0045)+id+i*Math.PI+(far?Math.PI:0))*
-      (form.motion==='heavy'?2.5:4);
+    // Opposite sides alternate on bipeds; diagonally paired legs alternate on quadrupeds.
+    const x=xs[i],phase=pose.stepPhase+(i?Math.PI:0)+(far?Math.PI:0);
+    const stride=!pose.locomotion?0:hover?2:
+      form.motion==='heavy'?5:form.motion==='jitter'?9:7;
+    const swing=Math.cos(phase)*stride;
+    const lift=!pose.locomotion?0:hover?Math.sin(phase)*2:
+      Math.pow(Math.max(0,Math.sin(phase)),1.3)*(form.motion==='heavy'?5:8);
     const lean=far?-5:3,foot=hover?12:24;
+    const kneeX=x+lean+swing*.42,kneeY=foot*.54-lift*.42;
+    const toeX=x+lean+swing,toeY=foot-lift;
     c.save();c.globalAlpha=far?.77:1;
-    artStroke(c,[[x,-1],[x+lean,foot*.54],[x+lean+swing,foot]],p.vien,
+    artStroke(c,[[x,-1],[kneeX,kneeY],[toeX,toeY]],p.vien,
       (four?9:7)+(far?0:1));
-    artStroke(c,[[x,-1],[x+lean,foot*.54],[x+lean+swing,foot]],
+    artStroke(c,[[x,-1],[kneeX,kneeY],[toeX,toeY]],
       far?p.thanToi:p.than,(four?6:5));
-    artFill(c,[[x+lean+swing-5,foot-1],[x+lean+swing+7,foot-3],
-      [x+lean+swing+12,foot+2],[x+lean+swing-5,foot+3]],p.thanToi,p.vien,1);
-    if(!hover)for(let claw=0;claw<2;claw++)artFill(c,[[x+lean+swing+4+claw*5,foot],
-      [x+lean+swing+10+claw*5,foot+2],[x+lean+swing+5+claw*5,foot+4]],p.sung);
+    artFill(c,[[toeX-5,toeY-1],[toeX+7,toeY-3],
+      [toeX+12,toeY+2],[toeX-5,toeY+3]],p.thanToi,p.vien,1);
+    if(!hover)for(let claw=0;claw<2;claw++)artFill(c,[[toeX+4+claw*5,toeY],
+      [toeX+10+claw*5,toeY+2],[toeX+5+claw*5,toeY+4]],p.sung);
     c.restore();
   }
 }

@@ -103,9 +103,6 @@ function pointerUp(event){
   if(!inside(cell.x,cell.y)){ui.selection=null;updateInspector();return;}
   const b=buildingAt(cell.x,cell.y);
   if(b){
-    if(b.type==="habitat")occupants(b).forEach(function(d){
-      if(!dragonBusy(d.id))ui.jumps.set(d.id,performance.now());
-    });
     if(b.type==="habitat"){
       ui.selection={type:"building",id:b.id};
       openModal("habitat",b.id);

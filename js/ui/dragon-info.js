@@ -106,7 +106,6 @@ function dragonDetailHtml(species,dragon){
     const feedCost=dragonFeedCost(dragon.level);
     const busy=dragonBusy(dragon.id);
     html+='<div class="row"><span class="pill">'+(dragon.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(dragon)+'/4 feedings at this level')+'</span>'+
-      '<span class="pill">'+(busy?'💞 Breeding':dragonActivity(dragon,Date.now()).label)+'</span>'+
       (dragon.hunger>=80?'<span class="pill">Needs food</span>':'')+
       '</div><div class="actions"><button class="btn good" data-action="feed" data-id="'+
       dragon.id+'"'+(busy||dragon.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button><button class="btn" data-action="assign-menu" data-id="'+

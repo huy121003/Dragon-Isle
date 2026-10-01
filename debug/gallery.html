@@ -75,7 +75,7 @@ function frame(time){requestAnimationFrame(frame);if(!running||time-last<33)retu
     const c=canvas.getContext('2d');c.clearRect(0,0,150,140);
     const placement=dragonPortraitPlacement(150,140,level);
     drawDragon(c,{dragon:{id:0,species:card.id,level,hunger:10,happiness:80},
-      ...placement,time,scale:placement.scale*(quality?1:.88),activity:{id:'walk'}});
+      ...placement,time,scale:placement.scale*(quality?1:.88)});
   }}
 }
 render();requestAnimationFrame(frame);

@@ -410,7 +410,7 @@ function factoryReset(){
   state=newGame();
   saveReadOnly=false;
   ui.selection=null;ui.bookTab="all";ui.bookPage=0;ui.shopTab="buildings";
-  ui.jumps.clear();stopMode();closeModal();
+  stopMode();closeModal();
   ui.camera.x=750*DATA.tile;ui.camera.y=750*DATA.tile;
   updateUI();saveGame();
   toast("The island has been reset. Enjoy!");

@@ -7,64 +7,64 @@
   "partnerOffsets": [[1, 5], [7, 11]],
   "elements": {
     "fire": [
-      {"name":"Cinderheart Sovereign","form":"crown","skill":{"name":"Sovereign Flame","power":0.58,"bonus":0.12,"cooldown":3,"effect":{"kind":"poison","target":"enemy","value":0.055,"duration":3},"description":"Burn for 5.5% maximum HP over each of 3 turns."}},
-      {"name":"Pyrewing Herald","form":"mantle","skill":{"name":"Phoenix Oath","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.28,"duration":3},"description":"Raise damage by 28% for 3 actions; no damage."}}
+      {"name":"Resonant Electrified Volcanic Surge Dragon","form":"crown","skill":{"name":"Sovereign Flame","power":0.58,"bonus":0.12,"cooldown":3,"effect":{"kind":"poison","target":"enemy","value":0.055,"duration":3},"description":"Burn for 5.5% maximum HP over each of 3 turns."}},
+      {"name":"Resonant Prismatic Volcanic Umbra Dragon","form":"mantle","skill":{"name":"Phoenix Oath","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.28,"duration":3},"description":"Raise damage by 28% for 3 actions; no damage."}}
     ],
     "water": [
-      {"name":"Abyssal Tidekeeper","form":"crown","skill":{"name":"Ocean Renewal","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"regen","target":"self","value":0.095,"duration":3},"description":"Recover 9.5% maximum HP on each of 3 turns; no damage."}},
-      {"name":"Pearlcrest Voyager","form":"mantle","skill":{"name":"Pearl Sanctuary","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"heal","target":"self","value":0.23,"duration":0},"description":"Immediately heal 23% maximum HP; no damage."}}
+      {"name":"Resonant Biogenic Tidal Fault Dragon","form":"crown","skill":{"name":"Ocean Renewal","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"regen","target":"self","value":0.095,"duration":3},"description":"Recover 9.5% maximum HP on each of 3 turns; no damage."}},
+      {"name":"Resonant Cosmic Tidal Halo Dragon","form":"mantle","skill":{"name":"Pearl Sanctuary","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"heal","target":"self","value":0.23,"duration":0},"description":"Immediately heal 23% maximum HP; no damage."}}
     ],
     "earth": [
-      {"name":"Obsidian Bastion","form":"crown","skill":{"name":"Tectonic Bulwark","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"armor_up","target":"self","value":0.38,"duration":3},"description":"Raise armor by 38% for 3 actions; no damage."}},
-      {"name":"Mountainbreaker Colossus","form":"mantle","skill":{"name":"Faultline Crush","power":0.73,"bonus":0.14,"cooldown":3,"effect":{"kind":"armor_down","target":"enemy","value":0.30,"duration":2},"description":"Strike and reduce enemy armor by 30% for 2 actions."}}
+      {"name":"Resonant Nocturnal Seismic Cloud Dragon","form":"crown","skill":{"name":"Tectonic Bulwark","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"armor_up","target":"self","value":0.38,"duration":3},"description":"Raise armor by 38% for 3 actions; no damage."}},
+      {"name":"Resonant Primordial Seismic Flux Dragon","form":"mantle","skill":{"name":"Faultline Crush","power":0.73,"bonus":0.14,"cooldown":3,"effect":{"kind":"armor_down","target":"enemy","value":0.30,"duration":2},"description":"Strike and reduce enemy armor by 30% for 2 actions."}}
     ],
     "wind": [
-      {"name":"Skyshard Tempest","form":"crown","skill":{"name":"Cyclone Flurry","power":0.43,"bonus":0.08,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":3,"missChance":0.25,"duration":0},"description":"Three wind strikes; each has a 25% miss chance."}},
-      {"name":"Whisperwing Phantom","form":"mantle","skill":{"name":"Veil of Currents","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"damage_reduction","target":"self","value":0.26,"duration":2},"description":"Reduce incoming damage by 26% for 2 actions; no damage."}}
+      {"name":"Resonant Solar Aeolian Frost Dragon","form":"crown","skill":{"name":"Cyclone Flurry","power":0.43,"bonus":0.08,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":3,"missChance":0.25,"duration":0},"description":"Three wind strikes; each has a 25% miss chance."}},
+      {"name":"Resonant Temporal Aeolian Shockwave Dragon","form":"mantle","skill":{"name":"Veil of Currents","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"damage_reduction","target":"self","value":0.26,"duration":2},"description":"Reduce incoming damage by 26% for 2 actions; no damage."}}
     ],
     "ice": [
-      {"name":"Glacier Crown","form":"crown","skill":{"name":"Absolute Zero","power":0.62,"bonus":0.10,"cooldown":4,"effect":{"kind":"freeze","target":"enemy","duration":1},"description":"Strike and freeze the target for its next action."}},
-      {"name":"Rimehorn Warden","form":"mantle","skill":{"name":"Rime Fracture","power":0.68,"bonus":0.11,"cooldown":3,"effect":{"kind":"damage_down","target":"enemy","value":0.25,"duration":2},"description":"Strike and weaken enemy damage by 25% for 2 actions."}}
+      {"name":"Resonant Magnetic Cryogenic Discharge Dragon","form":"crown","skill":{"name":"Absolute Zero","power":0.62,"bonus":0.10,"cooldown":4,"effect":{"kind":"freeze","target":"enemy","duration":1},"description":"Strike and freeze the target for its next action."}},
+      {"name":"Resonant Volcanic Cryogenic Refraction Dragon","form":"mantle","skill":{"name":"Rime Fracture","power":0.68,"bonus":0.11,"cooldown":3,"effect":{"kind":"damage_down","target":"enemy","value":0.25,"duration":2},"description":"Strike and weaken enemy damage by 25% for 2 actions."}}
     ],
     "thunder": [
-      {"name":"Stormcoil Emperor","form":"crown","skill":{"name":"Chain Thunder","power":0.53,"bonus":0.08,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":2,"missChance":0.12,"duration":0},"description":"Two charged hits, each with a 12% miss chance."}},
-      {"name":"Voltspine Charger","form":"mantle","skill":{"name":"Overcharge Pulse","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.33,"duration":2},"description":"Increase damage by 33% for 2 actions; no damage."}}
+      {"name":"Resonant Ballistic Electrified Bloom Dragon","form":"crown","skill":{"name":"Chain Thunder","power":0.53,"bonus":0.08,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":2,"missChance":0.12,"duration":0},"description":"Two charged hits, each with a 12% miss chance."}},
+      {"name":"Resonant Tidal Electrified Nebula Dragon","form":"mantle","skill":{"name":"Overcharge Pulse","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.33,"duration":2},"description":"Increase damage by 33% for 2 actions; no damage."}}
     ],
     "nature": [
-      {"name":"Worldroot Guardian","form":"crown","skill":{"name":"Verdant Revival","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"regen","target":"self","value":0.075,"duration":4},"description":"Recover 7.5% maximum HP over each of 4 turns; no damage."}},
-      {"name":"Thornbloom Sentinel","form":"mantle","skill":{"name":"Venom Thorn","power":0.62,"bonus":0.09,"cooldown":3,"effect":{"kind":"poison","target":"enemy","value":0.07,"duration":2},"description":"Strike and poison for 7% maximum HP over 2 turns."}}
+      {"name":"Resonant Prismatic Biogenic Umbra Dragon","form":"crown","skill":{"name":"Verdant Revival","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"regen","target":"self","value":0.075,"duration":4},"description":"Recover 7.5% maximum HP over each of 4 turns; no damage."}},
+      {"name":"Resonant Seismic Biogenic Uplift Dragon","form":"mantle","skill":{"name":"Venom Thorn","power":0.62,"bonus":0.09,"cooldown":3,"effect":{"kind":"poison","target":"enemy","value":0.07,"duration":2},"description":"Strike and poison for 7% maximum HP over 2 turns."}}
     ],
     "dark": [
-      {"name":"Eclipse Reaper","form":"crown","skill":{"name":"Umbral Blight","power":0.49,"bonus":0.10,"cooldown":3,"effect":{"kind":"poison","target":"enemy","value":0.065,"duration":3},"description":"Strike and inflict shadow poison for 6.5% maximum HP over 3 turns."}},
-      {"name":"Nightveil Revenant","form":"mantle","skill":{"name":"Dread Shroud","power":0.55,"bonus":0.07,"cooldown":3,"effect":{"kind":"damage_down","target":"enemy","value":0.30,"duration":2},"description":"Strike and reduce enemy attack by 30% for 2 actions."}}
+      {"name":"Resonant Cosmic Nocturnal Halo Dragon","form":"crown","skill":{"name":"Umbral Blight","power":0.49,"bonus":0.10,"cooldown":3,"effect":{"kind":"poison","target":"enemy","value":0.065,"duration":3},"description":"Strike and inflict shadow poison for 6.5% maximum HP over 3 turns."}},
+      {"name":"Resonant Aeolian Nocturnal Chronological Drift Dragon","form":"mantle","skill":{"name":"Dread Shroud","power":0.55,"bonus":0.07,"cooldown":3,"effect":{"kind":"damage_down","target":"enemy","value":0.30,"duration":2},"description":"Strike and reduce enemy attack by 30% for 2 actions."}}
     ],
     "light": [
-      {"name":"Dawnspire Seraph","form":"crown","skill":{"name":"Solar Benediction","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"heal","target":"self","value":0.27,"duration":0},"description":"Heal 27% maximum HP instantly; no damage."}},
-      {"name":"Halocrest Paladin","form":"mantle","skill":{"name":"Radiant Aegis","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_reduction","target":"self","value":0.34,"duration":2},"description":"Reduce incoming damage by 34% for 2 actions; no damage."}}
+      {"name":"Resonant Primordial Solar Flux Dragon","form":"crown","skill":{"name":"Solar Benediction","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"heal","target":"self","value":0.27,"duration":0},"description":"Heal 27% maximum HP instantly; no damage."}},
+      {"name":"Resonant Cryogenic Solar Flare Dragon","form":"mantle","skill":{"name":"Radiant Aegis","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_reduction","target":"self","value":0.34,"duration":2},"description":"Reduce incoming damage by 34% for 2 actions; no damage."}}
     ],
     "metal": [
-      {"name":"Ironclad Monarch","form":"crown","skill":{"name":"Living Alloy","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"armor_up","target":"self","value":0.42,"duration":2},"description":"Increase armor by 42% for 2 actions; no damage."}},
-      {"name":"Silverfang Artificer","form":"mantle","skill":{"name":"Sundering Blades","power":0.71,"bonus":0.15,"cooldown":3,"effect":{"kind":"armor_down","target":"enemy","value":0.36,"duration":2},"description":"Strike and reduce enemy armor by 36% for 2 actions."}}
+      {"name":"Resonant Temporal Magnetic Shockwave Dragon","form":"crown","skill":{"name":"Living Alloy","power":0,"bonus":0,"cooldown":3,"effect":{"kind":"armor_up","target":"self","value":0.42,"duration":2},"description":"Increase armor by 42% for 2 actions; no damage."}},
+      {"name":"Resonant Electrified Magnetic Surge Dragon","form":"mantle","skill":{"name":"Sundering Blades","power":0.71,"bonus":0.15,"cooldown":3,"effect":{"kind":"armor_down","target":"enemy","value":0.36,"duration":2},"description":"Strike and reduce enemy armor by 36% for 2 actions."}}
     ],
     "war": [
-      {"name":"Crimson Legionnaire","form":"crown","skill":{"name":"Legion Rally","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.30,"duration":3},"description":"Raise damage by 30% for 3 actions; no damage."}},
-      {"name":"Bannerscar Marshal","form":"mantle","skill":{"name":"Siege Combo","power":0.52,"bonus":0.10,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":2,"missChance":0.08,"duration":0},"description":"Two siege strikes, each with an 8% miss chance."}}
+      {"name":"Resonant Volcanic Ballistic Refraction Dragon","form":"crown","skill":{"name":"Legion Rally","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.30,"duration":3},"description":"Raise damage by 30% for 3 actions; no damage."}},
+      {"name":"Resonant Biogenic Ballistic Fault Dragon","form":"mantle","skill":{"name":"Siege Combo","power":0.52,"bonus":0.10,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":2,"missChance":0.08,"duration":0},"description":"Two siege strikes, each with an 8% miss chance."}}
     ],
     "pure": [
-      {"name":"Prismheart Oracle","form":"crown","skill":{"name":"Purifying Bloom","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"cleanse","target":"self","value":0.15,"duration":0},"description":"Remove harmful statuses and heal 15% maximum HP; no damage."}},
-      {"name":"Crystal Vowkeeper","form":"mantle","skill":{"name":"Crystal Vitality","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"vitality","target":"self","value":0.18,"duration":3},"description":"Raise maximum HP by 18% and restore that amount; no damage."}}
+      {"name":"Resonant Tidal Prismatic Nebula Dragon","form":"crown","skill":{"name":"Purifying Bloom","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"cleanse","target":"self","value":0.15,"duration":0},"description":"Remove harmful statuses and heal 15% maximum HP; no damage."}},
+      {"name":"Resonant Nocturnal Prismatic Cloud Dragon","form":"mantle","skill":{"name":"Crystal Vitality","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"vitality","target":"self","value":0.18,"duration":3},"description":"Raise maximum HP by 18% and restore that amount; no damage."}}
     ],
     "legend": [
-      {"name":"Infinity Warden","form":"crown","skill":{"name":"Eternal Resolve","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.24,"duration":4},"description":"Increase damage by 24% for 4 actions; no damage."}},
-      {"name":"Starforged Immortal","form":"mantle","skill":{"name":"Celestial Echo","power":0.45,"bonus":0.09,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":3,"missChance":0.20,"duration":0},"description":"Three cosmic echoes, each with a 20% miss chance."}}
+      {"name":"Resonant Seismic Cosmic Uplift Dragon","form":"crown","skill":{"name":"Eternal Resolve","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"damage_up","target":"self","value":0.24,"duration":4},"description":"Increase damage by 24% for 4 actions; no damage."}},
+      {"name":"Resonant Solar Cosmic Frost Dragon","form":"mantle","skill":{"name":"Celestial Echo","power":0.45,"bonus":0.09,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":3,"missChance":0.20,"duration":0},"description":"Three cosmic echoes, each with a 20% miss chance."}}
     ],
     "primal": [
-      {"name":"Firstborn Tyrant","form":"crown","skill":{"name":"Ancient Rampage","power":0.57,"bonus":0.09,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":2,"missChance":0.10,"duration":0},"description":"Two primordial claw strikes, each with a 10% miss chance."}},
-      {"name":"Fossilcrest Behemoth","form":"mantle","skill":{"name":"Primeval Carapace","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"armor_up","target":"self","value":0.47,"duration":2},"description":"Raise armor by 47% for 2 actions; no damage."}}
+      {"name":"Resonant Aeolian Primordial Chronological Drift Dragon","form":"crown","skill":{"name":"Ancient Rampage","power":0.57,"bonus":0.09,"cooldown":4,"effect":{"kind":"multi","target":"enemy","hits":2,"missChance":0.10,"duration":0},"description":"Two primordial claw strikes, each with a 10% miss chance."}},
+      {"name":"Resonant Magnetic Primordial Discharge Dragon","form":"mantle","skill":{"name":"Primeval Carapace","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"armor_up","target":"self","value":0.47,"duration":2},"description":"Raise armor by 47% for 2 actions; no damage."}}
     ],
     "time": [
-      {"name":"Chronicle Regent","form":"crown","skill":{"name":"Moment Lock","power":0.54,"bonus":0.12,"cooldown":4,"effect":{"kind":"freeze","target":"enemy","duration":1},"description":"Strike and stop the target's next action."}},
-      {"name":"Hourglass Wanderer","form":"mantle","skill":{"name":"Rewind Wounds","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"heal","target":"self","value":0.32,"duration":0},"description":"Rewind damage to restore 32% maximum HP; no damage."}}
+      {"name":"Resonant Cryogenic Temporal Flare Dragon","form":"crown","skill":{"name":"Moment Lock","power":0.54,"bonus":0.12,"cooldown":4,"effect":{"kind":"freeze","target":"enemy","duration":1},"description":"Strike and stop the target's next action."}},
+      {"name":"Resonant Ballistic Temporal Bloom Dragon","form":"mantle","skill":{"name":"Rewind Wounds","power":0,"bonus":0,"cooldown":4,"effect":{"kind":"heal","target":"self","value":0.32,"duration":0},"description":"Rewind damage to restore 32% maximum HP; no damage."}}
     ]
   }
 }

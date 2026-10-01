@@ -26,9 +26,16 @@ function islandBob(index,time=ui.renderTime??performance.now()){
   return (Math.sin(time*.00115+index*1.73)*.85+
     Math.sin(time*.00043+index*2.19)*.15)*DATA.tileH*1.35;
 }
+/* Back-to-front order in the projected view: lower islands, then right islands, cover earlier ones. */
+function islandDrawOrder(){
+  return DATA.islands.map((island,index)=>({index,
+    center:gridToScreen(island.x+island.size/2,island.y+island.size/2)}))
+    .sort((a,b)=>a.center.y-b.center.y||a.center.x-b.center.x||a.index-b.index)
+    .map(item=>item.index);
+}
 function screenToGrid(x,y,time=ui.renderTime??performance.now()){
   const p=screenToWorld(x,y);
-  for(let index=0;index<DATA.islands.length;index++){
+  for(const index of islandDrawOrder().reverse()){
     const island=DATA.islands[index],candidate=worldToGrid(p.x,p.y-islandBob(index,time));
     if(candidate.c>=island.x&&candidate.c<island.x+island.size&&
       candidate.r>=island.y&&candidate.r<island.y+island.size)return candidate;
@@ -283,8 +290,9 @@ function drawIslandGround(island,index,time,colors){
   }
   ctx.restore();
 }
-function drawFloatingIslands(lo,hi,time){
-  DATA.islands.forEach(function(island,index){
+function drawFloatingIslands(lo,hi,time,drawContents){
+  islandDrawOrder().forEach(function(index){
+    const island=DATA.islands[index];
     const v=footprintVertices(island.x,island.y,island.size,island.size);
     const xs=v.map(p=>p.x),ys=v.map(p=>p.y),depth=island.size*DATA.tileH*.22;
     const edgeMargin=DATA.tileH*4;
@@ -295,7 +303,7 @@ function drawFloatingIslands(lo,hi,time){
     const rim=islandOutline(island,index);
     const bottom=rim.map((p,n)=>({x:p.x+(v[2].x-p.x)*.025,
       y:p.y+depth*(.69+.18*islandHash(n+37,index+440))}));
-    ctx.save();ctx.globalAlpha=opened?1:.75;
+    ctx.save();
     ctx.save();ctx.translate(v[2].x+width*.025,v[2].y+depth*1.42);
     ctx.scale(1,depth/width*.72);
     const shadow=ctx.createRadialGradient(0,0,0,0,0,width*.48);
@@ -324,6 +332,9 @@ function drawFloatingIslands(lo,hi,time){
     islandOutlinePath(rim);
     ctx.fillStyle=top;ctx.fill();ctx.strokeStyle=c.rim;ctx.lineWidth=DATA.tileH*.38;ctx.stroke();
     drawIslandGround(island,index,time,c);
+    if(!opened){
+      islandOutlinePath(rim);ctx.fillStyle='#1b283a45';ctx.fill();
+    }
     for(let row=0;row<3;row++)for(let col=0;col<3;col++){
       const r={index,col,row,x:island.x+col*DATA.islandRegionSize,
         y:island.y+row*DATA.islandRegionSize,id:index+':'+col+':'+row};
@@ -350,31 +361,28 @@ function drawFloatingIslands(lo,hi,time){
       ctx.fillText(label,v[2].x,v[2].y+depth*.53);
     }
     ctx.restore();
+    if(drawContents)drawContents(index);
   });
 }
-function drawIslandWeather(lo,hi,time){
+function drawIslandWeather(index,time){
   const count=DATA.environment?.particlesPerIsland||10;
-  DATA.islands.forEach((island,index)=>{
-    if(index>=state.unlockedIslands)return;
-    const v=footprintVertices(island.x,island.y,island.size,island.size);
-    if(Math.max(...v.map(p=>p.x))<lo.x||Math.min(...v.map(p=>p.x))>hi.x||
-      Math.max(...v.map(p=>p.y))<lo.y||Math.min(...v.map(p=>p.y))>hi.y)return;
-    ctx.save();ctx.translate(0,islandBob(index,time));
-    footprintPath(island.x,island.y,island.size,island.size);ctx.clip();
-    for(let n=0;n<count;n++){
-      const speed=4+islandHash(n+40,index)*7;
-      const c=island.x+((islandHash(n,index+90)*island.size+time*speed*.0004)%island.size);
-      const r=island.y+((islandHash(n+70,index)*island.size+time*speed*.00025)%island.size);
-      const p=gridToScreen(c,r),kind=island.element;
-      ctx.globalAlpha=.25+.25*Math.sin(time*.002+n)**2;
-      if(kind==='water'){
-        ctx.strokeStyle='#d9ffff';ctx.lineWidth=2;ctx.beginPath();
-        ctx.ellipse(p.x,p.y,10,4,0,0,Math.PI*2);ctx.stroke();
-      }else ellipse(p.x,p.y,3,2,kind==='fire'?'#ffd36b':kind==='ice'?'#fff':
-        kind==='dark'?'#b5a9ff':'#dfffa0');
-    }
-    ctx.restore();
-  });ctx.globalAlpha=1;
+  if(index>=state.unlockedIslands)return;
+  const island=DATA.islands[index];
+  ctx.save();ctx.translate(0,islandBob(index,time));
+  footprintPath(island.x,island.y,island.size,island.size);ctx.clip();
+  for(let n=0;n<count;n++){
+    const speed=4+islandHash(n+40,index)*7;
+    const c=island.x+((islandHash(n,index+90)*island.size+time*speed*.0004)%island.size);
+    const r=island.y+((islandHash(n+70,index)*island.size+time*speed*.00025)%island.size);
+    const p=gridToScreen(c,r),kind=island.element;
+    ctx.globalAlpha=.25+.25*Math.sin(time*.002+n)**2;
+    if(kind==='water'){
+      ctx.strokeStyle='#d9ffff';ctx.lineWidth=2;ctx.beginPath();
+      ctx.ellipse(p.x,p.y,10,4,0,0,Math.PI*2);ctx.stroke();
+    }else ellipse(p.x,p.y,3,2,kind==='fire'?'#ffd36b':kind==='ice'?'#fff':
+      kind==='dark'?'#b5a9ff':'#dfffa0');
+  }
+  ctx.restore();
 }
 function drawNightLighting(lo,hi,time){
   const night=1-daylightAt(Date.now());

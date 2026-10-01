@@ -226,6 +226,36 @@ function createArena({profilesDir,dataDir,auth}){
     if(target.hp===0)nextFighter(b,other);
   }
   const alive=group=>group.some(f=>f.hp>0);
+  function liveTurn(b,side,action){
+    if(b.nextSide!==side)throw Object.assign(new Error('Wait for the other player.'),{status:409});
+    const actor=active(b,side);
+    if(!actor||actor.hp<=0)throw Object.assign(new Error('No active dragon.'),{status:409});
+    if(action?.action==='switch'){
+      const index=b[side].findIndex(f=>f.id===action.dragonId&&f.hp>0);
+      if(index<0||index===b[side==='attack'?'activeAttack':'activeDefense'])
+        throw Object.assign(new Error('Choose a different living dragon.'),{status:400});
+      b[side==='attack'?'activeAttack':'activeDefense']=index;
+      record(b,{side,switchTo:b[side][index].nickname});
+    }else if(action?.action==='skill'){
+      const index=action.skillIndex;
+      if(!Number.isInteger(index)||index<0||index>=actor.skills.length||
+        !actor.skills[index]||actor.level<game.progression.skillUnlockLevels[index]||
+        actor.cooldowns?.[index]>0)
+        throw Object.assign(new Error('This skill is unavailable.'),{status:400});
+      strike(b,side,actor.skills[index],index);
+    }else if(action?.action==='forfeit'){
+      b[side].forEach(f=>{f.hp=0;});
+      record(b,{side,forfeit:true});
+    }else throw Object.assign(new Error('Invalid action.'),{status:400});
+    if(side==='defense')b.turn++;
+    b.nextSide=side==='attack'?'defense':'attack';
+    if(!alive(b.attack)||!alive(b.defense)||b.turn>80){
+      const ratio=group=>group.reduce((sum,f)=>sum+f.hp/f.maxHp,0);
+      return {winner:alive(b.attack)&&(!alive(b.defense)||ratio(b.attack)>ratio(b.defense))?
+        'attack':'defense'};
+    }
+    return null;
+  }
   function finish(b){
     if(alive(b.attack)&&alive(b.defense)&&b.turn<=80)return null;
     const ratio=group=>group.reduce((sum,f)=>sum+f.hp/f.maxHp,0);
@@ -239,7 +269,7 @@ function createArena({profilesDir,dataDir,auth}){
       for(const key of ['gold','food','gems'])bank[key]+=reward[key];
       return {...current,gold:(current.gold||0)+reward.gold,
         food:(current.food||0)+reward.food,gems:(current.gems||0)+reward.gems,
-        arenaBank:bank,arenaClaimed:bank,savedAt:Date.now()};
+        arenaBank:bank,arenaClaimed:bank};
     });
   }
   async function challenge(user,body){
@@ -320,6 +350,7 @@ function createArena({profilesDir,dataDir,auth}){
     if(award)await credit(user,award);
     return response;
   }
-  return {list,team,challenge,turn,fight};
+  return {list,team,challenge,turn,fight,liveTurn,makeFighter:fighter,publicBattle,
+    eligible,summary};
 }
 module.exports={createArena};

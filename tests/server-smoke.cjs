@@ -179,6 +179,16 @@ async function launch(port){
     }
     assert.equal((await putProfile(idA,cookieAdmin,high)).status,200);
     assert.equal((await putProfile(idB,cookiePlayer,low)).status,200);
+    const challengeCall=(route,method,cookie,body)=>fetch(base+'/api/challenge/'+route,{
+      method,headers:{Cookie:cookie,'Content-Type':'application/json'},
+      ...(body?{body:JSON.stringify(body)}:{})});
+    assert.equal((await challengeCall('status','GET',null)).status,401);
+    assert.equal((await challengeCall('status','GET',cookiePlayer)).status,200);
+    assert((await (await challengeCall('status','GET',cookieAdmin)).json()).players.some(u=>u.id===idB));
+    assert.equal((await challengeCall('availability','PUT',cookiePlayer,{enabled:false})).status,200);
+    assert(!(await (await challengeCall('status','GET',cookieAdmin)).json()).players.some(u=>u.id===idB));
+    assert.equal((await challengeCall('availability','PUT',cookiePlayer,{enabled:true})).status,200);
+    assert((await (await challengeCall('status','GET',cookieAdmin)).json()).players.some(u=>u.id===idB));
     fs.mkdirSync(path.join(temporary,'arena'),{recursive:true});
     fs.writeFileSync(path.join(temporary,'arena',idB+'.json'),JSON.stringify({attack:[2],defense:[2]}));
     const legacyTeam=await (await arenaCall('list','GET',cookieAdmin)).json();

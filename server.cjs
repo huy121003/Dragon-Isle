@@ -6,6 +6,7 @@ const {createAuth}=require('./server/auth.cjs');
 const {readJson,updateJson,removeJson}=require('./server/store.cjs');
 const {newProfile}=require('./server/profile.cjs');
 const {createArena}=require('./server/arena.cjs');
+const {createChallenge}=require('./server/challenge.cjs');
 const root=__dirname,dataDir=process.env.DRAGON_ISLE_DATA_DIR||path.join(root,'data');
 const profilesDir=path.join(dataDir,'profiles');
 const args=process.argv.slice(2);
@@ -56,6 +57,7 @@ function limited(req){
 async function start(){
   const auth=await createAuth(dataDir);
   const arena=createArena({profilesDir,dataDir,auth});
+  const challenge=createChallenge({auth,profilesDir,arena});
   const server=http.createServer(async(req,res)=>{
     try{
       const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
@@ -77,6 +79,38 @@ async function start(){
             json(res,200,await arena.turn(user,await readBody(req,2048)));return;
           }
           json(res,404,{error:'Đường dẫn đấu trường không tồn tại.'});return;
+        }
+        if(pathname.startsWith('/api/challenge/')){
+          const user=auth.current(req);
+          if(!user){json(res,401,{error:'Cần đăng nhập.'});return;}
+          if(pathname==='/api/challenge/status'&&req.method==='GET'){
+            json(res,200,await challenge.status(user));return;
+          }
+          if(pathname==='/api/challenge/availability'&&req.method==='PUT'){
+            const body=await readBody(req,256);
+            if(typeof body?.enabled!=='boolean'){json(res,400,{error:'Trạng thái không hợp lệ.'});return;}
+            await auth.setChallengeEnabled(user.id,body.enabled);
+            if(!body.enabled)await challenge.leave(user);
+            json(res,200,{enabled:body.enabled});return;
+          }
+          if(pathname==='/api/challenge/invite'&&req.method==='POST'){
+            json(res,200,await challenge.invite(user,(await readBody(req,256))?.opponentId));return;
+          }
+          if(pathname==='/api/challenge/respond'&&req.method==='POST'){
+            const body=await readBody(req,256);
+            if(typeof body?.accept!=='boolean'){json(res,400,{error:'Phản hồi không hợp lệ.'});return;}
+            json(res,200,await challenge.respond(user,body.accept));return;
+          }
+          if(pathname==='/api/challenge/select'&&req.method==='POST'){
+            json(res,200,await challenge.select(user,(await readBody(req,256))?.ids));return;
+          }
+          if(pathname==='/api/challenge/turn'&&req.method==='POST'){
+            json(res,200,await challenge.turn(user,await readBody(req,512)));return;
+          }
+          if(pathname==='/api/challenge/leave'&&req.method==='POST'){
+            json(res,200,await challenge.leave(user));return;
+          }
+          json(res,404,{error:'Đường dẫn thách đấu không tồn tại.'});return;
         }
         if(pathname==='/api/auth/me'&&req.method==='GET'){
           const user=auth.current(req);json(res,user?200:401,user?{user}:{error:'Chưa đăng nhập.'});return;
@@ -108,7 +142,7 @@ async function start(){
             await auth.withRevokedUsers(targets.map(user=>user.id),()=>Promise.all(targets.map(user=>
               updateJson(path.join(profilesDir,user.id+'.json'),current=>{
                 const profile=current||newProfile();
-                return {...profile,...patch,savedAt:Date.now()};
+                return {...profile,...patch};
               }))));
             json(res,200,{ok:true,updated:targets.length,relogin:targets.some(user=>user.id===operator.id)});return;
           }
@@ -118,7 +152,10 @@ async function start(){
             if(!user||user.role==='admin'){json(res,400,{error:'Không thể thao tác tài khoản quản trị.'});return;}
             if(action[2]==='reset'){
               await auth.withRevokedUsers([user.id],()=>removeJson(path.join(profilesDir,user.id+'.json')));
-            }else await auth.setDisabled(user.id,action[2]==='disable');
+            }else{
+              await auth.setDisabled(user.id,action[2]==='disable');
+              if(action[2]==='disable')await challenge.leave(user);
+            }
             json(res,200,{ok:true});return;
           }
           json(res,404,{error:'Chức năng quản trị không tồn tại.'});return;
@@ -133,6 +170,7 @@ async function start(){
           json(res,200,{user:result.user},{'Set-Cookie':auth.cookie(result.token,secureCookies)});return;
         }
         if(pathname==='/api/auth/logout'&&req.method==='POST'){
+          const user=auth.current(req);if(user)await challenge.leave(user);
           await auth.logout(req);
           json(res,200,{ok:true},{'Set-Cookie':'dragon_session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'+(secureCookies?'; Secure':'')});return;
         }
@@ -152,7 +190,7 @@ async function start(){
             const claimed=value.arenaClaimed||{gold:0,food:0,gems:0};
             return {...value,...Object.fromEntries(['gold','food','gems'].map(key=>[
               key,Math.max(0,(Number(value[key])||0)+Math.max(0,(bank[key]||0)-(Number(claimed[key])||0)))])),
-              arenaBank:bank,arenaClaimed:bank};
+              arenaBank:bank,arenaClaimed:bank,savedAt:Date.now()};
           });json(res,200,{ok:true});return;
         }
         json(res,404,{error:'Đường dẫn API không tồn tại.'});return;

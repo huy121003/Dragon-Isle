@@ -1,0 +1,7 @@
+.challenge-panel{min-height:200px}.challenge-lobby,.challenge-wait,.challenge-select{padding:10px 4px}
+.challenge-panel h3{margin:0 0 8px;font-size:21px}.challenge-panel p{color:#536b70;line-height:1.5}
+.challenge-availability{display:flex;align-items:center;gap:10px;margin:16px 0;padding:12px;border:1px solid #d5e7df;border-radius:12px}
+.challenge-availability b{color:#1f766b}.challenge-players{display:grid;gap:8px;margin-top:15px;max-width:420px}
+.challenge-actions{display:flex;gap:12px}.challenge-waiting{font-weight:700;color:#226c65!important}
+.challenge-error{padding:10px;border-radius:10px;background:#fff1ed;color:#9b3333!important}
+.challenge-select .arena-roster-grid{margin:14px 0}.challenge-select>.ant-btn{margin:6px 8px 0 0}

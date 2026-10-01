@@ -37,7 +37,7 @@ async function createAuth(dataDir){
       return locked(async()=>{
         if(users.some(u=>u.username.toLowerCase()===username.toLowerCase()))return {error:'Username is already taken.',status:409};
         const user={id:randomUUID(),username,salt,hash,role:users.length?'player':'admin',
-          disabled:false,createdAt:Date.now()};
+          disabled:false,challengeEnabled:true,createdAt:Date.now()};
         const next=users.concat(user);
         await writeJson(usersPath,next);users=next;
         return issue(user);
@@ -58,7 +58,8 @@ async function createAuth(dataDir){
       const session=sessions.find(s=>s.digest===digest(token)&&s.expires>Date.now());
       if(!session)return null;
       const user=users.find(u=>u.id===session.userId);
-      return user&&!user.disabled?{id:user.id,username:user.username,role:user.role||'player'}:null;
+      return user&&!user.disabled?{id:user.id,username:user.username,role:user.role||'player',
+        challengeEnabled:user.challengeEnabled!==false}:null;
     },
     async logout(req){
       const raw=(req.headers.cookie||'').split(';').map(v=>v.trim()).find(v=>v.startsWith('dragon_session='));
@@ -69,8 +70,17 @@ async function createAuth(dataDir){
         await writeJson(sessionsPath,sessions);
       });
     },
-    listUsers(){return users.map(({id,username,role,disabled,createdAt})=>
-      ({id,username,role:role||'player',disabled:!!disabled,createdAt}));},
+    listUsers(){return users.map(({id,username,role,disabled,challengeEnabled,createdAt})=>
+      ({id,username,role:role||'player',disabled:!!disabled,
+        challengeEnabled:challengeEnabled!==false,createdAt}));},
+    hasActiveSession(userId){return sessions.some(s=>s.userId===userId&&s.expires>Date.now());},
+    async setChallengeEnabled(userId,enabled){
+      return locked(async()=>{
+        const next=users.map(user=>user.id===userId?{...user,challengeEnabled:enabled}:user);
+        await writeJson(usersPath,next);users=next;
+        return next.find(user=>user.id===userId)?.challengeEnabled;
+      });
+    },
     async revokeUser(userId){
       await locked(async()=>{
         sessions=sessions.filter(s=>s.userId!==userId);

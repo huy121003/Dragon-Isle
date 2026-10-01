@@ -19,6 +19,7 @@ const GUIDE_SECTIONS=[
   ["islands","🗺️ Đảo & công trình",guideIslands],
   ["resources","🎒 Tài nguyên & vật phẩm",guideResources],
   ["arena","⚔️ Đấu trường",guideArena],
+  ["challenge","🗡️ Thách đấu",guideChallenge],
   ["special","✦ Special Skill",guideSpecialSkills],
   ["elements","🔰 Xung khắc hệ",guideElements],
   ["updates","✨ Cập nhật",guideUpdates]
@@ -160,6 +161,16 @@ function guideArena(){
     'Special Skill có thể hồi máu, tẩy trạng thái xấu, tăng HP tối đa hoặc đánh 2–3 nhịp có tỷ lệ hụt từng nhịp. Hiệu ứng cùng loại không cộng dồn: làm mới thời gian theo giá trị lớn hơn và giữ mức tác dụng mạnh hơn.',
     'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận tính là thua và chờ 15 phút trước trận tiếp theo.'
   ])+'<div class="guide-callout">Chỉ báo Strong/Weak ở ô skill theo đối thủ đang đứng sân; khi đổi rồng, chúng được tính lại.</div>';
+}
+function guideChallenge(){
+  return '<h3>Thách đấu trực tiếp</h3>'+guideList([
+    'Có ít nhất ba rồng từ level 10 để hiện nút Thách đấu. Không cần xây Arena.',
+    'Danh sách chỉ hiển thị người chơi đủ điều kiện, bật nhận lời mời và còn online. Online được tính khi bản lưu tiến trình trên máy chủ mới hơn 35 giây; game tự lưu khoảng mỗi 10 giây.',
+    'Gửi lời mời và chờ đối thủ xác nhận trong 30 giây. Nếu đối thủ từ chối hoặc hết thời gian, cả hai được thông báo.',
+    'Sau khi đồng ý, mỗi bên chọn riêng ba rồng đủ level và không đang lai. Đối thủ chỉ thấy bạn đã sẵn sàng, không thấy đội hình cho đến lúc cả hai chốt.',
+    'Trận đấu dùng skill và luật sát thương Arena, nhưng hai người chơi tự chọn lượt. Không có vàng, thức ăn, gem hoặc thời gian hồi sau trận.',
+    'Mỗi tài khoản chỉ nhận một lời mời hoặc tham gia một trận cùng lúc. Công tắc nhận thách đấu có thể bật/tắt; đăng xuất hoặc ngừng lưu tiến trình sẽ đưa tài khoản về offline.'
+  ]);
 }
 function guideSpecialSkills(){
   const detail=function(skill){

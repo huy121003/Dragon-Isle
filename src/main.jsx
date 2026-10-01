@@ -3,6 +3,7 @@ import React, {useEffect,useMemo,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,ConfigProvider,Drawer,Form,Input,InputNumber,Modal,Popconfirm,Progress,Space,Spin,Table,Tag,Typography,message} from 'antd';
 import ArenaView from './ArenaView.jsx';
+import ChallengeView from './ChallengeView.jsx';
 import {inlineStyle} from './inline-style.mjs';
 import './ui.css';
 const $=id=>document.getElementById(id);
@@ -190,6 +191,29 @@ function Admin({open,onClose}){
 /* GAME UI: Tài nguyên, tiến trình, thanh thao tác, bảng thông tin và modal. */
 function App(){
   const [tick,setTick]=useState(0),[account,setAccount]=useState(null),[authReady,setAuthReady]=useState(false),[admin,setAdmin]=useState(false);
+  const [challenge,setChallenge]=useState(null),[challengeOpen,setChallengeOpen]=useState(false);
+  async function challengeStatus(){
+    try{
+      const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
+      if(!response.ok)return;
+      const next=await response.json();
+      if(next.notice)message.info(next.notice,5);
+      setChallenge({...next,error:null,busy:false});
+      if(next.match)setChallengeOpen(true);
+    }catch(error){}
+  }
+  async function challengeRequest(route,body,method='POST'){
+    try{
+      setChallenge(current=>({...current,busy:true,error:null}));
+      if(['invite','select'].includes(route)&&!await game()?.save())
+        throw new Error('Unable to save dragons before the challenge.');
+      const response=await fetch('/api/challenge/'+route,{method,credentials:'same-origin',
+        headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Challenge request failed.');
+      await challengeStatus();
+    }catch(error){setChallenge(current=>({...current,error:error.message,busy:false}));}
+  }
   useEffect(()=>{
     document.body.classList.add('react-ready');
     let alive=true;
@@ -201,6 +225,12 @@ function App(){
     const timer=setInterval(update,1000);
     return()=>{alive=false;clearInterval(timer);window.removeEventListener('dragon-ui-update',update);};
   },[]);
+  useEffect(()=>{
+    if(!account)return;
+    challengeStatus();
+    const timer=setInterval(challengeStatus,2000);
+    return()=>clearInterval(timer);
+  },[account?.id]);
   const state=game()?.state,ui=game()?.ui;
   if(!authReady)return <div className="react-loading"><Spin size="large"/></div>;
   if(!account)return <Auth onDone={()=>{}}/>;
@@ -211,6 +241,8 @@ function App(){
     `${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
   if(state.buildings.some(b=>b.type==='arena'&&!b.stored))buttons.push(['⚔️','Arena','open-arena']);
+  if(state.dragons.filter(dragon=>dragon.level>=10).length>=3)
+    buttons.push(['🗡️','Thách đấu','open-challenge']);
   return <>
     <header className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><div className="hud-xp-track" role="progressbar" aria-label="Player experience" aria-valuemin={0} aria-valuenow={state.player.level>=60?60:Math.floor(state.player.xp)} aria-valuemax={state.player.level>=60?60:xpNeeded}><span className="hud-xp-fill" style={{width:xp+'%'}}/><span className="hud-xp-label">{xpLabel}</span></div></div></div>
       <div className="hud-resources"><Card size="small"><span>🪙</span><b>{txt('goldAmount')}</b><small>{txt('incomeRate')}</small></Card>
@@ -222,11 +254,16 @@ function App(){
     {read('timersBar')&&<div className="react-timers"><LegacyContent html={read('timersBar')}/></div>}
     {ui?.selection&&!ui?.mode&&read('inspector')&&<aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
     {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>Cancel</Button></Space></Card></div>}
-    <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={ui?.modal?.name===action.slice(5)?'selected':''} onClick={()=>send({action})}>
+    <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={ui?.modal?.name===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
       <span>{icon}</span><b>{label}</b>{action==='open-book'&&<small>{txt('collectionProgress')}</small>}</Button>)}</nav>
     <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
       width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden styles={{body:{maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>
       {ui?.modal?.name==='arena'?<ArenaView arena={ui.arena}/>:<LegacyContent html={read('sheetBody')}/>}
+    </Modal>
+    <Modal className="game-modal arena-modal" title="🗡️ Thách đấu" open={challengeOpen||!!challenge?.match}
+      onCancel={()=>challenge?.match?challengeRequest('leave'):setChallengeOpen(false)} footer={null}
+      width={1120} destroyOnHidden styles={{body:{maxHeight:'min(84dvh, 850px)',overflowY:'auto'}}}>
+      <ChallengeView status={challenge} request={challengeRequest} refresh={challengeStatus}/>
     </Modal>
     <Admin open={admin} onClose={()=>setAdmin(false)}/>
   </>;

@@ -43,6 +43,8 @@ describe('logic architecture boundaries',()=>{
     const stars=read('js/logic/stars.js');
     const world=read('js/logic/world.js');
     const migrations=read('js/persistence/migrations.js');
+    const catalog=read('js/data/catalog.js');
+    const fighter=read('server/arena/fighter.cjs');
     expect(state).not.toContain('DATA.buildings.habitat.cost');
     expect(calculations).not.toContain('DATA.progression');
     expect(calculations).not.toContain('DATA.upgradeTimes');
@@ -57,6 +59,10 @@ describe('logic architecture boundaries',()=>{
     expect(world).not.toContain('DATA.gemPerDragonPerHour');
     expect(migrations).not.toContain('DATA.progression');
     expect(migrations).not.toContain('DATA.buildings[out.type].maxLevel');
+    expect(catalog).toContain('CONFIG.dragons.maxElementsPerDragon');
+    expect(fighter).toContain('dragonConfig.maxElementsPerDragon');
+    expect(catalog).not.toContain('parts.length>4');
+    expect(fighter).not.toContain('parts.length>4');
   });
 
   it('keeps presentation layers on shared balance config',()=>{

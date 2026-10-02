@@ -18,7 +18,7 @@ function bindGameEvents(runtime){
   document.addEventListener("keydown",function(event){
     if(event.key==="Escape"){
       if(ui.modal)closeModal();else if(ui.mode)stopMode();
-      else if(ui.selection){ui.selection=null;updateInspector();}
+      else if(ui.selection){ui.selection=null;updateInspector();window.DragonRuntime?.emit();}
       return;
     }
     if((event.key==="Enter"||event.key===" ")&&event.target.matches('[role="button"][data-action]')){

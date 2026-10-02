@@ -16,6 +16,8 @@ function startGameRuntimeLoops(runtime){
         lastHabitatRefresh=now;
         renderHabitat(ui.modal.extra);
       }
+      // Publish timer/resource changes to React views once per world tick.
+      window.DragonRuntime?.emit();
     }
   },runtime.worldTickMs);
 

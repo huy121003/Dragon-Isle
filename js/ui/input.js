@@ -104,7 +104,9 @@ function pointerUp(event){
   }
   if(g.moved)return;
   const cell=screenCell(p.x,p.y);
-  if(!inside(cell.x,cell.y)){ui.selection=null;updateInspector();return;}
+  if(!inside(cell.x,cell.y)){
+    ui.selection=null;updateInspector();window.DragonRuntime?.emit();return;
+  }
   const b=buildingAt(cell.x,cell.y);
   if(b){
     ui.selection={type:"building",id:b.id};
@@ -113,6 +115,7 @@ function pointerUp(event){
     ui.selection=index>=state.unlockedIslands?{type:"island",index}:{type:"land",x:cell.x,y:cell.y};
   }else ui.selection=null;
   updateInspector();
+  window.DragonRuntime?.emit();
 }
 /** Abort one pointer from the active gesture without committing a placement/move. */
 function pointerCancel(event){

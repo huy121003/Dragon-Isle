@@ -67,6 +67,21 @@ Nếu file bắt đầu xử lý nhiều domain không liên quan, tách file tr
 
 ## App bootstrap và legacy UI
 
+### React state boundary
+
+`src/app/store.js` is the React-facing state boundary:
+
+```text
+legacy game runtime -> DragonRuntime notifications -> Zustand snapshot -> React feature views
+```
+
+`useGameRuntime` subscribes to runtime notifications and reads the latest snapshot from Zustand;
+it does not poll globals on a React timer. The legacy simulation remains the owner of saved game
+state during this migration. World ticks publish a snapshot after updating resources/countdowns,
+and direct canvas selections publish after updating the inspector. New React features should use
+Zustand selectors or TanStack Query hooks instead of reading globals in render code. Domain state
+can move into Zustand incrementally behind the same view boundary without changing save format.
+
 ### Browser runtime
 
 ```text

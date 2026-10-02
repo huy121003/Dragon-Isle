@@ -10,8 +10,8 @@ function createAuthRoutes({auth,challenge,secureCookies,limited}){
       const data=parse(CredentialsSchema,await readBody(req,4096),'Dữ liệu đăng nhập không hợp lệ.');
       const result=pathname.endsWith('/register')?await auth.register(data.username,data.password):
         await auth.login(data.username,data.password);
-      if(result.error)json(res,result.status,{error:result.error});
-      else json(res,200,{user:result.user},{'Set-Cookie':auth.cookie(result.token,secureCookies)});
+      if(result.error){json(res,result.status,{error:result.error});return true;}
+      json(res,200,{user:result.user},{'Set-Cookie':auth.cookie(result.token,secureCookies)});
       return true;
     }
     if(pathname==='/api/auth/logout'&&req.method==='POST'){

@@ -73,6 +73,28 @@ function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+'
 (async()=>{
 const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
+const arenaEvents=await game.run('(async()=>{'+
+  'const fighter={id:1,nickname:"One",skills:[{name:"Strike"}]};'+
+  'const initial={turn:1,eventSeq:0,attack:[fighter,{...fighter,id:2,nickname:"Two"}],'+
+    'defense:[fighter],activeAttack:0,activeDefense:0,events:[]};'+
+  'const switchEvent={turn:1,side:"attack",switchTo:"Two"};'+
+  'const skillEvent={turn:1,side:"attack",skill:"Strike"};'+
+  'const aiEvent={turn:1,side:"defense",skill:"Strike"};'+
+  'const responses=[{battle:{...initial,activeAttack:1,eventSeq:1,events:[switchEvent]}},'+
+    '{battle:{...initial,turn:2,activeAttack:1,eventSeq:3,events:[switchEvent,skillEvent,aiEvent]}}];'+
+  'const calls=[];renderArena=()=>{};arenaRequest=async(path,method,payload)=>{calls.push(payload);return responses.shift();};'+
+  'ui.arena.data={battle:initial};'+
+  'await arenaTurn("switch",2);const first=ui.arena.presentation.events.slice();'+
+  'finishArenaPresentation();await arenaTurn("skill",0);'+
+  'return {first,second:ui.arena.presentation.events,payload:ui.arena.data.battle,calls};'+
+'})()');
+check('Arena keeps only new presentation events when a free swap and skill share a turn',()=>{
+  assert.equal(arenaEvents.first.length,1);
+  assert.equal(arenaEvents.second.length,2);
+  assert.equal(arenaEvents.second[0].skill,'Strike');
+  assert.equal(arenaEvents.payload.eventSeq,3);
+  assert.deepEqual(Array.from(arenaEvents.calls,payload=>payload.expectedEvents),[0,1]);
+});
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
 assert.equal(Object.keys(db.quads).length,150,'Exactly 150 four-element recipes must be in dragons.json');
 require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));

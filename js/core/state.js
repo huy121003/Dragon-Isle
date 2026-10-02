@@ -8,13 +8,13 @@ function newGame(){
   const origin=DATA.islands[0],startX=origin.x+DATA.islandRegionSize,startY=origin.y+DATA.islandRegionSize;
   for(let y=startY;y<startY+DATA.islandRegionSize;y++)
     for(let x=startX;x<startX+DATA.islandRegionSize;x++)land.push(x+","+y);
-  const starting=window.DragonConfig.economy.starting,care=window.DragonConfig.world.initialDragon;
+  const starting=window.DragonConfig.economy.starting,care=window.DragonConfig.world.initialDragon,\n    buildingBalance=window.DragonConfig.buildings.definitions;
   return {version:SAVE_VERSION,lastTick:Date.now(),savedAt:Date.now(),nextId:4,player:{level:1,xp:0},
     gold:starting.gold,food:starting.food,gems:starting.gems,expansions:0,land:land,regions:[],unlockedIslands:1,
     habitatPurchases:{fire:1},
     eggs:[],discovered:["fire"],recipes:[],
     buildings:[{id:1,type:"habitat",element:"fire",x:startX+11,y:startY+11,level:1,stored:false,
-      storedGold:0,storedGems:0,purchaseCost:DATA.buildings.habitat.cost,
+      storedGold:0,storedGems:0,purchaseCost:buildingBalance.habitat.cost,
       upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null},
       {id:3,type:"hatchery",element:null,x:startX,y:startY,level:1,stored:false,
         storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null}],

@@ -39,6 +39,16 @@ describe('architecture boundaries',()=>{
     expect(challenge).not.toContain("from '../arena/ArenaView.jsx'");
   });
 
+  it('separates fighter construction from battle turn resolution',()=>{
+    const engine=read('server/arena/battle-engine.cjs');
+    const fighter=read('server/arena/fighter.cjs');
+    expect(engine).toContain("require('./fighter.cjs')");
+    expect(engine).toContain('createFighterFactory({catalog,game})');
+    expect(engine).not.toContain('function species(id)');
+    expect(fighter).toContain('function createFighterFactory');
+    expect(fighter).toContain('function makeFighter');
+  });
+
   it('keeps server routes out of the bootstrap',()=>{
     const server=read('server.cjs');
     expect(server).not.toContain("pathname==='/api/");

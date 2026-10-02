@@ -1,6 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import economyConfig from '../../js/config/economy.js';
 import buildingConfig from '../../js/config/buildings.js';
+import worldConfig from '../../js/config/world.js';
 import profileModule from '../../server/profile.cjs';
 
 const {newProfile}=profileModule;
@@ -26,5 +27,9 @@ describe('server new profile',()=>{
     expect(profile.dragons).toHaveLength(1);
     expect(profile.dragons[0].species).toBe('fire');
     expect(profile.habitatPurchases.fire).toBe(1);
+    expect({
+      hunger:profile.dragons[0].hunger,
+      happiness:profile.dragons[0].happiness
+    }).toEqual(worldConfig.initialDragon);
   });
 });

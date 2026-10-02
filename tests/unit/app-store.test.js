@@ -15,9 +15,13 @@ describe('app store',()=>{
     expect(state.challengeOpen).toBe(true);
     expect(state.runtimeVersion).toBe(1);
   });
-  it('can reset transient UI state',()=>{
-    useAppStore.setState({adminOpen:true,challengeOpen:true});
-    useAppStore.getState().resetUi();
+  it('updates transient UI state independently',()=>{
+    useAppStore.getState().setAdminOpen(true);
+    useAppStore.getState().setChallengeOpen(true);
+    expect(useAppStore.getState().adminOpen).toBe(true);
+    expect(useAppStore.getState().challengeOpen).toBe(true);
+    useAppStore.getState().setAdminOpen(false);
+    useAppStore.getState().setChallengeOpen(false);
     expect(useAppStore.getState().adminOpen).toBe(false);
     expect(useAppStore.getState().challengeOpen).toBe(false);
   });

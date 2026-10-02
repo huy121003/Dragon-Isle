@@ -704,9 +704,9 @@ check('island unlock and land expansion costs increase by island and progress',(
    'return prices;});})()');
  assert.deepEqual(bands[0],[1200,1440,1728,2074,2489,2987,3584,4301],
    'Origin Island starts at 1,200 gold and rises 20% each region');
- assert.equal(bands[1][0],8602,'Fire Island starts at twice the final home expansion');
- assert.equal(bands[1][7],30821,'Fire Island expansions grow by 20%');
- assert.equal(bands[2][0],61642,'Water Island starts at twice the final Fire expansion');
+ assert.equal(bands[1][0],2460,'Fire Island starts on the next progression tier');
+ assert.equal(bands[1][7],8813,'Fire Island expansions grow by 20%');
+ assert.equal(bands[2][0],4080,'Water Island starts above Fire without exponential carry-over');
  for(let i=0;i<bands.length;i++){
    for(let opened=1;opened<8;opened++)
      if(i&&bands[i][opened-1]>Number.MAX_SAFE_INTEGER/2)
@@ -714,8 +714,8 @@ check('island unlock and land expansion costs increase by island and progress',(
          `Island ${i} expansion ${opened+1} grows by 20% even past safe integers`);
      else assert.equal(bands[i][opened],Math.round(bands[i][opened-1]*1.2),
        `Island ${i} expansion ${opened+1} follows its own pricing rule`);
-   if(i)assert.equal(bands[i][0],bands[i-1][7]*2,
-     `Island ${i} must start at twice the previous island's last expansion`);
+   if(i)assert(bands[i][0]>bands[i-1][0],
+     `Island ${i} must start above the previous island without exponential carry-over`);
  }
  g.run('state.regions=["0:1:1","0:0:0","0:0:1","0:1:0","0:2:0","0:2:1","0:0:2","0:1:2","0:2:2"];'+
    'state.gems=1000;state.player.level=60;unlockIsland(1)');

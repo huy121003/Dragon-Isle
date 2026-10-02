@@ -278,8 +278,11 @@ check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.water)'),45,'Water pure egg should hatch in 45 seconds');
  balance.run('ui.shopTab="eggs";renderShop();openModal("shop-egg-detail","fire")');
  assert(balance.element('sheetBody').innerHTML.includes('30s'));
- assert(balance.run('guideArena()').includes('Strong nhân 2'));
- assert(balance.run('guideArena()').includes('Weak nhân 0,5'));
+ const guide=balance.run('guideArena()');
+ const strong=balance.run('Math.max(...Object.values(DRAGON_DB.typeChart).flatMap(row=>Object.values(row)))');
+ const weak=balance.run('Math.min(...Object.values(DRAGON_DB.typeChart).flatMap(row=>Object.values(row)))');
+ assert(guide.includes('Strong nhân '+strong));
+ assert(guide.includes('Weak nhân '+weak));
  balance.run('state.player.level=100;state.player.xp=0;gainPlayerXP(playerXPNeeded(100))');
  assert.equal(balance.run('state.player.level'),101);
 });

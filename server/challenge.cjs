@@ -135,11 +135,17 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
       if(!match||match.phase!=='invited'||match.players[1]!==user.id)throw error('Invitation is no longer available.');
-      touch(match,user.id);
+      const heartbeatDirty=touch(match,user.id);
       if(!accept){release(match,'Challenge declined by '+user.username+'.');await persist();return {ok:true};}
+      const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
+      if(opponent.state!=='online'){
+        if(heartbeatDirty)await persist();
+        throw error('Opponent is reconnecting. Please wait before accepting.');
+      }
       const profiles=await Promise.all(match.players.map(profile));
-      if(profiles.some((p,i)=>p?.dragons?.filter(d=>arena.eligible(p,d)).length<3)){
-        release(match,'A player no longer has three eligible dragons.');throw error('Dragon eligibility changed.');
+      if(profiles.some(p=>p?.dragons?.filter(d=>arena.eligible(p,d)).length<3)){
+        release(match,'A player no longer has three eligible dragons.');await persist();
+        throw error('Dragon eligibility changed.');
       }
       match.rosters=profiles.map(p=>arena.summary(p,p.dragons.map(d=>d.id)));
       match.phase='select';match.updatedAt=now();
@@ -150,8 +156,12 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
       if(!match||match.phase!=='select')throw error('Team selection has ended.');
-      touch(match,user.id);
-      const side=match.players.indexOf(user.id);
+      const heartbeatDirty=touch(match,user.id);
+      const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
+      if(opponent.state!=='online'){
+        if(heartbeatDirty)await persist();
+        throw error('Opponent is reconnecting. Team selection is paused.');
+      }
       if(!Array.isArray(ids)||ids.length!==3||ids.some(id=>!Number.isInteger(id))||
         new Set(ids).size!==3)throw error('Choose exactly three different dragons.',400);
       const p=await profile(user.id);
@@ -160,9 +170,14 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
       match.selection[side]=ids;match.ready[side]=true;match.updatedAt=now();
       if(match.ready.every(Boolean)){
         const profiles=await Promise.all(match.players.map(profile));
-        if(profiles.some((profile,i)=>!match.selection[i].every(id=>
-          profile?.dragons?.some(d=>d.id===id&&arena.eligible(profile,d)))))
+        const valid=profiles.map((profile,i)=>match.selection[i].every(id=>
+          profile?.dragons?.some(d=>d.id===id&&arena.eligible(profile,d))));
+        if(valid.some(ok=>!ok)){
+          valid.forEach((ok,i)=>{if(!ok){match.selection[i]=null;match.ready[i]=false;}});
+          match.rosters=profiles.map(p=>arena.summary(p,p.dragons.map(d=>d.id)));
+          match.updatedAt=now();await persist();
           throw error('Selected dragons have changed. Choose again.');
+        }
         const fighters=profiles.map((profile,i)=>match.selection[i].map(id=>
           arena.makeFighter(profile.dragons.find(d=>d.id===id))));
         match.battle={opponent:users().find(u=>u.id===match.players[1])?.username,
@@ -177,9 +192,12 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
       if(!match||match.phase!=='battle')throw error('The duel has ended.');
-      touch(match,user.id);
+      const heartbeatDirty=touch(match,user.id);
       const sideIndex=match.players.indexOf(user.id),opponent=presence(match,1-sideIndex);
-      if(opponent.state!=='online')throw error('Opponent is reconnecting. The duel is paused.');
+      if(opponent.state!=='online'){
+        if(heartbeatDirty)await persist();
+        throw error('Opponent is reconnecting. The duel is paused.');
+      }
       const side=match.players[0]===user.id?'attack':'defense';
       if(!Number.isInteger(body?.expectedTurn)||body.expectedTurn!==match.battle.turn||
         body.expectedEvents!==match.battle.events.length)throw error('The turn changed. Refresh the duel.');

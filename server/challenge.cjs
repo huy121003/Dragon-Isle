@@ -30,6 +30,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     const next=pending.catch(()=>{}).then(async()=>{await store.ensureLoaded();return fn();});
     pending=next;return next;
   }
+  /** Release expired, inactive, signed-out or reconnect-timeout matches. */
   async function sweep(){
     let changed=false;
     for(const match of [...matches.values()]){
@@ -43,10 +44,12 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     }
     if(changed)await persist();
   }
+  /** True when a player currently owns enough Arena-eligible dragons. */
   async function qualified(id){
     const p=await profile(id);
     return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=challengeConfig.teamSize;
   }
+  /** Build the perspective-correct Challenge DTO for one participant. */
   function view(match,id){
     const index=match.players.indexOf(id),opponentId=match.players[1-index];
     const opponent=users().find(u=>u.id===opponentId);
@@ -72,6 +75,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     }
     return result;
   }
+  /** Refresh heartbeat and return lobby/match status for one player. */
   async function status(user){
     return locked(async()=>{
       await sweep();
@@ -90,6 +94,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
         players,match:match?view(match,user.id):null,notice};
     });
   }
+  /** Create a two-player invitation when both players are online and eligible. */
   async function invite(user,otherId){
     return locked(async()=>{
       await sweep();
@@ -105,6 +110,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Accept/decline an invitation; acceptance moves the match to team selection. */
   async function respond(user,accept){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
@@ -126,6 +132,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Lock one player's team; when both are ready create the live battle state. */
   async function select(user,ids){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
@@ -189,6 +196,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Leave and release a Challenge for both participants. */
   async function leave(user){return locked(async()=>{
     const match=matches.get(byUser.get(user.id));
     if(match){release(match,user.username+' left the challenge.');await persist();}

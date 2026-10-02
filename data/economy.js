@@ -14,7 +14,7 @@ window.DragonEconomy={
     doubleBase:.009,doublePerTenLevels:.0015,doubleCap:.018,doubleMinParentLevel:40,
     premiumRareFactor:1.40,premiumTimeFactor:.80,
     timeByTier:{1:45,2:180,3:600,4:1800,double:3600},
-    elementLevelSeconds:8,maxElementBonusSeconds:1800},
+    elementLevelSeconds:8,maxElementBonusSeconds:1800,combinationSecondsPerExtraElement:45,mixedTierSeconds:30},
   island:{gemPerIsland:100},
   land:{homeFirstRegionGold:1200,nextIslandMultiplier:1.2,expansionMultiplier:1.2,islandTierLinear:.9,islandTierQuadratic:.15,goldPerGem:5000},
   habitat:{goldBase:5000,goldPerUnlockLevel:450,goldLevelFactor:4.2,

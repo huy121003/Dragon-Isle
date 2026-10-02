@@ -37,10 +37,10 @@ async function boot(saveValue,options={}){
   const fetchCalls=[];
   const fetch=async function(url,request={}){
     fetchCalls.push({url,request});
-    if(url==='/api/auth/me')return options.noAuth?{ok:false,status:401}:
+    if(network.down&&(url==='/api/auth/me'||url==='/api/save'))throw new TypeError('network offline');
+    if(url==='/api/auth/me')return options.noAuth||network.sessionExpired?{ok:false,status:401,json:async()=>({error:'expired'})}:
       {ok:true,status:200,json:async()=>({user:{id:'demo',username:'demo'}})};
     if(url==='/api/save'&&request.method==='PUT'){
-      if(network.down)throw new TypeError('network offline');
       const expected=Number(request.headers?.['X-Dragon-Save-Revision']);
       if(Number.isSafeInteger(expected)&&expected!==remoteRevision)
         return {ok:false,status:409,headers:{get:()=>null},json:async()=>({error:'Save conflict',code:'SAVE_CONFLICT',serverRevision:remoteRevision})};
@@ -129,13 +129,28 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
  assert.equal(await g.run('saveGame()'),false);
  assert(g.run('pendingServerSave!==null'),'Failed network save must stay queued');
  assert.equal(g.run('saveReadOnly'),false,'Network loss must not make the tab read-only');
+ assert.equal(g.run('window.DragonConnectionState.status'),'reconnecting');
+ assert.equal(g.run('window.DragonConnectionState.blocked'),true);
+ g.run('ui.modal=null;handleAction({dataset:{action:"open-shop"}})');
+ assert.equal(g.run('ui.modal'),null,'Gameplay actions must be blocked while reconnecting');
  g.network.down=false;
- assert.equal(await g.run('flushServerSave()'),true);
+ assert.equal(await g.run('retryServerConnection()'),true);
  assert.equal(g.run('pendingServerSave'),null);
+ assert.equal(g.run('window.DragonConnectionState.status'),'connected');
+ assert.equal(g.run('window.DragonConnectionState.blocked'),false);
  assert.equal(g.getRemote().gold,54321);
  const latestPut=g.fetchCalls.filter(x=>x.url==='/api/save'&&x.request.method==='PUT').at(-1);
  assert.equal(latestPut.request.keepalive,true,'Small snapshots should use fetch keepalive');
- console.log('PASS network failure keeps the latest save queued and retries safely');
+ console.log('PASS reconnect overlay state queues progress, blocks actions and recovers safely');
+}
+{
+ const g=await boot();
+ g.run('markServerDisconnected("offline")');
+ g.network.sessionExpired=true;
+ assert.equal(await g.run('retryServerConnection()'),false);
+ assert.equal(g.run('window.DragonConnectionState.status'),'session-expired');
+ assert.equal(g.run('saveReadOnly'),true);
+ console.log('PASS reconnect switches to session-expired only after server 401');
 }
 check('saves preserve player levels above 60',()=>{
  const high=snapshot(game,'newGame()');

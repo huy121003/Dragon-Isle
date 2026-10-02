@@ -14,7 +14,11 @@ export default function GameDock({state,ui,challengeOpen,openChallenge,refProp})
   const activeSection=modalSection[ui?.modal?.name]||ui?.modal?.name;
   if(state.buildings.some(building=>building.type==='arena'&&!building.stored))
     buttons.push(['⚔️','Arena','open-arena']);
-  if(state.dragons.filter(dragon=>dragon.level>=arenaConfig.minBattleLevel).length>=arenaConfig.teamSize)
+  const breedingParents=new Set(state.buildings.filter(building=>
+    (building.type==='cave'||building.type==='premiumCave')&&building.breeding)
+    .flatMap(building=>[building.breeding.fatherId,building.breeding.motherId]));
+  if(state.dragons.filter(dragon=>dragon.level>=arenaConfig.minBattleLevel&&
+    dragon.level<=arenaConfig.maxBattleLevel&&!breedingParents.has(dragon.id)).length>=arenaConfig.teamSize)
     buttons.push(['🗡️','Thách đấu','open-challenge']);
   return <nav ref={refProp} className="react-dock" aria-label="Main menu">
     {buttons.map(([icon,label,action])=><Button key={action}

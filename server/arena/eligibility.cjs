@@ -1,17 +1,17 @@
 /**
  * Arena team eligibility helpers.
  *
- * These helpers are deterministic except for the injectable clock. Keeping
- * them separate prevents team validation rules from drifting between list/team/fight flows.
+ * Keeping these helpers together prevents team validation rules from drifting
+ * between list/team/fight flows.
  */
 const arenaConfig=require('../../js/config/arena.js');
 
-/** Create reusable Arena eligibility helpers around an injectable clock. */
-function createEligibility({now=()=>Date.now()}={}){
-  /** True when a dragon is currently locked in an active breeding task. */
+/** Create reusable Arena and Challenge eligibility helpers. */
+function createEligibility(){
+  /** Parents stay locked until the egg is collected from the cave. */
   function breeding(profile,dragonId){
     return profile?.buildings?.some(building=>['cave','premiumCave'].includes(building.type)&&
-      building.breeding&&building.breeding.readyAt>now()&&
+      building.breeding&&
       (building.breeding.fatherId===dragonId||building.breeding.motherId===dragonId));
   }
 
@@ -34,7 +34,8 @@ function createEligibility({now=()=>Date.now()}={}){
       id:dragon.id,species:dragon.species,level:dragon.level,stars:dragon.stars||0,nickname:dragon.nickname,
       canBattle:eligible(profile,dragon),
       battleReason:dragon.level<arenaConfig.minBattleLevel?
-        'Requires level '+arenaConfig.minBattleLevel:breeding(profile,dragon.id)?'Breeding':null
+        'Requires level '+arenaConfig.minBattleLevel:dragon.level>arenaConfig.maxBattleLevel?
+          'Maximum level '+arenaConfig.maxBattleLevel:breeding(profile,dragon.id)?'Breeding':null
     }));
   }
 

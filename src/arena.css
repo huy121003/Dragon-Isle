@@ -9,19 +9,6 @@
 .battle-modal .arena-view,.battle-modal .challenge-panel{height:100%;min-height:0}
 .battle-modal .arena-battle{box-sizing:border-box;height:100%;min-height:0;display:flex;flex-direction:column}
 .battle-modal .battle-stage{flex:0 0 auto;height:clamp(160px,43%,360px);min-height:0}
-.arena-battle-reserves{position:absolute;z-index:5;left:9px;right:9px;top:41%;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
-.arena-reserve-side{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
-.arena-reserve-button{position:relative;display:grid;place-items:center;width:58px;height:59px;padding:0;border:0;background:transparent;filter:drop-shadow(0 2px 4px #23485680);pointer-events:auto}
-.arena-reserve-button:before{content:"";position:absolute;inset:2px 5px 8px;border:1px solid #ffffffa8;border-radius:50%;background:radial-gradient(circle at 40% 30%,#ffffffa8,#d9eee8a8 70%);box-shadow:0 2px 8px #153e4e50}
-.arena-reserve-button.switchable{cursor:pointer;transition:transform .15s,filter .15s}.arena-reserve-button.switchable:hover:not(:disabled){transform:scale(1.12);filter:drop-shadow(0 0 7px #fff8)}
-.arena-reserve-button .arena-portrait{position:relative;z-index:1;width:47px;height:43px}.arena-reserve-button .arena-element-row{position:absolute;z-index:2;right:1px;bottom:7px;gap:0}
-.arena-reserve-button .element-flag{width:13px;height:17px;filter:drop-shadow(0 1px 2px #233c49)}
-.arena-reserve-hp{position:absolute;z-index:3;left:5px;right:5px;bottom:1px;height:5px;overflow:hidden;border:1px solid #f8fffc;border-radius:5px;background:#153d4d9c;box-shadow:0 1px 2px #143c4a80}
-.arena-reserve-hp i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#33ad79,#8adc74);transition:width .2s}
-.arena-reserve-button.dead .arena-reserve-hp i{width:0!important}
-.arena-reserve-button.dead{filter:grayscale(1);opacity:.48;cursor:not-allowed}
-.arena-reserve-button>i{position:absolute;inset:-3px;display:grid;place-items:center;color:#d32432;font-style:normal;font-size:48px;font-weight:900;text-shadow:0 1px 3px #fff;line-height:1}
-.arena-reserve-button:disabled{cursor:not-allowed}
 .arena-stage-controls{position:absolute;z-index:6;left:72px;right:72px;bottom:9px}
 .arena-stage-controls .battle-controls{display:flex;align-items:center;gap:8px;margin:0;padding:7px 8px;border:1px solid #ffffff70;border-radius:15px;background:#173e54ed;box-shadow:0 5px 18px #153e4e66;backdrop-filter:blur(6px)}
 .arena-stage-controls .battle-controls-heading{flex:0 0 128px;min-width:0}.arena-stage-controls .battle-controls-heading>small{color:#edcf8c;font-size:9px;letter-spacing:.08em}.arena-stage-controls .battle-controls-heading h3,.arena-stage-controls .battle-matchup-key{display:none}
@@ -263,12 +250,6 @@
 
 /* Arena reserves and skills stay inside the field without covering it with team cards. */
 @media(max-width:690px){
-  .battle-modal .arena-battle-reserves{left:3px;right:3px;top:40%;gap:2px}
-  .battle-modal .arena-reserve-button{width:43px;height:48px}
-  .battle-modal .arena-reserve-button .arena-portrait{width:33px;height:31px}
-  .battle-modal .arena-reserve-button .element-flag{width:10px;height:13px}
-  .battle-modal .arena-reserve-hp{left:5px;right:5px;height:4px}
-  .battle-modal .arena-reserve-button>i{font-size:35px}
   .battle-modal .arena-stage-controls{left:43px;right:43px;bottom:5px}
   .battle-modal .arena-stage-controls .battle-controls{display:flex;gap:4px;padding:4px}
   .battle-modal .arena-stage-controls .battle-controls-heading{display:none}
@@ -279,9 +260,6 @@
   .battle-modal .arena-stage-controls .battle-skill-grid .skill-hex{width:23px;height:24px;font-size:10px}
 }
 @media(max-width:390px){
-  .battle-modal .arena-battle-reserves{left:1px;right:1px}
-  .battle-modal .arena-reserve-button{width:38px;height:43px}
-  .battle-modal .arena-reserve-button .arena-portrait{width:29px;height:28px}
   .battle-modal .arena-stage-controls{left:36px;right:36px}
   .battle-modal .arena-stage-controls .battle-skill-grid .battle-skill-name{font-size:9px}
 }
@@ -292,49 +270,50 @@
 .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(22dvh,190px)}
 @media(max-width:690px){
   .battle-modal .battle-stage{height:auto;min-height:300px}
-  .battle-modal .arena-battle-reserves{top:32%}
   .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:100px}
   .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(20dvh,145px)}
 }
 @media(max-height:700px){
   .battle-modal .battle-stage{height:auto;min-height:300px}
-  .battle-modal .arena-battle-reserves{top:34%}
   .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:78px}
   .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(18dvh,125px)}
 }
 @media(max-width:690px) and (max-height:700px){
-  .battle-modal .arena-battle-reserves{top:31%}
   .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:98px}
   .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(17dvh,112px)}
 }
 
-/* Keep active-dragon details and skills anchored while the reserve tiles frame the field. */
+/* Active details and status effects lead each team; its reserves sit directly below. */
 .battle-modal .battle-stage.has-arena-controls{align-items:stretch}
 .battle-modal .battle-stage.has-arena-controls .battle-side{justify-content:flex-start}
 .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(26dvh,220px);margin-top:auto}
-.battle-modal .arena-battle-reserves{top:47%;left:10px;right:10px;align-items:center}
-.battle-modal .arena-reserve-side{width:clamp(96px,15.2vw,176px);gap:7px;pointer-events:auto}
-.battle-modal .arena-reserve-button{box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;gap:7px;width:100%;height:58px;padding:5px 7px;border:1px solid #ffffffdd;border-radius:14px;background:linear-gradient(110deg,#ffffffed,#eff8f2e8);box-shadow:0 4px 12px #163c4b50;filter:none;text-align:left;backdrop-filter:blur(5px)}
-.battle-modal .arena-reserve-button:before{display:none}
-.battle-modal .arena-reserve-button .arena-reserve-avatar-frame{position:relative;z-index:1;display:grid;place-items:center;flex:0 0 46px;width:46px;height:44px;overflow:hidden;border:2px solid #b9d9cd;border-radius:11px;background:linear-gradient(145deg,#f5fcf7,#d9ebe2);box-shadow:inset 0 1px 3px #ffffff}
-.battle-modal .arena-reserve-avatar-frame .arena-portrait{width:42px;height:37px;filter:drop-shadow(0 2px 2px #173a4866)}
-.battle-modal .arena-reserve-copy{display:flex;flex:1;flex-direction:column;justify-content:center;gap:7px;min-width:0}
-.battle-modal .arena-reserve-copy>b{display:-webkit-box;overflow:hidden;color:#294858;font-size:10px;font-weight:850;line-height:1.1;overflow-wrap:anywhere;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.battle-modal .arena-reserve-hp{position:relative;left:auto;right:auto;bottom:auto;display:block;flex:none;width:100%;height:7px;border:1px solid #c5d5cc;border-radius:6px;background:#d7ded9;box-shadow:inset 0 1px 2px #203b3b35}
-.battle-modal .arena-reserve-hp i{height:100%;background:linear-gradient(90deg,#42b882,#98d96f)}
-.battle-modal .arena-reserve-button.dead{filter:grayscale(1);opacity:.58}
-.battle-modal .arena-reserve-button .arena-reserve-dead-mark{position:absolute;z-index:3;inset:0;display:grid;place-items:center;color:#d32432;font-size:43px;font-style:normal;font-weight:1000;line-height:1;text-shadow:0 1px 3px white}
+.battle-modal .arena-reserve-side{position:relative;z-index:3;display:flex;align-self:flex-start;gap:7px;width:min(100%,304px);min-width:0;margin-top:5px}
+.battle-modal .battle-side.opponent .arena-reserve-side{align-self:flex-end}
+.battle-modal .arena-reserve-button{box-sizing:border-box;position:relative;display:flex;flex:1 1 0;flex-direction:column;justify-content:center;min-width:0;max-width:148px;height:69px;padding:5px 7px;border:1px solid #ffffffdd;border-radius:14px;background:linear-gradient(110deg,#ffffffed,#eff8f2e8);box-shadow:0 4px 12px #163c4b50;cursor:default;backdrop-filter:blur(5px)}
+.battle-modal .arena-reserve-button.switchable{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.battle-modal .arena-reserve-button.switchable:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 15px #163c4b70}
+.battle-modal .arena-reserve-button:disabled:not(.dead){opacity:1;color:inherit}
+.battle-modal .arena-reserve-top{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;min-width:0}
+.battle-modal .arena-reserve-avatar-frame{display:grid;place-items:center;flex:0 0 43px;width:43px;height:42px;overflow:hidden;border:2px solid #b9d9cd;border-radius:10px;background:linear-gradient(145deg,#f5fcf7,#d9ebe2);box-shadow:inset 0 1px 3px #ffffff}
+.battle-modal .arena-reserve-avatar-frame .arena-portrait{width:39px;height:35px;filter:drop-shadow(0 2px 2px #173a4866)}
+.battle-modal .arena-reserve-flags{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:1px;min-width:0;max-width:68px}
+.battle-modal .arena-reserve-flags .element-flag{width:13px;height:17px;filter:drop-shadow(0 1px 2px #233c49)}
+.battle-modal .arena-reserve-hp{display:block;flex:none;width:100%;height:7px;margin-top:5px;overflow:hidden;border:1px solid #c5d5cc;border-radius:6px;background:#d7ded9;box-shadow:inset 0 1px 2px #203b3b35}
+.battle-modal .arena-reserve-hp i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#42b882,#98d96f);transition:width .2s}
+.battle-modal .arena-reserve-button.dead .arena-reserve-avatar-frame,.battle-modal .arena-reserve-button.dead .arena-reserve-flags{filter:grayscale(1);opacity:.5}
+.battle-modal .arena-reserve-button.dead .arena-reserve-hp i{width:0!important}
+.battle-modal .arena-reserve-button.dead{cursor:not-allowed}
+.battle-modal .arena-reserve-dead-mark{position:absolute;z-index:3;inset:0;display:grid;place-items:center;color:#d32432;font-size:43px;font-style:normal;font-weight:1000;line-height:1;text-shadow:0 1px 3px white}
 .battle-modal .battle-skill-fx .fx-trail,.battle-modal .battle-skill-fx .fx-projectile,.battle-modal .battle-skill-fx .fx-impact,.battle-modal .battle-skill-fx .fx-special-seal{top:64%}
 .battle-modal .battle-skill-fx .fx-damage{top:64%}
 .battle-modal .battle-skill-fx .fx-skill-name{bottom:22%}
 @media(max-width:690px){
-  .battle-modal .arena-battle-reserves{top:47%;left:4px;right:4px}
-  .battle-modal .arena-reserve-side{width:clamp(96px,29vw,132px);gap:5px}
-  .battle-modal .arena-reserve-button{height:52px;padding:4px;gap:5px;border-radius:12px}
-  .battle-modal .arena-reserve-button .arena-reserve-avatar-frame{flex-basis:39px;width:39px;height:40px;border-radius:9px}
-  .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:35px;height:32px}
-  .battle-modal .arena-reserve-copy{gap:5px}
-  .battle-modal .arena-reserve-copy>b{font-size:9px}
+  .battle-modal .arena-reserve-side{gap:3px;width:100%;margin-top:3px}
+  .battle-modal .arena-reserve-button{height:56px;padding:3px;border-radius:10px}
+  .battle-modal .arena-reserve-top{gap:2px}
+  .battle-modal .arena-reserve-avatar-frame{flex-basis:31px;width:31px;height:32px;border-radius:8px}
+  .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:29px;height:27px}
+  .battle-modal .arena-reserve-flags .element-flag{width:9px;height:12px}
   .battle-modal .arena-reserve-hp{height:6px}
   .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:108px}
   .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(19dvh,132px)}
@@ -345,7 +324,7 @@
   .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(17dvh,118px)}
 }
 @media(max-width:390px){
-  .battle-modal .arena-reserve-side{width:clamp(92px,29vw,112px)}
-  .battle-modal .arena-reserve-button .arena-reserve-avatar-frame{flex-basis:35px;width:35px;height:38px}
-  .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:32px;height:29px}
+  .battle-modal .arena-reserve-avatar-frame{flex-basis:27px;width:27px;height:29px}
+  .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:25px;height:23px}
+  .battle-modal .arena-reserve-flags .element-flag{width:8px;height:11px}
 }

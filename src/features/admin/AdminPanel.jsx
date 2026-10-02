@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
 import {Button,Card,Drawer,Form,InputNumber,Modal,Popconfirm,Space,Table,Tag,Typography,message} from 'antd';
+import {ResourcePatchSchema} from '../../shared/schemas.js';
 import {apiFetch} from '../../api/http.js';
 import {AdminUsersSchema,parseWith} from '../../api/schemas.js';
 
@@ -57,8 +58,10 @@ export default function AdminPanel({open,onClose}){
   });
 
   async function applyResources(target,values){
-    const patch=Object.fromEntries(Object.entries(values).filter(([,value])=>value!==undefined&&value!==null));
-    if(!Object.keys(patch).length){message.warning('Enter at least one resource.');return;}
+    const raw=Object.fromEntries(Object.entries(values).filter(([,value])=>value!==undefined&&value!==null));
+    const parsed=ResourcePatchSchema.safeParse(raw);
+    if(!parsed.success){message.warning(parsed.error.issues[0]?.message||'Invalid resources.');return;}
+    const patch=parsed.data;
     resourceMutation.mutate({target,patch});
   }
 

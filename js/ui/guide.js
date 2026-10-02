@@ -143,7 +143,7 @@ function guideIslands(){
     guideList([
       'Chuồng cấp 1–4 chứa lần lượt '+window.DragonEconomy.habitat.dragonCapacity.join(', ')+' rồng cùng hệ phù hợp. Sức chứa vàng và gem cũng tăng theo cấp Chuồng.',
       'Giá Chuồng phụ thuộc hệ được mở khóa và tổng số Chuồng hệ đó từng mua, kể cả những Chuồng đã bán. Ví dụ Chuồng Lửa tiếp theo giá '+money(habitatPurchaseCost('fire'))+' vàng; Chuồng Time tiếp theo giá '+money(habitatPurchaseCost('time'))+' vàng. Shop hiển thị giá thực tế và số lần mua.',
-      'Giá mua Chuồng tăng theo số lần mua cùng hệ. Giá nâng cấp không phụ thuộc số thứ tự mua mà phụ thuộc hệ và cấp Chuồng; hệ mở càng muộn thì giá và thời gian nâng càng cao. Tiền bán vẫn dựa trên giá mua thực tế của Chuồng đó.',
+      'Giá mua Chuồng tăng theo số lần mua cùng hệ. Giá nâng cấp không phụ thuộc số thứ tự mua mà phụ thuộc hệ và cấp Chuồng; hệ mở càng muộn thì giá, Gem yêu cầu và thời gian nâng càng cao. Các nâng cấp trước đây chỉ tốn vàng nay đều yêu cầu cả Gold + Gem; Dragon Academy vẫn giữ Gold + Food + Gem. Tiền bán vẫn dựa trên giá mua thực tế của Chuồng đó.',
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
       'Tất cả yêu cầu mở khóa và nâng cấp chỉ xét đến Player Lv'+window.DragonEconomy.progression.contentLevelCap+'. Từ Lv'+window.DragonEconomy.progression.contentLevelCap+' trở lên không mở thêm quyền mới; level tiếp tục tăng và chỉ nhận thưởng Gold/Food/Gem. Số Nông trại tối đa là '+window.DragonEconomy.progression.maxFarms+'.',
       'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+DATA.buildings.hatchery.maxLevel+'; mỗi level mở thêm một ô ấp trứng.'

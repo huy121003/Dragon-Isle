@@ -11,7 +11,7 @@ const SaveSchema=z.object({
   savedAt:z.number().finite().positive()
 }).passthrough();
 
-const resourceLimits={gold:1_000_000_000_000,food:1_000_000_000,gems:1_000_000_000};
+const resourceLimits=systemConfig.admin.resourceLimits;
 const ResourcePatchSchema=z.object({
   gold:z.number().int().min(0).max(resourceLimits.gold).optional(),
   food:z.number().int().min(0).max(resourceLimits.food).optional(),

@@ -90,8 +90,9 @@ function startBreeding(caveId,fatherId,motherId){
     father.id===mother.id||dragonBusy(father.id)||dragonBusy(mother.id)){
     toast("Choose two different dragons and an available Breeding Cave.");return;
   }
-  if(father.level<DATA.progression.breedLevel||mother.level<DATA.progression.breedLevel){
-    toast("Both dragons must reach level "+DATA.progression.breedLevel+" to breed.");return;
+  const breedLevel=window.DragonConfig.progression.breedLevel;
+  if(father.level<breedLevel||mother.level<breedLevel){
+    toast("Both dragons must reach level "+breedLevel+" to breed.");return;
   }
   const options=breedingOptions(father,mother,cave),roll=Math.random();
   if(!options.length){toast("No possible offspring for these dragons.");return;}

@@ -113,10 +113,16 @@ try{
   const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:supportBattle}}}));
   assert.doesNotMatch(supportMenu,/matchup-mark weak/);
-  assert(fighting.indexOf('battle-stage')<fighting.indexOf('arena-battle-reserves')&&
-    fighting.indexOf('arena-battle-reserves')<fighting.indexOf('arena-stage-controls')&&
-    fighting.indexOf('arena-stage-controls')<fighting.indexOf('battle-skill-grid'),
-    'Reserve avatars and skill buttons are contained inside the battle field');
+  const assertReservePlacement=(html,side)=>{
+    const start=html.indexOf('battle-side '+side),status=html.indexOf('battle-statuses',start),
+      reserves=html.indexOf('arena-reserve-side '+(side==='player'?'attack':'defense'),start),
+      dragon=html.indexOf('battle-dragon',reserves);
+    assert(start>=0&&start<status&&status<reserves&&reserves<dragon,
+      `${side} reserves sit below the active dragon’s statuses and above its portrait`);
+  };
+  assertReservePlacement(fighting,'player');assertReservePlacement(fighting,'opponent');
+  assert(fighting.indexOf('arena-stage-controls')<fighting.indexOf('battle-skill-grid'),
+    'Skill buttons stay inside the battle field');
   assert.match(fighting,/Your reserve dragons/);
   assert.match(fighting,/Rival reserve dragons/);
   assert.equal((fighting.match(/arena-reserve-button/g)||[]).length,4,
@@ -125,7 +131,14 @@ try{
     'Every reserve dragon has a visible HP bar');
   assert.equal((fighting.match(/arena-reserve-avatar-frame/g)||[]).length,4,
     'Each reserve dragon portrait sits inside a framed tile');
-  assert.match(fighting,/Water<\/b>/,'Reserve tiles identify the dragon element');
+  assert.equal((fighting.match(/class="arena-reserve-flags"/g)||[]).length,4,
+    'Every reserve tile shows element flags instead of element names');
+  const firstReserve=fighting.slice(fighting.indexOf('class="arena-reserve-button'),fighting.indexOf('</button>',fighting.indexOf('class="arena-reserve-button')));
+  assert(firstReserve.indexOf('arena-reserve-avatar-frame')<firstReserve.indexOf('arena-reserve-flags')&&
+    firstReserve.indexOf('arena-reserve-flags')<firstReserve.indexOf('arena-reserve-hp'),
+    'Reserve HP bar sits below the portrait and element flags');
+  assert.match(firstReserve,/href="#flag-fire"/);
+  assert.doesNotMatch(fighting,/arena-reserve-copy|arena-battle-reserves/);
   assert.doesNotMatch(fighting,/arena-parties|arena-battle-party/,
     'Large translucent party overlays are removed');
   assert.doesNotMatch(fighting,/4,250 power|roster-power/);
@@ -137,10 +150,13 @@ try{
   const duel=renderToStaticMarkup(React.createElement(ChallengeView,{status:{busy:false,match:{id:'duel-1',phase:'battle',opponent:'Bela',myTurn:true,eventSeq:0,battle:duelBattle}},request:()=>{},refresh:()=>{}}));
   assert.match(duel,/battle-stage has-arena-controls/);
   assert.match(duel,/Your reserve dragons/);assert.match(duel,/Rival reserve dragons/);
+  assertReservePlacement(duel,'player');assertReservePlacement(duel,'opponent');
   assert.equal((duel.match(/arena-reserve-button/g)||[]).length,4,
     'Challenge also shows both sides’ two reserve dragons in the battlefield');
   assert.equal((duel.match(/arena-reserve-hp/g)||[]).length,4,
     'Challenge shows HP bars for every reserve dragon');
+  assert.equal((duel.match(/class="arena-reserve-flags"/g)||[]).length,4,
+    'Challenge also shows flags rather than element text');
   assert(duel.indexOf('arena-stage-controls')<duel.indexOf('battle-skill-grid'),
     'Challenge skills are inside the battlefield');
   assert.doesNotMatch(duel,/battle-bench|battle-switch-list|battle-feed|battle-details-scroll|Recent moves/,

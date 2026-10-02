@@ -8,14 +8,15 @@ export function useGameRuntime(){
     document.body.classList.add('react-ready');
     const refresh=()=>setVersion(value=>value+1);
     const refreshConnection=()=>setConnection({...connectionState()});
-    window.addEventListener('dragon-ui-update',refresh);
+    const unsubscribe=window.DragonRuntime?.subscribe?.(refresh);
+    if(!unsubscribe)window.addEventListener('dragon-ui-update',refresh);
     window.addEventListener('dragon-connection-change',refreshConnection);
     window.gameBootPromise?.then(refresh);
     refreshConnection();
     const timer=setInterval(refresh,1000);
     return()=>{
       clearInterval(timer);
-      window.removeEventListener('dragon-ui-update',refresh);
+      if(unsubscribe)unsubscribe();else window.removeEventListener('dragon-ui-update',refresh);
       window.removeEventListener('dragon-connection-change',refreshConnection);
     };
   },[]);

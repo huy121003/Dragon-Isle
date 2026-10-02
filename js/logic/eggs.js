@@ -1,6 +1,6 @@
 "use strict";
 
-/* LOGIC: Eggs tự tìm tiles ấp còn trống; eggs dư nằm trong kho chờ tiles tiếp theo. */
+/* LOGIC: Trứng tự tìm ô ấp còn trống; trứng dư nằm trong kho chờ ô tiếp theo. */
 /** Find one egg in current save state by numeric ID. */
 function eggById(id){return state.eggs.find(function(egg){return egg.id===id;});}
 /** Return all eggs currently occupying nests in one Hatchery. */

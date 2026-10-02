@@ -4,6 +4,13 @@ global.window={};
 require("../data/economy.js");
 const economy=global.window.DragonEconomy;
 const game=require("../data/game.json");
+const catalog=require("../data/dragons.json");
+require("./extend-catalog.cjs")(catalog,game);
+const species=catalog.species.map(raw=>({
+  id:raw.id,
+  rarity:raw.doHiem,
+  elements:raw.elements||raw.he||String(raw.id).split(">")
+}));
 
 function xpNeeded(level){
   const r=economy.progression,n=Math.max(1,Math.floor(level));
@@ -41,6 +48,17 @@ function hatchSeconds(species){
   if(t===1)return r.pureElementSeconds[species.elements[0]]||60;
   const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
   return Math.round((r.tierSeconds[t]||r.tierSeconds[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds));
+}
+function breedCombinationSeconds(species,parents=[],premium=false){
+  const r=economy.breeding,t=timeTier(species);
+  const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
+  let base=(r.timeByTier[t]||r.timeByTier[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds);
+  if(parents.length===2){
+    const union=new Set(parents.flatMap(parent=>parent.elements));
+    base+=Math.max(0,union.size-2)*r.combinationSecondsPerExtraElement;
+    if(parents[0].elements.length!==parents[1].elements.length)base+=r.mixedTierSeconds;
+  }
+  return Math.round(base*(premium?r.premiumTimeFactor:1));
 }
 function breedSeconds(species,premium=false){
   const r=economy.breeding,t=timeTier(species);
@@ -106,3 +124,32 @@ console.table([
   ...economy.shop.resourcePacks.gemsForGold.map(p=>({type:"Gold → Gem",cost:p.cost,reward:p.amount})),
   ...economy.shop.resourcePacks.foodForGems.map(p=>({type:"Gem → Food",cost:p.cost,reward:p.amount}))
 ]);
+
+console.log("\nActual species time ranges by tier");
+console.table([1,2,3,4,"double"].map(tier=>{
+  const rows=species.filter(s=>timeTier(s)===tier);
+  const hatch=rows.map(hatchSeconds),breed=rows.map(s=>breedSeconds(s,false));
+  return {
+    tier:String(tier),species:rows.length,
+    hatchMin:Math.min(...hatch),hatchMax:Math.max(...hatch),
+    breedMin:Math.min(...breed),breedMax:Math.max(...breed)
+  };
+}));
+
+console.log("\nRepresentative breeding combinations");
+const byId=id=>species.find(s=>s.id===id);
+const examples=[
+  ["starter 1+1",byId("fire"),byId("water"),byId("fire>water")],
+  ["2+2 four-element pool",byId("fire>water"),byId("earth>wind"),species.find(s=>s.elements.length===4&&s.elements.includes("fire")&&s.elements.includes("earth"))],
+  ["3+3",species.find(s=>s.elements.length===3&&s.elements.includes("fire")),species.find(s=>s.elements.length===3&&s.elements.includes("water")),species.find(s=>s.elements.length===4)],
+  ["late mixed 3+4",species.find(s=>s.elements.length===3&&s.elements.includes("legend")),species.find(s=>s.elements.length===4&&s.elements.includes("time")),species.find(s=>s.elements.length===4&&s.elements.includes("time"))]
+].filter(row=>row.slice(1).every(Boolean));
+console.table(examples.map(([label,father,mother,result])=>({
+  label,
+  parents:father.elements.length+"+"+mother.elements.length,
+  union:new Set([...father.elements,...mother.elements]).size,
+  resultTier:String(timeTier(result)),
+  normalSeconds:breedCombinationSeconds(result,[father,mother],false),
+  premiumSeconds:breedCombinationSeconds(result,[father,mother],true),
+  hatchSeconds:hatchSeconds(result)
+})));

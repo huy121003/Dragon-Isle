@@ -170,8 +170,9 @@ async function start(){
           json(res,200,{user:result.user},{'Set-Cookie':auth.cookie(result.token,secureCookies)});return;
         }
         if(pathname==='/api/auth/logout'&&req.method==='POST'){
-          const user=auth.current(req);if(user)await challenge.leave(user);
+          const user=auth.current(req);
           await auth.logout(req);
+          if(user&&!auth.hasActiveSession(user.id))await challenge.leave(user);
           json(res,200,{ok:true},{'Set-Cookie':'dragon_session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'+(secureCookies?'; Secure':'')});return;
         }
         if(pathname==='/api/save'&&(req.method==='GET'||req.method==='PUT')){
@@ -181,17 +182,40 @@ async function start(){
             json(res,409,{error:'Tài khoản trong tab đã thay đổi. Hãy tải lại trang.'});return;
           }
           const file=path.join(profilesDir,user.id+'.json');
-          if(req.method==='GET'){json(res,200,await readJson(file,null));return;}
+          if(req.method==='GET'){
+            const profile=await readJson(file,null),revision=Math.max(0,Math.floor(Number(profile?.serverRevision)||0));
+            json(res,200,profile,{'X-Dragon-Save-Revision':String(revision)});return;
+          }
+          const revisionHeader=req.headers['x-dragon-save-revision'];
+          const expectedRevision=revisionHeader==null?null:Number(revisionHeader);
+          if(expectedRevision!=null&&(!Number.isSafeInteger(expectedRevision)||expectedRevision<0)){
+            json(res,400,{error:'Phiên bản bản lưu không hợp lệ.',code:'SAVE_REVISION_INVALID'});return;
+          }
           const value=await readBody(req,12_000_000);
           if(!validSave(value)){json(res,400,{error:'Bản lưu không hợp lệ.'});return;}
-          await updateJson(file,current=>{
-            if(!auth.current(req))unauthorized();
-            const bank=current?.arenaBank||{gold:0,food:0,gems:0};
-            const claimed=value.arenaClaimed||{gold:0,food:0,gems:0};
-            return {...value,...Object.fromEntries(['gold','food','gems'].map(key=>[
-              key,Math.max(0,(Number(value[key])||0)+Math.max(0,(bank[key]||0)-(Number(claimed[key])||0)))])),
-              arenaBank:bank,arenaClaimed:bank,savedAt:Date.now()};
-          });json(res,200,{ok:true});return;
+          let nextRevision=0;
+          try{
+            await updateJson(file,current=>{
+              if(!auth.current(req))unauthorized();
+              const currentRevision=Math.max(0,Math.floor(Number(current?.serverRevision)||0));
+              if(expectedRevision!=null&&currentRevision!==expectedRevision){
+                const error=new Error('Tiến trình đã thay đổi trên thiết bị khác. Hãy tải lại để lấy bản mới nhất.');
+                error.status=409;error.code='SAVE_CONFLICT';error.serverRevision=currentRevision;throw error;
+              }
+              const bank=current?.arenaBank||{gold:0,food:0,gems:0};
+              const claimed=value.arenaClaimed||{gold:0,food:0,gems:0};
+              nextRevision=currentRevision+1;
+              return {...value,...Object.fromEntries(['gold','food','gems'].map(key=>[
+                key,Math.max(0,(Number(value[key])||0)+Math.max(0,(bank[key]||0)-(Number(claimed[key])||0)))])),
+                arenaBank:bank,arenaClaimed:bank,serverRevision:nextRevision,savedAt:Date.now()};
+            });
+          }catch(error){
+            if(error.code==='SAVE_CONFLICT'){
+              json(res,409,{error:error.message,code:error.code,serverRevision:error.serverRevision});return;
+            }
+            throw error;
+          }
+          json(res,200,{ok:true,serverRevision:nextRevision},{'X-Dragon-Save-Revision':String(nextRevision)});return;
         }
         json(res,404,{error:'Đường dẫn API không tồn tại.'});return;
       }

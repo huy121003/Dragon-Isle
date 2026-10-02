@@ -7,6 +7,7 @@ let pendingServerSave=null;
 let serverSaveBusy=false;
 let serverFlushPromise=null;
 let serverWarningShown=false;
+let serverSaveRevision=0;
 const PREVIOUS_ISLANDS=[
   [600,600,300],[1200,640,200],[1080,960,220],[800,1160,240],[460,1140,260],
   [160,940,280],[40,600,300],[160,280,280],[460,100,260],[800,100,240],[1080,320,220]
@@ -380,6 +381,8 @@ async function loadGameFromServer(){
   const response=await fetch('/api/save',{headers:{'X-Dragon-Account':currentAccount.id},cache:'no-store'});
   if(!response.ok)throw new Error(response.status===401?'Session expired. Sign in again.':
     'Cannot read progress from the server.');
+  serverSaveRevision=Math.max(0,Math.floor(Number(response.headers.get('X-Dragon-Save-Revision'))||0));
+  saveReadOnly=false;serverWarningShown=false;
   const raw=await response.json();
   if(!raw)return newGame();
   return migrateSave(raw);
@@ -394,17 +397,25 @@ function flushServerSave(){
       const snapshot=pendingServerSave;
       pendingServerSave=null;
       const response=await fetch('/api/save',{method:'PUT',headers:{'Content-Type':'application/json',
-        'X-Dragon-Account':currentAccount.id},
+        'X-Dragon-Account':currentAccount.id,'X-Dragon-Save-Revision':String(serverSaveRevision)},
         body:snapshot,cache:'no-store'});
-      if(!response.ok)throw new Error(response.status===401?'Session expired.':
-        response.status===409?'The account changed in this tab. Reload the page.':'Cannot save the JSON profile.');
+      const body=await response.json().catch(function(){return {};});
+      if(!response.ok){
+        const error=new Error(body.error||(response.status===401?'Session expired.':
+          response.status===409?'Progress changed on another device. Reload to continue safely.':
+          'Cannot save the JSON profile.'));
+        error.code=body.code||'';throw error;
+      }
+      serverSaveRevision=Math.max(serverSaveRevision+1,
+        Math.floor(Number(body.serverRevision)||serverSaveRevision+1));
     }
     return true;
   })().catch(function(error){
       pendingServerSave=null;
+      if(error.code==='SAVE_CONFLICT')saveReadOnly=true;
       if(!serverWarningShown){
         serverWarningShown=true;
-        toast(error.message+' Check the connection and reload.');
+        toast(error.message+(error.code==='SAVE_CONFLICT'?'':' Check the connection and reload.'));
       }
       return false;
   }).finally(function(){serverSaveBusy=false;});

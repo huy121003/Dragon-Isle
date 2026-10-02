@@ -47,7 +47,8 @@ async function logoutAccount(){
   const button=document.querySelector('[data-action="logout"]');
   if(button)button.disabled=true;
   try{
-    advanceWorld(Date.now());if(!await saveGame())throw new Error("Unable to save progress. Try again later.");
+    advanceWorld(Date.now());
+    if(!saveReadOnly&&!await saveGame())throw new Error("Unable to save progress. Try again later.");
     const response=await fetch('/api/auth/logout',{method:'POST',cache:'no-store'});
     if(!response.ok)throw new Error("Unable to sign out. Try again.");
     window.location.reload();

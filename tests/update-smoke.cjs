@@ -27,6 +27,7 @@ async function boot(saveValue,options={}){
   }
   const storage=new Map();if(options.legacyLocal)storage.set('dragon-isle-save',options.legacyLocal);
   let remote=options.remote!==undefined?options.remote:(saveValue?JSON.parse(saveValue):null);
+  let remoteRevision=Math.max(0,Math.floor(Number(remote?.serverRevision)||0));
   const document={getElementById:element,createElement:()=>element('float'+Math.random()),
     querySelectorAll:()=>[],addEventListener(){},hidden:false};
   const window={devicePixelRatio:1,location:{protocol:options.protocol||'http:'},
@@ -37,8 +38,18 @@ async function boot(saveValue,options={}){
     fetchCalls.push({url,request});
     if(url==='/api/auth/me')return options.noAuth?{ok:false,status:401}:
       {ok:true,status:200,json:async()=>({user:{id:'demo',username:'demo'}})};
-    if(url==='/api/save'&&request.method==='PUT'){remote=JSON.parse(request.body);return {ok:true,status:200};}
-    if(url==='/api/save')return {ok:true,status:200,json:async()=>remote};
+    if(url==='/api/save'&&request.method==='PUT'){
+      const expected=Number(request.headers?.['X-Dragon-Save-Revision']);
+      if(Number.isSafeInteger(expected)&&expected!==remoteRevision)
+        return {ok:false,status:409,headers:{get:()=>null},json:async()=>({error:'Save conflict',code:'SAVE_CONFLICT',serverRevision:remoteRevision})};
+      remote=JSON.parse(request.body);remoteRevision++;
+      remote.serverRevision=remoteRevision;
+      return {ok:true,status:200,headers:{get:name=>String(name).toLowerCase()==='x-dragon-save-revision'?String(remoteRevision):null},
+        json:async()=>({ok:true,serverRevision:remoteRevision})};
+    }
+    if(url==='/api/save')return {ok:true,status:200,
+      headers:{get:name=>String(name).toLowerCase()==='x-dragon-save-revision'?String(remoteRevision):null},
+      json:async()=>remote};
     return {ok:false,status:404,json:async()=>({error:'Không tìm thấy.'})};
   };
   const sandbox={document,window,Event:class Event{constructor(type){this.type=type;}},Intl,Math,Date,Map,Set,Number,String,Object,Array,JSON,

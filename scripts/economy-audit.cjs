@@ -5,6 +5,7 @@ require("../data/economy.js");
 const economy=global.window.DragonEconomy;
 const game=require("../data/game.json");
 const catalog=require("../data/dragons.json");
+globalThis.DragonDatabase=catalog;
 require("./extend-catalog.cjs")(catalog,game);
 const species=catalog.species.map(raw=>({
   id:raw.id,

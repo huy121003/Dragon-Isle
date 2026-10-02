@@ -6,6 +6,7 @@
  * This module only advances clocks, production, care decay and upgrade completion.
  * Player rewards, placement and UI-side actions live in dedicated logic files.
  */
+/** Complete every building upgrade due by the supplied epoch-millisecond timestamp. */
 function finishUpgrades(time){
   let finished=0;
   state.buildings.forEach(function(b){

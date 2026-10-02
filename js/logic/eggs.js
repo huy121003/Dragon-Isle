@@ -14,7 +14,7 @@ function assignIncubation(egg,house){
     eggsInHatchery(house.id).length>=hatcheryCapacity(house.level))return false;
   egg.hatcheryId=house.id;
   egg.startedAt=Date.now();
-  egg.readyAt=egg.startedAt+DATA.rarities[DATA.species[egg.species].rarity].incubate*1000;
+  egg.readyAt=egg.startedAt+hatchingSeconds(DATA.species[egg.species])*1000;
   return true;
 }
 function addEgg(speciesId,source,parents,caveId){
@@ -91,7 +91,8 @@ function hatchEgg(eggId,habitatId){
   state.dragons.push(dragon);
   state.eggs=state.eggs.filter(function(item){return item.id!==egg.id;});
   const fresh=recordDiscovery(egg.species,egg.parents);
-  gainPlayerXP(fresh?20:12);
+  gainPlayerXP(fresh?window.DragonEconomy.progression.xpSources.hatchNew:
+    window.DragonEconomy.progression.xpSources.hatchKnown);
   const house=buildingById(egg.hatcheryId);
   if(house&&!house.stored){const center=buildingCenter(house);burst(center.x,center.y,
     DATA.elements[species.elements[0]].light,30);}

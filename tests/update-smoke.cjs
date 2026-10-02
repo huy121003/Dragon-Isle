@@ -272,9 +272,9 @@ check('Hatchery upgrade UI shows the same gold and Gem costs as the upgrade logi
  g.run('state=newGame();state.player.level=5;renderHatchery(3)');
  const cost=snapshot(g,'standardUpgradeCost(buildingById(3))');
  const html=g.element('sheetBody').innerHTML;
- const expected='Upgrade · '+g.run('money('+cost.gold+')')+' gold · '+
-   g.run('money('+cost.gems+')')+' gems';
- assert(html.includes(expected),'Hatchery button should show both resource costs: '+expected);
+ assert(html.includes('Upgrade · '+g.run('resourceAmount("gold",'+cost.gold+')')+
+   g.run('resourceAmount("gems",'+cost.gems+')')),
+   'Hatchery button should show both gold and Gem icons with the exact costs');
 });
 check('hatchery eggs scale with nests and do not overlap at level five',()=>{
  const sizes=snapshot(game,'[1,2,3,4,5].map(level=>({level,scale:hatcheryEggScale(level,900,500)}))');
@@ -484,7 +484,7 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
  assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),
    economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])*1000'));
  economy.run('ui.shopTab="special";renderShop()');
- assert(economy.element('sheetBody').innerHTML.includes('● 10,000'));
+ assert(economy.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
  economy.run('ui.shopTab="habitats";renderShop()');
  assert(economy.element('sheetBody').innerHTML.includes('Purchased 1×'));
 });
@@ -564,7 +564,7 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  assert.equal(balance.run('state.food'),100);
  assert.equal(balance.run('state.gold'),8500);
  balance.run('state.gold=0;renderShop();window.DragonGame.action({action:"buy-food",count:"100"})');
- assert(balance.element('sheetBody').innerHTML.includes('Need 1,500 more gold'));
+ assert(balance.element('sheetBody').innerHTML.includes('Need '+balance.run('resourceAmount("gold",1500)')+' more'));
  assert.equal(balance.run('state.food'),100);
  assert(balance.element('toast').textContent.includes('Not enough gold'));
  balance.run('state.gold=9500');
@@ -642,7 +642,8 @@ check('dragon detail back navigation and habitat actions follow their source and
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="move"'));
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="store"'));
  navigation.run('ui.shopTab="save";openModal("shop")');
- assert(navigation.element('sheetBody').innerHTML.includes('10,000 gold, 2,500 food'));
+ assert(navigation.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
+ assert(navigation.element('sheetBody').innerHTML.includes('aria-label="2,500 food"'));
  assert(navigation.element('sheetBody').innerHTML.includes('<summary>Testing &amp; debug</summary>'));
 });
 check('a waiting egg enters the only free Hatchery without a chooser popup',()=>{
@@ -723,7 +724,7 @@ const premium=await boot();
 check('Celestial Sanctuary costs gems once and persists through saves',()=>{
  premium.run('state=newGame();state.player.level=10;state.player.xp=0;state.gems=249;ui.shopTab="special";renderShop()');
  assert(premium.element('sheetBody').innerHTML.includes('data-type="premiumCave"'));
- assert(premium.element('sheetBody').innerHTML.includes('♦ 250'));
+ assert(premium.element('sheetBody').innerHTML.includes('aria-label="250 gems"'));
  premium.run('beginMode({kind:"buy",type:"premiumCave"})');
  const site=snapshot(premium,'(()=>{for(let y=692;y<716;y++)for(let x=738;x<762;x++)'+
    'if(getBuildValid(x,y,ui.mode))return {x,y};return null})()');

@@ -74,7 +74,7 @@ function guideDragons(){
 function guideBreeding(){
   const rules=window.DragonEconomy.breeding;
   const percent=value=>(value*100).toLocaleString('vi-VN',{maximumFractionDigits:2});
-  const tierRows=Object.entries(BREED_TIER_WEIGHTS).map(([parents,weights])=>[
+  const tierRows=Object.entries(window.DragonConfig.breeding.tierWeights).map(([parents,weights])=>[
     esc(parents.replace('+',' + ')),weights[0]+'% / '+weights[1]+'%']);
   const samples=[
     ['Fire Dragon',DATA.species.fire],

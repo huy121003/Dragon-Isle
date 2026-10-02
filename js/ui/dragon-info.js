@@ -81,7 +81,7 @@ function dragonDetailHtml(species,dragon){
     ' · HP / Attack / Defense +'+stars*5+'%':
     'Sample stats · Level 1')+'</p><div class="element-list">'+elementBadges(species,'lg')+
     (species.rarity==='transcendent'?'<b class="double-affinity">'+esc(DATA.elements[species.elements[0]].name)+' ×2 · Double Element</b>':'')+'</div>'+
-    '<h4>⚔️ Four skills · unlock at levels 10 / 15 / 20 / 25</h4><div class="skills-grid">';
+    '<h4>⚔️ Four skills · unlock at levels '+window.DragonConfig.progression.skillUnlockLevels.join(' / ')+'</h4><div class="skills-grid">';
   skillList.forEach(function(skill,index){
     const required=skillUnlockLevel(index),unlocked=!!dragon&&dragon.level>=required;
     if(!unlocked){

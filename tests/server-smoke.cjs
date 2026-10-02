@@ -158,7 +158,7 @@ async function launch(port){
     const cookieAdmin=session(adminAgain);
     const high=newProfile();
     high.buildings.push({id:4,type:'arena',level:1,x:200,y:182,stored:false});
-    high.dragons[0].level=100;
+    high.dragons[0].level=100;high.dragons[0].species='water';
     high.dragons.push({...high.dragons[0],id:5,species:'water',nickname:'Backup',level:100});
     high.dragons.push({...high.dragons[0],id:9,nickname:'Guard',level:100});
     high.dragons.push({...high.dragons[0],id:6,nickname:'Breeding',level:20});
@@ -188,6 +188,9 @@ async function launch(port){
       'Reject dragons in active breeding');
     assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:highTeam})).status,200);
     const choices=await (await arenaCall('list','GET',cookieAdmin)).json();
+    assert(choices.dragons.every(dragon=>Number.isFinite(dragon.power))&&
+      choices.dragons.every((dragon,index,list)=>!index||list[index-1].power>=dragon.power),
+      'The server returns every owned dragon with its Combat Power ranking');
     assert.equal(choices.opponents.length,3,'The server creates exactly three rivals');
     assert(choices.opponents.every(rival=>String(rival.id).startsWith('bot-')),
       'Arena rivals are server-generated, not other accounts');
@@ -212,7 +215,12 @@ async function launch(port){
     assert.equal(round.result?.won,true,'An Arena victory completes and keeps its existing rewards');
     assert(round.result.reward.gold>0&&round.result.reward.food>0&&round.result.reward.gems>0);
     assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,1);
-    for(let attempt=0;attempt<2;attempt++){
+    const afterWin=await (await arenaCall('list','GET',cookieAdmin)).json();
+    assert(afterWin.defeatedOpponentIds.includes(choices.opponents[0].id),
+      'A defeated rival is recorded for the current 8-hour window');
+    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:choices.opponents[0].id})).status,409,
+      'A player cannot challenge a rival they already defeated');
+    for(let attempt=1;attempt<3;attempt++){
       const roster=await (await arenaCall('list','GET',cookieAdmin)).json();
       const match=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:roster.opponents[attempt].id})).json();
       const result=await (await arenaCall('turn','POST',cookieAdmin,
@@ -221,12 +229,13 @@ async function launch(port){
     }
     const exhausted=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(exhausted.attemptsRemaining,0);
-    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:exhausted.opponents[0].id})).status,429);
+    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:exhausted.opponents[1].id})).status,429);
     const arenaFile=path.join(temporary,'arena',idA+'.json');
     const savedArena=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
     savedArena.windowKey='expired-window';fs.writeFileSync(arenaFile,JSON.stringify(savedArena));
     const reset=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(reset.attemptsRemaining,3,'The server restores three attempts in a new time window');
+    assert.deepEqual(reset.defeatedOpponentIds,[],'Defeated rivals reset in a new 8-hour window');
     console.log('OK: account sessions, server-generated Arena rivals, attack team validation and 8-hour attempts.');
   }finally{
     child.kill();

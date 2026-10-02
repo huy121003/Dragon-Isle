@@ -168,6 +168,10 @@ function buildingById(id){return state.buildings.find(function(b){return b.id===
 function dragonById(id){return state.dragons.find(function(d){return d.id===id;});}
 function occupants(building){return state.dragons.filter(function(d){return d.habitatId===building.id;});}
 function maxBuildingLevel(building){return DATA.buildings[building.type].maxLevel;}
+function contentRequirementLevel(level){
+  const cap=window.DragonEconomy.progression.contentLevelCap;
+  return Math.min(cap,Math.max(1,Math.floor(Number(level)||1)));
+}
 function habitatCapacity(level){
   const row=window.DragonEconomy.habitat.dragonCapacity;
   return row[clamp(Math.floor(Number(level)||1)-1,0,row.length-1)];
@@ -289,13 +293,20 @@ function gemNextSeconds(building){
     3600/DATA.gemPerDragonPerHour);
 }
 function upgradeCost(building){
-  const base=building.type==='habitat'?Math.max(building.purchaseCost||0,
-    habitatPurchaseCost(building.element,0)):buildingPurchaseCost(building.type,building.element);
+  const base=building.type==='habitat'?habitatPurchaseCost(building.element,0):
+    buildingPurchaseCost(building.type,building.element);
   return Math.round(base*Math.pow(window.DragonEconomy.buildings.upgradeFactor,building.level));
 }
 function upgradeSeconds(building){
   const times=DATA.upgradeTimes[building.type];
-  return times?times[Math.min(building.level-1,times.length-1)]:0;
+  if(!times)return 0;
+  const base=times[Math.min(building.level-1,times.length-1)];
+  if(building.type!=='habitat')return base;
+  const unlock=Math.max(0,contentRequirementLevel(ELEMENT_UNLOCK[building.element]||1)-1);
+  const rules=window.DragonEconomy.habitat;
+  const scale=1+rules.upgradeTimeUnlockLinear*unlock+
+    rules.upgradeTimeUnlockQuadratic*unlock*unlock;
+  return Math.round(base*scale);
 }
 function hatcheryUpgradePlayerLevel(level){
   const gates=window.DragonEconomy.progression.hatcheryUpgradeLevels;
@@ -309,7 +320,7 @@ function islandUnlockIssue(index){
   const island=DATA.islands[index];
   if(!island||index<=0||index!==state.unlockedIslands)return "Unlock the previous island first.";
   if(!islandComplete(index-1))return "Fully unlock "+DATA.islands[index-1].name+" before buying the next island.";
-  const level=Math.max(island.playerLevel||1,DATA.elementUnlocks[island.element]||1);
+  const level=contentRequirementLevel(Math.max(island.playerLevel||1,DATA.elementUnlocks[island.element]||1));
   if(state.player.level<level)return "Requires player level "+level+" to unlock "+island.name+" and buy its element egg.";
   if(island.element&&!state.dragons.some(function(dragon){
     return DATA.species[dragon.species]?.elements.includes(island.element);

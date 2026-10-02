@@ -124,7 +124,9 @@ function guideIslands(){
     return [esc(DATA.elements[element].name),
       'Lv'+contentRequirementLevel(DATA.elementUnlocks[element]||1),
       money(habitatPurchaseCost(element,0)),
-      money(upgradeCost(lv2))+' / '+money(upgradeCost(lv3))+' / '+money(upgradeCost(lv4)),
+      (money(standardUpgradeCost(lv2).gold)+'G + '+money(standardUpgradeCost(lv2).gems)+'💎')+' / '+
+      (money(standardUpgradeCost(lv3).gold)+'G + '+money(standardUpgradeCost(lv3).gems)+'💎')+' / '+
+      (money(standardUpgradeCost(lv4).gold)+'G + '+money(standardUpgradeCost(lv4).gems)+'💎'),
       duration(upgradeSeconds(lv2))+' / '+duration(upgradeSeconds(lv3))+' / '+duration(upgradeSeconds(lv4))];
   });
   const hatcheryRows=window.DragonEconomy.hatchery.nests.map((nests,index)=>[

@@ -228,9 +228,11 @@ function Admin({open,onClose}){
 function App(){
   const [tick,setTick]=useState(0),[account,setAccount]=useState(null),[authReady,setAuthReady]=useState(false),[admin,setAdmin]=useState(false);
   const [challenge,setChallenge]=useState(null),[challengeOpen,setChallengeOpen]=useState(false);
+  const [connection,setConnection]=useState(()=>window.DragonConnectionState||{status:'connected',blocked:false,since:0,nextRetryAt:0,attempts:0,message:''});
   const challengeSequence=React.useRef(0),challengeRequestBusy=React.useRef(false);
   const hudRef=React.useRef(null),dockRef=React.useRef(null);
   async function challengeStatus(){
+    if(window.DragonConnectionState?.blocked)return;
     const sequence=++challengeSequence.current;
     try{
       const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
@@ -263,10 +265,14 @@ function App(){
     fetch('/api/auth/me',{cache:'no-store'}).then(async r=>r.ok?(await r.json()).user:null)
       .then(user=>{if(alive){setAccount(user);setAuthReady(true);}})
       .catch(()=>{if(alive)setAuthReady(true);});
-    const update=()=>setTick(t=>t+1);window.addEventListener('dragon-ui-update',update);
-    window.gameBootPromise?.then(update);
+    const update=()=>setTick(t=>t+1);
+    const connectionUpdate=()=>setConnection({...window.DragonConnectionState});
+    window.addEventListener('dragon-ui-update',update);
+    window.addEventListener('dragon-connection-change',connectionUpdate);
+    connectionUpdate();window.gameBootPromise?.then(update);
     const timer=setInterval(update,1000);
-    return()=>{alive=false;clearInterval(timer);window.removeEventListener('dragon-ui-update',update);};
+    return()=>{alive=false;clearInterval(timer);window.removeEventListener('dragon-ui-update',update);
+      window.removeEventListener('dragon-connection-change',connectionUpdate);};
   },[]);
   useEffect(()=>{
     if(!account)return;
@@ -296,13 +302,43 @@ function App(){
   const commerceModal=['shop','crops'].includes(ui?.modal?.name);
   const arenaBattle=ui?.modal?.name==='arena'&&!!(ui.arena?.data?.battle||ui.arena?.presentation);
   const challengeBattle=challenge?.match?.phase==='battle';
+  const reconnectSeconds=Math.max(0,Math.ceil(((connection?.nextRetryAt||0)-Date.now())/1000));
+  const connectionElapsed=connection?.since?Date.now()-connection.since:0;
+  const prolonged=connectionElapsed>=120000;
   const modalSection={"shop-egg-detail":"shop","dragon-detail":"dragons","book-detail":ui?.returnModal?.name||"book"};
   const activeSection=modalSection[ui?.modal?.name]||ui?.modal?.name;
   if(state.buildings.some(b=>b.type==='arena'&&!b.stored))buttons.push(['⚔️','Arena','open-arena']);
   if(state.dragons.filter(dragon=>dragon.level>=10).length>=3)
     buttons.push(['🗡️','Thách đấu','open-challenge']);
   return <>
-    <header ref={hudRef} className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><div className="hud-xp-track" role="progressbar" aria-label="Player experience" aria-valuemin={0} aria-valuenow={state.player.level>=60?60:Math.floor(state.player.xp)} aria-valuemax={state.player.level>=60?60:xpNeeded}><span className="hud-xp-fill" style={{width:xp+'%'}}/><span className="hud-xp-label">{xpLabel}</span></div></div></div>
+    <Modal className="connection-modal" open={!!connection?.blocked} closable={false}
+      maskClosable={false} keyboard={false} footer={null} centered zIndex={5000}
+      destroyOnHidden={false}>
+      <div className="reconnect-panel">
+        <Spin size="large"/>
+        <Typography.Title level={3}>
+          {connection?.status==='session-expired'?'Session expired':
+            prolonged?'Still trying to reconnect…':'Connection lost'}
+        </Typography.Title>
+        <Typography.Paragraph>
+          {connection?.status==='session-expired'?
+            'The server confirmed that this session is no longer valid. Returning to sign in…':
+            prolonged?
+              'The server is still unavailable. Your latest unsent progress is kept in this tab. Do not close the page while reconnecting.':
+              'The game cannot reach the server. Progress is queued safely and gameplay is temporarily locked.'}
+        </Typography.Paragraph>
+        {connection?.status!=='session-expired'&&<>
+          <Typography.Text type="secondary">
+            {reconnectSeconds>0?'Retrying automatically in '+reconnectSeconds+'s…':'Checking server now…'}
+          </Typography.Text>
+          <Progress percent={Math.max(0,Math.min(100,100-reconnectSeconds/5*100))} showInfo={false}/>
+          <Button type="primary" onClick={()=>window.DragonConnectionApi?.retry()}>
+            Try again now
+          </Button>
+        </>}
+      </div>
+    </Modal>
+    <header ref={hudRef} className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><div className="hud-xp-track" role="progressbar" aria-label="Player experience" aria-valuemin={0} aria-valuenow={Math.floor(state.player.xp)} aria-valuemax={xpNeeded}><span className="hud-xp-fill" style={{width:xp+'%'}}/><span className="hud-xp-label">{xpLabel}</span></div></div></div>
       <div className="hud-resources"><Card size="small"><span>🪙</span><b>{txt('goldAmount')}</b><small>{txt('incomeRate')}</small></Card>
         <Card size="small"><span>🍎</span><b>{txt('foodAmount')}</b></Card>
         <Card size="small"><span>💎</span><b>{txt('gemAmount')}</b></Card></div>

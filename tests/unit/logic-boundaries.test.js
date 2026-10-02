@@ -59,6 +59,23 @@ describe('logic architecture boundaries',()=>{
     expect(migrations).not.toContain('DATA.buildings[out.type].maxLevel');
   });
 
+  it('keeps presentation layers on shared balance config',()=>{
+    const guide=read('js/ui/guide.js');
+    const core=read('js/ui/core.js');
+    const dock=read('src/components/GameDock.jsx');
+    const arenaView=read('src/features/arena/ArenaView.jsx');
+    const challengeView=read('src/features/challenge/ChallengeView.jsx');
+    for(const source of [guide,core,dock,arenaView,challengeView])
+      expect(source).not.toContain('DragonEconomy');
+    expect(guide).not.toContain('DATA.progression');
+    expect(guide).not.toContain('DATA.gemPerDragonPerHour');
+    expect(core).not.toContain('DATA.progression');
+    expect(core).not.toContain('DATA.gemPerDragonPerHour');
+    expect(dock).toContain('DragonConfig.arena');
+    expect(arenaView).toContain('DragonConfig.arena');
+    expect(challengeView).toContain('DragonConfig.challenge');
+  });
+
   it('does not reintroduce core combat/arena/challenge balance constants in services',()=>{
     const combat=read('js/data/combat-rules.js');
     const arena=read('server/arena.cjs');

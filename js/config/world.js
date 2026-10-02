@@ -17,6 +17,8 @@
     feeding:Object.freeze({feedsPerLevel:4,hungerReduction:8,happinessGain:5}),
     initialDragon:Object.freeze({hunger:10,happiness:80}),
     goldIncome:Object.freeze({happinessBase:.5,habitatLevelBonus:.1,starvationAt:100,starvationMultiplier:.5}),
+    /** Passive Gem production per housed dragon per real-time hour. */
+    gemPerDragonPerHour:.5,
     gemSecondsPerHour:3600,
     visual:Object.freeze({daySeconds:480,weatherParticles:10})
   });

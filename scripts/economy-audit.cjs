@@ -5,6 +5,10 @@ require("../data/economy.js");
 const economy=global.window.DragonEconomy;
 const game=require("../data/game.json");
 
+function xpNeeded(level){
+  const r=economy.progression,n=Math.max(1,Math.floor(level));
+  return Math.round(r.xpBase+r.xpLinear*n+r.xpPower*Math.pow(n,r.xpExponent));
+}
 function feedCost(level){
   const r=economy.progression;
   return Math.ceil(r.feedBase+r.feedLinear*level+r.feedQuadratic*level*level);
@@ -24,28 +28,76 @@ function landCost(islandIndex,opened){
   for(let region=1;region<Math.max(1,opened);region++)amount=Math.round(amount*p.expansionMultiplier);
   return Math.round(amount);
 }
-function row(level){
-  return {
-    level,
-    feedOne:feedCost(level),
-    feedLevel:feedCost(level)*4,
-    farms:Math.min(economy.progression.maxFarms,
-      1+Math.floor(Math.max(1,level)/economy.progression.farmEveryLevels))
-  };
+function habitatGold(element,level){
+  const unlock=game.elementUnlocks[element]||1,r=economy.habitat;
+  return Math.round((r.goldBase+r.goldPerUnlockLevel*(unlock-1))*Math.pow(r.goldLevelFactor,level-1));
 }
-const levels=[1,10,20,40,60,80,100];
-console.table(levels.map(row));
+function timeTier(species){
+  if(species.rarity==="transcendent")return "double";
+  return Math.max(1,Math.min(4,species.elements.length));
+}
+function hatchSeconds(species){
+  const r=economy.hatching,t=timeTier(species);
+  if(t===1)return r.pureElementSeconds[species.elements[0]]||60;
+  const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
+  return Math.round((r.tierSeconds[t]||r.tierSeconds[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds));
+}
+function breedSeconds(species,premium=false){
+  const r=economy.breeding,t=timeTier(species);
+  const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
+  const base=(r.timeByTier[t]||r.timeByTier[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds);
+  return Math.round(base*(premium?r.premiumTimeFactor:1));
+}
+
+console.log("\nPlayer XP curve");
+let cumulative=0;
+console.table([1,2,4,6,8,11,14,18,22,27,32,37,42,48,55,60].map(level=>{
+  if(level===1)return {level,xpToNext:xpNeeded(level),cumulativeToReach:0};
+  cumulative=0;for(let l=1;l<level;l++)cumulative+=xpNeeded(l);
+  return {level,xpToNext:level<60?xpNeeded(level):0,cumulativeToReach:cumulative};
+}));
+
+console.log("\nXP sources");
+console.table(Object.entries(economy.progression.xpSources).flatMap(([key,value])=>
+  Array.isArray(value)?value.map((xp,index)=>({source:key+"["+(index+1)+"]",xp})):
+  [{source:key,xp:value}]));
+
+console.log("\nElement unlocks and pure-egg hatch times");
+console.table(Object.entries(game.elementUnlocks).map(([element,level])=>({
+  element,playerLevel:level,hatchSeconds:economy.hatching.pureElementSeconds[element]
+})));
+
+console.log("\nDragon feed progression");
+console.table([1,10,20,40,60,80,100].map(level=>({
+  level,feedOne:feedCost(level),feedFullLevel:feedCost(level)*4
+})));
+
 console.log("\nAcademy upgrades");
-console.table([1,2,3,4].map(level=>({level,...academyCost(level)})));
+console.table([1,2,3,4].map(level=>({level,...academyCost(level),seconds:game.upgradeTimes.academy[level-1]})));
+
+console.log("\nBuilding upgrade times");
+console.table(Object.entries(game.upgradeTimes).flatMap(([type,times])=>
+  times.map((seconds,index)=>({type,toLevel:index+2,seconds}))));
+
+console.log("\nFarm crops");
+console.table(game.crops.map((crop,index)=>({
+  farmLevel:index+1,id:crop.id,cost:crop.cost,yield:crop.yield,seconds:crop.duration
+})));
+
+console.log("\nHabitat capacities");
+console.table([1,2,3,4].flatMap(level=>[
+  {level,element:"fire",dragons:economy.habitat.dragonCapacity[level-1],gold:habitatGold("fire",level)},
+  {level,element:"time",dragons:economy.habitat.dragonCapacity[level-1],gold:habitatGold("time",level)}
+]));
+
 console.log("\nLand tiers (first / eighth region)");
 console.table(game.islands.map((island,index)=>({
-  island:index+1,
-  id:island.id,
-  first:landCost(index,1),
-  eighth:landCost(index,8),
+  island:index+1,id:island.id,
+  first:landCost(index,1),eighth:landCost(index,8),
   gemFirst:Math.max(1,Math.ceil(landCost(index,1)/economy.land.goldPerGem)),
   gemEighth:Math.max(1,Math.ceil(landCost(index,8)/economy.land.goldPerGem))
 })));
+
 console.log("\nResource exchange");
 console.table([
   ...economy.shop.resourcePacks.goldForGems.map(p=>({type:"Gem → Gold",cost:p.cost,reward:p.amount})),

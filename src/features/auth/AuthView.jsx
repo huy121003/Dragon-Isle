@@ -1,17 +1,22 @@
 import React,{useState} from 'react';
+import {useMutation,useQueryClient} from '@tanstack/react-query';
 import {Button,Card,Form,Input,Typography} from 'antd';
+import {apiFetch} from '../../api/http.js';
 
 export default function AuthView(){
-  const [mode,setMode]=useState('login'),[busy,setBusy]=useState(false),[error,setError]=useState('');
-  async function submit(values){
-    setBusy(true);setError('');
-    try{
-      const response=await fetch('/api/auth/'+mode,{method:'POST',headers:{'Content-Type':'application/json'},
-        credentials:'same-origin',body:JSON.stringify(values)});
-      const body=await response.json();if(!response.ok)throw Error(body.error||'Unable to sign in.');
+  const [mode,setMode]=useState('login'),[error,setError]=useState('');
+  const queryClient=useQueryClient();
+  const mutation=useMutation({
+    mutationFn:values=>apiFetch('/api/auth/'+mode,{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(values)
+    }),
+    onSuccess:async()=>{
+      await queryClient.invalidateQueries({queryKey:['auth','me']});
       window.location.reload();
-    }catch(e){setError(e.message);setBusy(false);}
-  }
+    },
+    onError:error=>setError(error.message)
+  });
+  function submit(values){setError('');mutation.mutate(values);}
   return <div className="react-auth"><Card className="login-card">
     <div className="login-crest">🐉</div><Typography.Title level={2}>Dragon Isle</Typography.Title>
     <Typography.Text type="secondary">Your own dragon island</Typography.Text>
@@ -27,7 +32,7 @@ export default function AuthView(){
         {min:8,message:'At least 8 characters'}]}>
         <Input.Password size="large" autoComplete={mode==='login'?'current-password':'new-password'}/></Form.Item>
       {error&&<Typography.Text type="danger">{error}</Typography.Text>}
-      <Button size="large" type="primary" htmlType="submit" loading={busy} block>
+      <Button size="large" type="primary" htmlType="submit" loading={mutation.isPending} block>
         {mode==='login'?'Enter island':'Create account'}
       </Button>
     </Form>

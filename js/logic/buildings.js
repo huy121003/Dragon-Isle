@@ -61,6 +61,10 @@ function upgradeBuilding(id){
   if(academyCost&&state.player.level<academyCost.playerLevel){
     toast("Dragon Academy level "+(b.level+1)+" requires player level "+academyCost.playerLevel+".");return;
   }
+  if(academyCost&&academyQualifiedDragonCount(academyCost)<academyCost.requiredDragons){
+    toast("Dragon Academy level "+(b.level+1)+" requires owning "+academyCost.requiredDragons+
+      " dragons at level "+academyCost.requiredDragonLevel+" or above.");return;
+  }
   if(!footprintValid(b.x,b.y,buildingFootprint(b,b.level+1),b.id)){
     toast("Unlock enough free land around the building before upgrading.");return;
   }

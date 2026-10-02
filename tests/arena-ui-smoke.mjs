@@ -72,6 +72,10 @@ try{
   assert.doesNotMatch(opponents,/Water Dragon|Lv20|Rookie Warden/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
+  const refill=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
+    data:{...data,attemptsRemaining:1}}}));
+  assert.match(refill,/Restore all attempts · 5 gems/);
+  assert.match(refill,/Your rival list stays until all five are defeated/);
   const defeated=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
     data:{...data,defeatedOpponentIds:['bot-1']}}}));
   assert.match(defeated,/Defeated this round/);

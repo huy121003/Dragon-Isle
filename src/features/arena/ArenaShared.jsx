@@ -73,7 +73,7 @@ export function RosterCard({dragon,selected,onClick,disabled}){
     onClick={onClick} disabled={disabled||(!dragon.canBattle&&!selected)} aria-pressed={selected}>
     <span className="roster-art" style={{'--rarity':rarity?.color||'#b8adcc'}}><Portrait dragon={dragon}/></span>
     <span className="roster-copy"><b>{dragon.nickname}</b><small title={s?.name}>{s?.name} · Lv{dragon.level}</small>
-      {Number.isFinite(dragon.power)&&<small className="roster-power">⚡ {fmt.format(dragon.power)} power</small>}<Stars count={dragon.stars||0}/>
+      <Stars count={dragon.stars||0}/>
       <span className="arena-element-row">{badges(dragon.species)}<RarityGem id={s?.rarity} element={s?.elements?.[0]}/></span>
       {dragon.battleReason&&<small className="arena-rarity">{dragon.battleReason}</small>}</span>
     <span className="arena-check">{selected?'✓':'+'}</span>
@@ -84,7 +84,7 @@ export function TeamSlots({title,ids,dragons}){
   return <div className="arena-team-slots"><b>{title} · {ids.length}/{teamSize}</b><div>{Array.from({length:teamSize},(_,i)=>i).map(i=>{
     const dragon=dragons.find(d=>d.id===ids[i]);
     return <span className={'arena-team-slot '+(!dragon?'empty':'')} key={i} title={dragon?.nickname||'Empty'}>
-      {dragon?<><Portrait dragon={dragon}/><span className="arena-slot-marks">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span><small>{dragon.nickname}{Number.isFinite(dragon.power)?' · ⚡'+fmt.format(dragon.power):''}</small><Stars count={dragon.stars||0}/></>:<strong>+</strong>}
+      {dragon?<><Portrait dragon={dragon}/><span className="arena-slot-marks">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span><small>{dragon.nickname}</small><Stars count={dragon.stars||0}/></>:<strong>+</strong>}
     </span>;
   })}</div></div>;
 }

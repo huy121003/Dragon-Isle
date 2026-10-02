@@ -14,19 +14,20 @@ function arenaWindow(now=Date.now()){
   return {key:String(start),resetAt:start+arenaConfig.attemptWindowMs};
 }
 /**
- * Build three distinct virtual squads from the ten highest-power owned dragons.
+ * Build five distinct virtual squads from the ten highest-power owned dragons.
  * Each squad uses a different rank band, then tunes virtual levels/stars toward
  * a configured power ratio of the player's top-three Combat Power.
  */
-function createRivals(top10,playerLevel,windowKey,makeFighter){
+function createRivals(top10,playerLevel,roundKey,makeFighter){
   if(!Array.isArray(top10)||top10.length<3||typeof makeFighter!=="function")return [];
   const ranked=top10.slice().sort((a,b)=>b.power-a.power||a.id-b.id).slice(0,10);
   const topThreePower=ranked.slice(0,3).reduce((sum,dragon)=>sum+dragon.power,0);
   const last=ranked.length-3,middle=Math.max(0,Math.floor((ranked.length-3)/2));
-  const rankBands=[[last,last+1,last+2],[middle,middle+1,middle+2],[0,1,2]];
-  const levelOffsets=[-3,0,3],starOffsets=[-1,0,1];
-  const names=['Rookie Warden','Balanced Keeper','Rival Champion'];
-  const nicknames=['Rookie','Keeper','Champion'];
+  const rankBands=[[last,last+1,last+2],[Math.max(0,last-1),last,last+1],[middle-1,middle,middle+1],[0,1,2],[0,0,1]]
+    .map(band=>band.map(rank=>Math.max(0,Math.min(last+2,rank))));
+  const levelOffsets=[-4,-2,0,2,4],starOffsets=[-1,-1,0,1,1];
+  const names=['Rookie Warden','Scout Keeper','Balanced Guard','Veteran Champion','Arena Legend'];
+  const nicknames=['Rookie','Scout','Keeper','Veteran','Legend'];
   const ratios=arenaConfig.rivalPowerRatios;
 
   /** Sum actual fighter power, recalculated after each virtual stat adjustment. */
@@ -62,9 +63,9 @@ function createRivals(top10,playerLevel,windowKey,makeFighter){
     });
     const target=topThreePower*ratios[index];
     tuneTeam(team,target);
-    return {id:`bot-${windowKey}-${index+1}`,username:names[index],
+    return {id:`bot-${roundKey}-${index+1}`,username:names[index],
       level:Math.max(1,Math.min(progressionConfig.contentLevelCap,playerLevel+levelOffsets[index])),
-      strength:['Weaker','Balanced','Stronger'][index],targetPower:target,
+      strength:index<2?'Weaker':index===2?'Balanced':'Stronger',targetPower:target,
       team:team.map(dragon=>({...dragon,power:makeFighter(dragon)?.power||0}))};
   });
 }
@@ -98,7 +99,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       return combatant?{...dragon,power:combatant.power}:null;
     }).filter(Boolean).sort((a,b)=>b.power-a.power||a.id-b.id).slice(0,10);
   }
-  /** Load this player's attack team and current three AI rivals without revealing their teams. */
+  /** Load this player's attack team and current five AI rivals without revealing their teams. */
   async function list(user){
     const own=await readJson(profile(user.id),null),arena=await readJson(file(user.id),{});
     if(!unlocked(own))throw Object.assign(new Error('Build an Arena first.'),{status:403});
@@ -106,11 +107,11 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     let setup=arena;
     await updateJson(file(user.id),current=>{
       const next={...(current||{})};
-      if(next.windowKey!==window.key){next.windowKey=window.key;next.attemptsRemaining=arenaConfig.attemptsPerWindow;
-        next.rivals=[];next.defeatedOpponentIds=[];}
-      if(!Array.isArray(next.rivals)||next.rivals.length!==3||next.rivalVersion!==2){
-        next.rivals=createRivals(ranked,Math.floor(own.player?.level||1),window.key,fighter);
-        next.rivalVersion=2;
+      if(next.windowKey!==window.key){next.windowKey=window.key;next.attemptsRemaining=arenaConfig.attemptsPerWindow;}
+      if(!Array.isArray(next.rivals)||next.rivals.length!==5||next.rivalVersion!==3){
+        next.rivalRound=Math.max(1,next.rivalRound||1);
+        next.rivals=createRivals(ranked,Math.floor(own.player?.level||1),next.rivalRound,fighter);
+        next.defeatedOpponentIds=[];next.rivalVersion=3;
       }
       setup=next;return next;
     });
@@ -150,12 +151,12 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     await updateJson(file(user.id),current=>{
       const setup=current||{};
       if(setup.battle)throw Object.assign(new Error('Finish the current battle first.'),{status:409});
-      if(setup.windowKey!==window.key){setup.windowKey=window.key;setup.attemptsRemaining=arenaConfig.attemptsPerWindow;
-        setup.rivals=[];setup.defeatedOpponentIds=[];}
+      if(setup.windowKey!==window.key){setup.windowKey=window.key;setup.attemptsRemaining=arenaConfig.attemptsPerWindow;}
       if(!owned(attackerProfile,setup.attack))throw Object.assign(new Error('Set '+arenaConfig.teamSize+' eligible attack dragons.'),{status:400});
-      if(!Array.isArray(setup.rivals)||setup.rivals.length!==3||setup.rivalVersion!==2){
-        setup.rivals=createRivals(ranked,Math.floor(attackerProfile.player?.level||1),window.key,fighter);
-        setup.rivalVersion=2;
+      if(!Array.isArray(setup.rivals)||setup.rivals.length!==5||setup.rivalVersion!==3){
+        setup.rivalRound=Math.max(1,setup.rivalRound||1);
+        setup.rivals=createRivals(ranked,Math.floor(attackerProfile.player?.level||1),setup.rivalRound,fighter);
+        setup.defeatedOpponentIds=[];setup.rivalVersion=3;
       }
       const rival=setup.rivals.find(item=>item.id===body?.opponentId);
       if(!rival)throw Object.assign(new Error('Invalid Arena rival. Refresh the Arena.'),{status:400});
@@ -175,9 +176,34 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     });
     return {battle:publicBattle(battle)};
   }
+  /** Instantly refill attempts by charging the configured gem cost server-side. */
+  async function refill(user){
+    const own=await readJson(profile(user.id),null);
+    if(!unlocked(own))throw Object.assign(new Error('Build an Arena first.'),{status:403});
+    const window=arenaWindow();let result;
+    await updateJson(file(user.id),async current=>{
+      const setup=current||{};
+      if(setup.battle)throw Object.assign(new Error('Finish the current battle before restoring attempts.'),{status:409});
+      if(setup.windowKey!==window.key){setup.windowKey=window.key;setup.attemptsRemaining=arenaConfig.attemptsPerWindow;}
+      if((setup.attemptsRemaining??arenaConfig.attemptsPerWindow)>=arenaConfig.attemptsPerWindow){
+        throw Object.assign(new Error('Arena attempts are already full.'),{status:409});
+      }
+      await updateJson(profile(user.id),currentProfile=>{
+        const gems=Math.max(0,Number(currentProfile?.gems)||0);
+        if(gems<arenaConfig.attemptRefillGemCost)
+          throw Object.assign(new Error('Not enough gems to restore Arena attempts.'),{status:400});
+        result={gems:gems-arenaConfig.attemptRefillGemCost};
+        return {...currentProfile,gems:result.gems};
+      });
+      setup.attemptsRemaining=arenaConfig.attemptsPerWindow;
+      return setup;
+    });
+    return {ok:true,attemptsRemaining:arenaConfig.attemptsPerWindow,gems:result.gems};
+  }
   /** Resolve one Arena player turn, AI response and optional battle completion. */
   async function turn(user,body){
     let response,award=null;
+    const topDragonsFromBattleProfile=await readJson(profile(user.id),null);
     await updateJson(file(user.id),current=>{
       const setup=current||{},b=setup.battle;
       if(!b)throw Object.assign(new Error('No battle in progress.'),{status:409});
@@ -214,9 +240,16 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       if(result){
         award=result.won?result.reward:null;
         response={result};
-        return {...setup,battle:null,
-          defeatedOpponentIds:result.won?[...new Set([...(setup.defeatedOpponentIds||[]),b.opponentId])]:
-            (setup.defeatedOpponentIds||[]),
+        let defeatedOpponentIds=result.won?[...new Set([...(setup.defeatedOpponentIds||[]),b.opponentId])]:
+          (setup.defeatedOpponentIds||[]);
+        let rivals=setup.rivals,attemptsRemaining=setup.attemptsRemaining;
+        if(result.won&&setup.rivals.every(rival=>defeatedOpponentIds.includes(rival.id))){
+          setup.rivalRound=(setup.rivalRound||1)+1;
+          rivals=createRivals(topDragons(topDragonsFromBattleProfile),
+            Math.floor(topDragonsFromBattleProfile?.player?.level||1),setup.rivalRound,fighter);
+          defeatedOpponentIds=[];attemptsRemaining=arenaConfig.attemptsPerWindow;
+        }
+        return {...setup,battle:null,rivals,defeatedOpponentIds,attemptsRemaining,
           wins:(setup.wins||0)+(result.won?1:0),losses:(setup.losses||0)+(result.won?0:1)};
       }
       response={battle:publicBattle(b)};
@@ -227,7 +260,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     if(award)await credit(user,award);
     return response;
   }
-  return {list,team,challenge,turn,fight,liveTurn,makeFighter:fighter,publicBattle,
+  return {list,team,challenge,turn,refill,fight,liveTurn,makeFighter:fighter,publicBattle,
     eligible,summary};
 }
 module.exports={createArena,arenaWindow,createRivals};

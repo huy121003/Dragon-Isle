@@ -157,6 +157,7 @@ async function launch(port){
     const {newProfile}=require('../server/profile.cjs');
     const cookieAdmin=session(adminAgain);
     const high=newProfile();
+    high.gems=100;
     high.buildings.push({id:4,type:'arena',level:1,x:200,y:182,stored:false});
     high.dragons[0].level=100;high.dragons[0].species='water';
     high.dragons.push({...high.dragons[0],id:5,species:'water',nickname:'Backup',level:100});
@@ -191,7 +192,7 @@ async function launch(port){
     assert(choices.dragons.every(dragon=>Number.isFinite(dragon.power))&&
       choices.dragons.every((dragon,index,list)=>!index||list[index-1].power>=dragon.power),
       'The server returns every owned dragon with its Combat Power ranking');
-    assert.equal(choices.opponents.length,3,'The server creates exactly three rivals');
+    assert.equal(choices.opponents.length,5,'The server creates exactly five rivals');
     assert(choices.opponents.every(rival=>String(rival.id).startsWith('bot-')),
       'Arena rivals are server-generated, not other accounts');
     assert(choices.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
@@ -230,13 +231,43 @@ async function launch(port){
     const exhausted=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(exhausted.attemptsRemaining,0);
     assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:exhausted.opponents[1].id})).status,429);
+    const gemsBefore=JSON.parse(fs.readFileSync(path.join(temporary,'profiles',idA+'.json'),'utf8')).gems;
+    const refill=await (await arenaCall('refill','POST',cookieAdmin,{})).json();
+    assert.equal(refill.attemptsRemaining,3,'Gem refill restores all attempts immediately');
+    assert.equal(refill.gems,gemsBefore-5,'Gem refill charges the configured five-gem cost');
+    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).opponents[0].id,choices.opponents[0].id,
+      'Gem refill keeps the current rival round');
     const arenaFile=path.join(temporary,'arena',idA+'.json');
     const savedArena=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
     savedArena.windowKey='expired-window';fs.writeFileSync(arenaFile,JSON.stringify(savedArena));
     const reset=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(reset.attemptsRemaining,3,'The server restores three attempts in a new time window');
-    assert.deepEqual(reset.defeatedOpponentIds,[],'Defeated rivals reset in a new 8-hour window');
-    console.log('OK: account sessions, server-generated Arena rivals, attack team validation and 8-hour attempts.');
+    assert.deepEqual(reset.defeatedOpponentIds,afterWin.defeatedOpponentIds,
+      'Defeated rivals remain defeated after an 8-hour attempt reset');
+    assert.deepEqual(reset.opponents.map(r=>r.id),choices.opponents.map(r=>r.id),
+      'An 8-hour reset does not reroll the virtual rival round');
+    const weakened=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
+    weakened.rivals.forEach(rival=>rival.team.forEach(dragon=>{dragon.level=10;dragon.stars=0;}));
+    fs.writeFileSync(arenaFile,JSON.stringify(weakened));
+    for(const opponent of reset.opponents.filter(item=>!reset.defeatedOpponentIds.includes(item.id))){
+      let roster=await (await arenaCall('list','GET',cookieAdmin)).json();
+      if(roster.attemptsRemaining===0){
+        assert.equal((await arenaCall('refill','POST',cookieAdmin,{})).status,200);
+        roster=await (await arenaCall('list','GET',cookieAdmin)).json();
+      }
+      const match=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:opponent.id})).json();
+      let outcome=match;
+      for(let turn=0;turn<80&&!outcome.result;turn++)outcome=await (await arenaCall('turn','POST',cookieAdmin,
+        {action:'skill',skillIndex:2,expectedTurn:outcome.battle.turn})).json();
+      assert.equal(outcome.result?.won,true,'Every remaining rival can be defeated once');
+    }
+    const nextRound=await (await arenaCall('list','GET',cookieAdmin)).json();
+    assert.equal(nextRound.opponents.length,5);
+    assert(nextRound.opponents.every((rival,index)=>rival.id!==reset.opponents[index].id),
+      'Defeating all five rivals creates a new opponent round');
+    assert.deepEqual(nextRound.defeatedOpponentIds,[],'New round clears defeated-rival markers');
+    assert.equal(nextRound.attemptsRemaining,3,'Completing a rival round restores all attempts');
+    console.log('OK: account sessions, five-rival Arena rounds, gem refills and scheduled attempts.');
   }finally{
     child.kill();
     fs.rmSync(temporary,{recursive:true,force:true});

@@ -54,6 +54,7 @@ function handleAction(button){
     case "arena-toggle":arenaToggle(button.dataset.side,id);break;
     case "arena-save":arenaSaveTeam();break;
     case "arena-fight":arenaFight(button.dataset.opponent);break;
+    case "arena-refill":arenaRefill();break;
     case "arena-skill":arenaTurn("skill",Number(button.dataset.skill));break;
     case "arena-switch":arenaTurn("switch",id);break;
     case "arena-forfeit":

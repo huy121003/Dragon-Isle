@@ -81,6 +81,18 @@ async function arenaFight(opponentId){
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;renderArena();notifyArenaRuntime();
 }
+/** Restore all Arena attempts by spending gems through the server. */
+async function arenaRefill(){
+  if(ui.arena.busy)return;
+  ui.arena.busy=true;ui.arena.error=null;renderArena();
+  try{
+    const response=await arenaRequest('refill','POST',{});
+    const profile=await arenaRequestSave();state=profile;saveGame();
+    ui.arena.data=await arenaRequest('list');
+    toast(`All Arena attempts restored for ${window.DragonConfig.arena.attemptRefillGemCost} gems.`);
+  }catch(error){ui.arena.error=error.message;}
+  ui.arena.busy=false;renderArena();notifyArenaRuntime();
+}
 /** Submit one player turn and stage returned authoritative events for client animation. */
 async function arenaTurn(action,number){
   const battle=ui.arena.data?.battle;

@@ -69,14 +69,15 @@ const rankedExamples=catalog.species.slice(0,10).map((s,index)=>{
     power:combat.power(combat.stats(s.elements,s.doHiem,level,catalog.elements,catalog.rarities,stars))};
 }).sort((a,b)=>b.power-a.power);
 const variants=require('../server/arena.cjs').createRivals(rankedExamples,45,'test-window',arena.makeFighter);
-assert.deepEqual(variants.map(rival=>rival.strength),['Weaker','Balanced','Stronger']);
+assert.deepEqual(variants.map(rival=>rival.strength),['Weaker','Weaker','Balanced','Stronger','Stronger']);
 const baseline=rankedExamples.slice(0,3).reduce((sum,dragon)=>sum+dragon.power,0);
 const ratios=variants.map(rival=>rival.team.reduce((sum,dragon)=>sum+dragon.power,0)/baseline);
-assert(ratios[0]<ratios[1]&&ratios[1]<ratios[2],'Rival power rises across the three difficulty bands');
-assert(ratios.every((ratio,index)=>Math.abs(ratio-[.65,1,1.12][index])<.04),
+assert(ratios.length===5&&ratios.every((ratio,index)=>!index||ratio>ratios[index-1]),
+  'Rival power rises across five difficulty bands');
+assert(ratios.every((ratio,index)=>Math.abs(ratio-[.55,.75,.95,1.1,1.25][index])<.04),
   'Virtual teams tune close to their configured Combat Power targets');
-assert.equal(new Set(variants.map(rival=>rival.team.map(dragon=>dragon.species).join('|'))).size,3,
-  'Rivals use three different top-ten rank bands');
+assert.equal(new Set(variants.map(rival=>rival.team.map(dragon=>dragon.species).join('|'))).size,5,
+  'Rivals use five different top-ten rank bands');
 function profile(speciesId){return {player:{level:45},buildings:[{id:1,type:'arena'}],
   dragons:[1,2,3].map(id=>({id,species:speciesId,level:50,nickname:speciesId+' '+id}))};}
 fs.writeFileSync(path.join(profilesDir,'red.json'),JSON.stringify(profile(doubleId('fire',1))));
@@ -85,7 +86,7 @@ async function run(){
   await arena.team({id:'red'},{attack:[1,2,3]});
   await arena.team({id:'blue'},{attack:[1,2,3]});
   const rivals=await arena.list({id:'red'});
-  assert.equal(rivals.opponents.length,3,'Arena should generate three server-side AI rivals');
+  assert.equal(rivals.opponents.length,5,'Arena should generate five server-side AI rivals');
   assert(rivals.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
     'Opponent teams and power details stay hidden until battle start');
   assert(rivals.dragons.every(dragon=>Number.isFinite(dragon.power))&&
@@ -132,7 +133,11 @@ async function run(){
   await assert.rejects(()=>arena.challenge({id:'red'},{opponentId:rivals.opponents[0].id}),/No Arena attempts left/);
   const arenaFile=path.join(dataDir,'arena','red.json'),saved=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
   saved.windowKey='expired-window';fs.writeFileSync(arenaFile,JSON.stringify(saved));
-  assert.equal((await arena.list({id:'red'})).attemptsRemaining,3,'New server window restores three attempts');
+  const scheduled=(await arena.list({id:'red'}));
+  assert.equal(scheduled.attemptsRemaining,3,'New server window restores three attempts');
+  assert.deepEqual(scheduled.defeatedOpponentIds,[],'Scheduled attempt reset preserves round defeat state');
+  assert.deepEqual(scheduled.opponents.map(r=>r.id),rivals.opponents.map(r=>r.id),
+    'Scheduled attempt reset preserves the five-rival round');
   const random=Math.random;
   try{
     Math.random=()=>.99;

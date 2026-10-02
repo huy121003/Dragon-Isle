@@ -49,7 +49,7 @@ try{
   assert.match(setup,/arena-roster-card/);assert.match(setup,/Fire Dragon/);
   assert.match(setup,/class="element-flag flag-sm primary"/);assert.match(setup,/class="rarity-gem"/);
   assert.match(setup,/--gem:#e45/);
-  assert.match(setup,/roster-power/);assert.match(setup,/4,250 power/);
+  assert.doesNotMatch(setup,/roster-power|4,250 power/);
   assert.match(setup,/href="#flag-fire"/);
   assert.match(setup,/fill="#e45"/);
   assert.match(setup,/aria-label="Filter: Fire"/);
@@ -72,6 +72,10 @@ try{
   assert.doesNotMatch(opponents,/Water Dragon|Lv20|Rookie Warden/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
+  const refill=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
+    data:{...data,attemptsRemaining:1}}}));
+  assert.match(refill,/Restore all attempts · 5 gems/);
+  assert.match(refill,/Your rival list stays until all five are defeated/);
   const defeated=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
     data:{...data,defeatedOpponentIds:['bot-1']}}}));
   assert.match(defeated,/Defeated this round/);
@@ -100,6 +104,7 @@ try{
     'Hai đội hình phải nằm sát sân đấu trước điều khiển skill');
   assert.match(fighting,/Your dragons · tap to switch/);
   assert.match(fighting,/Rival team/);
+  assert.doesNotMatch(fighting,/4,250 power|roster-power/);
   assert.doesNotMatch(fighting,/battle-feed|Recent moves/);
   const details=fighting.match(/<div class="battle-details-scroll"[^>]*>([\s\S]*)<\/div><\/div>$/)?.[1];
   assert(details&&details.includes('battle-controls')&&!details.includes('battle-feed'),

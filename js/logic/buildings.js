@@ -10,7 +10,7 @@ function unlockLand(x,y,currency){
     state.gems-=gemCost;
   }else if(!spendGold(cost))return;
   state.regions.push(region.id);state.expansions+=tiles.length;
-  gainPlayerXP(window.DragonEconomy.progression.landXp);
+  gainPlayerXP(window.DragonEconomy.progression.xpSources.land);
   const effect=gridToScreen(x+.5,y+.5);burst(effect.x,effect.y,"#c9f89b",15);
   ui.selection=null;
   AUDIO.play("place");updateUI();saveGame();
@@ -25,7 +25,7 @@ function unlockIsland(index){
   ui.cloudReveal={index,startedAt:performance.now()};
   const middle=Math.floor(island.size/DATA.islandRegionSize/2);
   state.regions.push(index+":"+middle+":"+middle);
-  gainPlayerXP(window.DragonEconomy.progression.islandXp);
+  gainPlayerXP(window.DragonEconomy.progression.xpSources.island);
   ui.selection=null;
   focusIsland(index);
   toast("Unlocked "+island.name+"!");AUDIO.play("place");updateUI();saveGame();
@@ -53,8 +53,9 @@ function upgradeBuilding(id){
   if(!b||b.stored||b.type==="decor")return;
   if(b.level>=maxBuildingLevel(b)){toast("This building is at its maximum level.");return;}
   if(b.upgradeEnds){toast("This building is upgrading.");return;}
-  if(b.type==="hatchery"&&state.player.level<1+b.level*4){
-    toast("Hatchery level "+(b.level+1)+" unlocks at player level "+(1+b.level*4)+".");return;
+  const hatcheryGate=b.type==="hatchery"?hatcheryUpgradePlayerLevel(b.level):1;
+  if(b.type==="hatchery"&&state.player.level<hatcheryGate){
+    toast("Hatchery level "+(b.level+1)+" unlocks at player level "+hatcheryGate+".");return;
   }
   const academyCost=b.type==="academy"?academyUpgradeCost(b.level):null;
   if(academyCost&&state.player.level<academyCost.playerLevel){
@@ -91,7 +92,7 @@ function harvest(b){
   const crop=cropById(b.crop.id);
   const amount=Math.round(crop.yield*(1+(b.level-1)*.2));
   state.food+=amount;b.crop=null;
-  gainPlayerXP(5+5*DATA.crops.indexOf(crop));
+  gainPlayerXP(window.DragonEconomy.progression.xpSources.crop[DATA.crops.indexOf(crop)]||0);
   const center=buildingCenter(b);
   burst(center.x,center.y,"#a8e873",18);
   floating("+"+money(amount)+" food",center.x,center.y-12);

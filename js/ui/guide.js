@@ -108,10 +108,14 @@ function guideIslands(){
       money(b.cost)+(type==='premiumCave'?' gem':' vàng'),
     String(b.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất']);
   const capacityRows=Array.from({length:DATA.buildings.habitat.maxLevel},(_,index)=>{
-    const level=index+1;
-    return [String(level),money(habitatGoldCapacity({type:'habitat',element:'fire',level})),
-      money(habitatGoldCapacity({type:'habitat',element:'time',level}))];
+    const level=index+1,fire={type:'habitat',element:'fire',level},time={type:'habitat',element:'time',level};
+    return [String(level),String(habitatCapacity(level)),
+      money(habitatGoldCapacity(fire)),money(habitatGoldCapacity(time)),
+      money(habitatGemCapacity(fire)),money(habitatGemCapacity(time))];
   });
+  const hatcheryRows=window.DragonEconomy.hatchery.nests.map((nests,index)=>[
+    String(index+1),String(nests),index<window.DragonEconomy.progression.hatcheryUpgradeLevels.length?
+      'Player Lv'+window.DragonEconomy.progression.hatcheryUpgradeLevels[index]:'—']);
   return '<h3>Đất, đảo và hệ mở khóa</h3>'+guideList([
     'Đảo mở tuần tự: cần mở hết vùng của đảo trước, đạt level mua trứng hệ đảo, sở hữu ít nhất một rồng có hệ đó và đủ gem. Rồng lai có chứa hệ đảo cũng được tính.',
     'Mở một vùng đất nhận '+window.DragonEconomy.progression.xpSources.land+' XP người chơi; mua đảo mới nhận '+window.DragonEconomy.progression.xpSources.island+' XP.',
@@ -119,7 +123,8 @@ function guideIslands(){
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+
     '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level','Giá trứng 1 hệ'],unlocks)+
     '<h3>Công trình</h3>'+guideTable(['Loại','Giá khởi điểm','Level tối đa','Kho / bán'],buildings)+
-    '<h3>Sức chứa vàng mẫu theo cấp Chuồng</h3>'+guideTable(['Cấp Chuồng','Lửa','Time'],capacityRows)+
+    '<h3>Sức chứa Habitat theo cấp</h3>'+guideTable(['Cấp','Rồng','Vàng Lửa','Vàng Time','Gem Lửa','Gem Time'],capacityRows)+
+    '<h3>Sức chứa Hatchery</h3>'+guideTable(['Cấp','Nest','Level nâng cấp yêu cầu'],hatcheryRows)+
     guideList([
       'Chuồng cấp 1–4 chứa lần lượt '+window.DragonEconomy.habitat.dragonCapacity.join(', ')+' rồng cùng hệ phù hợp. Sức chứa vàng và gem cũng tăng theo cấp Chuồng.',
       'Giá Chuồng phụ thuộc hệ được mở khóa và tổng số Chuồng hệ đó từng mua, kể cả những Chuồng đã bán. Ví dụ Chuồng Lửa tiếp theo giá '+money(habitatPurchaseCost('fire'))+' vàng; Chuồng Time tiếp theo giá '+money(habitatPurchaseCost('time'))+' vàng. Shop hiển thị giá thực tế và số lần mua.',

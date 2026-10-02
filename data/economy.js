@@ -55,6 +55,15 @@
       upgradeGemBase:b.upgrade.gemBase,upgradeGemLevelFactor:b.upgrade.gemLevelFactor,
       habitatGemUnlockLinear:b.upgrade.habitatGemUnlockLinear
     },
-    timers:c.timers,hatching:c.hatching,rewards:c.arena.rewards,academy:b.academy,visual:c.world.visual
+    timers:c.timers,hatching:c.hatching,
+    rewards:{
+      arenaGoldBase:c.arena.rewards.goldBase,
+      arenaGoldPerOpponentLevel:c.arena.rewards.goldPerOpponentLevel,
+      arenaFoodBase:c.arena.rewards.foodBase,
+      arenaFoodPerOpponentLevel:c.arena.rewards.foodPerOpponentLevel,
+      arenaGemBase:c.arena.rewards.gemBase,
+      arenaGemPer20Levels:c.arena.rewards.gemPer20Levels
+    },
+    academy:b.academy,visual:c.world.visual
   };
 });

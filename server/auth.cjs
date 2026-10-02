@@ -6,13 +6,21 @@ const {readJson,writeJson}=require('./store.cjs');
 const systemConfig=require('../js/config/system.js');
 const derive=promisify(scrypt);
 const authConfig=systemConfig.auth;
+/** Store only a one-way digest of session tokens on disk. */
 function digest(token){return createHash('sha256').update(token).digest('hex');}
+/** Validate username syntax and configured length bounds. */
 function validUsername(value){return typeof value==='string'&&value.length>=authConfig.usernameMin&&
   value.length<=authConfig.usernameMax&&/^[A-Za-z0-9_]+$/.test(value);}
+/** Validate configured password character and byte-length bounds. */
 function validPassword(value){return typeof value==='string'&&value.length>=authConfig.passwordMin&&
   value.length<=authConfig.passwordMax&&Buffer.byteLength(value)<=authConfig.passwordMaxBytes;}
+/** Build the HttpOnly session cookie using the shared session lifetime. */
 function cookie(token,secure){return 'dragon_session='+token+'; Path=/; HttpOnly; SameSite=Strict; Max-Age='+
   Math.floor(authConfig.sessionAgeMs/1000)+(secure?'; Secure':'');}
+/**
+ * Create the persistent authentication service.
+ * User/session mutations are serialized to avoid lost updates between requests.
+ */
 async function createAuth(dataDir){
   const usersPath=path.join(dataDir,'users.json'),sessionsPath=path.join(dataDir,'sessions.json');
   let users=await readJson(usersPath,[]),sessions=await readJson(sessionsPath,[]);
@@ -34,7 +42,8 @@ async function createAuth(dataDir){
   }
   return {
     async register(username,password){
-      if(!validUsername(username)||!validPassword(password))return {error:'Username must be 3–24 letters, numbers or underscores; password must be 8–128 characters.',status:400};
+      if(!validUsername(username)||!validPassword(password))return {error:'Username must be '+authConfig.usernameMin+'–'+authConfig.usernameMax+
+        ' letters, numbers or underscores; password must be '+authConfig.passwordMin+'–'+authConfig.passwordMax+' characters.',status:400};
       const salt=randomBytes(16).toString('hex');
       const hash=(await derive(password,salt,64)).toString('hex');
       return locked(async()=>{

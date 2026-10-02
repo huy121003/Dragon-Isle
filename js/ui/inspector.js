@@ -6,6 +6,10 @@
  * This module renders contextual actions only; domain mutation remains in
  * js/logic/* and is reached through data-action routing.
  */
+/**
+ * Render the contextual selection inspector from current UI/save state.
+ * This function emits only HTML/actions; mutation occurs later through handleAction().
+ */
 function updateInspector(){
   if(ui.mode){dom.inspector.innerHTML="";return;}
   const s=ui.selection;

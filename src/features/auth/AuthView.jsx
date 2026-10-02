@@ -10,9 +10,12 @@ export default function AuthView(){
   const [mode,setMode]=useState('login'),[error,setError]=useState('');
   const queryClient=useQueryClient();
   const mutation=useMutation({
-    mutationFn:values=>apiFetch('/api/auth/'+mode,{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(credentials)
-    }),
+    mutationFn:values=>{
+      const credentials=CredentialsSchema.parse(values);
+      return apiFetch('/api/auth/'+mode,{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(credentials)
+      });
+    },
     onSuccess:async()=>{
       await queryClient.invalidateQueries({queryKey:['auth','me']});
       window.location.reload();

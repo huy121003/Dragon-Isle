@@ -282,6 +282,22 @@ check('Habitat levels hold 2, 3, 4 and 5 dragons for assignment and hatching',()
  assert.equal(economy.run('occupants(buildingById(1)).length'),3);
  assert.equal(economy.run('state.eggs.length'),0);
 });
+check('standard upgrades require both gold and gems',()=>{
+ const fire={type:"habitat",element:"fire",level:1};
+ const time={type:"habitat",element:"time",level:1};
+ assert(economy.run('standardUpgradeCost('+JSON.stringify(time)+').gems')>
+   economy.run('standardUpgradeCost('+JSON.stringify(fire)+').gems'));
+ economy.run('state=newGame();state.gold=1000000;state.gems=0;');
+ const before=snapshot(economy,'{level:buildingById(1).level,ends:buildingById(1).upgradeEnds,gold:state.gold,gems:state.gems}');
+ economy.run('upgradeBuilding(1)');
+ assert.deepEqual(snapshot(economy,'{level:buildingById(1).level,ends:buildingById(1).upgradeEnds,gold:state.gold,gems:state.gems}'),before);
+ assert(economy.element('toast').textContent.includes('gems'));
+ const cost=snapshot(economy,'standardUpgradeCost(buildingById(1))');
+ economy.run('state.gems='+cost.gems+';upgradeBuilding(1)');
+ assert(economy.run('buildingById(1).upgradeEnds')>0);
+ assert.equal(economy.run('state.gems'),0);
+ assert.equal(economy.run('state.gold'),1000000-cost.gold);
+});
 check('Habitat purchase, upgrade cost and time scale by element',()=>{
  const fire={type:"habitat",element:"fire",level:1};
  const water={type:"habitat",element:"water",level:1};

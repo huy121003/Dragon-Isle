@@ -196,9 +196,11 @@ function farmLimit(level){
   return window.DragonRules.progression.farmLimit(level);
 }
 function farmCount(){return state.buildings.filter(function(b){return b.type==="farm";}).length;}
+/** Current dragon level cap derived from the active Dragon Academy. */
 function dragonLevelCap(){
   const academy=state?.buildings.find(b=>b.type==="academy"&&!b.stored);
-  return academy?DATA.progression.academyCaps[Math.min(academy.level-1,DATA.progression.academyCaps.length-1)]:30;
+  return academy?DATA.progression.academyCaps[Math.min(academy.level-1,DATA.progression.academyCaps.length-1)]:
+    window.DragonConfig.dragons.initialLevelCapWithoutAcademy;
 }
 /** Cost and ownership gates for the next Dragon Academy level. */
 function academyUpgradeCost(level){
@@ -211,8 +213,15 @@ function academyQualifiedDragonCount(cost){
     return dragon.level>=cost.requiredDragonLevel;
   }).length;
 }
-function dragonFeedProgress(dragon){return clamp(Math.floor(Number(dragon.feedProgress)||0),0,3);}
-function stageOf(dragon){return dragon.level<10?"Young":dragon.level<30?"Adult":"Elder";}
+/** Normalized number of feeds already applied toward the next dragon level. */
+function dragonFeedProgress(dragon){
+  return clamp(Math.floor(Number(dragon.feedProgress)||0),0,window.DragonConfig.world.feeding.feedsPerLevel-1);
+}
+/** Human-readable dragon lifecycle stage used by UI/art. */
+function stageOf(dragon){
+  const stages=window.DragonConfig.dragons.stages;
+  return dragon.level<stages.adultAt?"Young":dragon.level<stages.elderAt?"Adult":"Elder";
+}
 function dragonStats(dragon){
   const species=DATA.species[dragon.species];
   return window.DragonCombat.stats(species.elements,species.rarity,dragon.level,
@@ -273,7 +282,7 @@ function gemNextSeconds(building){
   const dragons=occupants(building);
   if(!dragons.length)return 0;
   return Math.ceil((1-Math.max(...dragons.map(function(d){return d.gemProgress||0;})))*
-    3600/DATA.gemPerDragonPerHour);
+    window.DragonConfig.world.gemSecondsPerHour/DATA.gemPerDragonPerHour);
 }
 /** Gold component of a standard building upgrade. */
 function upgradeCost(building){

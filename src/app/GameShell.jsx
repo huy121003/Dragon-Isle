@@ -1,7 +1,7 @@
 import React,{useEffect,useRef} from 'react';
 import {Button,Card,Modal,Space,Spin} from 'antd';
-import ArenaView from '../ArenaView.jsx';
-import ChallengeView from '../ChallengeView.jsx';
+import ArenaView from '../features/arena/ArenaView.jsx';
+import ChallengeView from '../features/challenge/ChallengeView.jsx';
 import { $,game,read,send,text } from './game-bridge.js';
 import {useGameRuntime} from './useGameRuntime.js';
 import {useAuth} from '../features/auth/useAuth.js';

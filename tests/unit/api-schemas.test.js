@@ -1,22 +1,22 @@
 import {describe,expect,it} from 'vitest';
-import {AdminUsersSchema,AuthMeSchema,ChallengeStatusSchema,parseWith} from '../../src/api/schemas.js';
+import {AuthMeSchema,ChallengeStatusSchema,ResourcePatchSchema} from '../../src/shared/schemas.js';
 
 describe('API schemas',()=>{
   it('accepts auth payloads while preserving compatible extra fields',()=>{
-    const parsed=parseWith(AuthMeSchema,{user:{id:'1',username:'trainer',role:'admin',extra:true}});
+    const parsed=AuthMeSchema.parse({user:{id:'1',username:'trainer',role:'admin',extra:true}});
     expect(parsed.user.username).toBe('trainer');
     expect(parsed.user.extra).toBe(true);
   });
   it('rejects malformed auth payloads',()=>{
-    expect(()=>parseWith(AuthMeSchema,{user:{id:1,username:null}})).toThrow(/invalid shape/i);
+    expect(()=>AuthMeSchema.parse({user:{id:1,username:null}})).toThrow();
   });
-  it('normalizes challenge players',()=>{
-    const parsed=parseWith(ChallengeStatusSchema,{players:[],match:null});
-    expect(parsed.players).toEqual([]);
-    expect(parsed.match).toBeNull();
+  it('validates challenge reconnect state',()=>{
+    const parsed=ChallengeStatusSchema.parse({match:{id:'m1',phase:'battle',opponent:'B',
+      opponentConnection:'reconnecting',opponentReconnectUntil:123}});
+    expect(parsed.match.opponentConnection).toBe('reconnecting');
   });
-  it('validates admin user collections',()=>{
-    const parsed=parseWith(AdminUsersSchema,{users:[{id:'1',username:'a',progress:{gold:10}}]});
-    expect(parsed.users[0].progress.gold).toBe(10);
+  it('rejects invalid resource mutations',()=>{
+    expect(ResourcePatchSchema.safeParse({gems:-1}).success).toBe(false);
+    expect(ResourcePatchSchema.safeParse({gold:1000,gems:20}).success).toBe(true);
   });
 });

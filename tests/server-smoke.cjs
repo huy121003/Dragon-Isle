@@ -214,7 +214,21 @@ async function launch(port){
       'Starting a match immediately consumes an attempt');
     assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:choices.opponents[1].id})).status,409,
       'A player cannot open another match while one is active');
-    let round=started;
+    const swapped=await (await arenaCall('turn','POST',cookieAdmin,
+      {action:'switch',dragonId:5,expectedTurn:started.battle.turn})).json();
+    assert.equal(swapped.battle.turn,started.battle.turn,'Swapping does not spend the Arena turn');
+    assert.equal(swapped.battle.attack[swapped.battle.activeAttack].id,5);
+    assert.equal(swapped.battle.events.at(-1).switchTo,'Backup');
+    assert.equal(swapped.battle.events.length,started.battle.events.length+1,
+      'The Arena AI does not attack when the player switches');
+    assert.equal(swapped.battle.eventSeq,started.battle.eventSeq+1);
+    assert.equal(swapped.battle.attack[swapped.battle.activeAttack].hp,
+      started.battle.attack[1].hp,'A free swap does not deal damage');
+    assert.equal((await arenaCall('turn','POST',cookieAdmin,
+      {action:'skill',skillIndex:2,expectedTurn:swapped.battle.turn,
+        expectedEvents:started.battle.eventSeq})).status,409,
+    'Reject a stale action even though a free swap kept the same turn');
+    let round=swapped;
     for(let i=0;i<80&&!round.result;i++)round=await (await arenaCall('turn','POST',cookieAdmin,
       {action:'skill',skillIndex:2,expectedTurn:round.battle.turn})).json();
     assert.equal(round.result?.won,true,'An Arena victory completes and keeps its existing rewards');

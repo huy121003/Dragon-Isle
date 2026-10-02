@@ -79,6 +79,22 @@ js/app/bridge.js           legacy game state -> React compatibility bridge
 `js/main.js` không chứa event listener chi tiết, interval hay bridge implementation.
 Các cadence/timing vẫn đọc từ `js/config/system.js`.
 
+### Guide content
+
+```text
+js/ui/guide.js              section registry + updates + renderGuide router
+js/ui/guide/shared.js       shared HTML helpers
+js/ui/guide/start.js        getting-started content
+js/ui/guide/dragons.js      dragon progression/care content
+js/ui/guide/breeding.js     breeding/incubation content
+js/ui/guide/islands.js      island/building content
+js/ui/guide/resources.js    economy/resource content
+js/ui/guide/combat.js       Arena/Challenge/skill/element content
+```
+
+Guide sections đọc cùng config/rules với gameplay; không hardcode lại team size,
+level gate hay combat multiplier trong router.
+
 ### Modal panels
 
 ```text

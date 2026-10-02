@@ -52,13 +52,24 @@ const {createChallenge}=require('../server/challenge.cjs');
     const first=(await duel.status(a)).match;
     assert.equal(first.myTurn,true);
     await assert.rejects(duel.turn(b,{action:'skill',skillIndex:0,expectedTurn:1,expectedEvents:0}),{status:409});
-    await duel.turn(a,{action:'skill',skillIndex:0,expectedTurn:1,expectedEvents:0});
+    const swappedA=(await duel.turn(a,{action:'switch',dragonId:5,
+      expectedTurn:1,expectedEvents:0})).match;
+    assert.equal(swappedA.myTurn,true,'Challenger keeps their action after swapping');
+    assert.equal(swappedA.battle.turn,1);
+    assert.equal(swappedA.battle.attack[swappedA.battle.activeAttack].id,5);
+    assert.equal(swappedA.eventSeq,1,'The swap is recorded for concurrency checks');
+    await duel.turn(a,{action:'skill',skillIndex:0,expectedTurn:1,expectedEvents:swappedA.eventSeq});
     const after=(await duel.status(b)).match;
     assert.equal(after.myTurn,true);
     assert.equal(after.battle.attack[0].id,2,'Each player sees their own team on the left');
     assert.equal(after.battle.events.at(-1).side,'defense','Events are mirrored for the invitee');
     await assert.rejects(duel.turn(a,{action:'skill',skillIndex:0,expectedTurn:1,expectedEvents:0}),{status:409});
-    const final=await duel.turn(b,{action:'forfeit',expectedTurn:1,expectedEvents:after.eventSeq});
+    const swappedB=(await duel.turn(b,{action:'switch',dragonId:5,
+      expectedTurn:1,expectedEvents:after.eventSeq})).match;
+    assert.equal(swappedB.myTurn,true,'Invitee also keeps their action after swapping');
+    assert.equal(swappedB.battle.turn,1);
+    assert.equal(swappedB.battle.attack[swappedB.battle.activeAttack].id,5);
+    const final=await duel.turn(b,{action:'forfeit',expectedTurn:1,expectedEvents:swappedB.eventSeq});
     assert.equal(final.finished,true);assert.equal(final.won,false);
     assert.match((await duel.status(a)).notice,/won/);
     assert.equal((await duel.status(b)).match,null);

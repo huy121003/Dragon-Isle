@@ -13,7 +13,6 @@ function paintFlag(b,time,night){
   structureBanner(.02,-.45,'#d46b62','#fff0bd',time);
   for(const s of [-1,1])structureEllipse(s*.18,.025,.04,.025,'#879d62');
 }
-let structureUnit=1,structureUnitX=1,structureUnitY=1;
 
 function drawBuilding(b,time){
   const f=buildingFootprint(b),v=footprintVertices(b.x,b.y,f.w,f.h);

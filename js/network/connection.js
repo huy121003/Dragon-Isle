@@ -1,11 +1,11 @@
 "use strict";
 (function(){
-  const RECONNECT_MS=5000,PROLONGED_MS=120000;
+  const config=window.DragonConfig.system.connection;
   let blocked=false,timer=null,saveAdapter=null;
   let state={status:"connected",since:0,nextRetryAt:0,attempts:0,message:""};
 
   function snapshot(){
-    return {...state,blocked,prolonged:state.since>0&&Date.now()-state.since>=PROLONGED_MS};
+    return {...state,blocked,prolonged:state.since>0&&Date.now()-state.since>=config.prolongedMs};
   }
   function publish(){
     window.DragonConnectionState=snapshot();
@@ -14,8 +14,8 @@
   function configure(adapter){saveAdapter=adapter||null;}
   function schedule(){
     if(timer||!blocked||state.status==="session-expired")return;
-    state.nextRetryAt=Date.now()+RECONNECT_MS;publish();
-    timer=setTimeout(()=>{timer=null;retry();},RECONNECT_MS);
+    state.nextRetryAt=Date.now()+config.retryMs;publish();
+    timer=setTimeout(()=>{timer=null;retry();},config.retryMs);
   }
   function fail(message){
     const now=Date.now();
@@ -35,7 +35,7 @@
     state={status:"session-expired",since:state.since||Date.now(),nextRetryAt:0,
       attempts:state.attempts,message:"Your session has expired. Returning to sign in…"};
     publish();
-    setTimeout(()=>{if(window.location&&typeof window.location.reload==="function")window.location.reload();},700);
+    setTimeout(()=>{if(window.location&&typeof window.location.reload==="function")window.location.reload();},config.sessionExpiredReloadMs);
   }
   async function retry(){
     if(!blocked)return true;

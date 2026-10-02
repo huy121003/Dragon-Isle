@@ -16,8 +16,8 @@ for(const attack of ids){
   assert.deepEqual(wins,db.khac[attack]);
   for(const target of ids){
     const value=db.typeChart[attack][target];
-    assert([.75,1,1.5].includes(value));
-    if(value===1.5)assert.equal(db.typeChart[target][attack],.75);
+    assert([.75,1,2].includes(value));
+    if(value===2)assert.equal(db.typeChart[target][attack],.75);
   }
   assert(!('tocDo' in db.elements[attack].chiSo));
 }
@@ -28,6 +28,8 @@ const rare=combat.stats(['fire','water'],'rare',25,db.elements,db.rarities);
 assert(fireHigher.hp>fire.hp&&fireHigher.attack>fire.attack&&fireHigher.defense>fire.defense);
 assert(rare.hp>fire.hp&&rare.attack>fire.attack);
 assert.deepEqual(Object.keys(fire),['hp','attack','defense']);
+const rawDefense=Math.round(db.elements.fire.chiSo.phongThu*db.rarities.common.heSoChiSo*(1+.07*24+.0003*24**2));
+assert.equal(fire.defense,Math.round(rawDefense*.6),'Global defense scale should lower armor by 40%');
 for(let stars=1;stars<=5;stars++){
   const enhanced=combat.stats(['fire'],'common',25,db.elements,db.rarities,stars);
   for(const stat of ['hp','attack','defense'])
@@ -61,11 +63,11 @@ try{
   assert.equal(first.damage,expected,'Arena damage must match shared combat rules');
   const starred=arena.fight([{...fighters[0],stars:5}],defenders).events[0];
   assert(starred.damage>first.damage,'Arena must use enhanced attack on the server');
-  assert.equal(first.matchup,1.5,'Combat event reports the actual target primary matchup');
+  assert.equal(first.matchup,2,'Combat event reports the actual target primary matchup');
   const counter=arena.fight(fighters,[{id:3,species:'water',level:25,nickname:'Water'}]).events[1];
   assert.equal(counter.side,'defense');
   assert.equal(counter.skill,'Tidal Surge','Defense should choose its strongest effective attack');
-  assert.equal(counter.matchup,1.5);
+  assert.equal(counter.matchup,2);
   const neutral=arena.fight(fighters,[{id:4,species:'fire',level:25,nickname:'Mirror'}]).events[1];
   assert.equal(neutral.skill,'Inferno Burst','Without a counter, defense should favor higher damage');
 }finally{Math.random=random;}

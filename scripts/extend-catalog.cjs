@@ -48,7 +48,7 @@ function extendCatalog(db,game){
   if(ids.length!==Object.keys(expansion.wins).length)throw Error('Element chart out of sync.');
   db.typeChart=Object.fromEntries(ids.map(a=>[a,Object.fromEntries(ids.map(b=>
     [b,a===b?1:expansion.wins[a].includes(b)?2:
-      expansion.wins[b].includes(a)?0.75:1]))]));
+      expansion.wins[b].includes(a)?0.5:1]))]));
   for(const id of ids){
     const outgoing=ids.filter(b=>db.typeChart[id][b]>1);
     const incoming=ids.filter(a=>db.typeChart[a][id]>1);

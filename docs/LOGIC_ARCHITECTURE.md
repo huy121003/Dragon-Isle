@@ -95,6 +95,18 @@ js/ui/guide/combat.js       Arena/Challenge/skill/element content
 Guide sections đọc cùng config/rules với gameplay; không hardcode lại team size,
 level gate hay combat multiplier trong router.
 
+### Legacy interaction UI
+
+```text
+js/ui/input.js       canvas pointer/pan/zoom/drag gesture state
+js/ui/actions.js     declarative data-action router
+js/ui/inspector.js   contextual selection/building/dragon inspector
+js/ui/core.js        toast/header/dock/modal lifecycle shell
+```
+
+`input.js` không dispatch gameplay action theo button; `actions.js` không xử lý pointer geometry.
+`inspector.js` chỉ render action markup, mutation đi qua action router/domain logic.
+
 ### Modal panels
 
 ```text

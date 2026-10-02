@@ -2,10 +2,20 @@
 const path=require('node:path');
 const {randomUUID}=require('node:crypto');
 const {readJson,writeJson}=require('./store.cjs');
-const ONLINE_SAVE_MS=35000,INVITE_MS=30000,IDLE_MS=5*60*1000;
-const MATCH_HEARTBEAT_MS=8000,MATCH_RECONNECT_MS=60000;
+const challengeConfig=require('../js/config/challenge.js');
 function error(message,status=409){return Object.assign(new Error(message),{status});}
-function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=MATCH_HEARTBEAT_MS,reconnectMs=MATCH_RECONNECT_MS,
+/**
+ * Create the live Challenge state machine.
+ * @param {object} options
+ * @param {object} options.auth - Session/account service.
+ * @param {string} options.profilesDir - Profile persistence directory.
+ * @param {object} options.arena - Shared fighter/battle engine facade.
+ * @param {Function} options.now - Injectable clock for deterministic tests.
+ * @param {number} options.heartbeatMs - Delay before opponent is shown reconnecting.
+ * @param {number} options.reconnectMs - Grace period before a disconnected duel is released.
+ */
+function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
+  heartbeatMs=challengeConfig.heartbeatMs,reconnectMs=challengeConfig.reconnectGraceMs,
   stateFile=path.join(profilesDir,'_challenge-state.json')}){
   const matches=new Map(),byUser=new Map(),notices=new Map();
   let pending=Promise.resolve(),loaded=false;
@@ -16,7 +26,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
       if(Array.isArray(pair)&&pair.length===2)notices.set(pair[0],pair[1]);
     for(const raw of Array.isArray(stored?.matches)?stored.matches:[]){
       if(!raw||!raw.id||!Array.isArray(raw.players)||raw.players.length!==2||
-        !['invited','select','battle'].includes(raw.phase)||raw.players.some(id=>byUser.has(id)))continue;
+        !Object.values(challengeConfig.phases).includes(raw.phase)||raw.players.some(id=>byUser.has(id)))continue;
       if(raw.players.some(id=>!users().some(user=>user.id===id)))continue;
       const fallback=Number(raw.updatedAt)||now();
       raw.seen=Array.isArray(raw.seen)&&raw.seen.length===2?raw.seen.map(v=>Number(v)||fallback):[fallback,fallback];
@@ -34,7 +44,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
     if(!users().some(u=>u.id===id&&!u.disabled&&u.challengeEnabled)||
       !auth.hasActiveSession(id))return false;
     const saved=Number((await profile(id))?.savedAt)||0;
-    return saved<=now()&&saved>now()-ONLINE_SAVE_MS;
+    return saved<=now()&&saved>now()-challengeConfig.lobbySaveFreshMs;
   }
   function release(match,message){
     matches.delete(match.id);
@@ -48,7 +58,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
     const index=match.players.indexOf(id);
     if(index<0)return false;
     match.seen[index]=now();
-    if(now()-(Number(match.persistedAt)||0)>=5000){match.persistedAt=now();return true;}
+    if(now()-(Number(match.persistedAt)||0)>=challengeConfig.persistHeartbeatMs){match.persistedAt=now();return true;}
     return false;
   }
   function presence(match,index){
@@ -59,8 +69,8 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
   async function sweep(){
     let changed=false;
     for(const match of [...matches.values()]){
-      if(match.phase==='invited'&&match.until<now()){release(match,'Challenge invitation expired.');changed=true;}
-      else if(match.updatedAt+IDLE_MS<now()){release(match,'Challenge ended due to inactivity.');changed=true;}
+      if(match.phase===challengeConfig.phases.INVITED&&match.until<now()){release(match,'Challenge invitation expired.');changed=true;}
+      else if(match.updatedAt+challengeConfig.idleMs<now()){release(match,'Challenge ended due to inactivity.');changed=true;}
       else if(match.players.some(id=>!sessionAvailable(id))){
         release(match,'Challenge ended because a player signed out or became unavailable.');changed=true;
       }else if(match.seen.some(last=>now()-(Number(last)||0)>reconnectMs)){
@@ -71,7 +81,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
   }
   async function qualified(id){
     const p=await profile(id);
-    return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=3;
+    return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=challengeConfig.teamSize;
   }
   function view(match,id){
     const index=match.players.indexOf(id),opponentId=match.players[1-index];
@@ -82,8 +92,8 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
       opponentReady:!!match.ready[1-index],selection:match.selection[index]||[],
       updatedAt:match.updatedAt,opponentConnection:opponentPresence.state,
       opponentReconnectUntil:opponentPresence.reconnectUntil};
-    if(match.phase==='select')result.roster=match.rosters[index];
-    if(match.phase==='battle'){
+    if(match.phase===challengeConfig.phases.SELECT)result.roster=match.rosters[index];
+    if(match.phase===challengeConfig.phases.BATTLE){
       const reverse=index===1,raw=arena.publicBattle(match.battle);
       const flip=side=>side==='attack'?'defense':side==='defense'?'attack':side;
       const swapEvent=e=>reverse?{...e,side:flip(e.side),targetSide:flip(e.targetSide),
@@ -124,8 +134,8 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
         byUser.has(user.id)||byUser.has(other.id)||!await qualified(user.id)||!await qualified(other.id))
         throw error('This player is unavailable or not eligible.');
       const started=now();
-      const match={id:randomUUID(),players:[user.id,other.id],phase:'invited',
-        until:started+INVITE_MS,updatedAt:started,seen:[started,started],persistedAt:started,selection:[null,null],
+      const match={id:randomUUID(),players:[user.id,other.id],phase:challengeConfig.phases.INVITED,
+        until:started+challengeConfig.inviteMs,updatedAt:started,seen:[started,started],persistedAt:started,selection:[null,null],
         ready:[false,false],rosters:[null,null],battle:null};
       matches.set(match.id,match);byUser.set(user.id,match.id);byUser.set(other.id,match.id);
       await persist();return {match:view(match,user.id)};
@@ -134,7 +144,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
   async function respond(user,accept){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
-      if(!match||match.phase!=='invited'||match.players[1]!==user.id)throw error('Invitation is no longer available.');
+      if(!match||match.phase!==challengeConfig.phases.INVITED||match.players[1]!==user.id)throw error('Invitation is no longer available.');
       const heartbeatDirty=touch(match,user.id);
       if(!accept){release(match,'Challenge declined by '+user.username+'.');await persist();return {ok:true};}
       const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
@@ -148,22 +158,22 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
         throw error('Dragon eligibility changed.');
       }
       match.rosters=profiles.map(p=>arena.summary(p,p.dragons.map(d=>d.id)));
-      match.phase='select';match.updatedAt=now();
+      match.phase=challengeConfig.phases.SELECT;match.updatedAt=now();
       await persist();return {match:view(match,user.id)};
     });
   }
   async function select(user,ids){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
-      if(!match||match.phase!=='select')throw error('Team selection has ended.');
+      if(!match||match.phase!==challengeConfig.phases.SELECT)throw error('Team selection has ended.');
       const heartbeatDirty=touch(match,user.id);
       const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. Team selection is paused.');
       }
-      if(!Array.isArray(ids)||ids.length!==3||ids.some(id=>!Number.isInteger(id))||
-        new Set(ids).size!==3)throw error('Choose exactly three different dragons.',400);
+      if(!Array.isArray(ids)||ids.length!==challengeConfig.teamSize||ids.some(id=>!Number.isInteger(id))||
+        new Set(ids).size!==challengeConfig.teamSize)throw error('Choose exactly three different dragons.',400);
       const p=await profile(user.id);
       if(!ids.every(id=>p?.dragons?.some(d=>d.id===id&&arena.eligible(p,d))))
         throw error('Some selected dragons are no longer eligible.',400);
@@ -183,7 +193,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
         match.battle={opponent:users().find(u=>u.id===match.players[1])?.username,
           turn:1,nextSide:'attack',attack:fighters[0],defense:fighters[1],
           activeAttack:0,activeDefense:0,events:[],reward:{gold:0,food:0,gems:0}};
-        match.phase='battle';
+        match.phase=challengeConfig.phases.BATTLE;
       }
       await persist();return {match:view(match,user.id)};
     });
@@ -191,7 +201,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
   async function turn(user,body){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
-      if(!match||match.phase!=='battle')throw error('The duel has ended.');
+      if(!match||match.phase!==challengeConfig.phases.BATTLE)throw error('The duel has ended.');
       const heartbeatDirty=touch(match,user.id);
       const sideIndex=match.players.indexOf(user.id),opponent=presence(match,1-sideIndex);
       if(opponent.state!=='online'){

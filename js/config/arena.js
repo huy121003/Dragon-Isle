@@ -14,7 +14,7 @@
     /** Exact number of dragons required in the player's attack team. */
     teamSize:3,
     /** Owned dragon level range accepted by Arena and live Challenge. */
-    minBattleLevel:10,
+    minBattleLevel:5,
     maxBattleLevel:100,
     /** Attempts granted per server-time reset window. */
     attemptsPerWindow:3,

@@ -134,10 +134,18 @@ try{
     'Each reserve dragon portrait sits inside a framed tile');
   assert.equal((fighting.match(/class="arena-reserve-flags"/g)||[]).length,4,
     'Every reserve tile shows element flags instead of element names');
+  assert.equal((fighting.match(/class="arena-reserve-vitals"/g)||[]).length,4,
+    'Reserve flags and HP share a column beside the avatar');
   const firstReserve=fighting.slice(fighting.indexOf('class="arena-reserve-button'),fighting.indexOf('</button>',fighting.indexOf('class="arena-reserve-button')));
-  assert(firstReserve.indexOf('arena-reserve-avatar-frame')<firstReserve.indexOf('arena-reserve-flags')&&
+  assert(firstReserve.indexOf('arena-reserve-avatar-frame')<firstReserve.indexOf('arena-reserve-vitals')&&
     firstReserve.indexOf('arena-reserve-flags')<firstReserve.indexOf('arena-reserve-hp'),
-    'Reserve HP bar sits below the portrait and element flags');
+    'Our avatar is left; flags sit above HP in the right column');
+  const rivalStart=fighting.indexOf('arena-reserve-side defense');
+  const rivalButton=fighting.slice(fighting.indexOf('class="arena-reserve-button',rivalStart),
+    fighting.indexOf('</button>',fighting.indexOf('class="arena-reserve-button',rivalStart)));
+  assert(rivalButton.indexOf('arena-reserve-vitals')<rivalButton.indexOf('arena-reserve-avatar-frame')&&
+    rivalButton.indexOf('arena-reserve-flags')<rivalButton.indexOf('arena-reserve-hp'),
+    'Rival flags and HP are left of its avatar');
   assert.match(firstReserve,/href="#flag-fire"/);
   assert.doesNotMatch(fighting,/arena-reserve-copy|arena-battle-reserves/);
   assert.doesNotMatch(fighting,/arena-parties|arena-battle-party/,
@@ -158,6 +166,7 @@ try{
     'Challenge shows HP bars for every reserve dragon');
   assert.equal((duel.match(/class="arena-reserve-flags"/g)||[]).length,4,
     'Challenge also shows flags rather than element text');
+  assert.equal((duel.match(/class="arena-reserve-vitals"/g)||[]).length,4);
   assert(duel.indexOf('arena-stage-controls')<duel.indexOf('battle-skill-grid'),
     'Challenge skills are inside the battlefield');
   assert.doesNotMatch(duel,/battle-bench|battle-switch-list|battle-feed|battle-details-scroll|Recent moves/,
@@ -201,6 +210,9 @@ try{
       special:true,skillId:'pure-double-1',effect:'heal'}}));
   assert.match(support,/self-target support/);assert.match(support,/fx-special-seal/);
   assert.match(support,/\+120 HP/);assert.doesNotMatch(support,/matchup-mark/);
+  const positioned=renderToStaticMarkup(React.createElement(SkillEffect,{frame:7,anchors:{
+    attack:{x:120,y:300},defense:{x:480,y:350}},event:{damage:90,skill:'Claw',side:'attack'}}));
+  assert.match(positioned,/--fx-origin-y:300px;--fx-target-y:350px;--fx-damage-y:308px/);
   assert.equal(renderToStaticMarkup(React.createElement(SkillEffect,{event:{switchTo:'Alex'}})),'');
   const styles=readFileSync(new URL('../src/arena.css',import.meta.url),'utf8');
   assert.match(styles,/\.battle-modal \.battle-stage\{flex:1 1 auto;height:auto;min-height:320px\}/,
@@ -211,8 +223,12 @@ try{
     'Active dragon details start at the top of each side');
   assert.match(styles,/\.battle-modal \.arena-stage-controls\{[^}]*bottom:7px/,
     'Skill controls stay anchored at the bottom of the field');
-  assert.match(styles,/\.battle-modal \.battle-skill-fx \.fx-impact,\.battle-modal \.battle-skill-fx \.fx-special-seal\{top:64%\}/,
-    'Skill impact effects land near the dragon body instead of above its head');
+  assert.match(styles,/\.battle-modal \.battle-skill-fx \.fx-impact,\.battle-modal \.battle-skill-fx \.fx-special-seal\{top:var\(--fx-target-y,68%\)\}/,
+    'Skill effects follow the measured dragon torso height');
+  assert.match(styles,/\.battle-modal \.arena-reserve-side\{[^}]*grid-template-columns:minmax\(0,1fr\)/,
+    'Reserve dragons form a vertical stack on both sides');
+  assert.match(styles,/\.battle-modal \.battle-vs\{align-self:start/,
+    'VS is aligned with the top fighter details');
   assert(styles.includes('.battle-skill-fx.normal .fx-projectile'));
   assert(styles.includes('.battle-skill-fx.support .fx-trail'));
   for(const element of ['war','pure','legend','primal','time'])

@@ -1,9 +1,10 @@
 /* Live, invitation-only duels. No Arena building, currency reward or cooldown. */
 const path=require('node:path');
 const {randomUUID}=require('node:crypto');
-const {readJson,writeJson}=require('./store.cjs');
+const {readJson}=require('./store.cjs');
 const challengeConfig=require('../js/config/challenge.js');
 const {createPresence}=require('./challenge/presence.cjs');
+const {createChallengeStore}=require('./challenge/store.cjs');
 function error(message,status=409){return Object.assign(new Error(message),{status});}
 /**
  * Create the live Challenge state machine.
@@ -18,33 +19,16 @@ function error(message,status=409){return Object.assign(new Error(message),{stat
 function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
   heartbeatMs=challengeConfig.heartbeatMs,reconnectMs=challengeConfig.reconnectGraceMs,
   stateFile=path.join(profilesDir,'_challenge-state.json')}){
-  const matches=new Map(),byUser=new Map(),notices=new Map();
-  let pending=Promise.resolve(),loaded=false;
-  async function ensureLoaded(){
-    if(loaded)return;loaded=true;
-    const stored=await readJson(stateFile,{matches:[],notices:[]});
-    for(const pair of Array.isArray(stored?.notices)?stored.notices:[])
-      if(Array.isArray(pair)&&pair.length===2)notices.set(pair[0],pair[1]);
-    for(const raw of Array.isArray(stored?.matches)?stored.matches:[]){
-      if(!raw||!raw.id||!Array.isArray(raw.players)||raw.players.length!==2||
-        !Object.values(challengeConfig.phases).includes(raw.phase)||raw.players.some(id=>byUser.has(id)))continue;
-      if(raw.players.some(id=>!users().some(user=>user.id===id)))continue;
-      const fallback=Number(raw.updatedAt)||now();
-      raw.seen=Array.isArray(raw.seen)&&raw.seen.length===2?raw.seen.map(v=>Number(v)||fallback):[fallback,fallback];
-      raw.persistedAt=Number(raw.persistedAt)||fallback;
-      matches.set(raw.id,raw);raw.players.forEach(id=>byUser.set(id,raw.id));
-    }
-  }
-  async function persist(){
-    await writeJson(stateFile,{matches:[...matches.values()],notices:[...notices.entries()]});
-  }
-  function locked(fn){const next=pending.catch(()=>{}).then(async()=>{await ensureLoaded();return fn();});pending=next;return next;}
+  let pending=Promise.resolve();
   const profile=id=>readJson(path.join(profilesDir,id+'.json'),null);
   const users=()=>auth.listUsers();
+  const store=createChallengeStore({stateFile,users,now});
+  const {matches,byUser,notices,persist,release}=store;
   const presencePolicy=createPresence({auth,users,profile,now,heartbeatMs,reconnectMs});
-  function release(match,message){
-    matches.delete(match.id);
-    for(const id of match.players){byUser.delete(id);notices.set(id,message);}
+  /** Serialize state transitions so two requests cannot mutate one match concurrently. */
+  function locked(fn){
+    const next=pending.catch(()=>{}).then(async()=>{await store.ensureLoaded();return fn();});
+    pending=next;return next;
   }
   async function sweep(){
     let changed=false;

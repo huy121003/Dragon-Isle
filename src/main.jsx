@@ -236,16 +236,22 @@ function App(){
     const sequence=++challengeSequence.current;
     try{
       const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
-      if(!response.ok)return;
+      if(response.status===401){window.DragonConnectionApi?.expire();return;}
+      if(!response.ok){
+        if(response.status>=500)window.DragonConnectionApi?.fail('Challenge server is unavailable.');
+        return;
+      }
       const next=await response.json();
       if(sequence!==challengeSequence.current)return;
       if(next.notice)message.info(next.notice,5);
-      setChallenge(current=>({...next,error:current?.error||null,busy:challengeRequestBusy.current}));
+      setChallenge({...next,error:null,busy:challengeRequestBusy.current});
       if(next.match)setChallengeOpen(true);
-    }catch(error){}
+    }catch(error){
+      window.DragonConnectionApi?.fail('Connection to the challenge server was lost.');
+    }
   }
   async function challengeRequest(route,body,method='POST'){
-    if(challengeRequestBusy.current)return;
+    if(challengeRequestBusy.current||window.DragonConnectionState?.blocked)return;
     challengeRequestBusy.current=true;
     try{
       setChallenge(current=>({...current,busy:true,error:null}));
@@ -253,11 +259,17 @@ function App(){
         throw new Error('Unable to save dragons before the challenge.');
       const response=await fetch('/api/challenge/'+route,{method,credentials:'same-origin',
         headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
-      const result=await response.json();
-      if(!response.ok)throw new Error(result.error||'Challenge request failed.');
+      if(response.status===401){window.DragonConnectionApi?.expire();return;}
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok){
+        if(response.status>=500)window.DragonConnectionApi?.fail('Challenge server is unavailable.');
+        throw new Error(result.error||'Challenge request failed.');
+      }
       await challengeStatus();
-    }catch(error){setChallenge(current=>({...current,error:error.message}));}
-    finally{challengeRequestBusy.current=false;setChallenge(current=>({...current,busy:false}));}
+    }catch(error){
+      if(error instanceof TypeError)window.DragonConnectionApi?.fail('Connection to the challenge server was lost.');
+      setChallenge(current=>({...current,error:error.message}));
+    }finally{challengeRequestBusy.current=false;setChallenge(current=>({...current,busy:false}));}
   }
   useEffect(()=>{
     document.body.classList.add('react-ready');
@@ -280,6 +292,9 @@ function App(){
     const timer=setInterval(challengeStatus,2000);
     return()=>clearInterval(timer);
   },[account?.id]);
+  useEffect(()=>{
+    if(account&&!connection?.blocked)challengeStatus();
+  },[account?.id,connection?.blocked]);
   useEffect(()=>{
     if(!account||!hudRef.current||!dockRef.current)return;
     const root=$('react-root');

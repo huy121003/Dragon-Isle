@@ -1,7 +1,7 @@
 /* Editable economy and animation constants shared by the browser modules. */
 window.DragonEconomy={
   starting:{gold:10000,food:2500,gems:20},
-  progression:{xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
+  progression:{contentLevelCap:60,xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
     levelGoldBase:1000,levelGoldStep:250,levelFoodBase:200,levelFoodStep:50,
     levelGems:1,milestoneGemBonus:3,
     xpSources:{buildingBuild:{habitat:35,farm:30,cave:75,premiumCave:100,academy:100,arena:100,decor:5},
@@ -19,7 +19,8 @@ window.DragonEconomy={
   island:{gemPerIsland:100},
   land:{homeFirstRegionGold:1200,nextIslandMultiplier:1.2,expansionMultiplier:1.2,islandTierLinear:.9,islandTierQuadratic:.15,goldPerGem:5000},
   habitat:{goldBase:5000,goldPerUnlockLevel:450,goldLevelFactor:4.2,
-    dragonCapacity:[2,3,4,5],gemCapacityBase:3},
+    dragonCapacity:[2,3,4,5],gemCapacityBase:3,
+    upgradeTimeUnlockLinear:.018,upgradeTimeUnlockQuadratic:.00035},
   hatchery:{nests:[1,2,3,4,5]},
   shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
     habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,

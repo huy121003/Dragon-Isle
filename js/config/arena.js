@@ -20,6 +20,8 @@
     attemptsPerWindow:3,
     /** Reset boundaries are 00:00, 08:00 and 16:00 Vietnam time. */
     attemptWindowMs:8*60*60*1000,
+    /** Target rival squad Combat Power relative to the player's three strongest dragons. */
+    rivalPowerRatios:Object.freeze([.65,1,1.12]),
     /** Safety cap that ends battles which cannot naturally reach a knockout. */
     maxTurns:80,
     /** Number of recent authoritative events exposed to clients. */

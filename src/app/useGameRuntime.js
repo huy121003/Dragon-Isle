@@ -1,13 +1,17 @@
-import {useEffect,useState} from 'react';
-import {connectionState,game} from './game-bridge.js';
+import {useEffect} from 'react';
+import {connectionState} from './game-bridge.js';
+import {useAppStore} from '../store/app-store.js';
 
 export function useGameRuntime(){
-  const [,setVersion]=useState(0);
-  const [connection,setConnection]=useState(()=>connectionState());
+  const engineVersion=useAppStore(state=>state.engineVersion);
+  const connection=useAppStore(state=>state.connection);
+  const bumpEngine=useAppStore(state=>state.bumpEngine);
+  const syncConnection=useAppStore(state=>state.syncConnection);
+
   useEffect(()=>{
     document.body.classList.add('react-ready');
-    const refresh=()=>setVersion(value=>value+1);
-    const refreshConnection=()=>setConnection({...connectionState()});
+    const refresh=()=>bumpEngine();
+    const refreshConnection=()=>syncConnection();
     const unsubscribe=window.DragonRuntime?.subscribe?.(refresh);
     if(!unsubscribe)window.addEventListener('dragon-ui-update',refresh);
     window.addEventListener('dragon-connection-change',refreshConnection);
@@ -19,19 +23,9 @@ export function useGameRuntime(){
       if(unsubscribe)unsubscribe();else window.removeEventListener('dragon-ui-update',refresh);
       window.removeEventListener('dragon-connection-change',refreshConnection);
     };
-  },[]);
-  return {game:game(),state:game()?.state,ui:game()?.ui,connection};
-}
+  },[bumpEngine,syncConnection]);
 
-export function useAccount(){
-  const [account,setAccount]=useState(null),[ready,setReady]=useState(false);
-  useEffect(()=>{
-    let alive=true;
-    fetch('/api/auth/me',{cache:'no-store'}).then(async response=>
-      response.ok?(await response.json()).user:null)
-      .then(user=>{if(alive){setAccount(user);setReady(true);}})
-      .catch(()=>{if(alive)setReady(true);});
-    return()=>{alive=false;};
-  },[]);
-  return {account,ready};
+  const current=window.DragonRuntime?.game?.()||window.DragonGame;
+  return {engineVersion,game:current,state:current?.state,ui:current?.ui,
+    connection:connection||connectionState()};
 }

@@ -69,7 +69,13 @@ function upgradeBuilding(id){
       toast("Upgrade needs "+academyCost.gold+" gold, "+academyCost.food+" food and "+academyCost.gems+" gems.");return;
     }
     state.gold-=academyCost.gold;state.food-=academyCost.food;state.gems-=academyCost.gems;
-  }else if(!spendGold(upgradeCost(b)))return;
+  }else{
+    const cost=standardUpgradeCost(b);
+    if(state.gold<cost.gold||state.gems<cost.gems){
+      toast("Upgrade needs "+money(cost.gold)+" gold and "+money(cost.gems)+" gems.");return;
+    }
+    state.gold-=cost.gold;state.gems-=cost.gems;
+  }
   b.upgradeStartedAt=Date.now();
   b.upgradeEnds=b.upgradeStartedAt+upgradeSeconds(b)*1000;
   toast("Upgrading "+buildingName(b)+".");

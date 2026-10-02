@@ -16,7 +16,7 @@ assert.match(modal,/open={!!connection\?\.blocked}/);
 assert.match(modal,/closable={false}/);
 assert.match(modal,/maskClosable={false}/);
 assert.match(modal,/keyboard={false}/);
-assert.match(modal,/zIndex={5000}/);
+assert.match(modal,/zIndex=\{5000\}/);
 assert.match(modal,/Retrying automatically in/);
 assert.match(modal,/Still trying to reconnect/);
 assert.match(modal,/Try again now/);

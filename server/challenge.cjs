@@ -117,8 +117,8 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
         throw error('Opponent is reconnecting. Please wait before accepting.');
       }
       const profiles=await Promise.all(match.players.map(profile));
-      if(profiles.some(p=>p?.dragons?.filter(d=>arena.eligible(p,d)).length<3)){
-        release(match,'A player no longer has three eligible dragons.');await persist();
+      if(profiles.some(p=>p?.dragons?.filter(d=>arena.eligible(p,d)).length<challengeConfig.teamSize)){
+        release(match,'A player no longer has '+challengeConfig.teamSize+' eligible dragons.');await persist();
         throw error('Dragon eligibility changed.');
       }
       match.rosters=profiles.map(p=>arena.summary(p,p.dragons.map(d=>d.id)));
@@ -137,7 +137,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
         throw error('Opponent is reconnecting. Team selection is paused.');
       }
       if(!Array.isArray(ids)||ids.length!==challengeConfig.teamSize||ids.some(id=>!Number.isInteger(id))||
-        new Set(ids).size!==challengeConfig.teamSize)throw error('Choose exactly three different dragons.',400);
+        new Set(ids).size!==challengeConfig.teamSize)throw error('Choose exactly '+challengeConfig.teamSize+' different dragons.',400);
       const p=await profile(user.id);
       if(!ids.every(id=>p?.dragons?.some(d=>d.id===id&&arena.eligible(p,d))))
         throw error('Some selected dragons are no longer eligible.',400);

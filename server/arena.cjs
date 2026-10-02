@@ -1,7 +1,6 @@
 /* PvP: máy chủ giữ đội hình, thời gian chờ và tung kết quả trận. */
 const path=require('node:path');
 const {readJson,updateJson}=require('./store.cjs');
-const economy=require('../data/economy.js');
 const arenaConfig=require('../js/config/arena.js');
 const progressionConfig=require('../js/config/progression.js');
 const {createEligibility}=require('./arena/eligibility.cjs');
@@ -87,13 +86,13 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       const attack=summary(attackerProfile,setup.attack).map(fighter).filter(Boolean);
       const defense=summary(defenderProfile,defenderSetup.defense).map(fighter).filter(Boolean);
       if(!attack.length||!defense.length)throw Object.assign(new Error('Invalid team.'),{status:400});
-      const rewardRules=economy.rewards;
-      const rewardLevel=Math.min(economy.progression.contentLevelCap,
+      const rewardRules=arenaConfig.rewards;
+      const rewardLevel=Math.min(progressionConfig.contentLevelCap,
         Math.max(1,Math.floor(defenderProfile.player?.level||1)));
       battle={opponent:defender.username,opponentId:defender.id,turn:1,attack,defense,activeAttack:0,activeDefense:0,
-        events:[],reward:{gold:rewardRules.arenaGoldBase+rewardRules.arenaGoldPerOpponentLevel*rewardLevel,
-          food:rewardRules.arenaFoodBase+rewardRules.arenaFoodPerOpponentLevel*rewardLevel,
-          gems:rewardRules.arenaGemBase+Math.floor(rewardLevel/20)*rewardRules.arenaGemPer20Levels}};
+        events:[],reward:{gold:rewardRules.goldBase+rewardRules.goldPerOpponentLevel*rewardLevel,
+          food:rewardRules.foodBase+rewardRules.foodPerOpponentLevel*rewardLevel,
+          gems:rewardRules.gemBase+Math.floor(rewardLevel/20)*rewardRules.gemPer20Levels}};
       return {...setup,cooldownUntil:0,battle};
     });
     return {battle:publicBattle(battle)};

@@ -3,9 +3,16 @@ const path=require('node:path');
 const {readJson,updateJson}=require('./store.cjs');
 const combat=require('../js/data/combat-rules.js');
 const economy=require('../data/economy.js');
-const COOLDOWN=15*60*1000;
-const TEAM_SIZE=3;
-const MIN_BATTLE_LEVEL=10;
+const arenaConfig=require('../js/config/arena.js');
+const combatConfig=require('../js/config/combat.js');
+/**
+ * Create the authoritative Arena service.
+ * @param {object} options
+ * @param {string} options.profilesDir - Player profile directory.
+ * @param {string} options.dataDir - Runtime Arena persistence directory.
+ * @param {string} options.catalogDir - Static game catalog directory.
+ * @param {object} options.auth - Authentication/session service.
+ */
 function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const arenaDir=path.join(dataDir,'arena');
   const file=id=>path.join(arenaDir,id+'.json');
@@ -17,14 +24,14 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const unlocked=p=>p?.buildings?.some(b=>b.type==='arena'&&!b.stored);
   const breeding=(p,id)=>p.buildings?.some(b=>['cave','premiumCave'].includes(b.type)&&b.breeding&&
     b.breeding.readyAt>Date.now()&&(b.breeding.fatherId===id||b.breeding.motherId===id));
-  const eligible=(p,d)=>d.level>=MIN_BATTLE_LEVEL&&d.level<=100&&!breeding(p,d.id);
-  const owned=(p,ids)=>Array.isArray(ids)&&ids.length===TEAM_SIZE&&
+  const eligible=(p,d)=>d.level>=arenaConfig.minBattleLevel&&d.level<=arenaConfig.maxBattleLevel&&!breeding(p,d.id);
+  const owned=(p,ids)=>Array.isArray(ids)&&ids.length===arenaConfig.teamSize&&
     ids.every(Number.isInteger)&&new Set(ids).size===ids.length&&
     ids.every(id=>p?.dragons?.some(d=>d.id===id&&eligible(p,d)));
   const summary=(p,ids)=>ids.map(id=>p.dragons.find(d=>d.id===id)).filter(Boolean)
     .map(d=>({id:d.id,species:d.species,level:d.level,stars:d.stars||0,nickname:d.nickname,
-      canBattle:eligible(p,d),battleReason:d.level<MIN_BATTLE_LEVEL?
-        'Requires level '+MIN_BATTLE_LEVEL:breeding(p,d.id)?'Breeding':null}));
+      canBattle:eligible(p,d),battleReason:d.level<arenaConfig.minBattleLevel?
+        'Requires level '+arenaConfig.minBattleLevel:breeding(p,d.id)?'Breeding':null}));
   const species=id=>{
     const raw=catalog.species.find(d=>d.id===id);
     const parts=raw?.elements||id.split('>');
@@ -52,7 +59,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     const left=attackers.map(fighter).filter(Boolean),right=defenders.map(fighter).filter(Boolean);
     if(!left.length||!right.length)throw Object.assign(new Error('Invalid team.'),{status:400});
     const b={attack:left,defense:right,activeAttack:0,activeDefense:0,events:[],turn:1};
-    for(;b.turn<=80&&left.some(f=>f.hp>0)&&right.some(f=>f.hp>0);b.turn++){
+    for(;b.turn<=arenaConfig.maxTurns&&left.some(f=>f.hp>0)&&right.some(f=>f.hp>0);b.turn++){
       for(const side of ['attack','defense']){
         if(!left.some(f=>f.hp>0)||!right.some(f=>f.hp>0))break;
         const f=active(b,side),ready=readySkills(f);
@@ -99,7 +106,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
         unlockLevel:game.progression.skillUnlockLevels[i],
         unlocked:f.level>=game.progression.skillUnlockLevels[i]}:null)});
     return {opponent:b.opponent,turn:b.turn,attack:b.attack.map(view),defense:b.defense.map(view),
-      activeAttack:b.activeAttack,activeDefense:b.activeDefense,events:b.events.slice(-40)};
+      activeAttack:b.activeAttack,activeDefense:b.activeDefense,events:b.events.slice(-arenaConfig.eventHistory)};
   }
   function active(b,side){return b[side][b[side==='attack'?'activeAttack':'activeDefense']];}
   const harmful=new Set(['poison','freeze','damage_down','armor_down','accuracy_down']);
@@ -134,25 +141,26 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
     const incoming=Math.max(1,...readySkills(target).map(({skill})=>
       combat.battleDamage(target,actor,skill,catalog.typeChart)));
+    const ai=arenaConfig.ai;
     const score=({skill})=>{
       const effect=skill.effect,kind=effect?.kind;
       const hitDamage=combat.battleDamage(actor,target,skill,catalog.typeChart);
       const hits=kind==='multi'?effect.hits:1;
-      const accuracy=1-Math.min(.75,(kind==='multi'?effect.missChance:0)+
+      const accuracy=1-Math.min(combatConfig.maxAccuracyPenalty,(kind==='multi'?effect.missChance:0)+
         combat.statusValue(actor,'accuracy_down'));
       let value=Math.min(target.hp,hitDamage*hits*accuracy);
       const already=kind&&actor.statuses.some(status=>status.kind===kind);
       const enemyHas=kind&&target.statuses.some(status=>status.kind===kind);
       const missing=Math.max(0,combat.effectiveMaxHp(actor)-actor.hp);
-      if(kind==='heal'||kind==='cleanse')value+=Math.min(missing,actor.maxHp*effect.value)*1.1;
-      else if(kind==='regen'&&!already)value+=Math.min(missing,actor.maxHp*effect.value*effect.duration)*.8;
-      else if(kind==='vitality'&&!already)value+=actor.maxHp*effect.value*.7;
-      else if(kind==='freeze'&&!enemyHas)value+=incoming*.55*accuracy;
-      else if(kind==='poison'&&!enemyHas)value+=Math.min(target.hp,target.maxHp*effect.value*effect.duration)*.5*accuracy;
-      else if(kind==='damage_up'&&!already)value+=hitDamage*.4+incoming*effect.value*.5;
-      else if(['armor_up','damage_reduction'].includes(kind)&&!already)value+=incoming*effect.value*.8;
+      if(kind==='heal'||kind==='cleanse')value+=Math.min(missing,actor.maxHp*effect.value)*ai.healWeight;
+      else if(kind==='regen'&&!already)value+=Math.min(missing,actor.maxHp*effect.value*effect.duration)*ai.regenWeight;
+      else if(kind==='vitality'&&!already)value+=actor.maxHp*effect.value*ai.vitalityWeight;
+      else if(kind==='freeze'&&!enemyHas)value+=incoming*ai.freezeWeight*accuracy;
+      else if(kind==='poison'&&!enemyHas)value+=Math.min(target.hp,target.maxHp*effect.value*effect.duration)*ai.poisonWeight*accuracy;
+      else if(kind==='damage_up'&&!already)value+=hitDamage*ai.damageBuffHitWeight+incoming*effect.value*ai.damageBuffIncomingWeight;
+      else if(['armor_up','damage_reduction'].includes(kind)&&!already)value+=incoming*effect.value*ai.defenseWeight;
       else if(['armor_down','damage_down','accuracy_down'].includes(kind)&&!enemyHas)
-        value+=incoming*(effect.value||.2)*.5*accuracy;
+        value+=incoming*(effect.value||ai.defaultDebuffValue)*ai.debuffWeight*accuracy;
       return value;
     };
     return ready.reduce((best,item)=>score(item)>score(best)?item:best);
@@ -185,12 +193,12 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       let damage=0,critical=false,hits=0,misses=0;
       const attempts=effect?.kind==='multi'?effect.hits:combat.skillPower(actor.attack,skill)>0?1:0;
       for(let hit=0;hit<attempts&&target.hp>0;hit++){
-        const missChance=Math.min(.75,(effect?.kind==='multi'?effect.missChance:0)+
+        const missChance=Math.min(combatConfig.maxAccuracyPenalty,(effect?.kind==='multi'?effect.missChance:0)+
           combat.statusValue(actor,'accuracy_down'));
         if(Math.random()<missChance){misses++;continue;}
-        const crit=Math.random()<.1;
+        const crit=Math.random()<combatConfig.critical.chance;
         const dealt=Math.min(target.hp,combat.battleDamage(actor,target,skill,catalog.typeChart,
-          .9+Math.random()*.2,crit));
+          combatConfig.variance.min+Math.random()*(combatConfig.variance.max-combatConfig.variance.min),crit));
         target.hp=Math.max(0,target.hp-dealt);
         damage+=dealt;hits++;critical=critical||crit;
       }
@@ -258,7 +266,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     return null;
   }
   function finish(b){
-    if(alive(b.attack)&&alive(b.defense)&&b.turn<=80)return null;
+    if(alive(b.attack)&&alive(b.defense)&&b.turn<=arenaConfig.maxTurns)return null;
     const ratio=group=>group.reduce((sum,f)=>sum+f.hp/f.maxHp,0);
     const won=alive(b.attack)&&(!alive(b.defense)||ratio(b.attack)>ratio(b.defense));
     return {won,opponent:b.opponent,events:b.events,reward:won?b.reward:
@@ -343,7 +351,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
         award=result.won?result.reward:null;
         defenderResult=b.opponentId?{id:b.opponentId,won:!result.won}:null;
         response={result};
-        return {...setup,battle:null,cooldownUntil:result.won?0:Date.now()+COOLDOWN,
+        return {...setup,battle:null,cooldownUntil:result.won?0:Date.now()+arenaConfig.cooldownMs,
           wins:(setup.wins||0)+(result.won?1:0),losses:(setup.losses||0)+(result.won?0:1)};
       }
       response={battle:publicBattle(b)};

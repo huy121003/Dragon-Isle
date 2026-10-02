@@ -22,9 +22,13 @@ function refreshCountdowns(){
   document.querySelectorAll("[data-end]").forEach(function(el){
     const left=secondsLeft(Number(el.dataset.end));
     el.textContent=duration(left);
-    if(left===0&&el.closest("#sheet"))finishedInSheet=true;
+    if(left>0)el.dataset.countdownPending="1";
+    else if(el.dataset.countdownPending==="1"&&el.closest("#sheet")){
+      delete el.dataset.countdownPending;
+      finishedInSheet=true;
+    }
   });
-  if(finishedInSheet&&ui.modal&&["hatchery","breeding"].includes(ui.modal.name)){
+  if(finishedInSheet&&ui.modal&&["hatchery","breeding","crops"].includes(ui.modal.name)){
     const scroll=dom.body.scrollTop;renderModal();dom.body.scrollTop=scroll;
   }
 }
@@ -104,10 +108,10 @@ function updateInspector(){
   if(s.type==="dragon"){
     const d=dragonById(s.id);
     if(!d){ui.selection=null;dom.inspector.innerHTML="";return;}
-    dom.inspector.innerHTML='<div class="panel"><div class="panel-head"><b>Dragon details</b>'+
+    const html='<div class="panel"><div class="panel-head"><b>Dragon details</b>'+
       '<button class="btn icon" data-action="clear-selection">×</button></div>'+
       dragonDetailHtml(DATA.species[d.species],d)+'</div>';
-    renderDragonPortraits();
+    if(dom.inspector.innerHTML!==html){dom.inspector.innerHTML=html;renderDragonPortraits();}
     return;
   }
   const b=buildingById(s.id);

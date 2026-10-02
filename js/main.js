@@ -60,10 +60,18 @@ document.addEventListener("visibilitychange",function(){
     if(report.elapsed>=60000)openModal("welcome",report);
   }
 });
+let lastHabitatRefresh=0;
 setInterval(function(){
-  advanceWorld(Date.now());
-  updateHeader();updateInspector();refreshCountdowns();updateTimerBar();
-  if(ui.modal&&ui.modal.name==="habitat")renderHabitat(ui.modal.extra);
+  const now=Date.now(),progress=advanceWorld(now);
+  if(progress.finished){
+    updateUI();
+  }else{
+    updateHeader();updateInspector();refreshCountdowns();updateTimerBar();
+    if(ui.modal?.name==="habitat"&&now-lastHabitatRefresh>=5000){
+      lastHabitatRefresh=now;
+      renderHabitat(ui.modal.extra);
+    }
+  }
 },1000);
 setInterval(function(){advanceWorld(Date.now());saveGame();},10000);
 let lastFrame=performance.now();

@@ -5,6 +5,7 @@ import '../../arena.css';
 import {emitRuntime,send} from '../../app/game-bridge.js';
 import {arenaConfig,ElementFilter,fmt,RosterCard,speciesOf,TeamSlots} from './ArenaShared.jsx';
 import {Battle} from './ArenaBattle.jsx';
+import ResourceAmount from '../../components/ResourceAmount.jsx';
 
 function ArenaSetup({arena}){
   const [elements,setElements]=useState([]),data=arena.data;
@@ -24,7 +25,7 @@ function ArenaSetup({arena}){
     {arena.error&&<div className="arena-error">{arena.error}</div>}
     {arena.result&&<div className={'arena-finish '+(arena.result.won?'win':'lose')}>
       <span>{arena.result.won?'🏆':'💔'}</span><div><b>{arena.result.won?'Victory!':'Defeat'}</b>
-      <small>{arena.result.won?`+${fmt.format(arena.result.reward.gold)} gold · +${fmt.format(arena.result.reward.food)} food · +${fmt.format(arena.result.reward.gems||0)} gem`:'One attempt was used. Your next attempts reset at the next 8-hour mark.'}</small></div></div>}
+      <small>{arena.result.won?<><ResourceAmount kind="gold" amount={arena.result.reward.gold}/>{' '}<ResourceAmount kind="food" amount={arena.result.reward.food}/>{' '}<ResourceAmount kind="gems" amount={arena.result.reward.gems||0}/></>:'One attempt was used. Your next attempts reset at the next 8-hour mark.'}</small></div></div>}
     {arena.phase!=='opponents'?<section className="arena-setup-section"><div className="arena-section-head"><div><small>01 · PREPARE</small>
       <h3>Attack team</h3></div><Tag color="gold">Exactly {teamSize} dragons at Lv{minLevel}+</Tag></div>
       <div className="arena-teams-preview single"><TeamSlots title="⚔ Attack" ids={arena.draft.attack} dragons={data.dragons}/></div>
@@ -52,8 +53,8 @@ function ArenaSetup({arena}){
       </div>;})}</div>
       {(data.attemptsRemaining??3)<3&&<div className="arena-attempt-tools">
         <p className="arena-tip">Attempts refill at 00:00, 08:00 and 16:00 (Vietnam time). Your rival list stays until all five are defeated.</p>
-        <Button loading={arena.busy} disabled={!!data.battle} onClick={()=>send({action:'arena-refill'})}>
-          ✦ Restore all attempts · {config.attemptRefillGemCost} gems
+        <Button className="resource-action" loading={arena.busy} disabled={!!data.battle} onClick={()=>send({action:'arena-refill'})}>
+          ✦ Restore all attempts · <ResourceAmount kind="gems" amount={config.attemptRefillGemCost}/>
         </Button>
       </div>}
     </section>}

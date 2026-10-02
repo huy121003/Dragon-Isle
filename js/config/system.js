@@ -37,6 +37,16 @@
       /** Short delay before reload after the server confirms session expiry. */
       sessionExpiredReloadMs:700
     }),
+    presentation:Object.freeze({
+      /** Delay before the first battle event starts rendering. */
+      battleEventLeadMs:120,
+      /** Visual duration allocated to each returned battle event. */
+      battleEventMs:1600,
+      /** Minimum time the client keeps a returned battle sequence visible. */
+      battleFinishMinMs:1900,
+      /** Extra tail time after the final event before clearing presentation state. */
+      battleFinishPaddingMs:400
+    }),
     auth:Object.freeze({
       /** Login session lifetime in milliseconds. */
       sessionAgeMs:7*24*60*60*1000,

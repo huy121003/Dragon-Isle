@@ -13,7 +13,7 @@ assert.match(renderToStaticMarkup(React.createElement('span',{className:'skill-h
   /style="--skill-color:#2F8FE8;--element:#E8452C;border-color:red"/);
 const server=await createServer({server:{middlewareMode:true},appType:'custom',logLevel:'error'});
 try{
-  const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/ArenaView.jsx');
+  const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/features/arena/ArenaView.jsx');
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
     ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
@@ -26,7 +26,7 @@ try{
     legend:{name:'Legend',color:'#8155c5'},primal:{name:'Primal',color:'#8b8e83'},
     time:{name:'Time',color:'#b7aba4'}},
     rarities:{common:{name:'Common',color:'#aaa'}}}}};
-  const {default:ChallengeView}=await server.ssrLoadModule('/src/ChallengeView.jsx');
+  const {default:ChallengeView}=await server.ssrLoadModule('/src/features/challenge/ChallengeView.jsx');
   const invitation={busy:true,match:{phase:'invited',outgoing:false,opponent:'Bela',until:Date.now()+60000}};
   const invitationHtml=renderToStaticMarkup(React.createElement(ChallengeView,
     {status:invitation,request:()=>{},refresh:()=>{}}));

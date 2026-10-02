@@ -1,59 +1,66 @@
-import {useCallback,useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useMemo} from 'react';
+import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
 import {message} from 'antd';
-import {connectionApi,connectionState,game} from '../../app/game-bridge.js';
+import {ApiError,apiFetch} from '../../api/http.js';
+import {ChallengeStatusSchema,parseWith} from '../../api/schemas.js';
+import {connectionApi,game} from '../../app/game-bridge.js';
+import {useAppStore} from '../../store/app-store.js';
+
+function handleNetworkError(error){
+  if(error instanceof ApiError&&error.status===401){connectionApi()?.expire();return;}
+  if(error instanceof ApiError&&[502,503,504].includes(error.status)){
+    connectionApi()?.fail('Challenge server is unavailable.');return;
+  }
+  if(error instanceof ApiError&&error.status===0)connectionApi()?.fail('Connection to the challenge server was lost.');
+}
 
 export default function useChallenge(account,connection){
-  const [challenge,setChallenge]=useState(null),[open,setOpen]=useState(false);
-  const sequence=useRef(0),busy=useRef(false);
+  const queryClient=useQueryClient();
+  const open=useAppStore(state=>state.challengeOpen);
+  const setOpen=useAppStore(state=>state.setChallengeOpen);
 
-  const status=useCallback(async()=>{
-    if(connectionState()?.blocked)return;
-    const current=++sequence.current;
-    try{
-      const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
-      if(response.status===401){connectionApi()?.expire();return;}
-      if(!response.ok){
-        if([502,503,504].includes(response.status))connectionApi()?.fail('Challenge server is unavailable.');
-        else setChallenge(value=>({...value,error:'Challenge status is temporarily unavailable.'}));
-        return;
-      }
-      const next=await response.json();
-      if(current!==sequence.current)return;
-      if(next.notice)message.info(next.notice,5);
-      setChallenge({...next,error:null,busy:busy.current});
-      if(next.match)setOpen(true);
-    }catch(error){connectionApi()?.fail('Connection to the challenge server was lost.');}
-  },[]);
-
-  const request=useCallback(async(route,body,method='POST')=>{
-    if(busy.current||connectionState()?.blocked)return;
-    busy.current=true;
-    try{
-      setChallenge(value=>({...value,busy:true,error:null}));
-      if(['invite','select'].includes(route)&&!await game()?.save())
-        throw new Error('Unable to save dragons before the challenge.');
-      const response=await fetch('/api/challenge/'+route,{method,credentials:'same-origin',
-        headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
-      if(response.status===401){connectionApi()?.expire();return;}
-      const result=await response.json().catch(()=>({}));
-      if(!response.ok){
-        if([502,503,504].includes(response.status))connectionApi()?.fail('Challenge server is unavailable.');
-        throw new Error(result.error||'Challenge request failed.');
-      }
-      await status();
-    }catch(error){
-      if(error instanceof TypeError)connectionApi()?.fail('Connection to the challenge server was lost.');
-      setChallenge(value=>({...value,error:error.message}));
-    }finally{busy.current=false;setChallenge(value=>({...value,busy:false}));}
-  },[status]);
+  const query=useQuery({
+    queryKey:['challenge','status',account?.id],
+    enabled:!!account&&!connection?.blocked,
+    refetchInterval:2000,
+    retry:false,
+    queryFn:async()=>{
+      try{
+        return parseWith(ChallengeStatusSchema,await apiFetch('/api/challenge/status'),'Challenge status');
+      }catch(error){handleNetworkError(error);throw error;}
+    }
+  });
 
   useEffect(()=>{
-    if(!account)return;
-    status();
-    const timer=setInterval(status,2000);
-    return()=>clearInterval(timer);
-  },[account?.id,status]);
-  useEffect(()=>{if(account&&!connection?.blocked)status();},[account?.id,connection?.blocked,status]);
+    if(query.data?.notice)message.info(query.data.notice,5);
+    if(query.data?.match)setOpen(true);
+  },[query.data?.notice,query.data?.match?.id,setOpen]);
+
+  const mutation=useMutation({
+    mutationFn:async({route,body,method='POST'})=>{
+      if(connection?.blocked)return null;
+      if(['invite','select'].includes(route)&&!await game()?.save())
+        throw new Error('Unable to save dragons before the challenge.');
+      try{
+        return await apiFetch('/api/challenge/'+route,{
+          method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})
+        });
+      }catch(error){handleNetworkError(error);throw error;}
+    },
+    onSuccess:async()=>{await queryClient.invalidateQueries({queryKey:['challenge','status',account?.id]});}
+  });
+
+  const request=useCallback((route,body,method='POST')=>{
+    if(mutation.isPending||connection?.blocked)return Promise.resolve(null);
+    return mutation.mutateAsync({route,body,method}).catch(()=>null);
+  },[mutation,connection?.blocked]);
+
+  const status=useCallback(()=>query.refetch(),[query]);
+  const challenge=useMemo(()=>{
+    if(!query.data&&!query.error&&!mutation.error)return null;
+    return {...(query.data||{players:[],match:null}),
+      busy:mutation.isPending,error:mutation.error?.message||query.error?.message||null};
+  },[query.data,query.error,mutation.error,mutation.isPending]);
 
   return {challenge,open,setOpen,status,request};
 }

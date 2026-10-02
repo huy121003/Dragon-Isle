@@ -6,9 +6,11 @@
  * Validation and prices are delegated to shared state/rule helpers; this module
  * owns the state mutation plus UI/audio/save side effects of placing a building.
  */
+/** Return whether the current placement mode can occupy the requested grid origin. */
 function getBuildValid(x,y,mode){
   return !!mode&&footprintValid(x,y,placementFootprint(mode),mode.kind==="move"?mode.id:null);
 }
+/** Return an empty string when purchasable, otherwise the user-facing lock reason. */
 function buildLockReason(type,element){
   if(!DATA.buildings[type])return "This building does not exist.";
   if(type==="hatchery")return "The fixed Hatchery is already on the island and cannot be bought.";
@@ -30,6 +32,7 @@ function buildLockReason(type,element){
     return "Only one "+DATA.buildings[type].name+" can be owned.";
   return "";
 }
+/** Commit a move/inventory placement/purchase and persist the resulting world state. */
 function completePlacement(x,y){
   const mode=ui.mode;
   if(!mode||!getBuildValid(x,y,mode)){
@@ -77,4 +80,5 @@ function completePlacement(x,y){
   updateUI();
   saveGame();
 }
+/** Display name for a building, including Habitat element prefix. */
 function buildingName(b){return b.type==="habitat"?DATA.elements[b.element].name+" Habitat":DATA.buildings[b.type].name;}

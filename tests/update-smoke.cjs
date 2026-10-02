@@ -217,6 +217,17 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  assert.equal(balance.element('xpText').textContent,'MAX LEVEL');
  assert.equal(balance.element('xpFill').style.width,'100%');
 });
+check('element unlocks, hatchery gates and crop timers follow the progression curve',()=>{
+ assert.deepEqual(snapshot(balance,'DATA.elementUnlocks'),{
+   fire:1,water:2,earth:4,wind:6,ice:8,thunder:11,nature:14,dark:18,
+   light:22,metal:27,war:32,pure:37,legend:42,primal:48,time:55
+ });
+ assert.deepEqual(snapshot(balance,'[1,2,3,4].map(hatcheryUpgradePlayerLevel)'),[5,12,22,35]);
+ assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.duration)'),[30,180,900,7200]);
+ assert.deepEqual(snapshot(balance,'DATA.upgradeTimes'),{
+   habitat:[45,180,600],farm:[30,120,480],hatchery:[90,300,900,2400],academy:[300,900,2700,7200]
+ });
+});
 const income=await boot();
 check('gold scales steadily, active Habitats and higher levels hold more gold',()=>{
  const ratios=snapshot(income,'[1,10,30,50,100].map(level=>dragonIncome({...state.dragons[0],level},buildingById(1)))');
@@ -774,6 +785,7 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
    'state.buildings.push({id:92,type:"cave",level:1,stored:false,breeding:null})');
  game.run('ui.modal={name:"breeding",extra:92};renderBreeding(92)');
  let html=game.element('sheetBody').innerHTML;
+ assert(html.includes('Estimated breeding time for this parent combination'));
  assert(html.includes('data-target="breed-father"')&&html.includes('data-target="breed-mother"'));
  assert(html.indexOf('data-action="start-breeding"')>html.indexOf('breed-probabilities')&&
    html.indexOf('data-action="start-breeding"')<html.indexOf('breed-results'),

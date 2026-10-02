@@ -30,7 +30,7 @@ window.DragonEconomy={
       gemsForGold:[{cost:75000,amount:3},{cost:300000,amount:10},{cost:900000,amount:25}],
       foodForGems:[{cost:5,amount:1500},{cost:15,amount:6000},{cost:40,amount:20000}]
     }},
-  buildings:{upgradeFactor:2.25,sellMultiplier:1.75},
+  buildings:{upgradeFactor:2.25,sellMultiplier:1.75,upgradeGemBase:{habitat:2,farm:1,hatchery:3},upgradeGemLevelFactor:1.8,habitatGemUnlockLinear:.035},
   timers:{secondsPerGem:600,maxSkipGems:120},
   hatching:{pureElementSeconds:{fire:30,water:45,earth:60,wind:75,ice:90,thunder:120,
       nature:150,dark:210,light:270,metal:360,war:480,pure:600,legend:750,primal:900,time:1200},

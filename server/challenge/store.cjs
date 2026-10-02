@@ -7,6 +7,7 @@
 const {readJson,writeJson}=require('../store.cjs');
 const config=require('../../js/config/challenge.js');
 
+/** Create the persistent in-memory index backing live Challenge matches and notices. */
 function createChallengeStore({stateFile,users,now}){
   const matches=new Map(),byUser=new Map(),notices=new Map();
   let loaded=false;

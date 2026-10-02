@@ -25,7 +25,9 @@ export default function ChallengeView({status,request,refresh}){
       const events=current.battle.events.slice(-count);
       setPresentation({id:Date.now()+Math.random(),before:previous.battle,events});
       setAnimating(true);
-      const timer=setTimeout(()=>{setPresentation(null);setAnimating(false);},Math.max(1900,events.length*1600+400));
+      const timing=window.DragonConfig.system.presentation;
+      const timer=setTimeout(()=>{setPresentation(null);setAnimating(false);},
+        Math.max(timing.battleFinishMinMs,events.length*timing.battleEventMs+timing.battleFinishPaddingMs));
       return()=>clearTimeout(timer);
     }
   },[match?.id,match?.phase,match?.eventSeq]);

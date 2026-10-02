@@ -39,7 +39,7 @@ function ArenaSetup({arena}){
     </section>:<section className="arena-setup-section"><div className="arena-section-head"><div><small>02 · CHALLENGE</small>
       <h3>Choose an AI rival</h3></div><Tag color={data.attemptsRemaining?'green':'volcano'}>⚔ {data.attemptsRemaining??3} attempts · resets in {resetText}</Tag></div>
       <Button onClick={()=>{arena.phase='teams';emitRuntime();}}>← Edit teams</Button>
-      {!data.opponents.length&&<p className="arena-empty">Save an attack team to generate three Arena rivals.</p>}
+      {!data.opponents.length&&<p className="arena-empty">Your five Arena rivals will be created when you first enter the Arena.</p>}
       <div className="arena-opponents">{data.opponents.map((opponent,index)=>{
         const defeated=data.defeatedOpponentIds?.includes(opponent.id);
         return <div key={opponent.id} className={'arena-opponent-card'+(defeated?' defeated':'')}>
@@ -50,7 +50,12 @@ function ArenaSetup({arena}){
         <Button type="primary" size="large" block disabled={defeated||arena.busy||(data.attemptsRemaining??3)<=0||data.attack.length!==teamSize}
           onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>{defeated?'✓ Defeated':'⚔ Challenge'}</Button>
       </div>;})}</div>
-      {(data.attemptsRemaining??3)<=0&&<p className="arena-tip">Your attempts reset at 00:00, 08:00 and 16:00 (Vietnam time).</p>}
+      {(data.attemptsRemaining??3)<3&&<div className="arena-attempt-tools">
+        <p className="arena-tip">Attempts refill at 00:00, 08:00 and 16:00 (Vietnam time). Your rival list stays until all five are defeated.</p>
+        <Button loading={arena.busy} disabled={!!data.battle} onClick={()=>send({action:'arena-refill'})}>
+          ✦ Restore all attempts · {config.attemptRefillGemCost} gems
+        </Button>
+      </div>}
     </section>}
   </div>;
 }

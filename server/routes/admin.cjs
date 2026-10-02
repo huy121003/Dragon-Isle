@@ -3,6 +3,7 @@ const {json,readBody}=require('../http.cjs');
 const {readJson,updateJson,removeJson}=require('../store.cjs');
 const {newProfile}=require('../profile.cjs');
 const {validResourcePatch}=require('../validation.cjs');
+const systemConfig=require('../../js/config/system.js');
 
 function createAdminRoutes({auth,challenge,profilesDir}){
   return async function handle(req,res,pathname){
@@ -21,7 +22,7 @@ function createAdminRoutes({auth,challenge,profilesDir}){
     }
     const resourceUser=pathname.match(/^\/api\/admin\/users\/([0-9a-f-]{36})\/resources$/);
     if((resourceUser||pathname==='/api/admin/resources')&&req.method==='PUT'){
-      const patch=await readBody(req,4096);
+      const patch=await readBody(req,systemConfig.api.adminBytes);
       if(!validResourcePatch(patch)){json(res,400,{error:'Chỉ nhận gold, food, gems dạng số nguyên không âm trong giới hạn.'});return true;}
       const targets=resourceUser?auth.listUsers().filter(user=>user.id===resourceUser[1]):auth.listUsers();
       if(!targets.length){json(res,404,{error:'Không tìm thấy tài khoản.'});return true;}

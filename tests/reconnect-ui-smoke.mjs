@@ -10,28 +10,28 @@ const connection=readFileSync(path.join(root,'js/network/connection.js'),'utf8')
 const input=readFileSync(path.join(root,'js/ui/input.js'),'utf8');
 const main=readFileSync(path.join(root,'js/main.js'),'utf8');
 
-assert.match(react,/className="connection-modal"/);
-assert.match(react,/open={!!connection\?\.blocked}/);
-assert.match(react,/closable={false}/);
-assert.match(react,/maskClosable={false}/);
-assert.match(react,/keyboard={false}/);
-assert.match(react,/zIndex={5000}/);
-assert.match(react,/Retrying automatically in/);
-assert.match(react,/Still trying to reconnect/);
-assert.match(react,/Try again now/);
-assert.match(react,/Session expired/);
+assert(react.includes('className="connection-modal"'));
+assert(react.includes('open={!!connection?.blocked}'));
+assert(react.includes('closable={false}'));
+assert(react.includes('maskClosable={false}'));
+assert(react.includes('keyboard={false}'));
+assert(react.includes('zIndex={5000}'));
+assert(react.includes('Retrying automatically in'));
+assert(react.includes('Still trying to reconnect'));
+assert(react.includes('Try again now'));
+assert(react.includes('Session expired'));
 
-assert.match(connection,/RECONNECT_MS=5000/);
-assert.match(connection,/PROLONGED_MS=120000/);
-assert.match(connection,/fetch\("\/api\/auth\/me"/);
-assert.match(connection,/response\.status===401/);
-assert.match(connection,/expire\(\)/);
-assert.match(connection,/DragonConnectionApi=\{retry,fail,expire,connected,configure/);
-assert.doesNotMatch(connection,/\/api\/auth\/logout/,
+assert(connection.includes('RECONNECT_MS=5000'));
+assert(connection.includes('PROLONGED_MS=120000'));
+assert(connection.includes('fetch("/api/auth/me"'));
+assert(connection.includes('response.status===401'));
+assert(connection.includes('expire()'));
+assert(connection.includes('DragonConnectionApi={retry,fail,expire,connected,configure'));
+assert(!connection.includes('/api/auth/logout'),
   'Reconnect state must never auto-logout merely because the server is unavailable');
 
-assert.match(input,/window\.DragonConnectionState\?\.blocked/);
-assert.match(main,/addEventListener\("online"/);
-assert.match(main,/addEventListener\("pagehide"/);
+assert(input.includes('window.DragonConnectionState?.blocked'));
+assert(main.includes('addEventListener("online"'));
+assert(main.includes('addEventListener("pagehide"'));
 
 console.log('PASS non-dismissible reconnect UI and retry policy');

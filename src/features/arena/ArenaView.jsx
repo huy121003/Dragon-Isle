@@ -40,14 +40,16 @@ function ArenaSetup({arena}){
       <h3>Choose an AI rival</h3></div><Tag color={data.attemptsRemaining?'green':'volcano'}>⚔ {data.attemptsRemaining??3} attempts · resets in {resetText}</Tag></div>
       <Button onClick={()=>{arena.phase='teams';emitRuntime();}}>← Edit teams</Button>
       {!data.opponents.length&&<p className="arena-empty">Save an attack team to generate three Arena rivals.</p>}
-      <div className="arena-opponents">{data.opponents.map((opponent,index)=><div key={opponent.id} className="arena-opponent-card">
-        <div className="arena-opponent-head"><span className="opponent-emblem">?</span><div><b>Arena rival {index+1}</b><small>Opponent team concealed</small></div></div>
+      <div className="arena-opponents">{data.opponents.map((opponent,index)=>{
+        const defeated=data.defeatedOpponentIds?.includes(opponent.id);
+        return <div key={opponent.id} className={'arena-opponent-card'+(defeated?' defeated':'')}>
+        <div className="arena-opponent-head"><span className="opponent-emblem">{defeated?'✓':'?'}</span><div><b>Arena rival {index+1}</b><small>{defeated?'Defeated this round':'Opponent team concealed'}</small></div></div>
         <div className="arena-enemy-team concealed" aria-label="Three concealed opponent dragons" aria-hidden="true">
           {[0,1,2].map(slot=><div key={slot} className="arena-hidden-dragon"><span>🐉</span><i>?</i></div>)}
         </div>
-        <Button type="primary" size="large" block disabled={arena.busy||(data.attemptsRemaining??3)<=0||data.attack.length!==teamSize}
-          onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>⚔ Challenge</Button>
-      </div>)}</div>
+        <Button type="primary" size="large" block disabled={defeated||arena.busy||(data.attemptsRemaining??3)<=0||data.attack.length!==teamSize}
+          onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>{defeated?'✓ Defeated':'⚔ Challenge'}</Button>
+      </div>;})}</div>
       {(data.attemptsRemaining??3)<=0&&<p className="arena-tip">Your attempts reset at 00:00, 08:00 and 16:00 (Vietnam time).</p>}
     </section>}
   </div>;

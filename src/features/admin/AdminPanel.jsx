@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
 import {Button,Card,Drawer,Form,InputNumber,Modal,Popconfirm,Space,Table,Tag,Typography,message} from 'antd';
-import {ResourcePatchSchema} from '../../shared/schemas.js';
+import {ResourcePatchSchema} from '../../api/schemas.js';
 import {apiFetch} from '../../api/http.js';
 import {AdminUsersSchema,parseWith} from '../../api/schemas.js';
 

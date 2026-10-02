@@ -172,7 +172,10 @@ function habitatCapacity(level){
   const row=window.DragonEconomy.habitat.dragonCapacity;
   return row[clamp(Math.floor(Number(level)||1)-1,0,row.length-1)];
 }
-function hatcheryCapacity(level){return Math.min(DATA.buildings.hatchery.maxLevel,Math.max(1,Math.floor(level||1)));}
+function hatcheryCapacity(level){
+  const row=window.DragonEconomy.hatchery.nests;
+  return row[clamp(Math.floor(Number(level)||1)-1,0,row.length-1)];
+}
 function habitatHasRoom(building){return building.type==="habitat"&&!building.stored&&!building.upgradeEnds&&
   occupants(building).length<habitatCapacity(building.level);}
 function playerXPNeeded(level){

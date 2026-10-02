@@ -88,8 +88,8 @@ export function TeamSlots({title,ids,dragons}){
   })}</div></div>;
 }
 export function ElementFilter({value,onChange}){
-  const data=game()?.data||{},elements=data.elements||{};
-  const maxElements=Math.max(1,...Object.values(data.species||{}).map(species=>species.elements?.length||0));
+  const elements=game()?.data?.elements||{};
+  const maxElements=window.DragonConfig.dragons.maxElementsPerDragon;
   return <div className="arena-filter-wrap"><div className="arena-element-filter" role="group" aria-label="Filter by element">
     <button type="button" className={'arena-filter-btn'+(!value.length?' active':'')} aria-pressed={!value.length}
       onClick={()=>onChange([])}>All</button>

@@ -55,13 +55,18 @@ describe('architecture boundaries',()=>{
     const view=read('src/features/arena/ArenaView.jsx');
     const shared=read('src/features/arena/ArenaShared.jsx');
     const battle=read('src/features/arena/ArenaBattle.jsx');
+    const effects=read('src/features/arena/ArenaEffects.jsx');
     const challenge=read('src/features/challenge/ChallengeView.jsx');
     expect(view.split('\n').length).toBeLessThan(100);
+    expect(battle.split('\n').length).toBeLessThan(130);
     expect(view).toContain("from './ArenaShared.jsx'");
     expect(view).toContain("from './ArenaBattle.jsx'");
     expect(shared).toContain('export function RosterCard');
     expect(shared).toContain('export function ElementFilter');
+    expect(battle).toContain("from './ArenaEffects.jsx'");
     expect(battle).toContain('export function Battle');
+    expect(effects).toContain('export function SkillEffect');
+    expect(effects).toContain('export function battleSnapshot');
     expect(challenge).toContain("from '../arena/ArenaShared.jsx'");
     expect(challenge).toContain("from '../arena/ArenaBattle.jsx'");
     expect(challenge).not.toContain("from '../arena/ArenaView.jsx'");

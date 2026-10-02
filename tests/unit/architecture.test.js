@@ -11,6 +11,19 @@ describe('architecture boundaries',()=>{
     expect(read('server.cjs').split('\n').length).toBeLessThan(45);
     expect(read('js/save.js').split('\n').length).toBeLessThan(100);
   });
+  it('keeps the legacy modal router thin and panel domains split',()=>{
+    const router=read('js/ui/panels.js');
+    const index=read('index.html');
+    expect(router.split('\n').length).toBeLessThan(60);
+    expect(router).toContain('function renderModal');
+    for(const file of ['islands','shop','filters','dragons','inventory','farms','hatchery','breeding','book','system'])
+      expect(index).toContain('js/ui/panels/'+file+'.js');
+    expect(read('js/ui/panels/shop.js')).toContain('function renderShop');
+    expect(read('js/ui/panels/hatchery.js')).toContain('function renderHatchery');
+    expect(read('js/ui/panels/breeding.js')).toContain('function renderBreeding');
+    expect(read('js/ui/panels/book.js')).toContain('function renderBook');
+  });
+
   it('keeps network, persistence and migrations separated',()=>{
     expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');

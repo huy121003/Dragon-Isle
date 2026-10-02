@@ -101,12 +101,14 @@ async function arenaTurn(action,number){
   ui.arena.pendingSkill=action==='skill'?battle.attack[battle.activeAttack]?.skills[number]?.name:null;
   renderArena();notifyArenaRuntime();
   try{
-    const payload={action,expectedTurn:battle.turn};
+    const payload={action,expectedTurn:battle.turn,expectedEvents:battle.eventSeq};
     if(action==='skill')payload.skillIndex=number;
     if(action==='switch')payload.dragonId=number;
     const response=await arenaRequest('turn','POST',payload);
-    const events=(response.result?response.result.events:response.battle.events)
-      .filter(function(event){return event.turn===battle.turn;});
+    const incoming=response.result?response.result.events:response.battle.events;
+    const eventSeq=response.result?incoming.length:response.battle.eventSeq;
+    const newEventCount=Math.max(0,eventSeq-battle.eventSeq);
+    const events=newEventCount?incoming.slice(-newEventCount):[];
     ui.arena.presentation={id:Date.now()+Math.random(),before:battle,events:events,
       result:response.result||null};
     ui.arena.animating=true;

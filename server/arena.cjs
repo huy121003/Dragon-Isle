@@ -209,14 +209,17 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       if(!b)throw Object.assign(new Error('No battle in progress.'),{status:409});
       if(!Number.isInteger(body?.expectedTurn)||body.expectedTurn!==b.turn)
         throw Object.assign(new Error('The turn changed. Reload the Arena.'),{status:409});
+      if(body.expectedEvents!==undefined&&body.expectedEvents!==b.events.length)
+        throw Object.assign(new Error('The battle changed. Reload the Arena.'),{status:409});
       const actor=active(b,'attack');
       if(body.action==='switch'){
         const index=b.attack.findIndex(f=>f.id===body.dragonId&&f.hp>0);
         if(index<0||index===b.activeAttack)throw Object.assign(new Error('The replacement must be alive and different from the active dragon.'),{status:400});
         b.activeAttack=index;
         b.events.push({turn:b.turn,side:'attack',switchTo:b.attack[index].nickname});
-        const chosen=chooseDefenseSkill(b);
-        strike(b,'defense',chosen.skill,chosen.index);
+        // Manual swaps are free: keep the same turn and do not trigger the AI.
+        response={battle:publicBattle(b)};
+        return {...setup,battle:b};
       }else if(body.action==='skill'){
         const index=body.skillIndex;
         if(!Number.isInteger(index)||index<0||index>=actor.skills.length)

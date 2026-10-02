@@ -345,7 +345,7 @@ function migrateSave(raw){
     }else{
       out.readyAt=Number(out.readyAt)||Date.now();
       out.startedAt=Number(out.startedAt)||
-        out.readyAt-DATA.rarities[DATA.species[out.species].rarity].incubate*1000;
+        out.readyAt-hatchingSeconds(DATA.species[out.species])*1000;
     }
     if(Array.isArray(out.parents))out.parents=out.parents.map(mapSpecies);
     return out;
@@ -359,7 +359,7 @@ function migrateSave(raw){
     if(!DATA.species[breed.result]||!DATA.species[breed.fatherSpecies]||
       !DATA.species[breed.motherSpecies])b.breeding=null;
     else breed.startedAt=Number(breed.startedAt)||
-      breed.readyAt-breedingSeconds(DATA.species[breed.result].rarity,b.level,b)*1000;
+      breed.readyAt-breedingSeconds(DATA.species[breed.result],b.level,b)*1000;
   });
   result.discovered=[...new Set((Array.isArray(raw.discovered)?raw.discovered:[])
     .concat(result.dragons.map(function(d){return d.species;}))

@@ -72,17 +72,20 @@ describe('logic architecture boundaries',()=>{
     const guide=['shared','start','dragons','breeding','islands','resources','combat']
       .map(name=>read('js/ui/guide/'+name+'.js')).concat(read('js/ui/guide.js')).join('\n');
     const core=read('js/ui/core.js');
+    const inspector=read('js/ui/inspector.js');
     const dock=read('src/components/GameDock.jsx');
     const arenaView=read('src/features/arena/ArenaView.jsx');
     const arenaShared=read('src/features/arena/ArenaShared.jsx');
     const arenaBattle=read('src/features/arena/ArenaBattle.jsx');
     const challengeView=read('src/features/challenge/ChallengeView.jsx');
-    for(const source of [guide,core,dock,arenaView,arenaShared,arenaBattle,challengeView])
+    for(const source of [guide,core,inspector,dock,arenaView,arenaShared,arenaBattle,challengeView])
       expect(source).not.toContain('DragonEconomy');
     expect(guide).not.toContain('DATA.progression');
     expect(guide).not.toContain('DATA.gemPerDragonPerHour');
     expect(core).not.toContain('DATA.progression');
     expect(core).not.toContain('DATA.gemPerDragonPerHour');
+    expect(inspector).not.toContain('DATA.progression');
+    expect(inspector).not.toContain('DATA.gemPerDragonPerHour');
     expect(dock).toContain('DragonConfig.arena');
     expect(arenaShared).toContain('DragonConfig.arena');
     expect(arenaShared).toContain('DragonConfig.dragons');

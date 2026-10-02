@@ -155,6 +155,10 @@ try{
   assert.match(support,/\+120 HP/);assert.doesNotMatch(support,/matchup-mark/);
   assert.equal(renderToStaticMarkup(React.createElement(SkillEffect,{event:{switchTo:'Alex'}})),'');
   const styles=readFileSync(new URL('../src/arena.css',import.meta.url),'utf8');
+  assert.match(styles,/\.battle-modal \.battle-stage\{flex:1 1 auto;height:auto;min-height:320px\}/,
+    'Arena field grows into the modal instead of staying compressed to a short percentage');
+  assert.match(styles,/@media\(max-height:700px\)\{\s*\.battle-modal \.battle-stage\{height:auto;min-height:300px\}/,
+    'Short-height viewports keep enough battlefield height for fighters and skill controls');
   assert(styles.includes('.battle-skill-fx.normal .fx-projectile'));
   assert(styles.includes('.battle-skill-fx.support .fx-trail'));
   for(const element of ['war','pure','legend','primal','time'])

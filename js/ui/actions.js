@@ -52,7 +52,7 @@ function handleAction(button){
     case "arena-skill":arenaTurn("skill",Number(button.dataset.skill));break;
     case "arena-switch":arenaTurn("switch",id);break;
     case "arena-forfeit":
-      if(window.confirm("Forfeiting counts as a loss and starts a 15-minute cooldown. Continue?"))arenaTurn("forfeit");break;
+      if(window.confirm("Forfeiting counts as a loss and starts a "+Math.round(window.DragonConfig.arena.cooldownMs/60000)+"-minute cooldown. Continue?"))arenaTurn("forfeit");break;
     case "arena-refresh":loadArena();break;
     case "close-modal":closeModal();break;
     case "clear-selection":ui.selection=null;updateInspector();break;
@@ -76,7 +76,7 @@ function handleAction(button){
         if(element==='all')ui[property]=[];
         else if(DATA.elements[element]){
           if(selected.includes(element))ui[property]=selected.filter(id=>id!==element);
-          else if(selected.length<4)ui[property]=[...selected,element];
+          else if(selected.length<window.DragonConfig.dragons.maxElementsPerDragon)ui[property]=[...selected,element];
         }
         if(target==="book"){ui.bookPage=0;renderBook();}
         else if(target==="dragon")renderDragons();
@@ -144,14 +144,15 @@ function handleAction(button){
     case "logout":logoutAccount();break;
     case "buy-food":{
       const count=Number(button.dataset.count);
-      if(![100,500,2000].includes(count))break;
-      const cost=count*window.DragonEconomy.progression.foodGoldPrice;
+      const amounts=window.DragonConfig.economy.shop.standardFoodAmounts;
+      if(!amounts.includes(count))break;
+      const cost=count*window.DragonConfig.progression.foodGoldPrice;
       if(spendGold(cost)){state.food+=count;toast("Bought "+money(count)+" food for "+money(cost)+" gold.");updateUI();saveGame();}
       break;
     }
     case "buy-resource-pack":{
       const kind=button.dataset.kind,index=Number(button.dataset.index);
-      const packs=window.DragonEconomy.shop.resourcePacks;
+      const packs=window.DragonConfig.economy.shop.resourcePacks;
       const list=packs?.[kind],pack=Array.isArray(list)?list[index]:null;
       if(!pack||!Number.isFinite(pack.cost)||!Number.isFinite(pack.amount)||pack.cost<=0||pack.amount<=0)break;
       if(kind==="goldForGems"){

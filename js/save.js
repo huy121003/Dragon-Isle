@@ -68,7 +68,8 @@ async function retryServerConnection(){
   }
 }
 window.DragonConnectionState={...serverConnectionState,blocked:false,prolonged:false};
-window.DragonConnectionApi={retry:retryServerConnection,getState:function(){return {...window.DragonConnectionState};}};
+window.DragonConnectionApi={retry:retryServerConnection,fail:markServerDisconnected,expire:markSessionExpired,
+  getState:function(){return {...window.DragonConnectionState};}};
 const PREVIOUS_ISLANDS=[
   [600,600,300],[1200,640,200],[1080,960,220],[800,1160,240],[460,1140,260],
   [160,940,280],[40,600,300],[160,280,280],[460,100,260],[800,100,240],[1080,320,220]

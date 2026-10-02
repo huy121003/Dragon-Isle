@@ -5,3 +5,7 @@
 .challenge-actions{display:flex;gap:12px}.challenge-waiting{font-weight:700;color:#226c65!important}
 .challenge-error{padding:10px;border-radius:10px;background:#fff1ed;color:#9b3333!important}
 .challenge-select .arena-roster-grid{margin:14px 0}.challenge-select>.ant-btn{margin:6px 8px 0 0}
+
+
+.challenge-reconnecting{margin:0 0 12px;padding:10px 12px;border-radius:12px;
+  background:rgba(240,173,78,.14);border:1px solid rgba(194,126,18,.35);font-weight:700}

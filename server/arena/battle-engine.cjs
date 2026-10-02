@@ -11,6 +11,7 @@ const arenaConfig=require('../../js/config/arena.js');
 const combatConfig=require('../../js/config/combat.js');
 const progressionConfig=require('../../js/config/progression.js');
 const {createFighterFactory}=require('./fighter.cjs');
+const {record,publicBattle}=require('./battle-view.cjs');
 
 /**
  * Create the authoritative combat engine shared by Arena and live Challenge.
@@ -29,23 +30,6 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
   }
 
   const harmful=new Set(['poison','freeze','damage_down','armor_down','accuracy_down']);
-  const statusIcons={poison:'☠',freeze:'❄',damage_up:'⚔',damage_down:'🗡',
-    armor_up:'🛡',armor_down:'⚒',damage_reduction:'✦',regen:'✚',vitality:'♥',accuracy_down:'◌'};
-
-  /** Stable public status payload for React clients. */
-  function statusSnapshot(fighter){
-    return (fighter.statuses||[]).map(status=>({...status,icon:statusIcons[status.kind]||'✦'}));
-  }
-
-  /** Add one battle event with a state snapshot used for animation/replay. */
-  function record(battle,event){
-    battle.events.push({...event,turn:battle.turn,state:{
-      attack:battle.attack.map(fighter=>({id:fighter.id,hp:fighter.hp,
-        maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),cooldowns:fighter.cooldowns||[]})),
-      defense:battle.defense.map(fighter=>({id:fighter.id,hp:fighter.hp,
-        maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),cooldowns:fighter.cooldowns||[]})),
-      activeAttack:battle.activeAttack,activeDefense:battle.activeDefense}});
-  }
 
   /** Automatically select the first living fighter after a knockout. */
   function nextFighter(battle,side){
@@ -229,22 +213,6 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     const won=alive(battle.attack)&&
       (!alive(battle.defense)||ratio(battle.attack)>ratio(battle.defense));
     return {won,opponent:battle.opponent,events:battle.events,reward:won?battle.reward:{gold:0,food:0,gems:0}};
-  }
-
-  /** Public DTO used by Arena/Challenge React views. */
-  function publicBattle(battle){
-    const view=fighter=>({id:fighter.id,species:fighter.species,level:fighter.level,
-      stars:fighter.stars||0,nickname:fighter.nickname,hp:fighter.hp,
-      maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),
-      skills:fighter.skills.map((skill,index)=>skill?{
-        index,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
-        special:!!skill.special,effect:skill.effect||null,description:skill.description||null,
-        cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
-        unlockLevel:progressionConfig.skillUnlockLevels[index],
-        unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
-    return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
-      defense:battle.defense.map(view),activeAttack:battle.activeAttack,
-      activeDefense:battle.activeDefense,events:battle.events.slice(-arenaConfig.eventHistory)};
   }
 
   /** Simulate an AI-vs-AI fight for smoke/debug usage. */

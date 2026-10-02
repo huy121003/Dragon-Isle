@@ -86,7 +86,7 @@ function renderShop(){
       const canBuy=state.player.level>=need&&(price.vang?state.gold>=cost:state.gems>=cost);
       html+='<div class="shop-item egg-shop-card"><span class="egg-plinth" aria-hidden="true">'+
         eggShellHtml(s.id,false)+'</span><div class="egg-offer"><b>'+esc(s.name)+'</b>'+ 
-        '<span class="shop-element dragon-marks">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span><small>Incubation: '+duration(DATA.rarities[s.rarity].incubate)+
+        '<span class="shop-element dragon-marks">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span><small>Incubation: '+duration(hatchingSeconds(s))+
         (state.player.level<need?' · Unlocks at level '+need:'')+'</small></div>'+ 
         '<span class="shop-dragon" aria-label="Dragon portrait: '+esc(s.name)+'">'+dragonPortrait(s.id,1,'small')+'</span>'+ 
         '<div class="actions"><button class="btn" data-action="shop-egg-detail" data-species="'+s.id+'">Details</button>'+ 
@@ -322,7 +322,7 @@ function renderHatchery(id){
   const incubating=eggsInHatchery(id),waiting=state.eggs.filter(function(egg){return egg.hatcheryId===null;});
   dom.title.textContent="🥚 Hatchery · "+incubating.length+"/"+hatcheryCapacity(b.level);
   let html='<div class="note">Hatchery level '+b.level+' has '+hatcheryCapacity(b.level)+
-    ' incubation '+(hatcheryCapacity(b.level)===1?'nest':'nests')+'. Ready eggs occupy their nests until hatched or sold. Speed up for one gem per five remaining minutes.</div>';
+    ' incubation '+(hatcheryCapacity(b.level)===1?'nest':'nests')+'. Ready eggs occupy their nests until hatched or sold. Speed up cost scales with remaining time using the current Gem timer rate.</div>';
   if(!incubating.length)html+='<p>No eggs in this Hatchery.</p>';
   incubating.forEach(function(egg){
     const ready=egg.readyAt<=Date.now();
@@ -346,7 +346,7 @@ function renderHatchery(id){
       '" data-building="'+b.id+'">Incubate</button></div>';
   });
   if(b.level<5){
-    const required=1+b.level*4;
+    const required=hatcheryUpgradePlayerLevel(b.level);
     html+='<div class="actions">'+(b.upgradeEnds?inlineTimer(b.upgradeStartedAt,b.upgradeEnds):
       state.player.level<required?'<span class="pill">Upgrade Hatchery to level '+(b.level+1)+' at player level '+required+'</span>':
       '<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+

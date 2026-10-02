@@ -1,14 +1,21 @@
 "use strict";
 
 /* LOGIC: Eggs tự tìm tiles ấp còn trống; eggs dư nằm trong kho chờ tiles tiếp theo. */
+/** Find one egg in current save state by numeric ID. */
 function eggById(id){return state.eggs.find(function(egg){return egg.id===id;});}
+/** Return all eggs currently occupying nests in one Hatchery. */
 function eggsInHatchery(id){return state.eggs.filter(function(egg){return egg.hatcheryId===id;});}
+/** Return the first active Hatchery with capacity, or undefined when all nests are occupied. */
 function freeHatchery(){
   return state.buildings.find(function(b){
     return b.type==="hatchery"&&!b.stored&&
       eggsInHatchery(b.id).length<hatcheryCapacity(b.level);
   });
 }
+/**
+ * Assign a waiting egg to a Hatchery and start its incubation clock.
+ * @returns {boolean} True only when a nest was reserved and timer state was mutated.
+ */
 function assignIncubation(egg,house){
   if(!egg||egg.hatcheryId!==null||!house||house.type!=="hatchery"||house.stored||
     eggsInHatchery(house.id).length>=hatcheryCapacity(house.level))return false;
@@ -17,6 +24,7 @@ function assignIncubation(egg,house){
   egg.readyAt=egg.startedAt+hatchingSeconds(DATA.species[egg.species])*1000;
   return true;
 }
+/** Create an egg record, enqueue it, then auto-assign the next free Hatchery nest. */
 function addEgg(speciesId,source,parents,caveId){
   const egg={id:state.nextId++,species:speciesId,source:source,parents:parents||null,caveId:caveId||null,
     hatcheryId:null,startedAt:0,readyAt:0};
@@ -24,6 +32,7 @@ function addEgg(speciesId,source,parents,caveId){
   autoAssignWaitingEggs();
   return egg;
 }
+/** Fill available Hatchery nests from Inventory order and return the number assigned. */
 function autoAssignWaitingEggs(){
   let assigned=0;
   state.eggs.filter(function(egg){return egg.hatcheryId===null;}).forEach(function(egg){
@@ -32,6 +41,7 @@ function autoAssignWaitingEggs(){
   });
   return assigned;
 }
+/** Purchase an unlocked pure-element egg and persist the resulting resource/egg state. */
 function buyEgg(speciesId){
   const species=DATA.species[speciesId];
   if(!species||species.elements.length!==1||!species.detail.giaTrung){
@@ -49,6 +59,7 @@ function buyEgg(speciesId){
   toast(egg.hatcheryId?"The egg entered the Hatchery and incubation began.":"The Hatchery is full; the egg is waiting in Inventory.");
   AUDIO.play("place");updateUI();saveGame();
 }
+/** Manually move a waiting Inventory egg into a specific Hatchery. */
 function startIncubation(eggId,hatcheryId){
   const egg=eggById(eggId),house=buildingById(hatcheryId);
   if(!assignIncubation(egg,house)){
@@ -57,9 +68,11 @@ function startIncubation(eggId,hatcheryId){
   toast("The mystery egg is incubating.");
   AUDIO.play("place");openModal("hatchery",house.id);saveGame();
 }
+/** Delegate instant egg completion to the shared timer/Gem flow. */
 function speedHatch(eggId){
   skipTimer("egg",eggId);
 }
+/** Record first discovery plus an optional two-parent breeding recipe. */
 function recordDiscovery(speciesId,parents){
   const fresh=!state.discovered.includes(speciesId);
   if(fresh)state.discovered.push(speciesId);
@@ -69,7 +82,10 @@ function recordDiscovery(speciesId,parents){
   }
   return fresh;
 }
-/* LOGIC: Eggs chín được đưa into đúng Habitat người chơi chọn; khi thiếu chỗ vẫn giữ nguyên. */
+/**
+ * Hatch a ready egg into a compatible Habitat.
+ * The egg remains unchanged when no compatible Habitat has capacity.
+ */
 function hatchEgg(eggId,habitatId){
   const egg=eggById(eggId);
   if(!egg||!egg.hatcheryId||egg.readyAt>Date.now()){
@@ -102,7 +118,7 @@ function hatchEgg(eggId,habitatId){
   openModal("reveal",{species:egg.species,dragonId:dragon.id,nickname:nickname,fresh:fresh});
   updateHeader();updateTimerBar();saveGame();
 }
-/* LOGIC: Chỉ eggs trùng đã khám phá mới has thể bán sau khi hoàn tất ấp. */
+/** Sell a fully incubated egg only when its species was already discovered. */
 function sellReadyEgg(eggId){
   const egg=eggById(eggId);
   if(!egg||!egg.hatcheryId||egg.readyAt>Date.now()||!state.discovered.includes(egg.species)){

@@ -6,7 +6,7 @@ window.DragonEconomy={
     levelGems:1,milestoneGemBonus:3,
     xpSources:{habitatBuild:35,buildingUpgradeBase:30,buildingUpgradePerLevel:15,
       land:60,island:250,crop:[8,20,55,150],hatchKnown:25,hatchNew:50,breed:45},
-    farmEveryLevels:5,maxFarms:12,feedBase:10,feedLinear:3,feedQuadratic:.18,
+    farmEveryLevels:5,maxFarms:12,hatcheryUpgradeLevels:[5,12,22,35],feedBase:10,feedLinear:3,feedQuadratic:.18,
     goldLevelLinear:.08,goldLevelQuadratic:.0004,goldIncomeMultiplier:2.5,
     foodGoldPrice:15},
   breeding:{threeBase:.15,threePerTenLevels:.015,threeCap:.27,

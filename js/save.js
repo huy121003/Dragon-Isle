@@ -8,6 +8,67 @@ let serverSaveBusy=false;
 let serverFlushPromise=null;
 let serverWarningShown=false;
 let serverSaveRevision=0;
+const SERVER_RECONNECT_MS=5000,SERVER_PROLONGED_MS=120000;
+let serverConnectionBlocked=false,serverReconnectTimer=null;
+let serverConnectionState={status:"connected",since:0,nextRetryAt:0,attempts:0,message:""};
+function publishServerConnection(){
+  window.DragonConnectionState={...serverConnectionState,
+    blocked:serverConnectionBlocked,prolonged:serverConnectionState.since>0&&
+      Date.now()-serverConnectionState.since>=SERVER_PROLONGED_MS};
+  window.dispatchEvent(new Event("dragon-connection-change"));
+}
+function scheduleServerReconnect(){
+  if(serverReconnectTimer||!serverConnectionBlocked||serverConnectionState.status==="session-expired")return;
+  serverConnectionState.nextRetryAt=Date.now()+SERVER_RECONNECT_MS;
+  publishServerConnection();
+  serverReconnectTimer=setTimeout(function(){
+    serverReconnectTimer=null;retryServerConnection();
+  },SERVER_RECONNECT_MS);
+}
+function markServerDisconnected(message){
+  const now=Date.now();
+  if(!serverConnectionBlocked)serverConnectionState.since=now;
+  serverConnectionBlocked=true;
+  serverConnectionState.status="reconnecting";
+  serverConnectionState.attempts++;
+  serverConnectionState.message=message||"Cannot reach the game server.";
+  scheduleServerReconnect();publishServerConnection();
+}
+function markServerConnected(){
+  if(serverReconnectTimer){clearTimeout(serverReconnectTimer);serverReconnectTimer=null;}
+  serverConnectionBlocked=false;
+  serverConnectionState={status:"connected",since:0,nextRetryAt:0,attempts:0,message:""};
+  publishServerConnection();
+}
+function markSessionExpired(){
+  if(serverReconnectTimer){clearTimeout(serverReconnectTimer);serverReconnectTimer=null;}
+  serverConnectionBlocked=true;saveReadOnly=true;
+  serverConnectionState={status:"session-expired",since:serverConnectionState.since||Date.now(),
+    nextRetryAt:0,attempts:serverConnectionState.attempts,message:"Your session has expired. Returning to sign in…"};
+  publishServerConnection();
+  setTimeout(function(){if(window.location&&typeof window.location.reload==="function")window.location.reload();},700);
+}
+async function retryServerConnection(){
+  if(!serverConnectionBlocked)return true;
+  if(serverConnectionState.status==="session-expired")return false;
+  if(serverReconnectTimer){clearTimeout(serverReconnectTimer);serverReconnectTimer=null;}
+  serverConnectionState.nextRetryAt=0;publishServerConnection();
+  try{
+    const response=await fetch("/api/auth/me",{cache:"no-store"});
+    if(response.status===401){markSessionExpired();return false;}
+    if(!response.ok)throw new Error("Server returned "+response.status+".");
+    if(pendingServerSave&&!saveReadOnly){
+      const ok=await flushServerSave();
+      if(!ok)return false;
+    }else markServerConnected();
+    return !serverConnectionBlocked;
+  }catch(error){
+    markServerDisconnected("Cannot reconnect to the game server. Retrying automatically.");
+    return false;
+  }
+}
+window.DragonConnectionState={...serverConnectionState,blocked:false,prolonged:false};
+window.DragonConnectionApi={retry:retryServerConnection,getState:function(){return {...window.DragonConnectionState};}};
 const PREVIOUS_ISLANDS=[
   [600,600,300],[1200,640,200],[1080,960,220],[800,1160,240],[460,1140,260],
   [160,940,280],[40,600,300],[160,280,280],[460,100,260],[800,100,240],[1080,320,220]
@@ -411,23 +472,28 @@ function flushServerSave(){
         const error=new Error(body.error||(response.status===401?'Session expired.':
           response.status===409?'Progress changed on another device. Reload to continue safely.':
           'Cannot save the JSON profile.'));
-        error.code=body.code||(response.status>=500?'SAVE_RETRYABLE':'');
+        error.code=body.code||(response.status===401?'SESSION_EXPIRED':response.status>=500?'SAVE_RETRYABLE':'');
         if(error.code==='SAVE_RETRYABLE'&&!pendingServerSave)pendingServerSave=snapshot;
         throw error;
       }
       serverSaveRevision=Math.max(serverSaveRevision+1,
         Math.floor(Number(body.serverRevision)||serverSaveRevision+1));
       serverWarningShown=false;
+      if(serverConnectionBlocked)markServerConnected();
     }
     return true;
   })().catch(function(error){
       if(error.code==='SAVE_CONFLICT'){
         pendingServerSave=null;saveReadOnly=true;
+      }else if(error.code==='SAVE_NETWORK'||error.code==='SAVE_RETRYABLE'){
+        markServerDisconnected(error.message);
+      }else if(error.code==='SESSION_EXPIRED'){
+        markSessionExpired();
       }
-      if(!serverWarningShown){
+      if(!serverWarningShown&&error.code!=='SAVE_NETWORK'&&error.code!=='SAVE_RETRYABLE'&&
+        error.code!=='SESSION_EXPIRED'){
         serverWarningShown=true;
-        toast(error.message+(error.code==='SAVE_CONFLICT'||error.code==='SAVE_NETWORK'||
-          error.code==='SAVE_RETRYABLE'?'':' Check the connection and reload.'));
+        toast(error.message+(error.code==='SAVE_CONFLICT'?'':' Check the connection and reload.'));
       }
       return false;
   }).finally(function(){serverSaveBusy=false;});

@@ -124,6 +124,11 @@ function wheelZoom(event){
   ui.camera.y=anchor.y-(p.y-viewH/2)/ui.camera.zoom;clampCamera();
 }
 function handleAction(button){
+  if(window.DragonConnectionState?.blocked){
+    toast(window.DragonConnectionState.status==="session-expired"?
+      "Session expired. Returning to sign in…":"Reconnecting to server. Please wait.");
+    return;
+  }
   const a=button.dataset.action,id=Number(button.dataset.id);
   AUDIO.init();
   if(a!=="feed"&&a!=="collect"&&a!=="harvest")AUDIO.play("click");

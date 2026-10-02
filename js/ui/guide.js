@@ -146,7 +146,8 @@ function guideResources(){
       progression.goldLevelQuadratic*steps*steps;
     return [String(level),...rarityEntries.map(([,rarity])=>money(Math.round(rarity.income*scale)))];
   });
-  const xpRows=Array.from({length:progression.playerMaxLevel-1},(_,index)=>index+1).map(level=>[
+  const xpLevels=[1,2,3,4,5,10,15,20,30,40,50,60,75,100,150,200];
+  const xpRows=xpLevels.map(level=>[
     String(level)+' → '+(level+1),money(playerXPNeeded(level))+' XP',
     money(progression.levelGoldBase+progression.levelGoldStep*(level+1))+' vàng',
     money(progression.levelFoodBase+progression.levelFoodStep*(level+1))+' thức ăn',
@@ -175,7 +176,7 @@ function guideResources(){
     ['Level',...rarityEntries.map(([,rarity])=>esc(rarity.name))],goldRows)+
     '<p class="muted">Các giá trị mẫu trước hệ số hạnh phúc, đói, cấp Chuồng và sức chứa; sản lượng thực tế hiện trên Chuồng và thẻ rồng.</p>'+
     '<h3>XP và thưởng khi lên Player Level</h3>'+guideTable(['Từ → đến','XP cần','Vàng thưởng','Thức ăn thưởng','Gem thưởng'],xpRows)+
-    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level tối đa là '+progression.playerMaxLevel+'.</p>'+
+    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level không có giới hạn; bảng trên hiển thị các mốc tiêu biểu và công thức XP tiếp tục tăng sau level 60.</p>'+
     '<h3>Nguồn XP Player Level</h3>'+guideTable(['Hoạt động','XP'],xpSourceRows)+
     '<h3>Cây trồng ở Nông trại</h3>'+guideTable(['Cây','Mở tại','Chi phí','Thời gian','Thu hoạch Lv1'],crops)+
     '<p class="muted">Nông trại cấp cao tăng lượng thu hoạch thêm 20% cho mỗi level trên 1.</p>'+ 

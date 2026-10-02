@@ -38,6 +38,10 @@ describe('logic architecture boundaries',()=>{
     const calculations=read('js/core/calculations.js');
     const selectors=read('js/core/selectors.js');
     const selling=read('js/logic/selling.js');
+    const breeding=read('js/logic/breeding.js');
+    const resources=read('js/logic/resources.js');
+    const stars=read('js/logic/stars.js');
+    const world=read('js/logic/world.js');
     const migrations=read('js/persistence/migrations.js');
     expect(state).not.toContain('DATA.buildings.habitat.cost');
     expect(calculations).not.toContain('DATA.progression');
@@ -47,6 +51,10 @@ describe('logic architecture boundaries',()=>{
     expect(calculations).not.toContain('DATA.buildings[type].cost');
     expect(selectors).not.toContain('DATA.buildings[building.type].maxLevel');
     expect(selling).not.toContain('DATA.buildings[b.type].sellRate');
+    expect(breeding).not.toContain('DATA.progression.breedLevel');
+    expect(resources).not.toContain('DATA.testResources');
+    expect(stars).not.toContain('DATA.progression.starUpgrades');
+    expect(world).not.toContain('DATA.gemPerDragonPerHour');
     expect(migrations).not.toContain('DATA.progression');
     expect(migrations).not.toContain('DATA.buildings[out.type].maxLevel');
   });

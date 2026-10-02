@@ -24,6 +24,9 @@ function handleAction(button){
     case "shop-egg-detail":openModal("shop-egg-detail",button.dataset.species);break;
     case "shop-egg-back":openModal("shop");break;
     case "open-dragons":openModal("dragons");break;
+    case "dragon-sort":
+      if(["power","level","stars"].includes(button.dataset.sort)){ui.dragonSort=button.dataset.sort;renderDragons();}
+      break;
     case "dragon-detail":
       ui.dragonReturn=ui.modal?.name==="habitat"?{name:"habitat",extra:ui.modal.extra}:{name:"dragons"};
       openModal("dragon-detail",id);break;
@@ -54,7 +57,7 @@ function handleAction(button){
     case "arena-skill":arenaTurn("skill",Number(button.dataset.skill));break;
     case "arena-switch":arenaTurn("switch",id);break;
     case "arena-forfeit":
-      if(window.confirm("Forfeiting counts as a loss and starts a "+Math.round(window.DragonConfig.arena.cooldownMs/60000)+"-minute cooldown. Continue?"))arenaTurn("forfeit");break;
+      if(window.confirm("Forfeiting ends the match and uses one Arena attempt. Continue?"))arenaTurn("forfeit");break;
     case "arena-refresh":loadArena();break;
     case "close-modal":closeModal();break;
     case "clear-selection":ui.selection=null;updateInspector();break;

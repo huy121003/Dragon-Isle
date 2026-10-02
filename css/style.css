@@ -166,6 +166,8 @@
     .skill-card.skill-locked{background:#edf0f2;border-color:#bac5cc;opacity:.8}
     .skill-card.skill-locked .skill-icon{background:#dce4e8}
     .dragon-info{min-width:0;flex:1}.dragon-info .meter{margin-top:6px}
+    .dragon-power,.roster-power{color:#a36a12!important;font-weight:800;font-variant-numeric:tabular-nums}
+    .dragon-sort{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:9px 0 12px}.dragon-sort>span{font-size:12px;font-weight:800;color:#58706f}.dragon-sort .btn.active{background:#207e6c;color:#fff;border-color:#207e6c}
     .meter{height:7px;border-radius:10px;background:#e6e9e4;overflow:hidden}
     .meter>span{height:100%;display:block;background:#66c89b}
     .note{padding:11px 12px;border-radius:13px;background:#eef7f4;color:#527283;font-size:13px;line-height:1.45;margin-bottom:12px}

@@ -3,57 +3,54 @@ import React,{useState} from 'react';
 import {Button,Tag} from 'antd';
 import '../../arena.css';
 import {emitRuntime,send} from '../../app/game-bridge.js';
-import {arenaConfig,badges,ElementFilter,fmt,Portrait,RarityGem,RosterCard,speciesOf,Stars,TeamSlots} from './ArenaShared.jsx';
+import {arenaConfig,ElementFilter,fmt,RosterCard,speciesOf,TeamSlots} from './ArenaShared.jsx';
 import {Battle} from './ArenaBattle.jsx';
 
 function ArenaSetup({arena}){
-  const [side,setSide]=useState('attack'),[elements,setElements]=useState([]),data=arena.data;
+  const [elements,setElements]=useState([]),data=arena.data;
   const config=arenaConfig(),teamSize=config.teamSize,minLevel=config.minBattleLevel;
-  const cooldownMinutes=Math.round(config.cooldownMs/60000);
   if(!data)return <div className="arena-loading">⏳ Loading Arena…
     {arena.error&&<p>{arena.error}</p>}<Button onClick={()=>send({action:'arena-refresh'})}>Reload</Button></div>;
   const visibleDragons=data.dragons.filter(dragon=>elements.every(id=>speciesOf(dragon.species)?.elements.includes(id)));
-  const wait=Math.max(0,Math.ceil(((data.cooldownUntil||0)-Date.now())/1000));
-  const waitText=Math.floor(wait/60)+'m '+String(wait%60).padStart(2,'0')+'s';
+  const resetSeconds=Math.max(0,Math.ceil(((data.resetAt||0)-Date.now())/1000));
+  const resetText=Math.floor(resetSeconds/3600)+'h '+String(Math.floor(resetSeconds%3600/60)).padStart(2,'0')+'m';
   return <div className="arena-hub">
     <div className="arena-hub-hero"><span className="arena-crest">⚔</span><div><small>DRAGON ISLE · PVP</small>
-      <h2>Dragon Arena</h2><p>Choose your teams to unlock the opponent list.</p></div>
+      <h2>Dragon Arena</h2><p>Choose your attack team and challenge server-generated rivals.</p></div>
       <Button onClick={()=>send({action:'arena-refresh'})} disabled={arena.busy}>↻ Refresh</Button></div>
     <div className="arena-record"><span>🏆 Wins <b>{fmt.format(data.wins||0)}</b></span>
       <span>🛡 Losses <b>{fmt.format(data.losses||0)}</b></span>
-      <small>Includes attack and defense battles</small></div>
+      <span>⚔ Attempts <b>{data.attemptsRemaining??3}/3</b></span><small>Resets in {resetText}</small></div>
     {arena.error&&<div className="arena-error">{arena.error}</div>}
     {arena.result&&<div className={'arena-finish '+(arena.result.won?'win':'lose')}>
       <span>{arena.result.won?'🏆':'💔'}</span><div><b>{arena.result.won?'Victory!':'Defeat'}</b>
-      <small>{arena.result.won?`+${fmt.format(arena.result.reward.gold)} gold · +${fmt.format(arena.result.reward.food)} food · +${fmt.format(arena.result.reward.gems||0)} gem`:`Wait ${cooldownMinutes} minutes before your next battle.`}</small></div></div>}
+      <small>{arena.result.won?`+${fmt.format(arena.result.reward.gold)} gold · +${fmt.format(arena.result.reward.food)} food · +${fmt.format(arena.result.reward.gems||0)} gem`:'One attempt was used. Your next attempts reset at the next 8-hour mark.'}</small></div></div>}
     {arena.phase!=='opponents'?<section className="arena-setup-section"><div className="arena-section-head"><div><small>01 · PREPARE</small>
-      <h3>Your teams</h3></div><Tag color="gold">Exactly {teamSize} dragons at Lv{minLevel}+ per team</Tag></div>
-      <div className="arena-teams-preview"><TeamSlots title="⚔ Attack" ids={arena.draft.attack} dragons={data.dragons}/>
-        <TeamSlots title="🛡 Defense" ids={arena.draft.defense} dragons={data.dragons}/></div>
-      <div className="arena-team-tabs"><Button type={side==='attack'?'primary':'default'} onClick={()=>setSide('attack')}>⚔ Choose attack</Button>
-        <Button type={side==='defense'?'primary':'default'} onClick={()=>setSide('defense')}>🛡 Choose defense</Button></div>
+      <h3>Attack team</h3></div><Tag color="gold">Exactly {teamSize} dragons at Lv{minLevel}+</Tag></div>
+      <div className="arena-teams-preview single"><TeamSlots title="⚔ Attack" ids={arena.draft.attack} dragons={data.dragons}/></div>
       <ElementFilter value={elements} onChange={setElements}/>
       <div className="arena-roster-grid">{visibleDragons.map(dragon=><RosterCard key={dragon.id} dragon={dragon}
-        selected={arena.draft[side].includes(dragon.id)} disabled={arena.busy}
-        onClick={()=>send({action:'arena-toggle',side,id:dragon.id})}/>)}
+        selected={arena.draft.attack.includes(dragon.id)} disabled={arena.busy}
+        onClick={()=>send({action:'arena-toggle',side:'attack',id:dragon.id})}/>)}
         {!visibleDragons.length&&<p className="arena-empty">No dragons match all selected elements.</p>}</div>
-      <div className="arena-save-bar"><span>Your defense team protects your island while you are away.</span>
-        <Button type="primary" size="large" loading={arena.busy} disabled={arena.draft.attack.length!==teamSize||arena.draft.defense.length!==teamSize}
-          onClick={()=>send({action:'arena-save'})}>OK · Confirm teams</Button></div>
+      <div className="arena-save-bar"><span>AI rivals scale from your trainer and selected dragons.</span>
+        <Button type="primary" size="large" loading={arena.busy} disabled={arena.draft.attack.length!==teamSize}
+          onClick={()=>send({action:'arena-save'})}>Save attack team</Button></div>
     </section>:<section className="arena-setup-section"><div className="arena-section-head"><div><small>02 · CHALLENGE</small>
-      <h3>Choose opponent</h3></div>{wait>0&&<Tag color="volcano">⏳ Remaining: {waitText}</Tag>}</div>
+      <h3>Choose an AI rival</h3></div><Tag color={data.attemptsRemaining?'green':'volcano'}>⚔ {data.attemptsRemaining??3} attempts · resets in {resetText}</Tag></div>
       <Button onClick={()=>{arena.phase='teams';emitRuntime();}}>← Edit teams</Button>
-      {!data.opponents.length&&<p className="arena-empty">No other player has set a defense team yet.</p>}
-      <div className="arena-opponents">{data.opponents.map(opponent=><div key={opponent.id} className="arena-opponent-card">
-        <div className="arena-opponent-head"><span className="opponent-emblem">🛡</span><div><b>{opponent.username}</b><small>Trainer · Level {opponent.level} · Wins {fmt.format(opponent.wins||0)} / Losses {fmt.format(opponent.losses||0)}</small></div></div>
-        <div className="arena-enemy-team">{opponent.team.map(dragon=><div key={dragon.id} className="arena-enemy-dragon">
-          <Portrait dragon={dragon} facing={-1}/><b>{dragon.nickname}</b>
-          <small>{speciesOf(dragon.species)?.name} · Lv{dragon.level}</small><Stars count={dragon.stars||0}/>
-          <span className="arena-element-row">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span></div>)}</div>
-        <Button type="primary" size="large" block disabled={arena.busy||wait>0||data.attack.length!==teamSize}
-          onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>⚔ Start battle</Button>
-      </div>)}</div>
-      {data.attack.length!==teamSize&&<p className="arena-tip">Save an attack team of exactly {teamSize} dragons before challenging.</p>}
+      {!data.opponents.length&&<p className="arena-empty">Save an attack team to generate three Arena rivals.</p>}
+      <div className="arena-opponents">{data.opponents.map((opponent,index)=>{
+        const defeated=data.defeatedOpponentIds?.includes(opponent.id);
+        return <div key={opponent.id} className={'arena-opponent-card'+(defeated?' defeated':'')}>
+        <div className="arena-opponent-head"><span className="opponent-emblem">{defeated?'✓':'?'}</span><div><b>Arena rival {index+1}</b><small>{defeated?'Defeated this round':'Opponent team concealed'}</small></div></div>
+        <div className="arena-enemy-team concealed" aria-label="Three concealed opponent dragons" aria-hidden="true">
+          {[0,1,2].map(slot=><div key={slot} className="arena-hidden-dragon"><span>🐉</span><i>?</i></div>)}
+        </div>
+        <Button type="primary" size="large" block disabled={defeated||arena.busy||(data.attemptsRemaining??3)<=0||data.attack.length!==teamSize}
+          onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>{defeated?'✓ Defeated':'⚔ Challenge'}</Button>
+      </div>;})}</div>
+      {(data.attemptsRemaining??3)<=0&&<p className="arena-tip">Your attempts reset at 00:00, 08:00 and 16:00 (Vietnam time).</p>}
     </section>}
   </div>;
 }

@@ -32,6 +32,13 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
     send({action:action==='forfeit'?'arena-forfeit':action==='skill'?'arena-skill':'arena-switch',
       ...payload});
   const skillOptions=attacker.skills.filter(Boolean);
+  const Party=({side,label,interactive=false})=><div className={'arena-battle-party '+(interactive?'interactive':'')}>
+    <b>{label}</b><div>{battle[side].map((dragon,index)=><button type="button" key={dragon.id}
+      aria-label={`${dragon.nickname}, ${dragon.hp>0?'alive':'defeated'}`} title={`${dragon.nickname} · ${dragon.hp>0?Math.ceil(dragon.hp/dragon.maxHp*100)+'% HP':'Defeated'}`}
+      disabled={dragon.hp<=0||(interactive&&(disabled||index===battle.activeAttack))} onClick={()=>interactive&&act('switch',challenge?{dragonId:dragon.id}:{id:dragon.id})}
+      className={'arena-party-dragon '+(index===(side==='attack'?battle.activeAttack:battle.activeDefense)?'active':'')+(dragon.hp<=0?' dead':'')}>
+      <Portrait dragon={dragon}/><span className="arena-element-row">{badges(dragon.species)}</span>{dragon.hp<=0&&<i aria-hidden="true">×</i>}
+    </button>)}</div></div>;
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>
     <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')} disabled={arena.busy||arena.animating}>Forfeit</Button></div>
     {arena.error&&<div className="arena-error">{arena.error}</div>}
@@ -58,6 +65,11 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
       </div>}
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
+    {!challenge&&<div className="arena-parties"><Party side="attack" label="Your dragons · tap to switch" interactive/>
+      <Party side="defense" label="Rival team"/></div>}
+    {challenge&&<div className="battle-bench"><b>Attack team</b><div>{battle.attack.map((dragon,index)=><span key={dragon.id}
+      className={'battle-bench-dragon '+(index===battle.activeAttack?'active':'')+(dragon.hp<=0?' fainted':'')}>
+      <Portrait dragon={dragon}/><small>{dragon.nickname}<br/>{Math.round(dragon.hp/dragon.maxHp*100)}% HP</small></span>)}</div></div>}
     <div className="battle-details-scroll" role="region" aria-label="Skills, dragon switch and recent moves" tabIndex={0}>
     <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':challenge&&!myTurn?'Waiting for opponent…':'Turn: '+attacker.nickname}</h3>
       <p className="battle-matchup-key">▲ Strong · ▼ Weak · exact multiplier is shown on each skill</p></div>
@@ -76,21 +88,15 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
             skill.special?skill.description+' · CD '+skill.cooldown:
             skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
             Math.round(skill.power*100)+'% base attack'}</small></Button>;})}</div>
-      <b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
+      {challenge&&<><b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
         <Button key={dragon.id} disabled={disabled} onClick={()=>act('switch',challenge?{dragonId:dragon.id}:{id:dragon.id})}>
           <Portrait dragon={dragon}/><span>{dragon.nickname}<small>{fmt.format(dragon.hp)} HP · {badges(dragon.species)}</small></span></Button>)}</div>
+      </>}
     </div>
-    <div className="battle-bench"><b>Attack team</b><div>{battle.attack.map((dragon,index)=><span key={dragon.id}
-      className={'battle-bench-dragon '+(index===battle.activeAttack?'active':'')+(dragon.hp<=0?' fainted':'')}>
-      <Portrait dragon={dragon}/><small>{dragon.nickname}<br/>{Math.round(dragon.hp/dragon.maxHp*100)}% HP</small></span>)}</div></div>
-    <div className="battle-feed"><b>Recent moves</b>{battle.events.slice(-4).reverse().map((e,i)=><p key={i}>
-      {e.switchTo?'🔄 '+e.switchTo+' enters the arena':e.forfeit?'🏳️ Forfeit':
-        e.skipped?`${e.actor} missed a turn · Frozen`:
-        `${e.actor} used ${e.skill} → ${e.target}: `+
-        (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')+
-        (e.damage&&e.matchup>1?' · ▲ Strong':e.damage&&e.matchup<1?' · ▼ Weak':'')+
-        (e.damage&&e.critical?' · ✦ Crit':'')+
-        (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div></div>
+    {challenge&&<div className="battle-feed"><b>Recent moves</b>{battle.events.slice(-4).reverse().map((e,i)=><p key={i}>
+      {e.switchTo?'🔄 '+e.switchTo+' enters the arena':e.forfeit?'🏳️ Forfeit':`${e.actor} used ${e.skill} → ${e.target}: `+
+        (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')}</p>)}</div>}
+    </div>
   </div>;
 }
 

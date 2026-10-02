@@ -5,16 +5,17 @@ function guideArena(){
   const arena=window.DragonConfig.arena,combat=window.DragonConfig.combat;
   const values=Object.values(DRAGON_DB.typeChart).flatMap(row=>Object.values(row));
   const strong=Math.max(...values),weak=Math.min(...values);
-  const critChance=Math.round(combat.critical.chance*100),cooldownMinutes=Math.round(arena.cooldownMs/60000);
+  const critChance=Math.round(combat.critical.chance*100);
   return '<h3>Đội hình và lượt đánh</h3>'+guideList([
-    'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng '+arena.teamSize+' rồng từ level '+arena.minBattleLevel+' cho đội tấn công và '+arena.teamSize+' rồng cho đội phòng thủ. Rồng đang lai không tham gia.',
-    'Arena đánh theo lượt. Người chơi chọn skill hoặc đổi rồng (tốn một lượt); đội phòng thủ chọn skill đang mở và không hồi chiêu theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
+    'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng '+arena.teamSize+' rồng từ level '+arena.minBattleLevel+' cho đội tấn công. Rồng đang lai không tham gia.',
+    'Arena tạo ba đối thủ máy dựa trên cấp người chơi và sức mạnh đội rồng đã chọn. Mỗi khung 8 giờ có ba lượt, làm mới lúc 00:00, 08:00 và 16:00 theo giờ Việt Nam.',
+    'Arena đánh theo lượt. Người chơi chọn skill hoặc chạm avatar rồng dự bị để đổi rồng (tốn một lượt); đối thủ chọn skill đang mở theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
     'Bốn ô skill mở theo level '+window.DragonConfig.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
     'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân '+strong+'; ▼ Weak nhân '+weak+'; skill thường không có hệ nên hệ số là 1.',
     'Sát thương còn chịu giáp, biến thiên ngẫu nhiên khoảng '+Math.round(combat.variance.min*100)+'–'+Math.round(combat.variance.max*100)+'%, trạng thái đang có và chí mạng. Xác suất crit '+critChance+'%, hệ số crit '+combat.critical.multiplier+'.',
     'Dưới HP có icon trạng thái và số lượt còn lại: tăng/giảm tấn công, giáp, giảm sát thương, độc, đóng băng, hồi phục, tăng HP và giảm chính xác.',
     'Special Skill có thể hồi máu, tẩy trạng thái xấu, tăng HP tối đa hoặc đánh 2–3 nhịp có tỷ lệ hụt từng nhịp. Hiệu ứng cùng loại không cộng dồn: làm mới thời gian theo giá trị lớn hơn và giữ mức tác dụng mạnh hơn.',
-    'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận tính là thua và chờ '+cooldownMinutes+' phút trước trận tiếp theo.'
+    'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận đều tiêu hao một lượt.'
   ])+'<div class="guide-callout">Chỉ báo Strong/Weak ở ô skill theo đối thủ đang đứng sân; khi đổi rồng, chúng được tính lại.</div>';
 }
 

@@ -1,6 +1,6 @@
 "use strict";
 /* Team hình và trận đánh đi qua API; chỉ hiệu ứng được tính trên trình duyệt. */
-ui.arena={data:null,draft:{attack:[],defense:[]},phase:"teams",busy:false,result:null,error:null,
+ui.arena={data:null,draft:{attack:[]},phase:"teams",busy:false,result:null,error:null,
   presentation:null,animating:false,pendingSkill:null};
 let arenaAnimationTimer=0;
 /** Publish Arena UI changes through the React runtime, with a legacy event fallback. */
@@ -28,7 +28,7 @@ async function arenaRequest(path,method,body){
   if(!response.ok)throw new Error(value.error||'Cannot connect to the Arena.');
   return value;
 }
-/** Refresh Arena roster, saved teams, opponents and cooldown state from the server. */
+/** Refresh Arena roster, saved attack team, AI rivals and attempt window from server. */
 async function loadArena(){
   if(ui.arena.busy)return;
   finishArenaPresentation();
@@ -37,38 +37,38 @@ async function loadArena(){
   try{
     await saveGame();
     ui.arena.data=await arenaRequest('list');
-    ui.arena.draft={attack:ui.arena.data.attack.slice(),defense:ui.arena.data.defense.slice()};
+    ui.arena.draft={attack:ui.arena.data.attack.slice()};
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;if(ui.modal?.name==='arena')renderArena();
   notifyArenaRuntime();
 }
-/** Toggle one eligible dragon in the local attack/defense draft without mutating server state. */
+/** Toggle one eligible dragon in the local attack draft without mutating server state. */
 function arenaToggle(side,id){
-  if(!['attack','defense'].includes(side))return;
+  if(side!=='attack')return;
   const dragon=ui.arena.data?.dragons.find(d=>d.id===id);
   if(!dragon)return;
   const teamSize=window.DragonConfig.arena.teamSize;
-  const team=ui.arena.draft[side],at=team.indexOf(id);
+  const team=ui.arena.draft.attack,at=team.indexOf(id);
   if(at>=0)team.splice(at,1);
   else if(!dragon.canBattle){toast(dragon.battleReason||'This dragon cannot battle.');return;}
   else if(team.length<teamSize)team.push(id);
   else {toast('Each team can have at most '+teamSize+' dragons.');return;}
   renderArena();notifyArenaRuntime();
 }
-/** Validate and persist both Arena teams through the authoritative server. */
+/** Validate and persist the Arena attack team through the authoritative server. */
 async function arenaSaveTeam(){
-  const {attack,defense}=ui.arena.draft,teamSize=window.DragonConfig.arena.teamSize;
-  if(attack.length!==teamSize||defense.length!==teamSize){
-    toast('Each team must have exactly '+teamSize+' dragons.');return;
+  const {attack}=ui.arena.draft,teamSize=window.DragonConfig.arena.teamSize;
+  if(attack.length!==teamSize){
+    toast('Choose exactly '+teamSize+' attack dragons.');return;
   }
   try{
     ui.arena.busy=true;renderArena();await saveGame();
-    await arenaRequest('team','PUT',{attack,defense});
-    ui.arena.data=await arenaRequest('list');ui.arena.phase="opponents";toast('Teams saved. Choose an opponent.');
+    await arenaRequest('team','PUT',{attack});
+    ui.arena.data=await arenaRequest('list');ui.arena.phase="opponents";toast('Attack team saved. Choose an Arena rival.');
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;renderArena();notifyArenaRuntime();
 }
-/** Start an Arena match against a selected opponent after forcing a safe save. */
+/** Start an Arena match against a selected AI rival after forcing a safe save. */
 async function arenaFight(opponentId){
   const teamSize=window.DragonConfig.arena.teamSize;
   if(ui.arena.busy||ui.arena.data?.attack.length!==teamSize)return;

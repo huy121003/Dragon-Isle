@@ -14,8 +14,8 @@ Công thức nằm trong `js/rules/`; state mutation nằm trong `js/logic/` ho�
 | `dragons.js` | Lifecycle, resale, XP helper và giới hạn cấu trúc như `maxElementsPerDragon` | level, element slots, multiplier |
 | `breeding.js` | Tỉ lệ lai, rare tier, Double requirements, premium modifier, breeding time | decimal probability, seconds |
 | `hatching.js` | Incubation time | seconds |
-| `combat.js` | Stat growth, defense/armor, star bonus, crit, variance, accuracy | decimal multiplier/probability |
-| `arena.js` | Team size, level gate, cooldown, max turn, reward, defense-AI weights | level, ms, resource |
+| `combat.js` | Stat growth, Combat Power weights, defense/armor, star bonus, crit, variance, accuracy | decimal multiplier/probability |
+| `arena.js` | Attack-team size, level gate, 8-hour attempts, AI power targets, max turn, reward, defense-AI weights | level, ms, resource |
 | `challenge.js` | Invite/presence/heartbeat/reconnect/idle và phase | milliseconds |
 | `world.js` | Offline simulation, care, passive income/Gem, day/weather | ms, seconds, per-hour |
 | `timers.js` | Gem skip conversion | seconds/Gem, Gems |

@@ -70,7 +70,8 @@ function updateInspector(){
       '<button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
       (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
       goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
-    ds.forEach(function(d){body+='<button class="btn" data-action="inspect-dragon" data-id="'+d.id+'">🐲 '+esc(d.nickname)+' · '+esc(DATA.species[d.species].name)+'</button>';});
+    ds.forEach(function(d){body+='<button class="btn" data-action="inspect-dragon" data-id="'+d.id+'">🐲 '+esc(d.nickname)+' · '+
+      esc(DATA.species[d.species].name)+' · ⚡ '+money(dragonCombatPower(d))+'</button>';});
     body+='</div>';
   }else if(b.type==="farm"){
     if(!b.crop)body+='<p>Choose a crop to produce food.</p><div class="actions"><button class="btn good" data-action="crop-menu" data-id="'+b.id+'">Plant crop</button></div>';
@@ -90,7 +91,7 @@ function updateInspector(){
       "Choose two dragons at level "+window.DragonConfig.progression.breedLevel+" or above to breed.")+'</p><div class="actions"><button class="btn good" data-action="breeding-menu" data-id="'+b.id+
       '">Open '+esc(buildingName(b))+'</button></div>';
   }else if(b.type==="arena"){
-    body+='<p>Set attack and defense teams to challenge another player.</p><div class="actions">'+
+    body+='<p>Choose an attack team and challenge three server-generated Arena rivals.</p><div class="actions">'+
       '<button class="btn good" data-action="open-arena">Enter Arena</button></div>';
   }else if(b.type==="academy"){
     body+='<p>Dragon level cap: <b>'+dragonLevelCap()+'</b> / '+window.DragonConfig.progression.dragonMaxLevel+'.</p>';

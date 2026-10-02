@@ -16,6 +16,8 @@
     }),
     transcendentWeights:Object.freeze([.25,.25,.3,.2]),
     defenseScale:.6,
+    /** Combat-power weights; derived stats already include element, rarity, level and stars. */
+    powerWeights:Object.freeze({hp:.1,attack:2,defense:1.5}),
     statGrowth:Object.freeze({linear:.07,quadratic:.0003,hpLinear:.08,hpQuadratic:.00035,hpBaseMultiplier:5}),
     star:Object.freeze({max:5,statBonusPerStar:.05}),
     armorCoefficient:.8,

@@ -6,6 +6,10 @@
  * Candidate discovery uses the catalog; probabilities/durations are delegated
  * to js/rules/breeding.js. This file owns only gameplay state mutation/UI side effects.
  */
+/**
+ * Build normalized offspring candidates for two owned dragons.
+ * Returns catalog species IDs with decimal probabilities; does not mutate save state.
+ */
 function breedingOptions(father,mother,cave){
   if(!father||!mother||father.id===mother.id)return [];
   const F=DATA.species[father.species],M=DATA.species[mother.species];
@@ -75,13 +79,19 @@ function breedingSeconds(species,level,cave,parents){
   return window.DragonRules.breeding.seconds(
     s,dragonTimeTier(s),ELEMENT_UNLOCK,parentSpecies,cave?.type==="premiumCave");
 }
+/** Return whether a building is either standard or premium Breeding Cave. */
 function isBreedingCave(building){return building?.type==='cave'||building?.type==='premiumCave';}
+/** Return whether a dragon is locked by an unfinished breeding timer. */
 function dragonBusy(id){
   return state.buildings.some(function(b){
     return isBreedingCave(b)&&b.breeding&&b.breeding.readyAt>Date.now()&&
       (b.breeding.fatherId===id||b.breeding.motherId===id);
   });
 }
+/**
+ * Validate parents/cave, roll one offspring, lock parents and start the breeding timer.
+ * This action mutates save state and persists immediately.
+ */
 function startBreeding(caveId,fatherId,motherId){
   const cave=buildingById(caveId),father=dragonById(fatherId),mother=dragonById(motherId);
   if(!isBreedingCave(cave)||cave.stored||cave.breeding||
@@ -106,6 +116,7 @@ function startBreeding(caveId,fatherId,motherId){
   toast("Breeding has started.");
   AUDIO.play("place");openModal("breeding",cave.id);saveGame();
 }
+/** Convert a completed breeding result into an egg and release both parents. */
 function collectBreeding(caveId){
   const cave=buildingById(caveId);
   if(!isBreedingCave(cave)||!cave.breeding||cave.breeding.readyAt>Date.now()){

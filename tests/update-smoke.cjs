@@ -109,6 +109,13 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
  g.run('refreshCountdowns()');
  assert.equal(g.run('window.refreshCount'),1,'A completed timer must not redraw the panel every second');
 });
+check('saves preserve player levels above 60',()=>{
+ const high=snapshot(game,'newGame()');
+ high.player.level=125;high.player.xp=777;
+ const restored=snapshot(game,'migrateSave('+JSON.stringify(high)+')');
+ assert.equal(restored.player.level,125);
+ assert.equal(restored.player.xp,777);
+});
 check('new accounts receive starter gold and food without changing existing saves',()=>{
  const fresh=snapshot(game,'newGame()');
  assert.equal(fresh.gold,10000);

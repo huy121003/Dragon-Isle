@@ -80,6 +80,18 @@ describe('architecture boundaries',()=>{
     expect(read('js/ui/guide/breeding.js')).toContain('function guideBreeding');
   });
 
+  it('separates canvas pointer input from action routing',()=>{
+    const index=read('index.html');
+    const input=read('js/ui/input.js');
+    const actions=read('js/ui/actions.js');
+    expect(index).toContain('js/ui/actions.js');
+    expect(input).toContain('function pointerDown');
+    expect(input).toContain('function wheelZoom');
+    expect(input).not.toContain('function handleAction');
+    expect(actions).toContain('function handleAction');
+    expect(actions).toContain('DragonConnectionState?.blocked');
+  });
+
   it('keeps network, persistence and migrations separated',()=>{
     expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');

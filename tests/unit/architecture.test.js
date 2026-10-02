@@ -23,6 +23,22 @@ describe('architecture boundaries',()=>{
     expect(read('src/features/challenge/useChallenge.js')).toContain("from '@tanstack/react-query'");
     expect(read('server/validation.cjs')).toContain("require('zod')");
   });
+  it('keeps Arena screen, shared roster and battle presentation separated',()=>{
+    const view=read('src/features/arena/ArenaView.jsx');
+    const shared=read('src/features/arena/ArenaShared.jsx');
+    const battle=read('src/features/arena/ArenaBattle.jsx');
+    const challenge=read('src/features/challenge/ChallengeView.jsx');
+    expect(view.split('\n').length).toBeLessThan(100);
+    expect(view).toContain("from './ArenaShared.jsx'");
+    expect(view).toContain("from './ArenaBattle.jsx'");
+    expect(shared).toContain('export function RosterCard');
+    expect(shared).toContain('export function ElementFilter');
+    expect(battle).toContain('export function Battle');
+    expect(challenge).toContain("from '../arena/ArenaShared.jsx'");
+    expect(challenge).toContain("from '../arena/ArenaBattle.jsx'");
+    expect(challenge).not.toContain("from '../arena/ArenaView.jsx'");
+  });
+
   it('keeps server routes out of the bootstrap',()=>{
     const server=read('server.cjs');
     expect(server).not.toContain("pathname==='/api/");

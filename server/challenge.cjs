@@ -5,6 +5,7 @@ const {readJson}=require('./store.cjs');
 const challengeConfig=require('../js/config/challenge.js');
 const {createPresence}=require('./challenge/presence.cjs');
 const {createChallengeStore}=require('./challenge/store.cjs');
+const {createChallengeView}=require('./challenge/view.cjs');
 /** Create an HTTP-aware Challenge domain error. */
 function error(message,status=409){return Object.assign(new Error(message),{status});}
 /**
@@ -26,6 +27,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
   const store=createChallengeStore({stateFile,users,now});
   const {matches,byUser,notices,persist,release}=store;
   const presencePolicy=createPresence({auth,users,profile,now,heartbeatMs,reconnectMs});
+  const {view}=createChallengeView({users,presencePolicy,arena});
   /** Serialize state transitions so two requests cannot mutate one match concurrently. */
   function locked(fn){
     const next=pending.catch(()=>{}).then(async()=>{await store.ensureLoaded();return fn();});
@@ -49,32 +51,6 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
   async function qualified(id){
     const p=await profile(id);
     return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=challengeConfig.teamSize;
-  }
-  /** Build the perspective-correct Challenge DTO for one participant. */
-  function view(match,id){
-    const index=match.players.indexOf(id),opponentId=match.players[1-index];
-    const opponent=users().find(u=>u.id===opponentId);
-    const opponentPresence=presencePolicy.state(match,1-index);
-    const result={id:match.id,phase:match.phase,opponent:opponent?.username||'Player',
-      outgoing:index===0,until:match.until,ready:!!match.ready[index],
-      opponentReady:!!match.ready[1-index],selection:match.selection[index]||[],
-      updatedAt:match.updatedAt,opponentConnection:opponentPresence.state,
-      opponentReconnectUntil:opponentPresence.reconnectUntil};
-    if(match.phase===challengeConfig.phases.SELECT)result.roster=match.rosters[index];
-    if(match.phase===challengeConfig.phases.BATTLE){
-      const reverse=index===1,raw=arena.publicBattle(match.battle);
-      const flip=side=>side==='attack'?'defense':side==='defense'?'attack':side;
-      const swapEvent=e=>reverse?{...e,side:flip(e.side),targetSide:flip(e.targetSide),
-        state:e.state?{...e.state,attack:e.state.defense,defense:e.state.attack,
-          activeAttack:e.state.activeDefense,activeDefense:e.state.activeAttack}:undefined}:e;
-      result.battle=reverse?{...raw,attack:raw.defense,defense:raw.attack,
-        activeAttack:raw.activeDefense,activeDefense:raw.activeAttack,
-        events:raw.events.map(swapEvent)}:raw;
-      result.battle.opponent=result.opponent;
-      result.eventSeq=match.battle.events.length;
-      result.myTurn=match.battle.nextSide===(reverse?'defense':'attack');
-    }
-    return result;
   }
   /** Refresh heartbeat and return lobby/match status for one player. */
   async function status(user){

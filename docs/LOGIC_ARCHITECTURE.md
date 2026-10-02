@@ -99,6 +99,8 @@ phải nằm ở rule/logic layer tương ứng.
 ### Building art
 
 ```text
+js/render/world-geometry.js     canvas viewport + camera/grid projection/hit-test
+js/render/world.js              background/island/weather/tile artwork
 js/render/building-primitives.js shared projected-footprint drawing helpers/context
 js/render/habitat-art.js        Habitat biome + Habitat renderer
 js/render/facility-art.js       Farm/Hatchery/Academy/Arena renderers

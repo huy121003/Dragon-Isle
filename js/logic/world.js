@@ -145,7 +145,7 @@ function completePlacement(x,y){
     state.buildings.push(building);
     if(type==="hatchery")autoAssignWaitingEggs();
     ui.selection={type:"building",id:building.id};
-    if(type==="habitat")gainPlayerXP(window.DragonEconomy.progression.xpSources.habitatBuild);
+    gainPlayerXP(window.DragonEconomy.progression.xpSources.buildingBuild[type]||0);
     toast("Built "+buildingName(building)+".");
   }
   const f=placementFootprint(mode);

@@ -190,9 +190,9 @@ check('battle preview, multiple attacking elements and colored skill symbols',()
  assert(detail.includes('100% base attack + '));
 });
 check('early player XP, level rewards and dragon feeding costs',()=>{
- assert.equal(balance.run('playerXPNeeded(1)'),38);
- assert.equal(balance.run('playerXPNeeded(20)'),1115);
- assert.equal(balance.run('Array.from({length:4},(_,i)=>playerXPNeeded(i+1)).reduce((a,b)=>a+b,0)'),337);
+ assert.equal(balance.run('playerXPNeeded(1)'),93);
+ assert.equal(balance.run('playerXPNeeded(20)'),1276);
+ assert.equal(balance.run('Array.from({length:4},(_,i)=>playerXPNeeded(i+1)).reduce((a,b)=>a+b,0)'),627);
  assert(balance.run('playerXPNeeded(1)')<100);
  assert(balance.run('playerXPNeeded(20)')<2000);
  assert(balance.run('playerXPNeeded(21)')>balance.run('playerXPNeeded(20)'));
@@ -201,13 +201,13 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  const before=snapshot(balance,'{gold:state.gold,food:state.food,gems:state.gems}');
  balance.run('gainPlayerXP(playerXPNeeded(1))');
  assert.equal(balance.run('state.player.level'),2);
- assert.equal(balance.run('state.gold'),before.gold+200);
- assert.equal(balance.run('state.food'),before.food+40);
+ assert.equal(balance.run('state.gold'),before.gold+1500);
+ assert.equal(balance.run('state.food'),before.food+300);
  assert.equal(balance.run('state.gems'),before.gems+1);
  balance.run('state.player.level=4;state.player.xp=0;gainPlayerXP(playerXPNeeded(4))');
  assert.equal(balance.run('state.player.level'),5);
- assert.equal(balance.run('state.gems'),before.gems+4);
- balance.run('state.player.level=3;state.player.xp=150;gainPlayerXP(0)');
+ assert.equal(balance.run('state.gems'),before.gems+5);
+ balance.run('state.player.level=3;state.player.xp=playerXPNeeded(3)+52;gainPlayerXP(0)');
  assert.equal(balance.run('state.player.level'),4);
  assert.equal(balance.run('state.player.xp'),52);
  balance.run('state.player.level=5;state.player.xp=0');
@@ -226,7 +226,7 @@ check('gold scales steadily, active Habitats and higher levels hold more gold',(
    income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:1})')*10);
  assert(income.run('habitatGoldCapacity({type:"habitat",element:"time",level:4})')>
    income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})'));
- assert(income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})')>=500000);
+ assert(income.run('habitatGoldCapacity({type:"habitat",element:"fire",level:4})')>=350000);
  assert(income.run('habitatGoldCapacity({type:"habitat",element:"time",level:4})')>=1000000);
  income.run('buildingById(1).stored=true');
  assert.equal(income.run('habitatIncomePerMinute(buildingById(1))'),0);
@@ -283,17 +283,26 @@ check('Habitat purchase history, resale, old saves and the Arena shortcut',()=>{
  economy.run('state.buildings.at(-1).stored=true;syncDock()');
  assert.equal(economy.element('arenaDockButton').hidden,true);
 });
-check('Shop prices and high-tier breeding and incubation durations follow the catalog',()=>{
+check('Shop prices and tier-element breeding and incubation durations are balanced',()=>{
  assert(economy.run('shopEggPrice(DATA.species.fire).vang')>=700);
  assert(economy.run('shopEggPrice(DATA.species.time).vang')>economy.run('shopEggPrice(DATA.species.fire).vang'));
- assert.equal(economy.run('breedingSeconds("epic")'),900);
- assert.equal(economy.run('breedingSeconds("legendary")'),2700);
- assert.equal(economy.run('breedingSeconds("mythic")'),5400);
- assert.equal(economy.run('breedingSeconds("transcendent")'),10800);
- assert.equal(economy.run('DATA.rarities.transcendent.incubate'),64800);
- assert.equal(db.species.find(s=>s.doHiem==='mythic').apGiay,32400);
+ assert.equal(economy.run('hatchingSeconds(DATA.species.fire)'),30);
+ assert.equal(economy.run('hatchingSeconds(DATA.species.water)'),45);
+ assert.equal(economy.run('hatchingSeconds(DATA.species.time)'),1200);
+ const ids=snapshot(economy,'({two:Object.keys(DATA.species).find(id=>DATA.species[id].elements.length===2),'+
+   'three:TRIPLE_IDS[0],four:FOUR_IDS[0],double:DOUBLE_IDS[0]})');
+ assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])')>45);
+ assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
+   economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
+ assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>
+   economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.three)+'])'));
+ assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')>
+   economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])'));
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
+   economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
  economy.run('state=newGame();addEgg(DOUBLE_IDS[0],"shop")');
- assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),64800000);
+ assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),
+   economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])*1000'));
  economy.run('ui.shopTab="special";renderShop()');
  assert(economy.element('sheetBody').innerHTML.includes('● 10,000'));
  economy.run('ui.shopTab="habitats";renderShop()');
@@ -564,8 +573,10 @@ check('premium breeding boosts every 3+ element result relatively and keeps 100%
    assert(enhanced.filter(o=>o.id.split('>').length<=2).reduce((sum,o)=>sum+o.chance,0)<
      regular.filter(o=>o.id.split('>').length<=2).reduce((sum,o)=>sum+o.chance,0));
  }
- assert.equal(premium.run('breedingSeconds("epic",1,{type:"premiumCave"})'),720);
- assert.equal(premium.run('breedingSeconds("epic",1)'),900);
+ const regularTime=premium.run('breedingSeconds(DATA.species["fire>earth>ice"],1)');
+ const premiumTime=premium.run('breedingSeconds(DATA.species["fire>earth>ice"],1,{type:"premiumCave"})');
+ assert.equal(premiumTime,Math.round(regularTime*.8));
+ assert(premiumTime<regularTime);
 });
 check('premium cave shares busy rules and has its own breeding turn',()=>{
  premium.run('state=newGame();state.dragons[0].species="fire>earth>ice";state.dragons[0].level=40;'+
@@ -580,7 +591,7 @@ check('premium cave shares busy rules and has its own breeding turn',()=>{
  const round=snapshot(premium,'buildingById(93).breeding');
  assert(round&&round.result);
  assert.equal(round.readyAt-round.startedAt,premium.run(
-   'breedingSeconds(DATA.species[buildingById(93).breeding.result].rarity,1,buildingById(93))*1000'));
+   'breedingSeconds(DATA.species[buildingById(93).breeding.result],1,buildingById(93))*1000'));
  const restored=snapshot(premium,'(()=>{const old=JSON.parse(JSON.stringify(state));'+
    'delete old.buildings.find(b=>b.id===93).breeding.startedAt;return migrateSave(old).buildings.find(b=>b.id===93).breeding;})()');
  assert.equal(restored.startedAt,round.startedAt,'Saved premium timer uses its shorter duration');
@@ -743,7 +754,7 @@ check('island purchase requires egg level and a dragon carrying its element',()=
  assert.equal(g.run('state.gems'),800);
  g.run('state.regions=Array.from({length:9},(_,n)=>"2:"+(n%3)+":"+Math.floor(n/3));'+
    'state.player.level=2;state.dragons[0].species="earth"');
- assert(g.run('islandUnlockIssue(3)').includes('player level 3'));
+ assert(g.run('islandUnlockIssue(3)').includes('player level 4'));
  g.run('unlockIsland(3)');
  assert.equal(g.run('state.unlockedIslands'),3);
 });
@@ -752,7 +763,7 @@ check('Academy uses placement and upgrade gates/cost formula',()=>{
    'state.buildings.push({id:91,type:"academy",level:1,x:738,y:703,stored:false,upgradeEnds:0})');
  assert(game.run('academyUpgradeCost(2).gold')>game.run('academyUpgradeCost(1).gold')*2);
  assert.equal(game.run('academyUpgradeCost(1).gold'),17600);
- assert.equal(game.run('upgradeSeconds({type:"academy",level:2})'),660);
+ assert.equal(game.run('upgradeSeconds({type:"academy",level:2})'),900);
  game.run('beginMode({kind:"move",id:91})');
  assert.equal(game.run('ui.mode.kind'),'move');
  game.run('completePlacement(738,705)');

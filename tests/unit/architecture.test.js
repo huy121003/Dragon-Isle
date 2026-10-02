@@ -157,6 +157,17 @@ describe('architecture boundaries',()=>{
     expect(ai).toContain('function chooseDefenseSkill');
   });
 
+  it('separates Challenge DTO perspective mapping from state transitions',()=>{
+    const challenge=read('server/challenge.cjs');
+    const view=read('server/challenge/view.cjs');
+    expect(challenge).toContain("require('./challenge/view.cjs')");
+    expect(challenge).toContain('createChallengeView({users,presencePolicy,arena})');
+    expect(challenge).not.toContain('function view(match,id)');
+    expect(view).toContain('function createChallengeView');
+    expect(view).toContain('function view(match,id)');
+    expect(view).toContain('events:raw.events.map(swapEvent)');
+  });
+
   it('keeps server routes out of the bootstrap',()=>{
     const server=read('server.cjs');
     expect(server).not.toContain("pathname==='/api/");

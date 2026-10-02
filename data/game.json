@@ -998,7 +998,8 @@
       "description": "Warm volcanic stone and glowing embers shelter Fire dragons.",
       "x": 714,
       "y": 590,
-      "size": 72
+      "size": 72,
+      "playerLevel": 1
     },
     {
       "id": "water",
@@ -1007,7 +1008,8 @@
       "description": "Cool pools and flowing currents shelter Water dragons.",
       "x": 792,
       "y": 590,
-      "size": 72
+      "size": 72,
+      "playerLevel": 2
     },
     {
       "id": "earth",
@@ -1016,7 +1018,8 @@
       "description": "Layered stone and fertile soil shelter Earth dragons.",
       "x": 792,
       "y": 668,
-      "size": 72
+      "size": 72,
+      "playerLevel": 4
     },
     {
       "id": "wind",
@@ -1025,7 +1028,8 @@
       "description": "Open ridges and steady updrafts shelter Wind dragons.",
       "x": 792,
       "y": 746,
-      "size": 72
+      "size": 72,
+      "playerLevel": 6
     },
     {
       "id": "ice",
@@ -1034,7 +1038,8 @@
       "description": "Frosted rock and bright crystal shelter Ice dragons.",
       "x": 714,
       "y": 746,
-      "size": 72
+      "size": 72,
+      "playerLevel": 8
     },
     {
       "id": "thunder",
@@ -1043,7 +1048,8 @@
       "description": "Charged clouds and crackling stone shelter Thunder dragons.",
       "x": 636,
       "y": 746,
-      "size": 72
+      "size": 72,
+      "playerLevel": 11
     },
     {
       "id": "nature",
@@ -1052,7 +1058,8 @@
       "description": "Roots, leaves and soft moss shelter Nature dragons.",
       "x": 636,
       "y": 668,
-      "size": 72
+      "size": 72,
+      "playerLevel": 14
     },
     {
       "id": "dark",
@@ -1061,7 +1068,8 @@
       "description": "Quiet shadows and violet stone shelter Dark dragons.",
       "x": 636,
       "y": 590,
-      "size": 72
+      "size": 72,
+      "playerLevel": 18
     },
     {
       "id": "light",
@@ -1070,7 +1078,8 @@
       "description": "Sunlit rock and warm radiance shelter Light dragons.",
       "x": 714,
       "y": 512,
-      "size": 72
+      "size": 72,
+      "playerLevel": 22
     },
     {
       "id": "metal",
@@ -1079,7 +1088,8 @@
       "description": "Veins of iron and polished stone shelter Metal dragons.",
       "x": 870,
       "y": 590,
-      "size": 72
+      "size": 72,
+      "playerLevel": 27
     },
     {
       "id": "war",
@@ -1089,7 +1099,7 @@
       "x": 870,
       "y": 746,
       "size": 72,
-      "playerLevel": 24
+      "playerLevel": 32
     },
     {
       "id": "pure",
@@ -1099,7 +1109,7 @@
       "x": 792,
       "y": 824,
       "size": 72,
-      "playerLevel": 28
+      "playerLevel": 37
     },
     {
       "id": "legend",
@@ -1109,7 +1119,7 @@
       "x": 636,
       "y": 824,
       "size": 72,
-      "playerLevel": 33
+      "playerLevel": 42
     },
     {
       "id": "primal",
@@ -1119,7 +1129,7 @@
       "x": 558,
       "y": 746,
       "size": 72,
-      "playerLevel": 39
+      "playerLevel": 48
     },
     {
       "id": "time",
@@ -1129,7 +1139,7 @@
       "x": 558,
       "y": 590,
       "size": 72,
-      "playerLevel": 45
+      "playerLevel": 55
     }
   ],
   "islandRegionSize": 24,

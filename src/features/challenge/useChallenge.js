@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 import {message} from 'antd';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
-import {ChallengeStatusSchema} from '../../shared/schemas.js';
+import {ChallengeStatusSchema} from '../../api/schemas.js';
 import {connectionApi,connectionState,game} from '../../app/game-bridge.js';
 
 async function readStatus(){

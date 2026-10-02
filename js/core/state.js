@@ -168,17 +168,18 @@ function buildingById(id){return state.buildings.find(function(b){return b.id===
 function dragonById(id){return state.dragons.find(function(d){return d.id===id;});}
 function occupants(building){return state.dragons.filter(function(d){return d.habitatId===building.id;});}
 function maxBuildingLevel(building){return DATA.buildings[building.type].maxLevel;}
-function habitatCapacity(level){return Math.min(DATA.buildings.habitat.maxLevel+1,
-  Math.max(1,Math.floor(level||1))+1);}
+function habitatCapacity(level){
+  const row=window.DragonEconomy.habitat.dragonCapacity;
+  return row[clamp(Math.floor(Number(level)||1)-1,0,row.length-1)];
+}
 function hatcheryCapacity(level){return Math.min(DATA.buildings.hatchery.maxLevel,Math.max(1,Math.floor(level||1)));}
 function habitatHasRoom(building){return building.type==="habitat"&&!building.stored&&!building.upgradeEnds&&
   occupants(building).length<habitatCapacity(building.level);}
 function playerXPNeeded(level){
+  const n=Math.max(1,Math.floor(Number(level)||1));
   const rules=window.DragonEconomy.progression;
-  const early=rules.earlyXpUntilLevel;
-  const factor=level<=early?rules.earlyXpFactor:Math.min(1,
-    rules.earlyXpFactor+(1-rules.earlyXpFactor)*(level-early)/(rules.fullXpLevel-early));
-  return Math.floor((100+75*Math.pow(level,1.4))*factor);
+  return Math.round(rules.xpBase+rules.xpLinear*n+
+    rules.xpPower*Math.pow(n,rules.xpExponent));
 }
 function dragonXPNeeded(level){return Math.ceil(DATA.progression.xpBase*Math.pow(level,DATA.progression.xpExponent));}
 function dragonFeedCost(level){
@@ -233,7 +234,8 @@ function habitatGoldCapacity(building){
 }
 function habitatGemCapacity(building){
   const unlock=ELEMENT_UNLOCK[building.element]||1;
-  return (2+Math.floor((unlock-1)/5))*building.level;
+  const base=window.DragonEconomy.habitat.gemCapacityBase;
+  return (base+Math.floor((unlock-1)/10))*building.level;
 }
 function habitatPurchaseCost(element,purchased=state?.habitatPurchases?.[element]||0){
   const unlock=Math.max(0,(ELEMENT_UNLOCK[element]||1)-1);
@@ -247,6 +249,21 @@ function habitatPurchaseCost(element,purchased=state?.habitatPurchases?.[element
 }
 function buildingPurchaseCost(type,element){
   return type==='habitat'?habitatPurchaseCost(element):DATA.buildings[type].cost;
+}
+function dragonTimeTier(species){
+  if(!species)return 1;
+  if(species.rarity==="transcendent")return "double";
+  return clamp(species.elements.length,1,4);
+}
+function hatchingSeconds(species){
+  if(!species)return 30;
+  const rules=window.DragonEconomy.hatching,tier=dragonTimeTier(species);
+  if(tier===1)return rules.pureElementSeconds[species.elements[0]]||60;
+  const levelPressure=species.elements.reduce(function(sum,element){
+    return sum+(ELEMENT_UNLOCK[element]||1);
+  },0)/species.elements.length;
+  return Math.round((rules.tierSeconds[tier]||rules.tierSeconds[4])+
+    Math.min(rules.maxElementBonusSeconds,levelPressure*rules.elementLevelSeconds));
 }
 function shopEggPrice(species){
   const base=species.detail.giaTrung;

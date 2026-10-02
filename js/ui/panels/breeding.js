@@ -42,7 +42,7 @@ function renderBreeding(id){
     renderDragonPortraits();
     return;
   }
-  const pendingEgg=state.eggs.find(function(egg){return egg.source==="breed"&&(egg.caveId===cave.id||!egg.caveId);});
+  const pendingEgg=waitingBredEggForCave(cave.id);
   if(pendingEgg){
     dom.body.innerHTML='<div class="note">The previous bred egg is still waiting. Hatch or sell it before starting another breeding turn.</div>'+
       '<div class="actions"><button class="btn primary" data-action="'+(pendingEgg.hatcheryId?'hatchery-menu':'open-inventory')+'"'+

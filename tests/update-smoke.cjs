@@ -294,7 +294,7 @@ check('Shop prices and high-tier breeding and incubation durations follow the ca
  economy.run('state=newGame();addEgg(DOUBLE_IDS[0],"shop")');
  assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),64800000);
  economy.run('ui.shopTab="special";renderShop()');
- assert(economy.element('sheetBody').innerHTML.includes('● 2,500'));
+ assert(economy.element('sheetBody').innerHTML.includes('● 10,000'));
  economy.run('ui.shopTab="habitats";renderShop()');
  assert(economy.element('sheetBody').innerHTML.includes('Purchased 1×'));
 });
@@ -370,9 +370,9 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  assert(!shop.includes('data-action="topup-test"'));
  balance.run('window.DragonGame.action({action:"buy-food",count:"100"})');
  assert.equal(balance.run('state.food'),100);
- assert.equal(balance.run('state.gold'),8800);
- balance.run('state.gold=0;renderShop();window.DragonGame.action({action:"buy-food",count:"10"})');
- assert(balance.element('sheetBody').innerHTML.includes('Need 120 more gold'));
+ assert.equal(balance.run('state.gold'),8500);
+ balance.run('state.gold=0;renderShop();window.DragonGame.action({action:"buy-food",count:"100"})');
+ assert(balance.element('sheetBody').innerHTML.includes('Need 1,500 more gold'));
  assert.equal(balance.run('state.food'),100);
  assert(balance.element('toast').textContent.includes('Not enough gold'));
  balance.run('state.gold=9500');
@@ -396,11 +396,11 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
 const commerce=await boot();
 check('Shop purchase and Farm planting keep their panels stable',()=>{
  commerce.run('state=newGame();state.gold=10000;ui.shopTab="supplies";openModal("shop");dom.body.scrollTop=72;'+
-   'handleAction({dataset:{action:"buy-food",count:"10"}})');
+   'handleAction({dataset:{action:"buy-food",count:"100"}})');
  assert.equal(commerce.run('ui.modal.name'), 'shop');
  assert.equal(commerce.run('ui.shopTab'), 'supplies');
  assert.equal(commerce.run('dom.body.scrollTop'),72);
- assert(commerce.element('sheetBody').innerHTML.includes('data-count="10"'));
+ assert(commerce.element('sheetBody').innerHTML.includes('data-count="100"'));
  commerce.run('ui.shopTab="special";renderShop();handleAction({dataset:{action:"choose-build",type:"farm"}})');
  assert.equal(commerce.run('ui.modal'),null,'Placement temporarily exposes the island');
  assert.equal(commerce.run('ui.mode.fromShop'),true);

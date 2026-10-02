@@ -106,7 +106,7 @@ function sellReadyEgg(eggId){
   if(!egg||!egg.hatcheryId||egg.readyAt>Date.now()||!state.discovered.includes(egg.species)){
     toast("Only ready eggs of previously discovered species can be sold.");return;
   }
-  const species=DATA.species[egg.species],price=Math.max(1,Math.round(species.detail.giaBan||0));
+  const species=DATA.species[egg.species],price=Math.max(100,Math.round((species.detail.giaBan||0)*window.DragonEconomy.buildings.sellMultiplier));
   if(!window.confirm("Sell egg "+species.name+" for "+money(price)+" gold?"))return;
   const house=buildingById(egg.hatcheryId);
   state.eggs=state.eggs.filter(function(item){return item.id!==eggId;});

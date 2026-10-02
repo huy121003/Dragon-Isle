@@ -2,6 +2,7 @@
 const path=require('node:path');
 const {readJson,updateJson}=require('./store.cjs');
 const combat=require('../js/data/combat-rules.js');
+const economy=require('../data/economy.js');
 const COOLDOWN=15*60*1000;
 const TEAM_SIZE=3;
 const MIN_BATTLE_LEVEL=10;
@@ -292,11 +293,13 @@ function createArena({profilesDir,dataDir,auth}){
       const attack=summary(attackerProfile,setup.attack).map(fighter).filter(Boolean);
       const defense=summary(defenderProfile,defenderSetup.defense).map(fighter).filter(Boolean);
       if(!attack.length||!defense.length)throw Object.assign(new Error('Invalid team.'),{status:400});
-      const rewardLevel=Math.min(60,Math.max(1,Math.floor(defenderProfile.player?.level||1)));
+      const rewardRules=economy.rewards;
+      const rewardLevel=Math.min(economy.progression.contentLevelCap,
+        Math.max(1,Math.floor(defenderProfile.player?.level||1)));
       battle={opponent:defender.username,opponentId:defender.id,turn:1,attack,defense,activeAttack:0,activeDefense:0,
-        events:[],reward:{gold:2500+250*rewardLevel,
-          food:250+40*rewardLevel,
-          gems:1+Math.floor(rewardLevel/20)}};
+        events:[],reward:{gold:rewardRules.arenaGoldBase+rewardRules.arenaGoldPerOpponentLevel*rewardLevel,
+          food:rewardRules.arenaFoodBase+rewardRules.arenaFoodPerOpponentLevel*rewardLevel,
+          gems:rewardRules.arenaGemBase+Math.floor(rewardLevel/20)*rewardRules.arenaGemPer20Levels}};
       return {...setup,cooldownUntil:0,battle};
     });
     return {battle:publicBattle(battle)};

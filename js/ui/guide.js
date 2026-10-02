@@ -144,7 +144,7 @@ function guideResources(){
       progression.goldLevelQuadratic*steps*steps;
     return [String(level),...rarityEntries.map(([,rarity])=>money(Math.round(rarity.income*scale)))];
   });
-  const xpRows=[1,5,10,20,30,40,50].map(level=>[
+  const xpRows=Array.from({length:59},(_,index)=>index+1).map(level=>[
     String(level)+' → '+(level+1),money(playerXPNeeded(level))+' XP',
     money(progression.levelGoldBase+progression.levelGoldStep*(level+1))+' vàng',
     money(progression.levelFoodBase+progression.levelFoodStep*(level+1))+' thức ăn',

@@ -2,10 +2,13 @@ import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
+import arenaConfig from '../js/config/arena.js';
+import challengeConfig from '../js/config/challenge.js';
+import combatConfig from '../js/config/combat.js';
 
 const server=await createServer({server:{middlewareMode:true},appType:'custom',logLevel:'error'});
 try{
-  globalThis.window={confirm:()=>true,DragonGame:{data:{
+  globalThis.window={confirm:()=>true,DragonConfig:{arena:arenaConfig,challenge:challengeConfig,combat:combatConfig},DragonGame:{data:{
     species:{fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'}},
     elements:{fire:{name:'Fire',color:'#e45'}},
     rarities:{common:{name:'Common',color:'#aaa'}}
@@ -34,7 +37,7 @@ try{
     request:()=>{},refresh:()=>{}
   }));
   assert.match(selecting,/challenge-reconnecting/);
-  assert.match(selecting,/Ready with these three/);
+  assert.match(selecting,new RegExp('Ready with these '+challengeConfig.teamSize));
 
   const battleDragon={...dragon,hp:500,maxHp:500};
   const battle=renderToStaticMarkup(React.createElement(ChallengeView,{

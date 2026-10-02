@@ -12,58 +12,16 @@
  */
 function breedingOptions(father,mother,cave){
   if(!father||!mother||father.id===mother.id)return [];
-  const F=DATA.species[father.species],M=DATA.species[mother.species];
-  if(!F||!M)return [];
-  const pool=[...new Set(F.elements.concat(M.elements))];
-  const order=Object.keys(DATA.elements);
-  const canInherit=parts=>parts.some(e=>F.elements.includes(e))&&
-    parts.some(e=>M.elements.includes(e));
-  const groups=[pool.map(e=>e),[],[],[],[]];
-  for(const first of pool)for(const second of pool){
-    if(first===second)continue;
-    const parts=[first,second];
-    if(canInherit(parts))groups[1].push(parts.join(">"));
-  }
-  if(pool.length>=3)for(const first of pool){
-    const rest=order.filter(e=>e!==first&&pool.includes(e));
-    for(let i=0;i<rest.length;i++)for(let j=i+1;j<rest.length;j++){
-      const parts=[first,rest[i],rest[j]],id=parts.join(">");
-      if(canInherit(parts)&&DATA.species[id])groups[2].push(id);
-    }
-  }
-  groups[3]=pool.length<4?[]:FOUR_IDS.filter(function(id){
-    const parts=DATA.species[id].elements;
-    return parts.every(e=>pool.includes(e))&&canInherit(parts)&&
-      DRAGON_DB.quads[parts.slice().sort().join('|')]===id;
-  });
-  const readyForDouble=F.elements.length===4&&M.elements.length===4&&
-    F.elements[0]===M.elements[0]&&
-    father.level>=window.DragonConfig.breeding.double.minParentLevel&&
-    mother.level>=window.DragonConfig.breeding.double.minParentLevel&&
-    new Set(F.elements).size>=3&&new Set(M.elements).size>=3;
-  groups[4]=!readyForDouble?[]:DOUBLE_IDS.filter(function(id){
-    return DATA.species[id].elements[0]===F.elements[0];
-  });
-  const tierKey=[F.elements.length,M.elements.length].sort(function(a,b){return a-b;}).join("+");
-  const avg=(father.level+mother.level)/2;
-  const rare=window.DragonRules.breeding.rareTierChances({
-    averageLevel:avg,hasThree:!!groups[2].length,hasFour:!!groups[3].length,
-    hasDouble:!!groups[4].length,bothTriple:F.elements.length===3&&M.elements.length===3,
-    poolSize:pool.length,premium:cave?.type==="premiumCave"
-  });
-  const common=window.DragonRules.breeding.commonTierChances(
-    tierKey,rare.three+rare.four+rare.double,!!groups[1].length);
-  const weights=[common.one,common.two,rare.three,rare.four,rare.double];
-  return groups.flatMap(function(ids,index){
-    if(!ids.length||!weights[index])return [];
-    const bias=ids.map(function(id){
-      return window.DragonRules.breeding.candidateBias(
-        DATA.species[id].elements,F.elements,M.elements);
-    });
-    const groupTotal=bias.reduce(function(sum,n){return sum+n;},0);
-    return ids.map(function(id,i){return {id:id,chance:weights[index]*bias[i]/groupTotal};});
+  const fatherSpecies=DATA.species[father.species],motherSpecies=DATA.species[mother.species];
+  if(!fatherSpecies||!motherSpecies)return [];
+  return window.DragonRules.breeding.offspringOptions({
+    fatherSpecies,motherSpecies,fatherLevel:father.level,motherLevel:mother.level,
+    speciesById:DATA.species,elementOrder:Object.keys(DATA.elements),
+    fourIds:FOUR_IDS,doubleIds:DOUBLE_IDS,quads:DRAGON_DB.quads,
+    premium:cave?.type==="premiumCave"
   });
 }
+
 /**
  * Breeding duration in seconds. The unused level parameter is retained for
  * compatibility with existing callers until the legacy signature is removed.

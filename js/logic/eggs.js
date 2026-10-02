@@ -37,7 +37,7 @@ function buyEgg(speciesId){
   if(!species||species.elements.length!==1||!species.detail.giaTrung){
     toast("The Shop only sells pure element dragon eggs.");return;
   }
-  const level=ELEMENT_UNLOCK[species.elements[0]]||99;
+  const level=contentRequirementLevel(ELEMENT_UNLOCK[species.elements[0]]||99);
   if(state.player.level<level){toast("This egg unlocks at level "+level+".");return;}
   const price=shopEggPrice(species);
   if(price.vang&&!spendGold(price.vang))return;

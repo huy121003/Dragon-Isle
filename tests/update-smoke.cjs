@@ -538,11 +538,11 @@ check('Hatchery movement and XP for land and island',()=>{
  g.run('state= newGame();addEgg("fire");beginMode({kind:"move",id:3});completePlacement(750,692)');
  assert.equal(g.run('state.buildings.find(b=>b.type==="hatchery").x'),750);
  assert.equal(g.run('state.eggs[0].hatcheryId'),3);
- g.run('state.gold=500000;unlockLand(739,691)');
- assert(g.run('state.player.level')>=2);
+ g.run('state.gold=500000;state.player.xp=0;unlockLand(739,691)');
+ assert.equal(g.run('state.player.xp'),g.run('window.DragonEconomy.progression.xpSources.land'));
  g.run('state.player.level=10;state.player.xp=0;state.gems=1000;'+
    'state.regions=[...new Set([...state.regions,...Array.from({length:9},(_,i)=>`0:${i%3}:${Math.floor(i/3)}`)])];unlockIsland(1)');
- assert.equal(g.run('state.player.xp'),150);
+ assert.equal(g.run('state.player.xp'),g.run('window.DragonEconomy.progression.xpSources.island'));
 });
 check('two-element breeding is favored and chance labels have two decimals',()=>{
  balance.run('state.dragons.push({id:state.nextId++,species:"water",level:5,habitatId:null});'+

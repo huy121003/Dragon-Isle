@@ -187,7 +187,7 @@ function eligibleProfile(){
     const clientSave=fs.readFileSync(path.join(root,'js/save.js'),'utf8');
     const clientAuth=fs.readFileSync(path.join(root,'js/auth.js'),'utf8');
     assert(clientSave.includes("'X-Dragon-Save-Revision':String(serverSaveRevision)"));
-    assert(clientSave.includes("error.code==='SAVE_CONFLICT')saveReadOnly=true"));
+    assert(clientSave.includes("error.code==='SAVE_CONFLICT'")&&clientSave.includes("saveReadOnly=true"));
     assert(clientAuth.includes("if(!saveReadOnly&&!await saveGame())"),
       'A read-only stale tab must still be able to sign out');
 

@@ -9,8 +9,17 @@ describe('logic architecture boundaries',()=>{
   it('keeps editable balance parameters under js/config',()=>{
     const names=readdirSync(path.join(root,'js/config'));
     for(const required of ['progression.js','economy.js','buildings.js','dragons.js','breeding.js',
-      'hatching.js','combat.js','arena.js','challenge.js','world.js','timers.js'])
+      'hatching.js','combat.js','arena.js','challenge.js','world.js','timers.js','farming.js'])
       expect(names).toContain(required);
+  });
+
+  it('keeps game.json free of duplicated balance sources',()=>{
+    const game=JSON.parse(read('data/game.json'));
+    for(const key of ['progression','elementUnlocks','upgradeTimes','breedingTimes','crops',
+      'gemPerDragonPerHour','testResources'])expect(game[key]).toBeUndefined();
+    for(const meta of Object.values(game.buildings))
+      expect({cost:meta.cost,maxLevel:meta.maxLevel,sellRate:meta.sellRate})
+        .toEqual({cost:undefined,maxLevel:undefined,sellRate:undefined});
   });
 
   it('keeps rule modules pure from presentation/network side effects',()=>{

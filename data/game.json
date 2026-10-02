@@ -215,11 +215,41 @@
   "progression": {
     "dragonMaxLevel": 100,
     "starUpgrades": [
-      {"dragons": 2, "level": 30, "gold": 50000, "food": 5000, "gems": 10},
-      {"dragons": 4, "level": 40, "gold": 150000, "food": 15000, "gems": 25},
-      {"dragons": 6, "level": 50, "gold": 350000, "food": 35000, "gems": 50},
-      {"dragons": 8, "level": 60, "gold": 750000, "food": 75000, "gems": 100},
-      {"dragons": 10, "level": 70, "gold": 1500000, "food": 150000, "gems": 200}
+      {
+        "dragons": 2,
+        "level": 30,
+        "gold": 50000,
+        "food": 5000,
+        "gems": 10
+      },
+      {
+        "dragons": 4,
+        "level": 40,
+        "gold": 150000,
+        "food": 15000,
+        "gems": 25
+      },
+      {
+        "dragons": 6,
+        "level": 50,
+        "gold": 350000,
+        "food": 35000,
+        "gems": 50
+      },
+      {
+        "dragons": 8,
+        "level": 60,
+        "gold": 750000,
+        "food": 75000,
+        "gems": 100
+      },
+      {
+        "dragons": 10,
+        "level": 70,
+        "gold": 1500000,
+        "food": 150000,
+        "gems": 200
+      }
     ],
     "breedLevel": 5,
     "skillUnlockLevels": [
@@ -610,56 +640,56 @@
       "maxLevel": 4,
       "name": "Dragon Habitat",
       "icon": "⌂",
-      "cost": 500,
+      "cost": 1200,
       "sellRate": 0.5
     },
     "farm": {
       "maxLevel": 4,
       "name": "Farm",
       "icon": "✿",
-      "cost": 300,
+      "cost": 1000,
       "sellRate": 0.5
     },
     "hatchery": {
       "maxLevel": 5,
       "name": "Hatchery",
       "icon": "◉",
-      "cost": 750,
+      "cost": 3000,
       "sellRate": 0.5
     },
     "cave": {
       "maxLevel": 1,
       "name": "Breeding Cave",
       "icon": "♧",
-      "cost": 1200,
+      "cost": 5000,
       "sellRate": 0.5
     },
     "premiumCave": {
       "maxLevel": 1,
       "name": "Celestial Breeding Sanctuary",
       "icon": "✧",
-      "cost": 120,
+      "cost": 250,
       "sellRate": 0
     },
     "arena": {
       "maxLevel": 1,
       "name": "Arena",
       "icon": "⚔",
-      "cost": 2500,
+      "cost": 10000,
       "sellRate": 0.5
     },
     "decor": {
       "maxLevel": 1,
       "name": "Flagpole",
       "icon": "⚑",
-      "cost": 300,
+      "cost": 500,
       "sellRate": 0.5
     },
     "academy": {
       "maxLevel": 5,
       "name": "Dragon Academy",
       "icon": "✦",
-      "cost": 5000,
+      "cost": 12000,
       "sellRate": 0
     }
   },
@@ -668,29 +698,29 @@
       "id": "wheat",
       "name": "Wheat",
       "duration": 60,
-      "yield": 10,
-      "cost": 20
+      "yield": 20,
+      "cost": 40
     },
     {
       "id": "carrot",
       "name": "Carrot",
       "duration": 300,
-      "yield": 60,
-      "cost": 130
+      "yield": 140,
+      "cost": 240
     },
     {
       "id": "pumpkin",
       "name": "Pumpkin",
       "duration": 1800,
-      "yield": 400,
-      "cost": 750
+      "yield": 1000,
+      "cost": 1500
     },
     {
       "id": "dragonfruit",
       "name": "Dragon Fruit",
       "duration": 14400,
-      "yield": 3500,
-      "cost": 6000
+      "yield": 10000,
+      "cost": 12000
     }
   ],
   "skills": {

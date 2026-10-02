@@ -10,6 +10,7 @@ import AuthView from '../features/auth/AuthView.jsx';
 import AdminPanel from '../features/admin/AdminPanel.jsx';
 import ReconnectModal from '../features/connection/ReconnectModal.jsx';
 import useChallenge from '../features/challenge/useChallenge.js';
+import {useAppStore} from './store.js';
 import LegacyContent from '../components/LegacyContent.jsx';
 import GameHud from '../components/GameHud.jsx';
 import GameDock from '../components/GameDock.jsx';

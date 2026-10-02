@@ -24,10 +24,10 @@ function habitatHasRoom(building){return building.type==="habitat"&&!building.st
 function playerXPNeeded(level){
   return window.DragonRules.progression.playerXPNeeded(level);
 }
-function dragonXPNeeded(level){return Math.ceil(DATA.progression.xpBase*Math.pow(level,DATA.progression.xpExponent));}
+function dragonXPNeeded(level){\n  const xp=window.DragonConfig.dragons.xp;\n  return Math.ceil(xp.base*Math.pow(level,xp.exponent));\n}
 /** Food consumed by one feed action at a dragon level. */
 function dragonFeedCost(level){
-  return window.DragonRules.progression.dragonFeedCost(level,DATA.progression.dragonMaxLevel);
+  return window.DragonRules.progression.dragonFeedCost(level,window.DragonConfig.progression.dragonMaxLevel);
 }
 /** Maximum Farm count unlocked for a player level. */
 function farmLimit(level){
@@ -37,13 +37,13 @@ function farmCount(){return state.buildings.filter(function(b){return b.type==="
 /** Current dragon level cap derived from the active Dragon Academy. */
 function dragonLevelCap(){
   const academy=state?.buildings.find(b=>b.type==="academy"&&!b.stored);
-  return academy?DATA.progression.academyCaps[Math.min(academy.level-1,DATA.progression.academyCaps.length-1)]:
+  const caps=window.DragonConfig.progression.academyCaps;\n  return academy?caps[Math.min(academy.level-1,caps.length-1)]:
     window.DragonConfig.dragons.initialLevelCapWithoutAcademy;
 }
 /** Cost and ownership gates for the next Dragon Academy level. */
 function academyUpgradeCost(level){
   return window.DragonRules.buildings.academyUpgradeCost(
-    level,DATA.progression.academyUpgrades[level-1],dragonLevelCap(),contentRequirementLevel);
+    level,window.DragonConfig.progression.academyUpgrades[level-1],dragonLevelCap(),contentRequirementLevel);
 }
 function academyQualifiedDragonCount(cost){
   if(!cost)return 0;
@@ -71,7 +71,7 @@ function dragonStats(dragon){
  */
 function dragonIncome(dragon,building){
   const base=DATA.rarities[DATA.species[dragon.species].rarity].income;
-  const steps=Math.max(0,Math.min(DATA.progression.dragonMaxLevel,dragon.level)-1);
+  const steps=Math.max(0,Math.min(window.DragonConfig.progression.dragonMaxLevel,dragon.level)-1);
   const rates=window.DragonConfig.progression.incomeGrowth;
   const growth=1+rates.linear*steps+rates.quadratic*steps*steps;
   return base*growth*rates.multiplier*window.DragonRules.world.incomeMultiplier(dragon,building.level);
@@ -95,10 +95,10 @@ function habitatGemCapacity(building){
 /** Purchase price for the next Habitat of an element. */
 function habitatPurchaseCost(element,purchased=state?.habitatPurchases?.[element]||0){
   return window.DragonRules.buildings.habitatPurchaseCost(
-    DATA.buildings.habitat.cost,ELEMENT_UNLOCK[element]||1,purchased);
+    window.DragonConfig.buildings.definitions.habitat.cost,ELEMENT_UNLOCK[element]||1,purchased);
 }
 function buildingPurchaseCost(type,element){
-  return type==='habitat'?habitatPurchaseCost(element):DATA.buildings[type].cost;
+  return type==='habitat'?habitatPurchaseCost(element):window.DragonConfig.buildings.definitions[type].cost;
 }
 /** Incubation/breeding tier derived from species structure. */
 function dragonTimeTier(species){return window.DragonRules.hatching.tierOf(species);}
@@ -113,14 +113,14 @@ function shopEggPrice(species){
 }
 /* GEM: Mỗi cá thể hoàn thành một chu kỳ riêng, không cộng gộp giờ lẻ của nhiều dragons. */
 function habitatGemRate(building){return !building||building.type!=="habitat"||building.stored?0:
-  occupants(building).length*DATA.gemPerDragonPerHour;}
+  occupants(building).length*window.DragonConfig.world.gemPerDragonPerHour;}
 function gemNextSeconds(building){
   if(!building||building.type!=="habitat"||building.stored)return 0;
   if((building.storedGems||0)>=habitatGemCapacity(building))return 0;
   const dragons=occupants(building);
   if(!dragons.length)return 0;
   return Math.ceil((1-Math.max(...dragons.map(function(d){return d.gemProgress||0;})))*
-    window.DragonConfig.world.gemSecondsPerHour/DATA.gemPerDragonPerHour);
+    window.DragonConfig.world.gemSecondsPerHour/window.DragonConfig.world.gemPerDragonPerHour);
 }
 /** Gold component of a standard building upgrade. */
 function upgradeCost(building){
@@ -137,7 +137,7 @@ function standardUpgradeCost(building){
 }
 /** Upgrade duration in seconds; Habitat time also scales by element unlock tier. */
 function upgradeSeconds(building){
-  const times=DATA.upgradeTimes[building.type];
+  const times=window.DragonConfig.buildings.upgradeTimes[building.type];
   if(!times)return 0;
   const base=times[Math.min(building.level-1,times.length-1)];
   if(building.type!=="habitat")return base;

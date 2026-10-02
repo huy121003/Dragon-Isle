@@ -42,7 +42,7 @@ function renderShop(){
   dom.title.textContent="🏪 Shop";
   let html='<div class="tabs">'+
     [['special','Special buildings'],['habitats','Habitats'],['decorations','Decorations'],
-      ['eggs','Eggs'],['supplies','Food'],['save','💾 Data']]
+      ['eggs','Eggs'],['supplies','Resources'],['save','💾 Data']]
       .map(function([id,label]){return '<button class="btn '+(ui.shopTab===id?'active':'')+
         '" data-action="shop-tab" data-tab="'+id+'">'+label+'</button>';}).join('')+'</div>';
   if(ui.shopTab==="habitats"){
@@ -112,14 +112,34 @@ function renderShop(){
       (ui.debugIso?'✓ Isometric debug: on':'◇ Isometric debug: off')+'</button></div>'+
       '<p>Sets a minimum of 10 million gold, 100,000 food and 10,000 gems.</p></details>';
   }else{
-    const price=window.DragonEconomy.progression.foodGoldPrice;
-    html+='<div class="note">Buy food with gold · '+money(price)+' gold per food. Purchases are added instantly.</div>'+
-      '<div class="cards food-shop-cards">';
-    [[10,'🍎'],[100,'🥕'],[500,'🍇']].forEach(function([count,icon]){
+    const economy=window.DragonEconomy,price=economy.progression.foodGoldPrice,packs=economy.shop.resourcePacks;
+    html+='<div class="note">Resource exchange · rates are intentionally asymmetric so Gold ↔ Gem cannot be looped for profit.</div>'+
+      '<h3>🪙 Gold with Gems</h3><div class="cards food-shop-cards">';
+    packs.goldForGems.forEach(function(pack,index){
+      html+='<button class="shop-item food-offer" data-action="buy-resource-pack" data-kind="goldForGems" data-index="'+index+'"'+
+        (state.gems<pack.cost?' disabled':'')+'><span class="shop-icon">🪙</span><span class="food-offer-copy"><b>'+money(pack.amount)+' gold</b>'+
+        '<small>'+(state.gems<pack.cost?'Need '+money(pack.cost-state.gems)+' more gems':'Instant exchange')+'</small></span>'+
+        '<strong>♦ '+money(pack.cost)+'</strong></button>';
+    });
+    html+='</div><h3>💎 Gems with Gold</h3><div class="cards food-shop-cards">';
+    packs.gemsForGold.forEach(function(pack,index){
+      html+='<button class="shop-item food-offer" data-action="buy-resource-pack" data-kind="gemsForGold" data-index="'+index+'"'+
+        (state.gold<pack.cost?' disabled':'')+'><span class="shop-icon">💎</span><span class="food-offer-copy"><b>'+money(pack.amount)+' gems</b>'+
+        '<small>'+(state.gold<pack.cost?'Need '+money(pack.cost-state.gold)+' more gold':'Instant exchange')+'</small></span>'+
+        '<strong>● '+money(pack.cost)+'</strong></button>';
+    });
+    html+='</div><h3>🍎 Food</h3><div class="cards food-shop-cards">';
+    packs.foodForGems.forEach(function(pack,index){
+      html+='<button class="shop-item food-offer" data-action="buy-resource-pack" data-kind="foodForGems" data-index="'+index+'"'+
+        (state.gems<pack.cost?' disabled':'')+'><span class="shop-icon">🍇</span><span class="food-offer-copy"><b>'+money(pack.amount)+' food</b>'+
+        '<small>'+(state.gems<pack.cost?'Need '+money(pack.cost-state.gems)+' more gems':'Premium food pack')+'</small></span>'+
+        '<strong>♦ '+money(pack.cost)+'</strong></button>';
+    });
+    [[100,'🍎'],[500,'🥕'],[2000,'🌾']].forEach(function([count,icon]){
       const cost=count*price,missing=Math.max(0,cost-state.gold);
-      html+='<button class="shop-item food-offer" data-action="buy-food" data-count="'+count+'">'+
+      html+='<button class="shop-item food-offer" data-action="buy-food" data-count="'+count+'"'+(missing?' disabled':'')+'>'+
         '<span class="shop-icon">'+icon+'</span><span class="food-offer-copy"><b>'+money(count)+' food</b>'+
-        '<small>'+(missing?'Need '+money(missing)+' more gold':'Ready to purchase')+'</small></span>'+
+        '<small>'+(missing?'Need '+money(missing)+' more gold':'Standard food purchase')+'</small></span>'+
         '<strong>● '+money(cost)+'</strong></button>';
     });
     html+='</div>';

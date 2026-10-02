@@ -5,7 +5,7 @@ const {readJson}=require('./store.cjs');
 const ONLINE_SAVE_MS=35000,INVITE_MS=30000,IDLE_MS=5*60*1000;
 const MATCH_HEARTBEAT_MS=8000,MATCH_RECONNECT_MS=60000;
 function error(message,status=409){return Object.assign(new Error(message),{status});}
-function createChallenge({auth,profilesDir,arena,now=()=>now(),heartbeatMs=MATCH_HEARTBEAT_MS,reconnectMs=MATCH_RECONNECT_MS}){
+function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=MATCH_HEARTBEAT_MS,reconnectMs=MATCH_RECONNECT_MS}){
   const matches=new Map(),byUser=new Map(),notices=new Map();
   let pending=Promise.resolve();
   function locked(fn){const next=pending.catch(()=>{}).then(fn);pending=next;return next;}

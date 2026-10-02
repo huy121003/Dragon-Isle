@@ -46,7 +46,8 @@ function upgradeDragonStar(id){
     ui.arena.draft.attack=ui.arena.draft.attack.filter(id=>!ids.has(id));
     ui.arena.draft.defense=ui.arena.draft.defense.filter(id=>!ids.has(id));
   }
-  toast(dragon.nickname+" reached "+dragon.stars+" star(s)! HP, attack and defense +"+(dragon.stars*5)+"%.");
+  const bonus=Math.round(dragon.stars*window.DragonConfig.combat.star.statBonusPerStar*100);
+  toast(dragon.nickname+" reached "+dragon.stars+" star(s)! HP, attack and defense +"+bonus+"%.");
   openModal("dragon-detail",dragon.id);updateUI();saveGame();
   return true;
 }

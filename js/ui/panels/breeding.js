@@ -27,8 +27,7 @@ function renderBreeding(id){
       const id=d?d.species:(i?cave.breeding.motherSpecies:cave.breeding.fatherSpecies);
       const s=DATA.species[id];
       return '<div class="breed-parent">'+dragonPortrait(id,d?.level||1,'large')+
-      '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+
-        (d?' · ⚡ '+money(dragonCombatPower(d))+' power':'')+'</small>'+
+      '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+'</small>'+
         '<span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></div>';
     }).join('<strong class="breed-heart">♥</strong>');
     dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · '+Math.round((1-breedingConfig.premium.timeFactor)*100)+'% faster · '+Math.round((breedingConfig.premium.rareFactor-1)*100)+'% higher relative chance for 3+ elements. ':'')+
@@ -83,7 +82,7 @@ function renderBreeding(id){
       html+='<button class="breed-dragon '+(selected?'selected':'')+(other?' unavailable':'')+'" data-action="breed-select"'+
         ' data-slot="'+slot[0]+'" data-id="'+d.id+'" aria-pressed="'+selected+'"'+(other?' disabled':'')+'>'+ 
         dragonPortrait(s.id,d.level,'small')+
-        '<span class="breed-dragon-text"><b>'+esc(d.nickname)+' · Lv'+d.level+'</b><small class="dragon-power">⚡ '+money(dragonCombatPower(d))+' power</small>'+
+        '<span class="breed-dragon-text"><b>'+esc(d.nickname)+' · Lv'+d.level+'</b>'+
         '<small title="'+esc(s.name)+'">'+esc(s.name)+'</small><span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></span>'+
         '<span class="selection-check">'+(selected?'✓':'○')+'</span></button>';
     });

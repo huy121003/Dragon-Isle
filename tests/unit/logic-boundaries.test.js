@@ -54,6 +54,9 @@ describe('logic architecture boundaries',()=>{
     expect(selectors).not.toContain('DATA.buildings[building.type].maxLevel');
     expect(selling).not.toContain('DATA.buildings[b.type].sellRate');
     expect(breeding).not.toContain('DATA.progression.breedLevel');
+    expect(breeding).toContain('DragonRules.breeding.offspringOptions');
+    expect(breeding).not.toContain('rareTierChances({');
+    expect(read('js/rules/breeding.js')).toContain('function offspringOptions');
     expect(resources).not.toContain('DATA.testResources');
     expect(stars).not.toContain('DATA.progression.starUpgrades');
     expect(world).not.toContain('DATA.gemPerDragonPerHour');

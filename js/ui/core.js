@@ -159,8 +159,10 @@ function updateInspector(){
     body+='<p>Dragon level cap: <b>'+dragonLevelCap()+'</b> / 100.</p>';
     if(b.level<maxBuildingLevel(b)){
       const cost=academyUpgradeCost(b.level);
+      const qualified=academyQualifiedDragonCount(cost);
       body+='<p>Next cap: '+DATA.progression.academyCaps[b.level]+'. Requires player level '+cost.playerLevel+
-        ', '+money(cost.gold)+' gold, '+money(cost.food)+' food and '+money(cost.gems)+' gems.</p>';
+        ', '+money(cost.gold)+' gold, '+money(cost.food)+' food, '+money(cost.gems)+' gems, and '+
+        '<b>'+qualified+'/'+cost.requiredDragons+'</b> owned dragons at level '+cost.requiredDragonLevel+'+.</p>';
     }
   }else body+='<p>Decoration for your island.</p>';
   if(b.upgradeEnds)body+='<p>Upgrading</p>'+inlineTimer(b.upgradeStartedAt,b.upgradeEnds)+
@@ -169,7 +171,7 @@ function updateInspector(){
   body+='<div class="actions">';
   if(!b.upgradeEnds&&b.level<maxBuildingLevel(b)&&
     (b.type!=="hatchery"||state.player.level>=hatcheryUpgradePlayerLevel(b.level)))
-    body+='<button class="btn" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+(b.type==="academy"?money(academyUpgradeCost(b.level).gold)+' gold · '+money(academyUpgradeCost(b.level).food)+' food · '+money(academyUpgradeCost(b.level).gems)+' gems · Player Lv'+academyUpgradeCost(b.level).playerLevel:money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems')+' · '+
+    body+='<button class="btn" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+(b.type==="academy"?money(academyUpgradeCost(b.level).gold)+' gold · '+money(academyUpgradeCost(b.level).food)+' food · '+money(academyUpgradeCost(b.level).gems)+' gems · '+academyQualifiedDragonCount(academyUpgradeCost(b.level))+'/'+academyUpgradeCost(b.level).requiredDragons+' dragons Lv'+academyUpgradeCost(b.level).requiredDragonLevel+'+ · Player Lv'+academyUpgradeCost(b.level).playerLevel:money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems')+' · '+
       duration(upgradeSeconds(b))+'</button>';
   if(!b.upgradeEnds){
     body+='<button class="btn" data-action="move" data-id="'+b.id+'">Move</button>';

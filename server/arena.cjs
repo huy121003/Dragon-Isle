@@ -3,6 +3,7 @@ const path=require('node:path');
 const {readJson,updateJson}=require('./store.cjs');
 const economy=require('../data/economy.js');
 const arenaConfig=require('../js/config/arena.js');
+const progressionConfig=require('../js/config/progression.js');
 const {createEligibility}=require('./arena/eligibility.cjs');
 const {createBattleEngine}=require('./arena/battle-engine.cjs');
 /**
@@ -20,7 +21,6 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const catalog=require(path.join(catalogDir,'dragons.json'));
   const game=require(path.join(catalogDir,'game.json'));
   require('../scripts/extend-catalog.cjs')(catalog,game);
-  const elements=catalog.elements,rarities=catalog.rarities;
   const unlocked=profile=>profile?.buildings?.some(building=>building.type==='arena'&&!building.stored);
   const eligibility=createEligibility();
   const eligible=eligibility.eligible;
@@ -49,7 +49,8 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   async function team(user,body){
     const p=await readJson(profile(user.id),null);
     if(!unlocked(p)||!body||!owned(p,body.attack)||!owned(p,body.defense))
-      throw Object.assign(new Error('Each team needs exactly three dragons at level 10 or above that are not breeding.'),{status:400});
+      throw Object.assign(new Error('Each team needs exactly '+arenaConfig.teamSize+
+        ' dragons at level '+arenaConfig.minBattleLevel+' or above that are not breeding.'),{status:400});
     await updateJson(file(user.id),current=>({...current,attack:body.attack,defense:body.defense}));
     return {ok:true};
   }
@@ -112,7 +113,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
         const index=body.skillIndex;
         if(!Number.isInteger(index)||index<0||index>=actor.skills.length)
           throw Object.assign(new Error('Invalid skill.'),{status:400});
-        if(!actor.skills[index]||actor.level<game.progression.skillUnlockLevels[index])
+        if(!actor.skills[index]||actor.level<progressionConfig.skillUnlockLevels[index])
           throw Object.assign(new Error('This skill is locked.'),{status:400});
         if(actor.cooldowns?.[index]>0)
           throw Object.assign(new Error('This skill is cooling down.'),{status:400});

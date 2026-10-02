@@ -133,7 +133,10 @@ describe('logic architecture boundaries',()=>{
   it('documents the intended config -> rules -> service -> UI flow',()=>{
     const docs=read('docs/LOGIC_ARCHITECTURE.md');
     expect(docs).toContain('js/config/');
+    expect(docs).toContain('js/config/README.md');
     expect(docs).toContain('js/rules/');
+    expect(docs).toContain('server/arena/battle-ai.cjs');
+    expect(docs).toContain('src/features/arena/ArenaShared.jsx');
     expect(docs).toContain('Clock và RNG');
     expect(docs).toContain('Chuẩn comment/JSDoc');
   });

@@ -9,11 +9,6 @@ const {createArena,arenaWindow}=require('../server/arena.cjs');
 require('../scripts/extend-catalog.cjs')(catalog,game);
 
 const elements=Object.keys(catalog.elements),species=catalog.species.filter(s=>s.doHiem==='transcendent');
-const balancedTeam=[0,1,2].map(id=>({id,species:'fire',level:30,stars:2,nickname:'Model '+id}));
-const variants=require('../server/arena.cjs').createRivals(balancedTeam,35,'test-window');
-assert.deepEqual(variants.map(rival=>rival.strength),['Weaker','Balanced','Stronger']);
-assert(variants[0].team.every(dragon=>dragon.level<balancedTeam[0].level&&dragon.stars<2));
-assert(variants[2].team.every(dragon=>dragon.level>balancedTeam[0].level&&dragon.stars>2));
 const doubleId=(primary,variant)=>species.filter(s=>s.elements[0]===primary)[variant].id;
 const specials=Object.values(game.skills.elemental).flat().filter(skill=>skill.special);
 assert.equal(species.length,30);
@@ -68,6 +63,20 @@ fs.mkdirSync(dataDir);fs.mkdirSync(profilesDir);
 for(const file of ['dragons.json','game.json'])fs.copyFileSync(path.join(__dirname,'../data',file),path.join(dataDir,file));
 const arena=createArena({dataDir,profilesDir,auth:{listUsers:()=>[
   {id:'red',username:'Red',disabled:false},{id:'blue',username:'Blue',disabled:false}]}});
+const rankedExamples=catalog.species.slice(0,10).map((s,index)=>{
+  const level=100-index*6,stars=index%4;
+  return {id:index+1,species:s.id,level,stars,nickname:'Top '+(index+1),
+    power:combat.power(combat.stats(s.elements,s.doHiem,level,catalog.elements,catalog.rarities,stars))};
+}).sort((a,b)=>b.power-a.power);
+const variants=require('../server/arena.cjs').createRivals(rankedExamples,45,'test-window',arena.makeFighter);
+assert.deepEqual(variants.map(rival=>rival.strength),['Weaker','Balanced','Stronger']);
+const baseline=rankedExamples.slice(0,3).reduce((sum,dragon)=>sum+dragon.power,0);
+const ratios=variants.map(rival=>rival.team.reduce((sum,dragon)=>sum+dragon.power,0)/baseline);
+assert(ratios[0]<ratios[1]&&ratios[1]<ratios[2],'Rival power rises across the three difficulty bands');
+assert(ratios.every((ratio,index)=>Math.abs(ratio-[.65,1,1.12][index])<.04),
+  'Virtual teams tune close to their configured Combat Power targets');
+assert.equal(new Set(variants.map(rival=>rival.team.map(dragon=>dragon.species).join('|'))).size,3,
+  'Rivals use three different top-ten rank bands');
 function profile(speciesId){return {player:{level:45},buildings:[{id:1,type:'arena'}],
   dragons:[1,2,3].map(id=>({id,species:speciesId,level:50,nickname:speciesId+' '+id}))};}
 fs.writeFileSync(path.join(profilesDir,'red.json'),JSON.stringify(profile(doubleId('fire',1))));
@@ -79,7 +88,13 @@ async function run(){
   assert.equal(rivals.opponents.length,3,'Arena should generate three server-side AI rivals');
   assert(rivals.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
     'Opponent teams and power details stay hidden until battle start');
+  assert(rivals.dragons.every(dragon=>Number.isFinite(dragon.power))&&
+    rivals.dragons.every((dragon,index,list)=>!index||list[index-1].power>=dragon.power),
+    'Player rosters expose Combat Power sorted highest-first');
   assert.equal(rivals.attemptsRemaining,3);
+  await arena.team({id:'red'},{attack:[2,3,1]});
+  assert.deepEqual((await arena.list({id:'red'})).opponents.map(rival=>rival.id),
+    rivals.opponents.map(rival=>rival.id),'Changing the attack team does not reroll this window’s rivals');
   let started=await arena.challenge({id:'red'},{opponentId:rivals.opponents[1].id});
   assert.equal((await arena.list({id:'red'})).attemptsRemaining,2,'Starting a match consumes one attempt');
   assert.equal(started.battle.attack[0].skills[3].special,true);

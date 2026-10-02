@@ -39,7 +39,8 @@ function publicBattle(battle){
       unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
   return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
     defense:battle.defense.map(view),activeAttack:battle.activeAttack,
-    activeDefense:battle.activeDefense,events:battle.events.slice(-arenaConfig.eventHistory)};
+    activeDefense:battle.activeDefense,eventSeq:battle.events.length,
+    events:battle.events.slice(-arenaConfig.eventHistory)};
 }
 
 module.exports={statusSnapshot,record,publicBattle};

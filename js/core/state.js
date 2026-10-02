@@ -300,20 +300,12 @@ function islandUnlockIssue(index){
 }
 function landRegionCost(index,opened){
   const prices=window.DragonEconomy.land;
-  if(index===0){
-    let amount=prices.homeFirstRegionGold;
-    for(let region=1;region<Math.max(1,opened);region++)
-      amount=Math.round(amount*prices.expansionMultiplier);
-    return amount;
-  }
-  let amount=landRegionCost(0,islandRegionTotal(0)-1);
-  for(let island=1;island<=index;island++){
-    amount=Math.round(amount*prices.nextIslandMultiplier);
-    const expansions=island===index?Math.max(1,opened):islandRegionTotal(island)-1;
-    for(let region=1;region<expansions;region++)
-      amount=Math.round(amount*prices.expansionMultiplier);
-  }
-  return amount;
+  const tier=Math.max(0,Math.floor(Number(index)||0));
+  let amount=prices.homeFirstRegionGold*
+    (1+prices.islandTierLinear*tier+prices.islandTierQuadratic*tier*tier);
+  for(let region=1;region<Math.max(1,opened);region++)
+    amount=Math.round(amount*prices.expansionMultiplier);
+  return Math.round(amount);
 }
 function landCost(x,y){
   const region=regionOf(x,y),index=region?.index||0;

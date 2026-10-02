@@ -78,6 +78,7 @@ function guideBreeding(){
     duration(breedingSeconds(species,1,{type:'premiumCave'})),duration(hatchingSeconds(species))]);
   return '<h3>Điều kiện và tỷ lệ</h3>'+guideList([
     'Hai cá thể khác nhau từ level '+DATA.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
+    'Thời gian lai tăng theo bậc rồng có thể sinh ra, độ muộn của các hệ và độ phức tạp của cặp bố mẹ. Tổ hợp có nhiều hệ khác nhau hoặc bố mẹ khác bậc sẽ cộng thêm thời gian; Hang Premium vẫn nhanh hơn '+Math.round((1-rules.premiumTimeFactor)*100)+'%.',
     'Thông thường con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ. Double Element là ngoại lệ về hệ phụ.',
     'Nếu có kết quả 3 hệ: tỷ lệ gốc '+percent(rules.threeBase)+'%, cộng '+percent(rules.threePerTenLevels)+' điểm % mỗi 10 level trung bình, tối đa '+percent(rules.threeCap)+'%.',
     'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ với ít nhất 4 hệ khác nhau khi gộp lại. Cả bốn hệ của con đều lấy từ bố mẹ và tra theo '+FOUR_IDS.length+' tổ hợp được ghi trong danh mục. Nếu bộ hệ của bố mẹ không chứa tổ hợp nào trong danh mục thì xác suất rồng 4 hệ bằng 0. Tỷ lệ '+percent(rules.fourBase)+'% ban đầu, tăng theo level trung bình từ '+rules.fourGrowthStartLevel+' và tối đa '+percent(rules.fourCap)+'%.',

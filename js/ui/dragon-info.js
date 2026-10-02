@@ -100,7 +100,7 @@ function dragonDetailHtml(species,dragon){
       '</small><strong>'+(skill.special&&skill.power===0?'Support skill · no damage':
         'Attack preview '+money(skillPowerPreview(species,level,skill,stars)))+'</strong></div></div>';
   });
-  html+='</div><div class="stat-grid">'+(dragon?'<div><span>⚡ Combat Power</span><b>'+money(window.DragonCombat.power(stats))+'</b></div>':'')+
+  html+='</div><div class="stat-grid">'+(dragon?'<div><span>👊 Combat Power</span><b>'+money(window.DragonCombat.power(stats))+'</b></div>':'')+
     '<div><span>🪙 Gold/min</span><b>'+goldPerMinute(gold)+'</b></div>'+
     '<div><span>❤️ HP</span><b>'+money(stats.hp)+'</b></div>'+
     '<div><span>⚔️ base attack</span><b>'+money(stats.attack)+'</b></div>'+

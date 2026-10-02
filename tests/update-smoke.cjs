@@ -1398,3 +1398,22 @@ check('low building silhouettes and larger habitat dragons retain the exact base
    'state.dragons=[first];drawBuilding(state.buildings[0],12345);'+
    'state.dragons=[first,...[1,2,3].map(i=>({...first,id:1000+i}))];'+
    'drawBuilding(state.buildings[0],12345);state.dragons=previous;drawDragon=original;return out;})()');
+ assert.equal(dragons[0],1.35);
+ assert.deepEqual(dragons.slice(1),[.86,.86,.86,.86]);
+});
+check('all ten habitat environments render with dragons',()=>{
+ const before=game.drawCalls.length;
+ game.run('for(const [i,element] of Object.keys(DATA.elements).entries()){' +
+   'const b={id:state.dragons[0].habitatId,type:"habitat",element,x:738+i,y:700,'+
+   'level:2,stored:false,storedGold:1,storedGems:1};drawBuilding(b,12345+i*350);}');
+ assert(game.drawCalls.length>before+300);
+});
+check('reset centers the camera on the projected home island',()=>{
+ game.run('factoryReset()');
+ const position=snapshot(game,'(()=>{const home=DATA.islands[0];'+
+   'return {camera:ui.camera,center:gridToScreen(home.x+home.size/2,home.y+home.size/2)};})()');
+ assert.equal(position.camera.x,position.center.x);
+ assert.equal(position.camera.y,position.center.y);
+});
+console.log('PASS update smoke suite');
+})().catch(error=>{console.error(error.stack||error);process.exitCode=1;});

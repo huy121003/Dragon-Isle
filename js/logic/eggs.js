@@ -91,8 +91,8 @@ function hatchEgg(eggId,habitatId){
   state.dragons.push(dragon);
   state.eggs=state.eggs.filter(function(item){return item.id!==egg.id;});
   const fresh=recordDiscovery(egg.species,egg.parents);
-  gainPlayerXP(fresh?window.DragonEconomy.progression.xpSources.hatchNew:
-    window.DragonEconomy.progression.xpSources.hatchKnown);
+  gainPlayerXP(fresh?window.DragonConfig.progression.xpSources.hatchNew:
+    window.DragonConfig.progression.xpSources.hatchKnown);
   const house=buildingById(egg.hatcheryId);
   if(house&&!house.stored){const center=buildingCenter(house);burst(center.x,center.y,
     DATA.elements[species.elements[0]].light,30);}
@@ -107,7 +107,9 @@ function sellReadyEgg(eggId){
   if(!egg||!egg.hatcheryId||egg.readyAt>Date.now()||!state.discovered.includes(egg.species)){
     toast("Only ready eggs of previously discovered species can be sold.");return;
   }
-  const species=DATA.species[egg.species],price=Math.max(100,Math.round((species.detail.giaBan||0)*window.DragonEconomy.buildings.sellMultiplier));
+  const species=DATA.species[egg.species],resale=window.DragonConfig.dragons.resale;
+  const price=Math.max(resale.minimumGold,Math.round((species.detail.giaBan||0)*
+    window.DragonConfig.buildings.upgrade.sellMultiplier));
   if(!window.confirm("Sell egg "+species.name+" for "+money(price)+" gold?"))return;
   const house=buildingById(egg.hatcheryId);
   state.eggs=state.eggs.filter(function(item){return item.id!==eggId;});

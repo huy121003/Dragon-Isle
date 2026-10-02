@@ -63,6 +63,22 @@ assert.equal(Object.keys(db.quads).length,150,'Exactly 150 four-element recipes 
 require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
 const balance=await boot();
 const lifecycle=await boot();
+const countdownUI=await boot();
+check('finished crop refreshes once and shows Harvest without reopening Farm',()=>{
+ const g=countdownUI,expires=Date.now()+3000;
+ g.run('state.buildings.push({id:98,type:"farm",level:1,stored:false,crop:{id:DATA.crops[0].id,'+
+   'startedAt:Date.now()-1000,readyAt:'+expires+'}});ui.modal={name:"crops",extra:98};renderCrops(98);'+
+   'window.refreshCount=0;const originalRender=renderModal;renderModal=function(){window.refreshCount++;originalRender();};');
+ const timer={dataset:{end:String(expires)},textContent:'',closest:selector=>selector==='#sheet'?{}:null};
+ g.context.document.querySelectorAll=()=>[timer];
+ g.run('refreshCountdowns()');
+ assert.equal(g.run('window.refreshCount'),0);
+ g.run('buildingById(98).crop.readyAt=Date.now()-1');timer.dataset.end=String(Date.now()-1);
+ g.run('refreshCountdowns()');
+ assert(g.element('sheetBody').innerHTML.includes('data-action="harvest"'));
+ g.run('refreshCountdowns()');
+ assert.equal(g.run('window.refreshCount'),1,'A completed timer must not redraw the panel every second');
+});
 check('new accounts receive starter gold and food without changing existing saves',()=>{
  const fresh=snapshot(game,'newGame()');
  assert.equal(fresh.gold,3000);
@@ -717,6 +733,9 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
  game.run('ui.modal={name:"breeding",extra:92};renderBreeding(92)');
  let html=game.element('sheetBody').innerHTML;
  assert(html.includes('data-target="breed-father"')&&html.includes('data-target="breed-mother"'));
+ assert(html.indexOf('data-action="start-breeding"')>html.indexOf('breed-probabilities')&&
+   html.indexOf('data-action="start-breeding"')<html.indexOf('breed-results'),
+   'Start breeding should be available before the long possible-dragon list');
  assert(html.includes('data-breed-search="father"')&&html.includes('data-breed-search="mother"'));
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"fire"}})');
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"water"}})');

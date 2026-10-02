@@ -241,7 +241,7 @@ function renderInventory(){
   if(!waiting.length)html+='<p>No waiting eggs. Buy one from the Shop or breed dragons.</p>';
   const room=!!freeHatchery();
   waiting.forEach(function(egg){
-    html+='<div class="egg-card">'+eggShellHtml(egg,false)+
+    html+='<div class="egg-card inventory-egg-card">'+eggShellHtml(egg,false)+
       '<div><b>Mystery Egg</b><small>Waiting for a free nest</small></div>'+
       '<button class="btn good" data-action="egg-find-home" data-id="'+egg.id+'"'+
       (room?'':' disabled')+'>'+(room?'Incubate':'Hatchery full')+'</button></div>';
@@ -307,7 +307,7 @@ function renderHatchery(id){
   incubating.forEach(function(egg){
     const ready=egg.readyAt<=Date.now();
     const fresh=ready&&!state.discovered.includes(egg.species);
-    html+='<div class="egg-card">'+eggShellHtml(egg,ready)+
+    html+='<div class="egg-card hatchery-egg-card">'+eggShellHtml(egg,ready)+
       '<div><b>'+(ready?'Egg ready':'Mystery Egg')+
       (fresh?' <span class="new-badge">NEW</span>':'')+'</b><small>'+ 
       (ready?'View details and choose a Habitat':'Remaining: '+countdown(egg.readyAt))+'</small>'+ 
@@ -320,7 +320,7 @@ function renderHatchery(id){
   if(incubating.length>=hatcheryCapacity(b.level))html+='<p>All nests are occupied. Hatch or sell a ready egg to free a nest.</p>';
   else if(!waiting.length)html+='<p>Buy an egg in the Shop or collect one from the Breeding Cave.</p>';
   else waiting.forEach(function(egg){
-    html+='<div class="egg-card">'+eggShellHtml(egg,false)+
+    html+='<div class="egg-card hatchery-egg-card">'+eggShellHtml(egg,false)+
       '<div><b>Mystery Egg</b><small>Waiting for a nest</small></div>'+
       '<button class="btn good" data-action="start-incubation" data-id="'+egg.id+
       '" data-building="'+b.id+'">Incubate</button></div>';
@@ -482,6 +482,8 @@ function renderBreeding(id){
       '<div class="breed-chances">'+totals.map(function(n,i){return '<div class="breed-chance '+
         (n?'':'unavailable')+'"><small>'+tiers[i][0]+'</small><b>'+(n/100).toFixed(2)+
         '%</b><span>'+byTier[i].length+' possible '+(byTier[i].length===1?'dragon':'dragons')+'</span></div>';}).join('')+'</div></section>'+
+      '<div class="actions breed-start-action"><button class="btn good" data-action="start-breeding" data-id="'+id+
+      '" data-father="'+father.id+'" data-mother="'+mother.id+'">Start breeding</button></div>'+
       '<div class="breed-results"><h3>Possible dragons <small>('+options.length+')</small></h3>'+
       '<p class="muted">Open a tier to see each dragon’s exact chance. Names remain hidden until they hatch.</p>';
     byTier.forEach(function(group,index){
@@ -498,8 +500,7 @@ function renderBreeding(id){
       });
       html+='</div></details>';
     });
-    html+='</div><div class="actions"><button class="btn good" data-action="start-breeding" data-id="'+id+
-      '" data-father="'+father.id+'" data-mother="'+mother.id+'">Start breeding</button></div>';
+    html+='</div>';
   }
   html+='<div class="actions"><button class="btn" data-action="open-recipes">View known breeding recipes</button></div>';
   dom.body.innerHTML=premium?'<div class="premium-breeding-screen">'+html+'</div>':html;

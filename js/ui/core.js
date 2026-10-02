@@ -187,7 +187,7 @@ function updateUI(){
     const scroll=dom.body.scrollTop;
     renderModal();dom.body.scrollTop=scroll;
   }
-  window.dispatchEvent(new Event('dragon-ui-update'));
+  window.DragonRuntime?.emit();
 }
 /* UI: Đồng bộ mục được chọn ở thanh điều hướng để biết người chơi đang ở đâu. */
 function syncDock(){
@@ -206,7 +206,7 @@ function closeModal(){
   dom.overlay.classList.remove("open");dom.body.innerHTML="";syncDock();
   if(ui.lastFocus&&ui.lastFocus.isConnected&&ui.lastFocus.focus)ui.lastFocus.focus();
   ui.lastFocus=null;
-  window.dispatchEvent(new Event('dragon-ui-update'));
+  window.DragonRuntime?.emit();
 }
 function openModal(name,extra){
   if(!ui.modal)ui.lastFocus=document.activeElement;
@@ -215,5 +215,5 @@ function openModal(name,extra){
   renderModal();
   dom.body.scrollTop=0;syncDock();
   if(dom.title.focus)dom.title.focus({preventScroll:true});
-  window.dispatchEvent(new Event('dragon-ui-update'));
+  window.DragonRuntime?.emit();
 }

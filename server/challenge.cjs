@@ -3,6 +3,7 @@ const path=require('node:path');
 const {randomUUID}=require('node:crypto');
 const {readJson,writeJson}=require('./store.cjs');
 const challengeConfig=require('../js/config/challenge.js');
+const {createPresence}=require('./challenge/presence.cjs');
 function error(message,status=409){return Object.assign(new Error(message),{status});}
 /**
  * Create the live Challenge state machine.
@@ -40,40 +41,19 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
   function locked(fn){const next=pending.catch(()=>{}).then(async()=>{await ensureLoaded();return fn();});pending=next;return next;}
   const profile=id=>readJson(path.join(profilesDir,id+'.json'),null);
   const users=()=>auth.listUsers();
-  async function active(id){
-    if(!users().some(u=>u.id===id&&!u.disabled&&u.challengeEnabled)||
-      !auth.hasActiveSession(id))return false;
-    const saved=Number((await profile(id))?.savedAt)||0;
-    return saved<=now()&&saved>now()-challengeConfig.lobbySaveFreshMs;
-  }
+  const presencePolicy=createPresence({auth,users,profile,now,heartbeatMs,reconnectMs});
   function release(match,message){
     matches.delete(match.id);
     for(const id of match.players){byUser.delete(id);notices.set(id,message);}
-  }
-  function sessionAvailable(id){
-    const user=users().find(u=>u.id===id);
-    return !!(user&&!user.disabled&&user.challengeEnabled&&auth.hasActiveSession(id));
-  }
-  function touch(match,id){
-    const index=match.players.indexOf(id);
-    if(index<0)return false;
-    match.seen[index]=now();
-    if(now()-(Number(match.persistedAt)||0)>=challengeConfig.persistHeartbeatMs){match.persistedAt=now();return true;}
-    return false;
-  }
-  function presence(match,index){
-    const last=Number(match.seen[index])||0,age=Math.max(0,now()-last);
-    return {state:age<=heartbeatMs?'online':'reconnecting',
-      reconnectUntil:last+reconnectMs,age};
   }
   async function sweep(){
     let changed=false;
     for(const match of [...matches.values()]){
       if(match.phase===challengeConfig.phases.INVITED&&match.until<now()){release(match,'Challenge invitation expired.');changed=true;}
       else if(match.updatedAt+challengeConfig.idleMs<now()){release(match,'Challenge ended due to inactivity.');changed=true;}
-      else if(match.players.some(id=>!sessionAvailable(id))){
+      else if(match.players.some(id=>!presencePolicy.sessionAvailable(id))){
         release(match,'Challenge ended because a player signed out or became unavailable.');changed=true;
-      }else if(match.seen.some(last=>now()-(Number(last)||0)>reconnectMs)){
+      }else if(match.seen.some(last=>presencePolicy.expired(last))){
         release(match,'Challenge ended because a player could not reconnect in time.');changed=true;
       }
     }
@@ -86,7 +66,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
   function view(match,id){
     const index=match.players.indexOf(id),opponentId=match.players[1-index];
     const opponent=users().find(u=>u.id===opponentId);
-    const opponentPresence=presence(match,1-index);
+    const opponentPresence=presencePolicy.state(match,1-index);
     const result={id:match.id,phase:match.phase,opponent:opponent?.username||'Player',
       outgoing:index===0,until:match.until,ready:!!match.ready[index],
       opponentReady:!!match.ready[1-index],selection:match.selection[index]||[],
@@ -112,13 +92,13 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     return locked(async()=>{
       await sweep();
       const id=byUser.get(user.id),match=id&&matches.get(id);
-      const heartbeatDirty=match?touch(match,user.id):false;
+      const heartbeatDirty=match?presencePolicy.touch(match,user.id):false;
       const notice=notices.get(user.id)||null;if(notice)notices.delete(user.id);
       if(heartbeatDirty||notice)await persist();
-      const online=await active(user.id),eligible=await qualified(user.id),players=[];
+      const online=await presencePolicy.lobbyActive(user.id),eligible=await qualified(user.id),players=[];
       if(online&&eligible&&!match){
         for(const other of users()){
-          if(other.id!==user.id&&await active(other.id)&&!byUser.has(other.id)&&await qualified(other.id))
+          if(other.id!==user.id&&await presencePolicy.lobbyActive(other.id)&&!byUser.has(other.id)&&await qualified(other.id))
             players.push({id:other.id,username:other.username});
         }
       }
@@ -130,7 +110,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     return locked(async()=>{
       await sweep();
       const other=users().find(u=>u.id===otherId);
-      if(!other||other.id===user.id||!await active(user.id)||!await active(other.id)||
+      if(!other||other.id===user.id||!await presencePolicy.lobbyActive(user.id)||!await presencePolicy.lobbyActive(other.id)||
         byUser.has(user.id)||byUser.has(other.id)||!await qualified(user.id)||!await qualified(other.id))
         throw error('This player is unavailable or not eligible.');
       const started=now();
@@ -145,9 +125,9 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
       if(!match||match.phase!==challengeConfig.phases.INVITED||match.players[1]!==user.id)throw error('Invitation is no longer available.');
-      const heartbeatDirty=touch(match,user.id);
+      const heartbeatDirty=presencePolicy.touch(match,user.id);
       if(!accept){release(match,'Challenge declined by '+user.username+'.');await persist();return {ok:true};}
-      const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
+      const side=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-side);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. Please wait before accepting.');
@@ -166,8 +146,8 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
       if(!match||match.phase!==challengeConfig.phases.SELECT)throw error('Team selection has ended.');
-      const heartbeatDirty=touch(match,user.id);
-      const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
+      const heartbeatDirty=presencePolicy.touch(match,user.id);
+      const side=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-side);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. Team selection is paused.');
@@ -202,8 +182,8 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
       if(!match||match.phase!==challengeConfig.phases.BATTLE)throw error('The duel has ended.');
-      const heartbeatDirty=touch(match,user.id);
-      const sideIndex=match.players.indexOf(user.id),opponent=presence(match,1-sideIndex);
+      const heartbeatDirty=presencePolicy.touch(match,user.id);
+      const sideIndex=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-sideIndex);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. The duel is paused.');

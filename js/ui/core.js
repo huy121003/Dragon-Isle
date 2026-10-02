@@ -168,7 +168,7 @@ function updateInspector(){
     gemSkipCost(b.upgradeEnds,Date.now())+' Skip</button>';
   body+='<div class="actions">';
   if(!b.upgradeEnds&&b.level<maxBuildingLevel(b)&&
-    (b.type!=="hatchery"||state.player.level>=1+b.level*4))
+    (b.type!=="hatchery"||state.player.level>=hatcheryUpgradePlayerLevel(b.level)))
     body+='<button class="btn" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+(b.type==="academy"?money(academyUpgradeCost(b.level).gold)+' gold · '+money(academyUpgradeCost(b.level).food)+' food · '+money(academyUpgradeCost(b.level).gems)+' gems · Player Lv'+academyUpgradeCost(b.level).playerLevel:money(upgradeCost(b))+' gold')+' · '+
       duration(upgradeSeconds(b))+'</button>';
   if(!b.upgradeEnds){

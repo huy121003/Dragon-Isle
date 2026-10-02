@@ -11,6 +11,8 @@ const progressionConfig=require('../js/config/progression.js');
 const buildingConfig=require('../js/config/buildings.js');
 const farmingConfig=require('../js/config/farming.js');
 const worldConfig=require('../js/config/world.js');
+const systemConfig=require('../js/config/system.js');
+const challengeConfig=require('../js/config/challenge.js');
 const combat=require('../js/data/combat-rules.js');
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'),'utf8'));
 require('../scripts/extend-catalog.cjs')(catalog,game);
@@ -151,6 +153,8 @@ const calculations=read('js/core/calculations.js');
 const arena=read('server/arena.cjs');
 const profile=read('server/profile.cjs');
 const guide=read('js/ui/guide.js');
+const validation=read('server/validation.cjs');
+const main=read('js/main.js');
 
 assert(!save.includes('clamp(Number(result.player.level)||1,1,60)'),'Save must preserve levels above 60');
 assert(!react.includes("'MAX LEVEL'"),'React shell must not show MAX LEVEL at 60');
@@ -164,7 +168,12 @@ assert(profile.includes("require('../js/config/economy.js')"),'Server starter re
 assert(profile.includes("require('../js/config/buildings.js')"),'Server starter habitat price must use direct building config');
 assert(!profile.includes("require('../data/economy.js')"),'Server profile must not depend on the legacy economy facade');
 assert(!profile.includes('game.buildings.habitat.cost'),'Server profile must not read removed balance values from game.json');
-assert(guide.includes('Strong nhân 2')&&guide.includes('Weak nhân 0,5'),'Guide combat multipliers are stale');
+assert(!guide.includes('×1,5')&&!guide.includes('×0,75'),'Guide contains stale combat multipliers');
+assert(!guide.includes('DragonEconomy'),'Guide must read direct config instead of compatibility facade');
+assert(validation.includes('challengeConfig.teamSize'),'Challenge validation must use shared team size');
+assert(main.includes('DragonConfig.system.runtime'),'Runtime cadence must use system config');
+assert.equal(systemConfig.save.version,12);
+assert.equal(challengeConfig.teamSize,3);
 assert(guide.includes('Rồng sở hữu yêu cầu'),'Academy ownership requirements must be documented');
 
 console.log('SESSION REGRESSION PASS');

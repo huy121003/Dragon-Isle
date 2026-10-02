@@ -6,7 +6,6 @@
  * Pure XP/reward formulas live in js/rules/progression.js. Functions here apply
  * those results to the current save state and emit presentation side effects.
  */
-/** Add player XP and apply every crossed level reward. */
 /** Apply player XP, process every crossed level and grant configured rewards. */
 function gainPlayerXP(value){
   state.player.xp+=value;
@@ -32,7 +31,7 @@ function recordDragonFeeding(dragon){
   const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
   if(dragon.feedProgress===feedsPerLevel){
     dragon.feedProgress=0;dragon.level++;
-    const xp=window.DragonEconomy.progression.xpSources;
+    const xp=window.DragonConfig.progression.xpSources;
     gainPlayerXP(xp.dragonLevelBase+Math.floor(dragon.level/10)*xp.dragonLevelPerTen);
     toast(dragon.nickname+" ("+DATA.species[dragon.species].name+") reached level "+dragon.level+"!");
   }else toast(dragon.nickname+" has been fed "+dragon.feedProgress+"/"+feedsPerLevel+" times at level "+dragon.level+".");

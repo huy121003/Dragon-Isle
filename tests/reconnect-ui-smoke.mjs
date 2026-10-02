@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const react=readFileSync(path.join(root,'src/features/connection/ReconnectModal.jsx'),'utf8');
 const connection=readFileSync(path.join(root,'js/network/connection.js'),'utf8');
 const systemConfig=readFileSync(path.join(root,'js/config/system.js'),'utf8');
-const input=readFileSync(path.join(root,'js/ui/input.js'),'utf8');
+const actions=readFileSync(path.join(root,'js/ui/actions.js'),'utf8');
 const main=readFileSync(path.join(root,'js/main.js'),'utf8');
 const events=readFileSync(path.join(root,'js/app/events.js'),'utf8');
 
@@ -35,7 +35,7 @@ assert(connection.includes('DragonConnectionApi={retry,fail,expire,connected,con
 assert(!connection.includes('/api/auth/logout'),
   'Reconnect state must never auto-logout merely because the server is unavailable');
 
-assert(input.includes('window.DragonConnectionState?.blocked'));
+assert(actions.includes('window.DragonConnectionState?.blocked'));
 assert(events.includes('addEventListener("online"'));
 assert(events.includes('addEventListener("pagehide"'));
 assert(main.includes('bindGameEvents(runtime)'));

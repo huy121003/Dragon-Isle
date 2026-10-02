@@ -54,7 +54,7 @@ function handleAction(button){
     case "arena-skill":arenaTurn("skill",Number(button.dataset.skill));break;
     case "arena-switch":arenaTurn("switch",id);break;
     case "arena-forfeit":
-      if(window.confirm("Forfeiting counts as a loss and starts a "+Math.round(window.DragonConfig.arena.cooldownMs/60000)+"-minute cooldown. Continue?"))arenaTurn("forfeit");break;
+      if(window.confirm("Forfeiting ends the match and uses one Arena attempt. Continue?"))arenaTurn("forfeit");break;
     case "arena-refresh":loadArena();break;
     case "close-modal":closeModal();break;
     case "clear-selection":ui.selection=null;updateInspector();break;

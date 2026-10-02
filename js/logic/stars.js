@@ -48,7 +48,6 @@ function upgradeDragonStar(id){
   if(ui.selection?.type==='dragon'&&ids.has(ui.selection.id))ui.selection=null;
   if(ui.arena?.draft){
     ui.arena.draft.attack=ui.arena.draft.attack.filter(id=>!ids.has(id));
-    ui.arena.draft.defense=ui.arena.draft.defense.filter(id=>!ids.has(id));
   }
   const bonus=Math.round(dragon.stars*window.DragonConfig.combat.star.statBonusPerStar*100);
   toast(dragon.nickname+" reached "+dragon.stars+" star(s)! HP, attack and defense +"+bonus+"%.");

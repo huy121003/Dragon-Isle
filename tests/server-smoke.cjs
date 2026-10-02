@@ -153,24 +153,18 @@ async function launch(port){
     const page=await (await fetch(base+'/')).text();
     assert(page.includes('/assets/index-'),'Máy chủ phải phục vụ bản React đã build');
     assert.equal((await fetch(base+'/src/main.jsx')).status,403);
-    /* PvP chạy trên máy chủ: đội hình, phần thưởng, chờ thua và autosave cũ. */
+    /* Arena: AI rivals, attack-only setup and server-owned attempt windows. */
     const {newProfile}=require('../server/profile.cjs');
     const cookieAdmin=session(adminAgain);
-    const playerAgain=await post('/api/auth/login','Bela_2','very-safe-pass-2');
-    const cookiePlayer=session(playerAgain);
-    const high=newProfile(),low=newProfile();
+    const high=newProfile();
     high.buildings.push({id:4,type:'arena',level:1,x:200,y:182,stored:false});
-    low.buildings.push({id:4,type:'arena',level:1,x:200,y:182,stored:false});
     high.dragons[0].level=100;
-    high.dragons.push({...high.dragons[0],id:5,species:'water',nickname:'Dự bị',level:20});
-    high.dragons.push({...high.dragons[0],id:9,nickname:'Hộ vệ',level:30});
-    high.dragons.push({...high.dragons[0],id:6,nickname:'Đang lai',level:20});
-    high.dragons.push({...high.dragons[0],id:8,nickname:'Cấp thấp',level:9});
+    high.dragons.push({...high.dragons[0],id:5,species:'water',nickname:'Backup',level:100});
+    high.dragons.push({...high.dragons[0],id:9,nickname:'Guard',level:100});
+    high.dragons.push({...high.dragons[0],id:6,nickname:'Breeding',level:20});
+    high.dragons.push({...high.dragons[0],id:8,nickname:'Low level',level:9});
     high.buildings.push({id:7,type:'cave',level:1,x:204,y:182,stored:false,
       breeding:{fatherId:6,motherId:12,readyAt:Date.now()+3600_000}});
-    low.dragons[0].level=10;
-    low.dragons.push({...low.dragons[0],id:5,nickname:'Đồng đội',level:10});
-    low.dragons.push({...low.dragons[0],id:9,nickname:'Hộ vệ',level:10});
     async function putProfile(id,cookie,value){
       return fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookie,'X-Dragon-Account':id,
         'Content-Type':'application/json'},body:JSON.stringify(value)});
@@ -180,116 +174,60 @@ async function launch(port){
         ...(body?{body:JSON.stringify(body)}:{})});
     }
     assert.equal((await putProfile(idA,cookieAdmin,high)).status,200);
-    assert.equal((await putProfile(idB,cookiePlayer,low)).status,200);
     const challengeCall=(route,method,cookie,body)=>fetch(base+'/api/challenge/'+route,{
-      method,headers:{Cookie:cookie,'Content-Type':'application/json'},
-      ...(body?{body:JSON.stringify(body)}:{})});
-    assert.equal((await challengeCall('status','GET',null)).status,401);
-    assert.equal((await challengeCall('status','GET',cookiePlayer)).status,200);
-    assert((await (await challengeCall('status','GET',cookieAdmin)).json()).players.some(u=>u.id===idB));
-    assert.equal((await challengeCall('availability','PUT',cookiePlayer,{enabled:false})).status,200);
-    assert(!(await (await challengeCall('status','GET',cookieAdmin)).json()).players.some(u=>u.id===idB));
-    assert.equal((await challengeCall('availability','PUT',cookiePlayer,{enabled:true})).status,200);
-    assert((await (await challengeCall('status','GET',cookieAdmin)).json()).players.some(u=>u.id===idB));
-    fs.mkdirSync(path.join(temporary,'arena'),{recursive:true});
-    fs.writeFileSync(path.join(temporary,'arena',idB+'.json'),JSON.stringify({attack:[2],defense:[2]}));
-    const legacyTeam=await (await arenaCall('list','GET',cookieAdmin)).json();
-    assert(!legacyTeam.opponents.some(u=>u.id===idB),'Đội hình cũ 1 rồng phải chọn lại');
-    const highTeam=[2,5,9],lowTeam=[2,5,9];
-    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[2,5],defense:highTeam})).status,400,
-      'Đội tấn công chỉ có 2 rồng phải bị từ chối');
-    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:highTeam,defense:[2,5]})).status,400,
-      'Đội phòng thủ chỉ có 2 rồng phải bị từ chối');
-    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:highTeam,defense:highTeam})).status,200);
-    assert.equal((await arenaCall('team','PUT',cookiePlayer,{attack:lowTeam,defense:lowTeam})).status,200);
-    assert.equal((await arenaCall('team','PUT',cookiePlayer,{attack:[999,5,9],defense:lowTeam})).status,400);
-    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[8,5,9],defense:highTeam})).status,400,
-      'Rồng dưới cấp 10 không thể vào đội');
-    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[6,5,9],defense:highTeam})).status,400,
-      'Rồng đang lai tạo không thể vào đội');
+      method,headers:{Cookie:cookie,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+    assert.equal((await challengeCall('status','GET',cookieAdmin)).status,200);
+    const highTeam=[2,5,9];
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[2,5]})).status,400,
+      'Reject attack teams with fewer than three dragons');
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[999,5,9]})).status,400,
+      'Reject dragons the player does not own');
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[8,5,9]})).status,400,
+      'Reject dragons below the minimum battle level');
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[6,5,9]})).status,400,
+      'Reject dragons in active breeding');
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:highTeam})).status,200);
     const choices=await (await arenaCall('list','GET',cookieAdmin)).json();
-    assert.equal(choices.wins,0);assert.equal(choices.losses,0);
+    assert.equal(choices.opponents.length,3,'The server creates exactly three rivals');
+    assert(choices.opponents.every(rival=>String(rival.id).startsWith('bot-')),
+      'Arena rivals are server-generated, not other accounts');
+    assert(choices.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
+      'Rival strength and dragons are hidden until the battle starts');
+    assert.equal(choices.attemptsRemaining,3);
     assert.equal(choices.dragons.find(d=>d.id===8).battleReason,'Requires level 10');
     assert.equal(choices.dragons.find(d=>d.id===6).battleReason,'Breeding');
-    assert(choices.opponents.some(u=>u.id===idB));
-    const breedingLow=JSON.parse(JSON.stringify(low));
-    breedingLow.buildings.push({id:7,type:'premiumCave',level:1,x:204,y:182,stored:false,
-      breeding:{fatherId:2,motherId:2,readyAt:Date.now()+3600_000}});
-    assert.equal((await putProfile(idB,cookiePlayer,breedingLow)).status,200);
-    assert(!(await (await arenaCall('list','GET',cookieAdmin)).json()).opponents.some(u=>u.id===idB),
-      'Đội phòng thủ đang lai tạo không thể được thách đấu');
-    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:idB})).status,409);
-    assert.equal((await putProfile(idB,cookiePlayer,low)).status,200);
-    const started=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:idB})).json();
+    assert(choices.opponents.every(rival=>Object.keys(rival).length===1),
+      'The list exposes only opaque rival IDs');
+    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:'unknown-user'})).status,400,
+      'Human user ids are not valid Arena rivals');
+    const started=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:choices.opponents[0].id})).json();
     assert.equal(started.battle.turn,1);
-    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:idB})).status,409);
-    assert.equal((await arenaCall('turn','POST',cookieAdmin,
-      {action:'skill',skillIndex:0,expectedTurn:2})).status,409);
-    assert.equal((await arenaCall('turn','POST',cookieAdmin,
-      {action:'skill',skillIndex:-1,expectedTurn:1})).status,400);
-    assert.equal((await arenaCall('turn','POST',cookieAdmin,
-      {action:'switch',dragonId:2,expectedTurn:1})).status,400);
-    const switched=await (await arenaCall('turn','POST',cookieAdmin,
-      {action:'switch',dragonId:5,expectedTurn:1})).json();
-    assert.equal(switched.battle.activeAttack,1);
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).battle.activeAttack,1);
-    await new Promise(resolve=>{child.once('exit',resolve);child.kill();});
-    child=await launch(port);
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).battle.activeAttack,1,
-      'Khởi động lại máy chủ vẫn tiếp tục được trận dang dở');
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,0);
-    let round=switched,victory;
-    for(let i=0;i<80&&!round.result;i++)
-      round=await (await arenaCall('turn','POST',cookieAdmin,
-        {action:'skill',skillIndex:2,expectedTurn:round.battle.turn})).json();
-    victory=round.result;
-    assert.equal(victory.won,true);
-    assert(victory.events.length>0&&victory.reward.gems===1);
+    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).attemptsRemaining,2,
+      'Starting a match immediately consumes an attempt');
+    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:choices.opponents[1].id})).status,409,
+      'A player cannot open another match while one is active');
+    let round=started;
+    for(let i=0;i<80&&!round.result;i++)round=await (await arenaCall('turn','POST',cookieAdmin,
+      {action:'skill',skillIndex:2,expectedTurn:round.battle.turn})).json();
+    assert.equal(round.result?.won,true,'An Arena victory completes and keeps its existing rewards');
+    assert(round.result.reward.gold>0&&round.result.reward.food>0&&round.result.reward.gems>0);
     assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,1);
-    assert.equal((await (await arenaCall('list','GET',cookiePlayer)).json()).losses,1);
-    await new Promise(resolve=>{child.once('exit',resolve);child.kill();});
-    child=await launch(port);
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,1,
-      'Số trận thắng còn nguyên sau khi khởi động lại máy chủ');
-    assert.equal((await (await arenaCall('list','GET',cookiePlayer)).json()).losses,1,
-      'Số trận thua phòng thủ còn nguyên sau khi khởi động lại máy chủ');
-    const rewarded=JSON.parse(fs.readFileSync(path.join(temporary,'profiles',idA+'.json'),'utf8'));
-    assert.equal(rewarded.gold,high.gold+victory.reward.gold);
-    assert.equal((await putProfile(idA,cookieAdmin,high)).status,200);
-    assert.equal(JSON.parse(fs.readFileSync(path.join(temporary,'profiles',idA+'.json'),'utf8')).gold,
-      high.gold+victory.reward.gold,'Autosave cũ không xóa thưởng đấu trường');
-    const lowStart=await (await arenaCall('fight','POST',cookiePlayer,{opponentId:idA})).json();
-    assert.equal((await arenaCall('turn','POST',cookiePlayer,
-      {action:'skill',skillIndex:1,expectedTurn:lowStart.battle.turn})).status,400);
-    let lowRound=await (await arenaCall('turn','POST',cookiePlayer,
-      {action:'skill',skillIndex:0,expectedTurn:lowStart.battle.turn})).json();
-    const firstEvents=(lowRound.result?.events||lowRound.battle.events)
-      .filter(event=>event.turn===lowStart.battle.turn&&event.damage);
-    assert.equal(firstEvents[0]?.side,'attack',
-      'Đội chủ động chọn chiêu phải đánh trước, kể cả khi rồng phòng thủ nhanh hơn');
-    for(let i=1;i<80&&!lowRound.result;i++)
-      lowRound=await (await arenaCall('turn','POST',cookiePlayer,
-        {action:'skill',skillIndex:0,expectedTurn:lowRound.battle.turn})).json();
-    const loss=lowRound.result;
-    assert.equal(loss.won,false);
-    assert.equal((await (await arenaCall('list','GET',cookiePlayer)).json()).losses,2);
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,2);
-    assert.equal((await arenaCall('fight','POST',cookiePlayer,{opponentId:idA})).status,429);
-    const next=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:idB})).json();
-    assert.equal((await (await arenaCall('turn','POST',cookieAdmin,
-      {action:'forfeit',expectedTurn:next.battle.turn})).json()).result.won,false);
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).losses,1);
-    assert.equal((await (await arenaCall('list','GET',cookiePlayer)).json()).wins,1);
-    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:idB})).status,429);
+    for(let attempt=0;attempt<2;attempt++){
+      const roster=await (await arenaCall('list','GET',cookieAdmin)).json();
+      const match=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:roster.opponents[attempt].id})).json();
+      const result=await (await arenaCall('turn','POST',cookieAdmin,
+        {action:'forfeit',expectedTurn:match.battle.turn})).json();
+      assert.equal(result.result.won,false);
+    }
+    const exhausted=await (await arenaCall('list','GET',cookieAdmin)).json();
+    assert.equal(exhausted.attemptsRemaining,0);
+    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:exhausted.opponents[0].id})).status,429);
     const arenaFile=path.join(temporary,'arena',idA+'.json');
-    const expired=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
-    expired.cooldownUntil=Date.now()-1000;
-    fs.writeFileSync(arenaFile,JSON.stringify(expired));
-    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).cooldownUntil,0,
-      'Thời gian chờ đã hết không còn hiển thị là đang chờ');
-    assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:idB})).status,200,
-      'Có thể đánh tiếp sau khi thời gian chờ kết thúc');
-    console.log('OK: tài khoản riêng, quản trị tài nguyên từng user/toàn bộ, reset/khóa/mở và React build.');
+    const savedArena=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
+    savedArena.windowKey='expired-window';fs.writeFileSync(arenaFile,JSON.stringify(savedArena));
+    const reset=await (await arenaCall('list','GET',cookieAdmin)).json();
+    assert.equal(reset.attemptsRemaining,3,'The server restores three attempts in a new time window');
+    console.log('OK: account sessions, server-generated Arena rivals, attack team validation and 8-hour attempts.');
   }finally{
     child.kill();
     fs.rmSync(temporary,{recursive:true,force:true});

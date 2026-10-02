@@ -90,7 +90,7 @@ function updateInspector(){
       "Choose two dragons at level "+window.DragonConfig.progression.breedLevel+" or above to breed.")+'</p><div class="actions"><button class="btn good" data-action="breeding-menu" data-id="'+b.id+
       '">Open '+esc(buildingName(b))+'</button></div>';
   }else if(b.type==="arena"){
-    body+='<p>Set attack and defense teams to challenge another player.</p><div class="actions">'+
+    body+='<p>Choose an attack team and challenge three server-generated Arena rivals.</p><div class="actions">'+
       '<button class="btn good" data-action="open-arena">Enter Arena</button></div>';
   }else if(b.type==="academy"){
     body+='<p>Dragon level cap: <b>'+dragonLevelCap()+'</b> / '+window.DragonConfig.progression.dragonMaxLevel+'.</p>';

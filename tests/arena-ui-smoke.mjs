@@ -41,10 +41,10 @@ try{
     canBattle:true,skills:[{index:0,name:'Flame Slash',power:1.3,unlocked:true,element:'fire'}]};
   const unavailable={...dragon,id:4,nickname:'Bé',level:arenaConfig.minBattleLevel-1,canBattle:false,
     battleReason:'Requires level '+arenaConfig.minBattleLevel};
-  const data={attack:[],defense:[],dragons:[dragon,unavailable],wins:4,losses:2,
-    opponents:[{id:'other',username:'Bela',level:2,wins:3,losses:5,
-      team:[{...dragon,id:3,species:'water'}]}],cooldownUntil:0};
-  const arena={data,draft:{attack:[2],defense:[2]},busy:false};
+  const data={attack:[],dragons:[dragon,unavailable],wins:4,losses:2,attemptsRemaining:3,resetAt:Date.now()+8*3600000,
+    opponents:[{id:'bot-1',username:'Rookie Warden',level:2,strength:'Weaker',
+      team:[{...dragon,id:3,species:'water'}]}]};
+  const arena={data,draft:{attack:[2]},busy:false};
   const setup=renderToStaticMarkup(React.createElement(ArenaView,{arena}));
   assert.match(setup,/arena-roster-card/);assert.match(setup,/Fire Dragon/);
   assert.match(setup,/class="element-flag flag-sm primary"/);assert.match(setup,/class="rarity-gem"/);
@@ -62,15 +62,17 @@ try{
   assert.match(fullFilter,/aria-label="Filter: Ice" aria-pressed="false" disabled=""/);
   assert.doesNotMatch(setup,/<select id="arena-element-filter"/);
   assert.match(setup,/Wins <b>4<\/b>/);assert.match(setup,/Losses <b>2<\/b>/);
-  assert.match(setup,/OK · Confirm teams<\/span><\/button>/);
+  assert.match(setup,/Save attack team<\/span><\/button>/);
+  assert.doesNotMatch(setup,/Choose defense|Your defense team/);
   assert.match(setup,new RegExp('Requires level '+arenaConfig.minBattleLevel));assert.match(setup,/disabled=""/);
   assert.doesNotMatch(setup,/arena-enemy-dragon/);
   const opponents=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents'}}));
-  assert.match(opponents,/arena-enemy-dragon/);assert.match(opponents,/Water Dragon/);
+  assert.match(opponents,/arena-hidden-dragon/);assert.match(opponents,/Opponent team concealed/);
+  assert.doesNotMatch(opponents,/Water Dragon|Lv20|Rookie Warden/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
   const fullIds=Array.from({length:arenaConfig.teamSize},(_,index)=>index===0?2:index+4);
-  const full={...arena,draft:{attack:fullIds,defense:fullIds}};
+  const full={...arena,draft:{attack:fullIds}};
   const fullSetup=renderToStaticMarkup(React.createElement(ArenaView,{arena:full}));
   assert.doesNotMatch(fullSetup.match(/<div class="arena-save-bar">(.*?)<\/div>/)[1],/disabled=""/);
   const battle={opponent:'Bela',turn:1,attack:[dragon],defense:[{...dragon,id:3,species:'water',nickname:'Milo'}],
@@ -88,12 +90,15 @@ try{
   const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:supportBattle}}}));
   assert.doesNotMatch(supportMenu,/matchup-mark weak/);
-  assert(fighting.indexOf('battle-stage')<fighting.indexOf('battle-controls')&&
-    fighting.indexOf('battle-controls')<fighting.indexOf('battle-bench'),
-    'Chọn chiêu và đổi rồng phải nằm ngay dưới sân đấu');
+  assert(fighting.indexOf('battle-stage')<fighting.indexOf('arena-parties')&&
+    fighting.indexOf('arena-parties')<fighting.indexOf('battle-controls'),
+    'Hai đội hình phải nằm sát sân đấu trước điều khiển skill');
+  assert.match(fighting,/Your dragons · tap to switch/);
+  assert.match(fighting,/Rival team/);
+  assert.doesNotMatch(fighting,/battle-feed|Recent moves/);
   const details=fighting.match(/<div class="battle-details-scroll"[^>]*>([\s\S]*)<\/div><\/div>$/)?.[1];
-  assert(details&&details.includes('battle-controls')&&details.includes('battle-bench')&&
-    details.includes('battle-feed'),'Điều khiển phải ở vùng cuộn riêng, dưới sàn đấu');
+  assert(details&&details.includes('battle-controls')&&!details.includes('battle-feed'),
+    'Arena không hiển thị log lượt đánh');
   assert.doesNotMatch(fighting,/Đánh thường/);
   const charging=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle},busy:true,pendingSkill:'Flame Slash'}}));

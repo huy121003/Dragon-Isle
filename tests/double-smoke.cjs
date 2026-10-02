@@ -5,10 +5,15 @@ const path=require('node:path');
 const catalog=require('../data/dragons.json');
 const game=require('../data/game.json');
 const combat=require('../js/data/combat-rules.js');
-const {createArena}=require('../server/arena.cjs');
+const {createArena,arenaWindow}=require('../server/arena.cjs');
 require('../scripts/extend-catalog.cjs')(catalog,game);
 
 const elements=Object.keys(catalog.elements),species=catalog.species.filter(s=>s.doHiem==='transcendent');
+const balancedTeam=[0,1,2].map(id=>({id,species:'fire',level:30,stars:2,nickname:'Model '+id}));
+const variants=require('../server/arena.cjs').createRivals(balancedTeam,35,'test-window');
+assert.deepEqual(variants.map(rival=>rival.strength),['Weaker','Balanced','Stronger']);
+assert(variants[0].team.every(dragon=>dragon.level<balancedTeam[0].level&&dragon.stars<2));
+assert(variants[2].team.every(dragon=>dragon.level>balancedTeam[0].level&&dragon.stars>2));
 const doubleId=(primary,variant)=>species.filter(s=>s.elements[0]===primary)[variant].id;
 const specials=Object.values(game.skills.elemental).flat().filter(skill=>skill.special);
 assert.equal(species.length,30);
@@ -20,6 +25,10 @@ assert.equal(new Set(specials.map(s=>s.name)).size,30);
 assert(catalog.rarities.transcendent.heSoChiSo>catalog.rarities.legendary.heSoChiSo);
 assert(catalog.rarities.transcendent.heSoChiSo<catalog.rarities.mythic.heSoChiSo);
 const config=require('../data/double-elements.json');
+assert.equal(new Date(arenaWindow(Date.parse('2026-10-02T07:59:59+07:00')).resetAt).toISOString(),
+  '2026-10-02T01:00:00.000Z','Vietnam midnight window boundary');
+assert.equal(new Date(arenaWindow(Date.parse('2026-10-02T08:00:00+07:00')).resetAt).toISOString(),
+  '2026-10-02T09:00:00.000Z','Vietnam 08:00 window boundary');
 const kinds=new Set(['poison','regen','heal','damage_up','damage_down','armor_up','armor_down',
   'freeze','damage_reduction','multi','cleanse','vitality','accuracy_down']);
 for(const primary of elements){
@@ -64,9 +73,15 @@ function profile(speciesId){return {player:{level:45},buildings:[{id:1,type:'are
 fs.writeFileSync(path.join(profilesDir,'red.json'),JSON.stringify(profile(doubleId('fire',1))));
 fs.writeFileSync(path.join(profilesDir,'blue.json'),JSON.stringify(profile(doubleId('earth',0))));
 async function run(){
-  await arena.team({id:'red'},{attack:[1,2,3],defense:[1,2,3]});
-  await arena.team({id:'blue'},{attack:[1,2,3],defense:[1,2,3]});
-  let started=await arena.challenge({id:'red'},{opponentId:'blue'});
+  await arena.team({id:'red'},{attack:[1,2,3]});
+  await arena.team({id:'blue'},{attack:[1,2,3]});
+  const rivals=await arena.list({id:'red'});
+  assert.equal(rivals.opponents.length,3,'Arena should generate three server-side AI rivals');
+  assert(rivals.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
+    'Opponent teams and power details stay hidden until battle start');
+  assert.equal(rivals.attemptsRemaining,3);
+  let started=await arena.challenge({id:'red'},{opponentId:rivals.opponents[1].id});
+  assert.equal((await arena.list({id:'red'})).attemptsRemaining,2,'Starting a match consumes one attempt');
   assert.equal(started.battle.attack[0].skills[3].special,true);
   assert.equal(started.battle.attack[0].skills[3].effect.kind,'damage_up');
   const first=await arena.turn({id:'red'},{action:'skill',skillIndex:3,expectedTurn:1});
@@ -85,6 +100,24 @@ async function run(){
     if(i<3)assert(outcome.battle.attack[0].skills[3].remainingCooldown>0);
     else assert.equal(outcome.battle.attack[0].skills[3].remainingCooldown,0);
   }
+  // Attempts are charged at match start, even when the player forfeits.
+  let current=(await arena.list({id:'red'})).battle;
+  if(current){
+    const forfeit=await arena.turn({id:'red'},{action:'forfeit',expectedTurn:current.turn});
+    assert.equal(forfeit.result.won,false);
+  }
+  let remaining=(await arena.list({id:'red'})).attemptsRemaining;
+  while(remaining>0){
+    const rival=(await arena.list({id:'red'})).opponents[0];
+    const match=await arena.challenge({id:'red'},{opponentId:rival.id});
+    const lost=await arena.turn({id:'red'},{action:'forfeit',expectedTurn:match.battle.turn});
+    assert.equal(lost.result.won,false);
+    remaining=(await arena.list({id:'red'})).attemptsRemaining;
+  }
+  await assert.rejects(()=>arena.challenge({id:'red'},{opponentId:rivals.opponents[0].id}),/No Arena attempts left/);
+  const arenaFile=path.join(dataDir,'arena','red.json'),saved=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
+  saved.windowKey='expired-window';fs.writeFileSync(arenaFile,JSON.stringify(saved));
+  assert.equal((await arena.list({id:'red'})).attemptsRemaining,3,'New server window restores three attempts');
   const random=Math.random;
   try{
     Math.random=()=>.99;

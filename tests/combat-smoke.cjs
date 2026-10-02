@@ -16,8 +16,8 @@ for(const attack of ids){
   assert.deepEqual(wins,db.khac[attack]);
   for(const target of ids){
     const value=db.typeChart[attack][target];
-    assert([.75,1,2].includes(value));
-    if(value===2)assert.equal(db.typeChart[target][attack],.75);
+    assert([.5,1,2].includes(value));
+    if(value===2)assert.equal(db.typeChart[target][attack],.5);
   }
   assert(!('tocDo' in db.elements[attack].chiSo));
 }

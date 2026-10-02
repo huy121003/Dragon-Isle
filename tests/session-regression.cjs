@@ -24,7 +24,7 @@ function habitatPrice(element,count=0){
   const unlock=Math.max(0,(progressionConfig.elementUnlocks[element]||1)-1),r=economy.shop;
   const unlockScale=1+r.habitatUnlockLinear*unlock+r.habitatUnlockQuadratic*unlock*unlock;
   const repeatScale=1+r.habitatRepeatLinear*count+r.habitatRepeatQuadratic*count*count;
-  return Math.ceil(game.buildings.habitat.cost*unlockScale*repeatScale/10)*10;
+  return Math.ceil(buildingConfig.definitions.habitat.cost*unlockScale*repeatScale/10)*10;
 }
 function habitatUpgradeSeconds(element,level){
   const base=buildingConfig.upgradeTimes.habitat[Math.min(level-1,buildingConfig.upgradeTimes.habitat.length-1)];

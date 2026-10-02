@@ -14,6 +14,8 @@
   return Object.freeze({
     /** Resources for a new account. */
     starting:Object.freeze({gold:10000,food:2500,gems:20}),
+    /** Developer/test top-up targets. These are not granted during normal progression. */
+    testResources:Object.freeze({gold:10000000,food:100000,gems:10000}),
     /** Island unlocks cost this many Gems multiplied by island index. */
     island:Object.freeze({gemPerIsland:100}),
     /** Land expansion pricing. goldPerGem is the instant-purchase conversion. */

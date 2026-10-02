@@ -3,6 +3,7 @@
 /**
  * Habitat collection actions.
  */
+/** Collect stored Gold/Gems from one active Habitat and reset its storage counters. */
 function collect(building){
   if(!building||building.type!=="habitat"||building.stored)return;
   advanceWorld(Date.now());
@@ -23,6 +24,7 @@ function collect(building){
 }
 
 /** Move a dragon to a compatible Habitat that still has free capacity. */
+/** Move an available dragon into a compatible Habitat with free capacity. */
 function assignDragon(dragonId,buildingId){
   const d=dragonById(dragonId),b=buildingById(buildingId);
   if(d&&dragonBusy(d.id)){toast("Breeding dragons cannot change Habitats.");return;}

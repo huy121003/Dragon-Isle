@@ -4,6 +4,8 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
+const progressionConfig=require('../js/config/progression.js');
+const combatConfig=require('../js/config/combat.js');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const scripts=[...html.matchAll(/<script defer src="([^"]+)"/g)].map(m=>m[1]);
 assert(scripts.length>=15,'Thiếu các module script');
@@ -134,7 +136,7 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
  g.run('ui.modal=null;handleAction({dataset:{action:"open-shop"}})');
  assert.equal(g.run('ui.modal'),null,'Gameplay actions must be blocked while reconnecting');
  g.network.down=false;
- assert.equal(await g.run('retryServerConnection()'),true);
+ assert.equal(await g.run('window.DragonConnectionApi.retry()'),true);
  assert.equal(g.run('pendingServerSave'),null);
  assert.equal(g.run('window.DragonConnectionState.status'),'connected');
  assert.equal(g.run('window.DragonConnectionState.blocked'),false);
@@ -145,9 +147,9 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
 }
 {
  const g=await boot();
- g.run('markServerDisconnected("offline")');
+ g.run('window.DragonConnectionApi.fail("offline")');
  g.network.sessionExpired=true;
- assert.equal(await g.run('retryServerConnection()'),false);
+ assert.equal(await g.run('window.DragonConnectionApi.retry()'),false);
  assert.equal(g.run('window.DragonConnectionState.status'),'session-expired');
  assert.equal(g.run('saveReadOnly'),true);
  console.log('PASS reconnect switches to session-expired only after server 401');
@@ -276,8 +278,11 @@ check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.water)'),45,'Water pure egg should hatch in 45 seconds');
  balance.run('ui.shopTab="eggs";renderShop();openModal("shop-egg-detail","fire")');
  assert(balance.element('sheetBody').innerHTML.includes('30s'));
- assert(balance.run('guideArena()').includes('Strong nhân 2'));
- assert(balance.run('guideArena()').includes('Weak nhân 0,5'));
+ const guide=balance.run('guideArena()');
+ const strong=balance.run('Math.max(...Object.values(DRAGON_DB.typeChart).flatMap(row=>Object.values(row)))');
+ const weak=balance.run('Math.min(...Object.values(DRAGON_DB.typeChart).flatMap(row=>Object.values(row)))');
+ assert(guide.includes('Strong nhân '+strong));
+ assert(guide.includes('Weak nhân '+weak));
  balance.run('state.player.level=100;state.player.xp=0;gainPlayerXP(playerXPNeeded(100))');
  assert.equal(balance.run('state.player.level'),101);
 });
@@ -458,7 +463,7 @@ check('five dragon stars consume only qualified duplicates and raise all combat 
  assert.equal(stars.run('starDonors(state.dragons[0]).length'),0);
  assert.equal(stars.run('upgradeDragonStar(2)'),false);
  for(let rank=0;rank<5;rank++){
-   const rule=JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).progression.starUpgrades[rank];
+   const rule=progressionConfig.starUpgrades[rank];
    stars.run('for(let i=0;i<'+rule.dragons+';i++)state.dragons.push({id:1000+'+rank+'*100+i,'+
      'species:"fire",nickname:"Donor "+i,level:'+rule.level+',stars:0,habitatId:null})');
    assert.equal(stars.run('starDonors(state.dragons.find(d=>d.id===2)).length'),rule.dragons);
@@ -467,7 +472,8 @@ check('five dragon stars consume only qualified duplicates and raise all combat 
    assert.equal(stars.run('state.dragons.filter(d=>d.id>=1000).length'),0);
    const enhanced=snapshot(stars,'dragonStats(state.dragons.find(d=>d.id===2))');
    for(const stat of ['hp','attack','defense'])
-     assert.equal(enhanced[stat],Math.round(original[stat]*(1+(rank+1)*.05)));
+     assert.equal(enhanced[stat],Math.round(original[stat]*
+       (1+(rank+1)*combatConfig.star.statBonusPerStar)));
  }
  assert.equal(stars.run('upgradeDragonStar(2)'),false);
  assert.equal(stars.run('state.dragons.length'),4,'Target and ineligible dragons remain');

@@ -1,0 +1,24 @@
+/**
+ * Dragon lifecycle/economy parameters not tied to a specific catalog species.
+ */
+(function(root,factory){
+  const config=factory();
+  if(typeof module!=="undefined"&&module.exports)module.exports=config;
+  if(root){root.DragonConfig=root.DragonConfig||{};root.DragonConfig.dragons=config;}
+})(typeof window!=="undefined"?window:globalThis,function(){
+  "use strict";
+  return Object.freeze({
+    /** Maximum number of element slots one dragon species may expose, including duplicate-element tiers. */
+    maxElementsPerDragon:4,
+    /** Visual/lifecycle stage thresholds. */
+    stages:Object.freeze({adultAt:10,elderAt:30}),
+    /** Legacy dragon XP helper retained for catalog/debug callers. */
+    xp:Object.freeze({base:40,exponent:1.5}),
+    /** Legacy catalog income helper: multiplicative level growth. Runtime income uses progression config. */
+    catalogIncomeLevelMultiplier:1.15,
+    /** Resale values grow by this fraction for every level above 1. */
+    resale:Object.freeze({minimumGold:100,levelBonus:.05}),
+    /** Feed progress is clamped to [0, feedsPerLevel-1]. */
+    initialLevelCapWithoutAcademy:30
+  });
+});

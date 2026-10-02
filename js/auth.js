@@ -5,13 +5,18 @@ let currentAccount=null;
 let authMode="login";
 const authScreen=document.getElementById("authScreen");
 const authMessage=document.getElementById("authMessage");
+const authConfig=window.DragonConfig.system.auth;
+const authUsername=document.getElementById("authUsername"),authPassword=document.getElementById("authPassword");
+authUsername.minLength=authConfig.usernameMin;authUsername.maxLength=authConfig.usernameMax;
+authPassword.minLength=authConfig.passwordMin;authPassword.maxLength=authConfig.passwordMax;
+authPassword.placeholder="At least "+authConfig.passwordMin+" characters";
 function showAuthMessage(message){authMessage.textContent=message;}
 function setAuthMode(mode){
   authMode=mode;
   document.getElementById("loginTab").className="btn"+(mode==="login"?" primary":"");
   document.getElementById("registerTab").className="btn"+(mode==="register"?" primary":"");
   document.getElementById("authSubmit").textContent=mode==="login"?"Enter island":"Create account and enter";
-  document.getElementById("authPassword").autocomplete=mode==="login"?"current-password":"new-password";
+  authPassword.autocomplete=mode==="login"?"current-password":"new-password";
   showAuthMessage("");
 }
 document.querySelectorAll("[data-auth-mode]").forEach(function(button){
@@ -24,8 +29,8 @@ document.getElementById("authForm").addEventListener("submit",async function(eve
   try{
     const response=await fetch('/api/auth/'+authMode,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:document.getElementById("authUsername").value.trim(),
-        password:document.getElementById("authPassword").value}),cache:'no-store'});
+      body:JSON.stringify({username:authUsername.value.trim(),
+        password:authPassword.value}),cache:'no-store'});
     const result=await response.json();
     if(!response.ok)throw new Error(result.error||"Unable to sign in.");
     window.location.reload();

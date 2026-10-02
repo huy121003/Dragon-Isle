@@ -34,8 +34,8 @@
     <div class="auth-tabs"><button id="loginTab" type="button" class="btn primary" data-auth-mode="login">Sign in</button>
       <button id="registerTab" type="button" class="btn" data-auth-mode="register">Register</button></div>
     <form id="authForm" autocomplete="on">
-      <label>Username<input id="authUsername" name="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" autocomplete="username" placeholder="Example: alex_01"></label>
-      <label>Password<input id="authPassword" name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password" placeholder="At least 8 characters"></label>
+      <label>Username<input id="authUsername" name="username" required pattern="[A-Za-z0-9_]+" autocomplete="username" placeholder="Example: alex_01"></label>
+      <label>Password<input id="authPassword" name="password" type="password" required autocomplete="current-password" placeholder="Password"></label>
       <button id="authSubmit" class="btn good" type="submit">Enter island</button>
     </form>
     <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
@@ -74,36 +74,100 @@
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="react-root"></div>
   <script defer src="js/data/db-cache.js"></script>
+  <script defer src="js/config/system.js"></script>
+  <script defer src="js/config/progression.js"></script>
+  <script defer src="js/config/economy.js"></script>
+  <script defer src="js/config/buildings.js"></script>
+  <script defer src="js/config/farming.js"></script>
+  <script defer src="js/config/dragons.js"></script>
+  <script defer src="js/config/breeding.js"></script>
+  <script defer src="js/config/hatching.js"></script>
+  <script defer src="js/config/combat.js"></script>
+  <script defer src="js/config/arena.js"></script>
+  <script defer src="js/config/challenge.js"></script>
+  <script defer src="js/config/world.js"></script>
+  <script defer src="js/config/timers.js"></script>
+  <script defer src="js/rules/progression.js"></script>
+  <script defer src="js/rules/buildings.js"></script>
+  <script defer src="js/rules/hatching.js"></script>
+  <script defer src="js/rules/breeding.js"></script>
+  <script defer src="js/rules/world.js"></script>
+  <script defer src="js/rules/timers.js"></script>
   <script defer src="data/economy.js"></script>
   <script defer src="js/data/dragon-rules.js"></script>
   <script defer src="js/data/combat-rules.js"></script>
   <script defer src="js/data/catalog.js"></script>
   <script defer src="js/core/state.js"></script>
+  <script defer src="js/core/utils.js"></script>
+  <script defer src="js/core/grid.js"></script>
+  <script defer src="js/core/selectors.js"></script>
+  <script defer src="js/core/calculations.js"></script>
+  <script defer src="js/core/runtime.js"></script>
   <script defer src="js/logic/world.js"></script>
+  <script defer src="js/logic/progression.js"></script>
+  <script defer src="js/logic/resources.js"></script>
+  <script defer src="js/logic/placement.js"></script>
+  <script defer src="js/logic/habitats.js"></script>
+  <script defer src="js/logic/dragon-care.js"></script>
   <script defer src="js/logic/eggs.js"></script>
   <script defer src="js/logic/breeding.js"></script>
+  <script defer src="js/logic/islands.js"></script>
+  <script defer src="js/logic/upgrades.js"></script>
+  <script defer src="js/logic/farms.js"></script>
+  <script defer src="js/logic/storage.js"></script>
+  <script defer src="js/logic/selling.js"></script>
   <script defer src="js/logic/buildings.js"></script>
   <script defer src="js/logic/timers.js"></script>
   <script defer src="js/logic/skills.js"></script>
   <script defer src="js/logic/stars.js"></script>
   <script defer src="js/logic/arena.js"></script>
+  <script defer src="js/render/world-geometry.js"></script>
   <script defer src="js/render/world.js"></script>
   <script defer src="js/render/dragon-anatomy.js"></script>
   <script defer src="js/render/dragon-motion.js"></script>
   <script defer src="js/render/dragon-design.js"></script>
   <script defer src="js/render/dragon-art.js"></script>
   <script defer src="js/render/egg-art.js"></script>
+  <script defer src="js/render/building-primitives.js"></script>
+  <script defer src="js/render/habitat-art.js"></script>
+  <script defer src="js/render/facility-art.js"></script>
+  <script defer src="js/render/breeding-art.js"></script>
   <script defer src="js/render/building-art.js"></script>
   <script defer src="js/render/scene.js"></script>
   <script defer src="js/ui/core.js"></script>
   <script defer src="js/ui/dragon-info.js"></script>
+  <script defer src="js/ui/inspector.js"></script>
+  <script defer src="js/ui/panels/islands.js"></script>
+  <script defer src="js/ui/panels/shop.js"></script>
+  <script defer src="js/ui/panels/filters.js"></script>
+  <script defer src="js/ui/panels/dragons.js"></script>
+  <script defer src="js/ui/panels/inventory.js"></script>
+  <script defer src="js/ui/panels/farms.js"></script>
+  <script defer src="js/ui/panels/hatchery.js"></script>
+  <script defer src="js/ui/panels/breeding.js"></script>
+  <script defer src="js/ui/panels/book.js"></script>
+  <script defer src="js/ui/panels/system.js"></script>
   <script defer src="js/ui/panels.js"></script>
+  <script defer src="js/ui/guide/shared.js"></script>
+  <script defer src="js/ui/guide/start.js"></script>
+  <script defer src="js/ui/guide/dragons.js"></script>
+  <script defer src="js/ui/guide/breeding.js"></script>
+  <script defer src="js/ui/guide/islands.js"></script>
+  <script defer src="js/ui/guide/resources.js"></script>
+  <script defer src="js/ui/guide/combat.js"></script>
   <script defer src="js/ui/guide.js"></script>
   <script defer src="js/ui/timers.js"></script>
   <script defer src="js/ui/input.js"></script>
+  <script defer src="js/ui/actions.js"></script>
   <script defer src="js/audio.js"></script>
+  <script defer src="js/network/connection.js"></script>
+  <script defer src="js/persistence/migrations.js"></script>
+  <script defer src="js/persistence/save-client.js"></script>
   <script defer src="js/save.js"></script>
   <script defer src="js/auth.js"></script>
+  <script defer src="js/app/events.js"></script>
+  <script defer src="js/app/runtime-loops.js"></script>
+  <script defer src="js/app/bridge.js"></script>
   <script defer src="js/main.js"></script>
   <script type="module" src="/src/main.jsx"></script>
 </body>

@@ -21,6 +21,7 @@ function cookie(res){return res.headers.get('set-cookie').split(';')[0];}
 async function launch(port){
   const child=spawn(process.execPath,['server.cjs','--port',String(port)],{
     cwd:root,env:{...process.env,DRAGON_ISLE_DATA_DIR:temporary},stdio:'pipe'});
+  child.stderr.on('data',chunk=>process.stderr.write('[server] '+chunk));
   const base='http://127.0.0.1:'+port;
   for(let i=0;i<60;i++){
     try{if((await fetch(base+'/')).ok)return child;}catch(error){}
@@ -184,7 +185,7 @@ function eligibleProfile(){
     bStatus=await (await challenge('status','GET',b0)).json();
     assert(bStatus.players.some(p=>p.id===idA),'A fresh autosave heartbeat should restore online state');
 
-    const clientSave=fs.readFileSync(path.join(root,'js/save.js'),'utf8');
+    const clientSave=fs.readFileSync(path.join(root,'js/persistence/save-client.js'),'utf8');
     const clientAuth=fs.readFileSync(path.join(root,'js/auth.js'),'utf8');
     assert(clientSave.includes("'X-Dragon-Save-Revision':String(serverSaveRevision)"));
     assert(clientSave.includes("error.code==='SAVE_CONFLICT'")&&clientSave.includes("saveReadOnly=true"));

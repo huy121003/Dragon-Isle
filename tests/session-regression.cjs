@@ -7,6 +7,12 @@ const path=require('node:path');
 const root=path.join(__dirname,'..');
 const economy=require('../data/economy.js');
 const game=require('../data/game.json');
+const progressionConfig=require('../js/config/progression.js');
+const buildingConfig=require('../js/config/buildings.js');
+const farmingConfig=require('../js/config/farming.js');
+const worldConfig=require('../js/config/world.js');
+const systemConfig=require('../js/config/system.js');
+const challengeConfig=require('../js/config/challenge.js');
 const combat=require('../js/data/combat-rules.js');
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'),'utf8'));
 require('../scripts/extend-catalog.cjs')(catalog,game);
@@ -17,14 +23,14 @@ function xpNeeded(level){
   return Math.round(r.xpBase+r.xpLinear*n+r.xpPower*Math.pow(n,r.xpExponent));
 }
 function habitatPrice(element,count=0){
-  const unlock=Math.max(0,(game.elementUnlocks[element]||1)-1),r=economy.shop;
+  const unlock=Math.max(0,(progressionConfig.elementUnlocks[element]||1)-1),r=economy.shop;
   const unlockScale=1+r.habitatUnlockLinear*unlock+r.habitatUnlockQuadratic*unlock*unlock;
   const repeatScale=1+r.habitatRepeatLinear*count+r.habitatRepeatQuadratic*count*count;
-  return Math.ceil(game.buildings.habitat.cost*unlockScale*repeatScale/10)*10;
+  return Math.ceil(buildingConfig.definitions.habitat.cost*unlockScale*repeatScale/10)*10;
 }
 function habitatUpgradeSeconds(element,level){
-  const base=game.upgradeTimes.habitat[Math.min(level-1,game.upgradeTimes.habitat.length-1)];
-  const unlock=Math.max(0,Math.min(economy.progression.contentLevelCap,game.elementUnlocks[element]||1)-1);
+  const base=buildingConfig.upgradeTimes.habitat[Math.min(level-1,buildingConfig.upgradeTimes.habitat.length-1)];
+  const unlock=Math.max(0,Math.min(economy.progression.contentLevelCap,progressionConfig.elementUnlocks[element]||1)-1);
   const r=economy.habitat;
   return Math.round(base*(1+r.upgradeTimeUnlockLinear*unlock+r.upgradeTimeUnlockQuadratic*unlock*unlock));
 }
@@ -32,7 +38,7 @@ function standardGemCost(type,level,element='fire'){
   const r=economy.buildings,base=r.upgradeGemBase[type]||0;
   let gems=Math.ceil(base*Math.pow(r.upgradeGemLevelFactor,Math.max(0,level-1)));
   if(type==='habitat'){
-    const unlock=Math.min(economy.progression.contentLevelCap,game.elementUnlocks[element]||1)-1;
+    const unlock=Math.min(economy.progression.contentLevelCap,progressionConfig.elementUnlocks[element]||1)-1;
     gems=Math.ceil(gems*(1+r.habitatGemUnlockLinear*unlock));
   }
   return gems;
@@ -46,7 +52,7 @@ function landCost(islandIndex,opened=1){
 function hatchingSeconds(parts,rarity='common'){
   if(parts.length===1)return economy.hatching.pureElementSeconds[parts[0]];
   const tier=rarity==='transcendent'?'double':parts.length;
-  const pressure=parts.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/parts.length;
+  const pressure=parts.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/parts.length;
   return Math.round((economy.hatching.tierSeconds[tier]||economy.hatching.tierSeconds[4])+
     Math.min(economy.hatching.maxElementBonusSeconds,pressure*economy.hatching.elementLevelSeconds));
 }
@@ -68,14 +74,14 @@ assert.equal(fireStats.defense,Math.round(rawFireDefense*.6),'Global defense sca
 console.log('SESSION REGRESSION: economy');
 assert.deepEqual(economy.starting,{gold:10000,food:2500,gems:20});
 assert.equal(economy.progression.goldIncomeMultiplier,2.5);
-assert.equal(game.gemPerDragonPerHour,0.5);
+assert.equal(worldConfig.gemPerDragonPerHour,0.5);
 assert.deepEqual(economy.habitat.dragonCapacity,[2,3,4,5]);
 assert.deepEqual(economy.hatchery.nests,[1,2,3,4,5]);
-assert.deepEqual(game.crops.map(x=>x.duration),[30,180,900,7200]);
-assert.deepEqual(game.upgradeTimes.habitat,[45,180,600]);
-assert.deepEqual(game.upgradeTimes.farm,[30,120,480]);
-assert.deepEqual(game.upgradeTimes.hatchery,[90,300,900,2400]);
-assert.deepEqual(game.upgradeTimes.academy,[300,900,1800,3600,7200,14400]);
+assert.deepEqual(farmingConfig.crops.map(x=>x.duration),[30,180,900,7200]);
+assert.deepEqual(buildingConfig.upgradeTimes.habitat,[45,180,600]);
+assert.deepEqual(buildingConfig.upgradeTimes.farm,[30,120,480]);
+assert.deepEqual(buildingConfig.upgradeTimes.hatchery,[90,300,900,2400]);
+assert.deepEqual(buildingConfig.upgradeTimes.academy,[300,900,1800,3600,7200,14400]);
 
 for(const type of ['habitat','farm','hatchery']){
   assert(economy.buildings.upgradeGemBase[type]>0,type+' upgrades must require gems');
@@ -103,11 +109,11 @@ assert.equal(economy.progression.contentLevelCap,60);
 assert(xpNeeded(61)>xpNeeded(60));
 assert(xpNeeded(100)>xpNeeded(61));
 assert(xpNeeded(200)>xpNeeded(100));
-assert.deepEqual(game.elementUnlocks,{
+assert.deepEqual(progressionConfig.elementUnlocks,{
   fire:1,water:2,earth:4,wind:6,ice:8,thunder:11,nature:14,dark:18,
   light:22,metal:27,war:32,pure:37,legend:42,primal:48,time:55
 });
-assert.equal(Math.max(...Object.values(game.elementUnlocks)),55);
+assert.equal(Math.max(...Object.values(progressionConfig.elementUnlocks)),55);
 assert.deepEqual(economy.progression.hatcheryUpgradeLevels,[5,12,22,35]);
 
 console.log('SESSION REGRESSION: hatching / breeding');
@@ -121,32 +127,54 @@ assert(hatchingSeconds(['fire','fire','water','earth'],'transcendent')>
   hatchingSeconds(['fire','water','earth','wind']));
 
 console.log('SESSION REGRESSION: Academy');
-assert.equal(game.buildings.academy.maxLevel,7);
-assert.deepEqual(game.progression.academyCaps,[40,50,60,70,80,90,100]);
+assert.equal(buildingConfig.definitions.academy.maxLevel,7);
+assert.deepEqual(progressionConfig.academyCaps,[40,50,60,70,80,90,100]);
 assert.deepEqual(
-  game.progression.academyUpgrades.map(x=>[x.playerLevel,x.requiredDragons,x.requiredDragonLevel]),
+  progressionConfig.academyUpgrades.map(x=>[x.playerLevel,x.requiredDragons,x.requiredDragonLevel]),
   [[10,2,40],[18,3,50],[28,4,60],[38,5,70],[48,6,80],[58,8,90]]
 );
-assert(game.progression.academyUpgrades.every(x=>x.playerLevel<=economy.progression.contentLevelCap));
+assert(progressionConfig.academyUpgrades.every(x=>x.playerLevel<=economy.progression.contentLevelCap));
 assert.equal(game.footprints.academy.length,7);
+assert.equal(game.progression,undefined,'game.json must not duplicate progression balance');
+assert.equal(game.elementUnlocks,undefined,'game.json must not duplicate element unlock balance');
+assert.equal(game.upgradeTimes,undefined,'game.json must not duplicate upgrade timers');
+assert.equal(game.crops,undefined,'game.json must not duplicate crop balance');
+assert.equal(game.gemPerDragonPerHour,undefined,'game.json must not duplicate passive Gem balance');
+assert(Object.values(game.buildings).every(meta=>meta.cost===undefined&&meta.maxLevel===undefined&&meta.sellRate===undefined),
+  'game.json building metadata must not duplicate balance values');
 
 console.log('SESSION REGRESSION: source synchronization');
 const save=read('js/save.js');
 const react=read('src/main.jsx');
 const world=read('js/logic/world.js');
+const progressionLogic=read('js/logic/progression.js');
 const state=read('js/core/state.js');
+const calculations=read('js/core/calculations.js');
 const arena=read('server/arena.cjs');
 const profile=read('server/profile.cjs');
-const guide=read('js/ui/guide.js');
+const guide=['shared','start','dragons','breeding','islands','resources','combat']
+  .map(name=>read('js/ui/guide/'+name+'.js')).concat(read('js/ui/guide.js')).join('\n');
+const validation=read('server/validation.cjs');
+const main=read('js/main.js');
 
 assert(!save.includes('clamp(Number(result.player.level)||1,1,60)'),'Save must preserve levels above 60');
 assert(!react.includes("'MAX LEVEL'"),'React shell must not show MAX LEVEL at 60');
-assert(world.includes('while(state.player.xp>=playerXPNeeded(state.player.level))'),'Player leveling must remain unlimited');
-assert(state.includes('contentRequirementLevel'),'Content gates must use the level-60 cap helper');
-assert(arena.includes("require('../data/economy.js')"),'Arena rewards must use shared economy config');
-assert(arena.includes('economy.progression.contentLevelCap'),'Arena reward scaling must stop at content cap');
-assert(profile.includes("require('../data/economy.js')"),'Server starter resources must use shared economy config');
-assert(guide.includes('Strong nhân 2')&&guide.includes('Weak nhân 0,5'),'Guide combat multipliers are stale');
+assert(progressionLogic.includes('while(state.player.xp>=playerXPNeeded(state.player.level))'),'Player leveling must remain unlimited');
+assert(calculations.includes('contentRequirementLevel'),'Content gates must use the level-60 cap helper');
+assert(arena.includes("require('../js/config/arena.js')"),'Arena rewards must use shared Arena config');
+assert(arena.includes("require('../js/config/progression.js')"),'Arena reward scaling must use shared progression config');
+assert(arena.includes('progressionConfig.contentLevelCap'),'Arena reward scaling must stop at content cap');
+assert(!arena.includes("require('../data/economy.js')"),'Arena service must not depend on the legacy economy facade');
+assert(profile.includes("require('../js/config/economy.js')"),'Server starter resources must use direct economy config');
+assert(profile.includes("require('../js/config/buildings.js')"),'Server starter habitat price must use direct building config');
+assert(!profile.includes("require('../data/economy.js')"),'Server profile must not depend on the legacy economy facade');
+assert(!profile.includes('game.buildings.habitat.cost'),'Server profile must not read removed balance values from game.json');
+assert(!guide.includes('×1,5')&&!guide.includes('×0,75'),'Guide contains stale combat multipliers');
+assert(!guide.includes('DragonEconomy'),'Guide must read direct config instead of compatibility facade');
+assert(validation.includes('challengeConfig.teamSize'),'Challenge validation must use shared team size');
+assert(main.includes('DragonConfig.system.runtime'),'Runtime cadence must use system config');
+assert.equal(systemConfig.save.version,12);
+assert.equal(challengeConfig.teamSize,3);
 assert(guide.includes('Rồng sở hữu yêu cầu'),'Academy ownership requirements must be documented');
 
 console.log('SESSION REGRESSION PASS');

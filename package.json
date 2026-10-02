@@ -6,15 +6,23 @@
     "build": "node scripts/build-cache.cjs && vite build",
     "start": "node server.cjs",
     "pretest": "npm run build",
-    "test": "node tests/session-regression.cjs && node tests/auth-session-save-smoke.cjs && node tests/reconnect-ui-smoke.mjs && node tests/challenge-presence-smoke.cjs && node tests/challenge-presence-ui-smoke.mjs && node tests/combat-smoke.cjs && node tests/update-smoke.cjs && node tests/double-smoke.cjs && node tests/challenge-smoke.cjs && node tests/server-smoke.cjs && node tests/arena-ui-smoke.mjs",
-    "economy:audit": "node scripts/economy-audit.cjs"
+    "test": "vitest run && npm run test:legacy",
+    "economy:audit": "node scripts/economy-audit.cjs",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:legacy": "node tests/session-regression.cjs && node tests/auth-session-save-smoke.cjs && node tests/reconnect-ui-smoke.mjs && node tests/challenge-presence-smoke.cjs && node tests/challenge-presence-ui-smoke.mjs && node tests/combat-smoke.cjs && node tests/update-smoke.cjs && node tests/double-smoke.cjs && node tests/challenge-smoke.cjs && node tests/server-smoke.cjs && node tests/arena-ui-smoke.mjs"
   },
   "dependencies": {
     "antd": "6.6.5",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "@tanstack/react-query": "5.104.0",
+    "zod": "4.6.5",
+    "zustand": "5.0.15"
   },
   "devDependencies": {
-    "vite": "8.3.1"
+    "vite": "8.3.1",
+    "@playwright/test": "1.63.0",
+    "vitest": "5.0.3"
   }
 }

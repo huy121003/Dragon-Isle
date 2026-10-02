@@ -1,9 +1,12 @@
 "use strict";
 
-/* Five upgrades, each adding 5% to the dragon's HP, attack and defense. */
+/* Star counts and stat bonus come from progression/combat config; this module owns donor consumption. */
+/** Return the next configured star-upgrade requirement, or null at maximum stars. */
 function starRequirement(dragon){
-  return DATA.progression.starUpgrades[Math.max(0,Math.floor(Number(dragon.stars)||0))]||null;
+  return window.DragonConfig.progression.starUpgrades[
+    Math.max(0,Math.floor(Number(dragon.stars)||0))]||null;
 }
+/** Return eligible same-species donor dragons in deterministic consumption order. */
 function starDonors(dragon,requirement=starRequirement(dragon)){
   if(!dragon||!requirement)return [];
   // Spend unassigned dragons first and the lowest qualifying levels next.
@@ -14,11 +17,12 @@ function starDonors(dragon,requirement=starRequirement(dragon)){
     return Number(!!a.habitatId)-Number(!!b.habitatId)||a.level-b.level||a.id-b.id;
   });
 }
+/** Validate, confirm and atomically consume resources/donors for one star upgrade. */
 function upgradeDragonStar(id){
   const dragon=dragonById(id);
   if(!dragon||dragonBusy(id)){toast("This dragon is unavailable while breeding.");return false;}
   const required=starRequirement(dragon);
-  if(!required){toast("This dragon already has five stars.");return false;}
+  if(!required){toast("This dragon already has "+window.DragonConfig.combat.star.max+" stars.");return false;}
   const donors=starDonors(dragon,required);
   if(donors.length<required.dragons){
     toast("Need "+required.dragons+" same-species dragons at level "+required.level+" or above.");return false;
@@ -46,7 +50,8 @@ function upgradeDragonStar(id){
     ui.arena.draft.attack=ui.arena.draft.attack.filter(id=>!ids.has(id));
     ui.arena.draft.defense=ui.arena.draft.defense.filter(id=>!ids.has(id));
   }
-  toast(dragon.nickname+" reached "+dragon.stars+" star(s)! HP, attack and defense +"+(dragon.stars*5)+"%.");
+  const bonus=Math.round(dragon.stars*window.DragonConfig.combat.star.statBonusPerStar*100);
+  toast(dragon.nickname+" reached "+dragon.stars+" star(s)! HP, attack and defense +"+bonus+"%.");
   openModal("dragon-detail",dragon.id);updateUI();saveGame();
   return true;
 }

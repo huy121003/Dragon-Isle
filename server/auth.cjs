@@ -3,35 +3,49 @@ const path=require('node:path');
 const {randomBytes,randomUUID,scrypt,timingSafeEqual,createHash}=require('node:crypto');
 const {promisify}=require('node:util');
 const {readJson,writeJson}=require('./store.cjs');
+const systemConfig=require('../js/config/system.js');
 const derive=promisify(scrypt);
-const SESSION_AGE=7*24*60*60*1000;
+const authConfig=systemConfig.auth;
+/** Store only a one-way digest of session tokens on disk. */
 function digest(token){return createHash('sha256').update(token).digest('hex');}
-function validUsername(value){return typeof value==='string'&&/^[A-Za-z0-9_]{3,24}$/.test(value);}
-function validPassword(value){return typeof value==='string'&&value.length>=8&&value.length<=128&&Buffer.byteLength(value)<=256;}
+/** Validate username syntax and configured length bounds. */
+function validUsername(value){return typeof value==='string'&&value.length>=authConfig.usernameMin&&
+  value.length<=authConfig.usernameMax&&/^[A-Za-z0-9_]+$/.test(value);}
+/** Validate configured password character and byte-length bounds. */
+function validPassword(value){return typeof value==='string'&&value.length>=authConfig.passwordMin&&
+  value.length<=authConfig.passwordMax&&Buffer.byteLength(value)<=authConfig.passwordMaxBytes;}
+/** Build the HttpOnly session cookie using the shared session lifetime. */
 function cookie(token,secure){return 'dragon_session='+token+'; Path=/; HttpOnly; SameSite=Strict; Max-Age='+
-  Math.floor(SESSION_AGE/1000)+(secure?'; Secure':'');}
+  Math.floor(authConfig.sessionAgeMs/1000)+(secure?'; Secure':'');}
+/**
+ * Create the persistent authentication service.
+ * User/session mutations are serialized to avoid lost updates between requests.
+ */
 async function createAuth(dataDir){
   const usersPath=path.join(dataDir,'users.json'),sessionsPath=path.join(dataDir,'sessions.json');
   let users=await readJson(usersPath,[]),sessions=await readJson(sessionsPath,[]);
   if(!Array.isArray(users)||!Array.isArray(sessions))throw new Error('Invalid account store');
-  /* AUTH: Kho từ bản trước chưa has role; chỉ người used đầu tiên được cấp quản trị. */
+  /* AUTH: Kho dữ liệu cũ chưa có role; chỉ tài khoản đầu tiên được cấp quyền quản trị. */
   if(users.length&&!users.some(user=>user.role==='admin')){
     users[0].role='admin';await writeJson(usersPath,users);
   }
   let mutation=Promise.resolve();
+  /** Serialize user/session mutations so concurrent requests cannot lose writes. */
   function locked(action){
     const next=mutation.catch(()=>{}).then(action);mutation=next;return next;
   }
+  /** Create, persist and return one new opaque login session for a user. */
   async function issue(user){
     const token=randomBytes(32).toString('base64url');
     sessions=sessions.filter(s=>s.expires>Date.now());
-    sessions.push({digest:digest(token),userId:user.id,expires:Date.now()+SESSION_AGE});
+    sessions.push({digest:digest(token),userId:user.id,expires:Date.now()+authConfig.sessionAgeMs});
     await writeJson(sessionsPath,sessions);
     return {user:{id:user.id,username:user.username,role:user.role||'player'},token};
   }
   return {
     async register(username,password){
-      if(!validUsername(username)||!validPassword(password))return {error:'Username must be 3–24 letters, numbers or underscores; password must be 8–128 characters.',status:400};
+      if(!validUsername(username)||!validPassword(password))return {error:'Username must be '+authConfig.usernameMin+'–'+authConfig.usernameMax+
+        ' letters, numbers or underscores; password must be '+authConfig.passwordMin+'–'+authConfig.passwordMax+' characters.',status:400};
       const salt=randomBytes(16).toString('hex');
       const hash=(await derive(password,salt,64)).toString('hex');
       return locked(async()=>{
@@ -44,7 +58,7 @@ async function createAuth(dataDir){
       });
     },
     async login(username,password){
-      if(!validUsername(username)||typeof password!=='string'||Buffer.byteLength(password)>256)return {error:'Incorrect username or password.',status:401};
+      if(!validUsername(username)||typeof password!=='string'||Buffer.byteLength(password)>authConfig.passwordMaxBytes)return {error:'Incorrect username or password.',status:401};
       const user=users.find(u=>u.username.toLowerCase()===username.toLowerCase());
       if(!user||user.disabled)return {error:'Incorrect username or password.',status:401};
       const candidate=await derive(password,user.salt,64),expected=Buffer.from(user.hash,'hex');

@@ -1,43 +1,69 @@
-/* Editable economy and animation constants shared by the browser modules. */
-const DragonEconomy={
-  starting:{gold:10000,food:2500,gems:20},
-  progression:{contentLevelCap:60,xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
-    levelGoldBase:1000,levelGoldStep:250,levelFoodBase:200,levelFoodStep:50,
-    levelGems:1,milestoneGemBonus:3,
-    xpSources:{buildingBuild:{habitat:35,farm:30,cave:75,premiumCave:100,academy:100,arena:100,decor:5},
-      buildingUpgradeBase:30,buildingUpgradePerLevel:15,
-      land:60,island:250,crop:[8,20,55,150],hatchKnown:25,hatchNew:50,breed:45,dragonLevelBase:8,dragonLevelPerTen:3},
-    farmEveryLevels:5,maxFarms:12,hatcheryUpgradeLevels:[5,12,22,35],feedBase:10,feedLinear:3,feedQuadratic:.18,
-    goldLevelLinear:.08,goldLevelQuadratic:.0004,goldIncomeMultiplier:2.5,
-    foodGoldPrice:15},
-  breeding:{threeBase:.15,threePerTenLevels:.015,threeCap:.27,
-    fourBase:.0225,fourPerTenLevels:.003,fourCap:.045,fourGrowthStartLevel:30,
-    doubleBase:.009,doublePerTenLevels:.0015,doubleCap:.018,doubleMinParentLevel:40,
-    premiumRareFactor:1.40,premiumTimeFactor:.80,
-    timeByTier:{1:45,2:180,3:600,4:1800,double:3600},
-    elementLevelSeconds:8,maxElementBonusSeconds:1800,combinationSecondsPerExtraElement:45,mixedTierSeconds:30},
-  island:{gemPerIsland:100},
-  land:{homeFirstRegionGold:1200,nextIslandMultiplier:1.2,expansionMultiplier:1.2,islandTierLinear:.9,islandTierQuadratic:.15,goldPerGem:5000},
-  habitat:{goldBase:5000,goldPerUnlockLevel:450,goldLevelFactor:4.2,
-    dragonCapacity:[2,3,4,5],gemCapacityBase:3,
-    upgradeTimeUnlockLinear:.018,upgradeTimeUnlockQuadratic:.00035},
-  hatchery:{nests:[1,2,3,4,5]},
-  shop:{habitatUnlockLinear:.08,habitatUnlockQuadratic:.006,
-    habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,
-    eggBaseMultiplier:2.2,eggUnlockLinear:.18,eggUnlockQuadratic:.012,
-    resourcePacks:{
-      goldForGems:[{cost:5,amount:20000},{cost:20,amount:100000},{cost:50,amount:300000}],
-      gemsForGold:[{cost:75000,amount:3},{cost:300000,amount:10},{cost:900000,amount:25}],
-      foodForGems:[{cost:5,amount:1500},{cost:15,amount:6000},{cost:40,amount:20000}]
-    }},
-  buildings:{upgradeFactor:2.25,sellMultiplier:1.75,upgradeGemBase:{habitat:2,farm:1,hatchery:3},upgradeGemLevelFactor:1.8,habitatGemUnlockLinear:.035},
-  timers:{secondsPerGem:600,maxSkipGems:120},
-  hatching:{pureElementSeconds:{fire:30,water:45,earth:60,wind:75,ice:90,thunder:120,
-      nature:150,dark:210,light:270,metal:360,war:480,pure:600,legend:750,primal:900,time:1200},
-    tierSeconds:{2:240,3:900,4:2700,double:5400},elementLevelSeconds:12,maxElementBonusSeconds:3600},
-  rewards:{arenaGoldBase:2500,arenaGoldPerOpponentLevel:250,arenaFoodBase:250,arenaFoodPerOpponentLevel:40,arenaGemBase:1,arenaGemPer20Levels:1},
-  academy:{baseGold:8000,baseFood:800,baseGems:5,costFactor:2.2},
-  visual:{daySeconds:480,weatherParticles:10}
-};
-if(typeof window!=="undefined")window.DragonEconomy=DragonEconomy;
-if(typeof module!=="undefined"&&module.exports)module.exports=DragonEconomy;
+/**
+ * Compatibility facade for legacy code that still reads window.DragonEconomy.
+ *
+ * New code must import/read js/config/* directly. This file intentionally
+ * exposes the old shape so the refactor can remain behavior-compatible while
+ * callers are migrated gradually.
+ */
+(function(root,factory){
+  const configs=typeof module!=="undefined"&&module.exports?{
+    progression:require("../js/config/progression.js"),
+    economy:require("../js/config/economy.js"),
+    buildings:require("../js/config/buildings.js"),
+    breeding:require("../js/config/breeding.js"),
+    hatching:require("../js/config/hatching.js"),
+    arena:require("../js/config/arena.js"),
+    timers:require("../js/config/timers.js"),
+    world:require("../js/config/world.js")
+  }:root.DragonConfig;
+  const value=factory(configs);
+  if(typeof module!=="undefined"&&module.exports)module.exports=value;
+  if(root)root.DragonEconomy=value;
+})(typeof window!=="undefined"?window:globalThis,function(c){
+  "use strict";
+  const p=c.progression,b=c.buildings,e=c.economy,breed=c.breeding;
+  return {
+    starting:e.starting,
+    progression:{
+      contentLevelCap:p.contentLevelCap,
+      xpBase:p.xp.base,xpLinear:p.xp.linear,xpPower:p.xp.power,xpExponent:p.xp.exponent,
+      levelGoldBase:p.rewards.goldBase,levelGoldStep:p.rewards.goldStep,
+      levelFoodBase:p.rewards.foodBase,levelFoodStep:p.rewards.foodStep,
+      levelGems:p.rewards.gems,milestoneGemBonus:p.rewards.milestoneGemBonus,
+      xpSources:p.xpSources,farmEveryLevels:p.farms.everyLevels,maxFarms:p.farms.maxFarms,
+      hatcheryUpgradeLevels:p.hatcheryUpgradeLevels,
+      feedBase:p.feedingCost.base,feedLinear:p.feedingCost.linear,feedQuadratic:p.feedingCost.quadratic,
+      goldLevelLinear:p.incomeGrowth.linear,goldLevelQuadratic:p.incomeGrowth.quadratic,
+      goldIncomeMultiplier:p.incomeGrowth.multiplier,foodGoldPrice:p.foodGoldPrice
+    },
+    breeding:{
+      threeBase:breed.three.base,threePerTenLevels:breed.three.perTenLevels,threeCap:breed.three.cap,
+      fourBase:breed.four.base,fourPerTenLevels:breed.four.perTenLevels,fourCap:breed.four.cap,
+      fourGrowthStartLevel:breed.four.growthStartLevel,
+      doubleBase:breed.double.base,doublePerTenLevels:breed.double.perTenLevels,
+      doubleCap:breed.double.cap,doubleMinParentLevel:breed.double.minParentLevel,
+      premiumRareFactor:breed.premium.rareFactor,premiumTimeFactor:breed.premium.timeFactor,
+      timeByTier:breed.timeByTier,elementLevelSeconds:breed.elementLevelSeconds,
+      maxElementBonusSeconds:breed.maxElementBonusSeconds,
+      combinationSecondsPerExtraElement:breed.combinationSecondsPerExtraElement,
+      mixedTierSeconds:breed.mixedTierSeconds
+    },
+    island:e.island,land:e.land,
+    habitat:b.habitat,hatchery:b.hatchery,shop:e.shop,
+    buildings:{
+      upgradeFactor:b.upgrade.goldFactor,sellMultiplier:b.upgrade.sellMultiplier,
+      upgradeGemBase:b.upgrade.gemBase,upgradeGemLevelFactor:b.upgrade.gemLevelFactor,
+      habitatGemUnlockLinear:b.upgrade.habitatGemUnlockLinear
+    },
+    timers:c.timers,hatching:c.hatching,
+    rewards:{
+      arenaGoldBase:c.arena.rewards.goldBase,
+      arenaGoldPerOpponentLevel:c.arena.rewards.goldPerOpponentLevel,
+      arenaFoodBase:c.arena.rewards.foodBase,
+      arenaFoodPerOpponentLevel:c.arena.rewards.foodPerOpponentLevel,
+      arenaGemBase:c.arena.rewards.gemBase,
+      arenaGemPer20Levels:c.arena.rewards.gemPer20Levels
+    },
+    academy:b.academy,visual:c.world.visual
+  };
+});

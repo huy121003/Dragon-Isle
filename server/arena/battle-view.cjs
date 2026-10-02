@@ -1,0 +1,45 @@
+/**
+ * Public battle DTO and event-snapshot helpers.
+ *
+ * Keeps client/replay serialization out of turn-resolution code. This module
+ * does not decide damage, AI choices or match outcomes.
+ */
+const combat=require('../../js/data/combat-rules.js');
+const progressionConfig=require('../../js/config/progression.js');
+const arenaConfig=require('../../js/config/arena.js');
+
+const statusIcons={poison:'☠',freeze:'❄',damage_up:'⚔',damage_down:'🗡',
+  armor_up:'🛡',armor_down:'⚒',damage_reduction:'✦',regen:'✚',vitality:'♥',accuracy_down:'◌'};
+
+/** Stable public status payload for React clients. */
+function statusSnapshot(fighter){
+  return (fighter.statuses||[]).map(status=>({...status,icon:statusIcons[status.kind]||'✦'}));
+}
+
+/** Add one battle event with a state snapshot used for animation/replay. */
+function record(battle,event){
+  battle.events.push({...event,turn:battle.turn,state:{
+    attack:battle.attack.map(fighter=>({id:fighter.id,hp:fighter.hp,
+      maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),cooldowns:fighter.cooldowns||[]})),
+    defense:battle.defense.map(fighter=>({id:fighter.id,hp:fighter.hp,
+      maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),cooldowns:fighter.cooldowns||[]})),
+    activeAttack:battle.activeAttack,activeDefense:battle.activeDefense}});
+}
+
+/** Public DTO used by Arena/Challenge React views. */
+function publicBattle(battle){
+  const view=fighter=>({id:fighter.id,species:fighter.species,level:fighter.level,
+    stars:fighter.stars||0,nickname:fighter.nickname,hp:fighter.hp,
+    maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),
+    skills:fighter.skills.map((skill,index)=>skill?{
+      index,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
+      special:!!skill.special,effect:skill.effect||null,description:skill.description||null,
+      cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
+      unlockLevel:progressionConfig.skillUnlockLevels[index],
+      unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
+  return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
+    defense:battle.defense.map(view),activeAttack:battle.activeAttack,
+    activeDefense:battle.activeDefense,events:battle.events.slice(-arenaConfig.eventHistory)};
+}
+
+module.exports={statusSnapshot,record,publicBattle};

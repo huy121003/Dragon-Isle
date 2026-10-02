@@ -1,114 +1,69 @@
 /* Live, invitation-only duels. No Arena building, currency reward or cooldown. */
 const path=require('node:path');
 const {randomUUID}=require('node:crypto');
-const {readJson,writeJson}=require('./store.cjs');
-const ONLINE_SAVE_MS=35000,INVITE_MS=30000,IDLE_MS=5*60*1000;
-const MATCH_HEARTBEAT_MS=8000,MATCH_RECONNECT_MS=60000;
+const {readJson}=require('./store.cjs');
+const challengeConfig=require('../js/config/challenge.js');
+const {createPresence}=require('./challenge/presence.cjs');
+const {createChallengeStore}=require('./challenge/store.cjs');
+const {createChallengeView}=require('./challenge/view.cjs');
+/** Create an HTTP-aware Challenge domain error. */
 function error(message,status=409){return Object.assign(new Error(message),{status});}
-function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=MATCH_HEARTBEAT_MS,reconnectMs=MATCH_RECONNECT_MS,
+/**
+ * Create the live Challenge state machine.
+ * @param {object} options
+ * @param {object} options.auth - Session/account service.
+ * @param {string} options.profilesDir - Profile persistence directory.
+ * @param {object} options.arena - Shared fighter/battle engine facade.
+ * @param {Function} options.now - Injectable clock for deterministic tests.
+ * @param {number} options.heartbeatMs - Delay before opponent is shown reconnecting.
+ * @param {number} options.reconnectMs - Grace period before a disconnected duel is released.
+ */
+function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
+  heartbeatMs=challengeConfig.heartbeatMs,reconnectMs=challengeConfig.reconnectGraceMs,
   stateFile=path.join(profilesDir,'_challenge-state.json')}){
-  const matches=new Map(),byUser=new Map(),notices=new Map();
-  let pending=Promise.resolve(),loaded=false;
-  async function ensureLoaded(){
-    if(loaded)return;loaded=true;
-    const stored=await readJson(stateFile,{matches:[],notices:[]});
-    for(const pair of Array.isArray(stored?.notices)?stored.notices:[])
-      if(Array.isArray(pair)&&pair.length===2)notices.set(pair[0],pair[1]);
-    for(const raw of Array.isArray(stored?.matches)?stored.matches:[]){
-      if(!raw||!raw.id||!Array.isArray(raw.players)||raw.players.length!==2||
-        !['invited','select','battle'].includes(raw.phase)||raw.players.some(id=>byUser.has(id)))continue;
-      if(raw.players.some(id=>!users().some(user=>user.id===id)))continue;
-      const fallback=Number(raw.updatedAt)||now();
-      raw.seen=Array.isArray(raw.seen)&&raw.seen.length===2?raw.seen.map(v=>Number(v)||fallback):[fallback,fallback];
-      raw.persistedAt=Number(raw.persistedAt)||fallback;
-      matches.set(raw.id,raw);raw.players.forEach(id=>byUser.set(id,raw.id));
-    }
-  }
-  async function persist(){
-    await writeJson(stateFile,{matches:[...matches.values()],notices:[...notices.entries()]});
-  }
-  function locked(fn){const next=pending.catch(()=>{}).then(async()=>{await ensureLoaded();return fn();});pending=next;return next;}
+  let pending=Promise.resolve();
   const profile=id=>readJson(path.join(profilesDir,id+'.json'),null);
   const users=()=>auth.listUsers();
-  async function active(id){
-    if(!users().some(u=>u.id===id&&!u.disabled&&u.challengeEnabled)||
-      !auth.hasActiveSession(id))return false;
-    const saved=Number((await profile(id))?.savedAt)||0;
-    return saved<=now()&&saved>now()-ONLINE_SAVE_MS;
+  const store=createChallengeStore({stateFile,users,now});
+  const {matches,byUser,notices,persist,release}=store;
+  const presencePolicy=createPresence({auth,users,profile,now,heartbeatMs,reconnectMs});
+  const {view}=createChallengeView({users,presencePolicy,arena});
+  /** Serialize state transitions so two requests cannot mutate one match concurrently. */
+  function locked(fn){
+    const next=pending.catch(()=>{}).then(async()=>{await store.ensureLoaded();return fn();});
+    pending=next;return next;
   }
-  function release(match,message){
-    matches.delete(match.id);
-    for(const id of match.players){byUser.delete(id);notices.set(id,message);}
-  }
-  function sessionAvailable(id){
-    const user=users().find(u=>u.id===id);
-    return !!(user&&!user.disabled&&user.challengeEnabled&&auth.hasActiveSession(id));
-  }
-  function touch(match,id){
-    const index=match.players.indexOf(id);
-    if(index<0)return false;
-    match.seen[index]=now();
-    if(now()-(Number(match.persistedAt)||0)>=5000){match.persistedAt=now();return true;}
-    return false;
-  }
-  function presence(match,index){
-    const last=Number(match.seen[index])||0,age=Math.max(0,now()-last);
-    return {state:age<=heartbeatMs?'online':'reconnecting',
-      reconnectUntil:last+reconnectMs,age};
-  }
+  /** Release expired, inactive, signed-out or reconnect-timeout matches. */
   async function sweep(){
     let changed=false;
     for(const match of [...matches.values()]){
-      if(match.phase==='invited'&&match.until<now()){release(match,'Challenge invitation expired.');changed=true;}
-      else if(match.updatedAt+IDLE_MS<now()){release(match,'Challenge ended due to inactivity.');changed=true;}
-      else if(match.players.some(id=>!sessionAvailable(id))){
+      if(match.phase===challengeConfig.phases.INVITED&&match.until<now()){release(match,'Challenge invitation expired.');changed=true;}
+      else if(match.updatedAt+challengeConfig.idleMs<now()){release(match,'Challenge ended due to inactivity.');changed=true;}
+      else if(match.players.some(id=>!presencePolicy.sessionAvailable(id))){
         release(match,'Challenge ended because a player signed out or became unavailable.');changed=true;
-      }else if(match.seen.some(last=>now()-(Number(last)||0)>reconnectMs)){
+      }else if(match.seen.some(last=>presencePolicy.expired(last))){
         release(match,'Challenge ended because a player could not reconnect in time.');changed=true;
       }
     }
     if(changed)await persist();
   }
+  /** True when a player currently owns enough Arena-eligible dragons. */
   async function qualified(id){
     const p=await profile(id);
-    return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=3;
+    return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=challengeConfig.teamSize;
   }
-  function view(match,id){
-    const index=match.players.indexOf(id),opponentId=match.players[1-index];
-    const opponent=users().find(u=>u.id===opponentId);
-    const opponentPresence=presence(match,1-index);
-    const result={id:match.id,phase:match.phase,opponent:opponent?.username||'Player',
-      outgoing:index===0,until:match.until,ready:!!match.ready[index],
-      opponentReady:!!match.ready[1-index],selection:match.selection[index]||[],
-      updatedAt:match.updatedAt,opponentConnection:opponentPresence.state,
-      opponentReconnectUntil:opponentPresence.reconnectUntil};
-    if(match.phase==='select')result.roster=match.rosters[index];
-    if(match.phase==='battle'){
-      const reverse=index===1,raw=arena.publicBattle(match.battle);
-      const flip=side=>side==='attack'?'defense':side==='defense'?'attack':side;
-      const swapEvent=e=>reverse?{...e,side:flip(e.side),targetSide:flip(e.targetSide),
-        state:e.state?{...e.state,attack:e.state.defense,defense:e.state.attack,
-          activeAttack:e.state.activeDefense,activeDefense:e.state.activeAttack}:undefined}:e;
-      result.battle=reverse?{...raw,attack:raw.defense,defense:raw.attack,
-        activeAttack:raw.activeDefense,activeDefense:raw.activeAttack,
-        events:raw.events.map(swapEvent)}:raw;
-      result.battle.opponent=result.opponent;
-      result.eventSeq=match.battle.events.length;
-      result.myTurn=match.battle.nextSide===(reverse?'defense':'attack');
-    }
-    return result;
-  }
+  /** Refresh heartbeat and return lobby/match status for one player. */
   async function status(user){
     return locked(async()=>{
       await sweep();
       const id=byUser.get(user.id),match=id&&matches.get(id);
-      const heartbeatDirty=match?touch(match,user.id):false;
+      const heartbeatDirty=match?presencePolicy.touch(match,user.id):false;
       const notice=notices.get(user.id)||null;if(notice)notices.delete(user.id);
       if(heartbeatDirty||notice)await persist();
-      const online=await active(user.id),eligible=await qualified(user.id),players=[];
+      const online=await presencePolicy.lobbyActive(user.id),eligible=await qualified(user.id),players=[];
       if(online&&eligible&&!match){
         for(const other of users()){
-          if(other.id!==user.id&&await active(other.id)&&!byUser.has(other.id)&&await qualified(other.id))
+          if(other.id!==user.id&&await presencePolicy.lobbyActive(other.id)&&!byUser.has(other.id)&&await qualified(other.id))
             players.push({id:other.id,username:other.username});
         }
       }
@@ -116,54 +71,57 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
         players,match:match?view(match,user.id):null,notice};
     });
   }
+  /** Create a two-player invitation when both players are online and eligible. */
   async function invite(user,otherId){
     return locked(async()=>{
       await sweep();
       const other=users().find(u=>u.id===otherId);
-      if(!other||other.id===user.id||!await active(user.id)||!await active(other.id)||
+      if(!other||other.id===user.id||!await presencePolicy.lobbyActive(user.id)||!await presencePolicy.lobbyActive(other.id)||
         byUser.has(user.id)||byUser.has(other.id)||!await qualified(user.id)||!await qualified(other.id))
         throw error('This player is unavailable or not eligible.');
       const started=now();
-      const match={id:randomUUID(),players:[user.id,other.id],phase:'invited',
-        until:started+INVITE_MS,updatedAt:started,seen:[started,started],persistedAt:started,selection:[null,null],
+      const match={id:randomUUID(),players:[user.id,other.id],phase:challengeConfig.phases.INVITED,
+        until:started+challengeConfig.inviteMs,updatedAt:started,seen:[started,started],persistedAt:started,selection:[null,null],
         ready:[false,false],rosters:[null,null],battle:null};
       matches.set(match.id,match);byUser.set(user.id,match.id);byUser.set(other.id,match.id);
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Accept/decline an invitation; acceptance moves the match to team selection. */
   async function respond(user,accept){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
-      if(!match||match.phase!=='invited'||match.players[1]!==user.id)throw error('Invitation is no longer available.');
-      const heartbeatDirty=touch(match,user.id);
+      if(!match||match.phase!==challengeConfig.phases.INVITED||match.players[1]!==user.id)throw error('Invitation is no longer available.');
+      const heartbeatDirty=presencePolicy.touch(match,user.id);
       if(!accept){release(match,'Challenge declined by '+user.username+'.');await persist();return {ok:true};}
-      const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
+      const side=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-side);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. Please wait before accepting.');
       }
       const profiles=await Promise.all(match.players.map(profile));
-      if(profiles.some(p=>p?.dragons?.filter(d=>arena.eligible(p,d)).length<3)){
-        release(match,'A player no longer has three eligible dragons.');await persist();
+      if(profiles.some(p=>p?.dragons?.filter(d=>arena.eligible(p,d)).length<challengeConfig.teamSize)){
+        release(match,'A player no longer has '+challengeConfig.teamSize+' eligible dragons.');await persist();
         throw error('Dragon eligibility changed.');
       }
       match.rosters=profiles.map(p=>arena.summary(p,p.dragons.map(d=>d.id)));
-      match.phase='select';match.updatedAt=now();
+      match.phase=challengeConfig.phases.SELECT;match.updatedAt=now();
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Lock one player's team; when both are ready create the live battle state. */
   async function select(user,ids){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
-      if(!match||match.phase!=='select')throw error('Team selection has ended.');
-      const heartbeatDirty=touch(match,user.id);
-      const side=match.players.indexOf(user.id),opponent=presence(match,1-side);
+      if(!match||match.phase!==challengeConfig.phases.SELECT)throw error('Team selection has ended.');
+      const heartbeatDirty=presencePolicy.touch(match,user.id);
+      const side=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-side);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. Team selection is paused.');
       }
-      if(!Array.isArray(ids)||ids.length!==3||ids.some(id=>!Number.isInteger(id))||
-        new Set(ids).size!==3)throw error('Choose exactly three different dragons.',400);
+      if(!Array.isArray(ids)||ids.length!==challengeConfig.teamSize||ids.some(id=>!Number.isInteger(id))||
+        new Set(ids).size!==challengeConfig.teamSize)throw error('Choose exactly '+challengeConfig.teamSize+' different dragons.',400);
       const p=await profile(user.id);
       if(!ids.every(id=>p?.dragons?.some(d=>d.id===id&&arena.eligible(p,d))))
         throw error('Some selected dragons are no longer eligible.',400);
@@ -183,17 +141,18 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
         match.battle={opponent:users().find(u=>u.id===match.players[1])?.username,
           turn:1,nextSide:'attack',attack:fighters[0],defense:fighters[1],
           activeAttack:0,activeDefense:0,events:[],reward:{gold:0,food:0,gems:0}};
-        match.phase='battle';
+        match.phase=challengeConfig.phases.BATTLE;
       }
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Apply one optimistic-concurrency-checked live duel action and persist the resulting match. */
   async function turn(user,body){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));
-      if(!match||match.phase!=='battle')throw error('The duel has ended.');
-      const heartbeatDirty=touch(match,user.id);
-      const sideIndex=match.players.indexOf(user.id),opponent=presence(match,1-sideIndex);
+      if(!match||match.phase!==challengeConfig.phases.BATTLE)throw error('The duel has ended.');
+      const heartbeatDirty=presencePolicy.touch(match,user.id);
+      const sideIndex=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-sideIndex);
       if(opponent.state!=='online'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. The duel is paused.');
@@ -215,6 +174,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),heartbeatMs=
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Leave and release a Challenge for both participants. */
   async function leave(user){return locked(async()=>{
     const match=matches.get(byUser.get(user.id));
     if(match){release(match,user.username+' left the challenge.');await persist();}

@@ -4,7 +4,7 @@ const backActions=new Set(['shop-egg-back','book-back','dragon-back']);
 const savedModalScroll=new Map();
 
 export const $=id=>document.getElementById(id);
-export const game=()=>window.DragonGame;
+export const game=()=>window.DragonRuntime?.game?.()||window.DragonGame;
 export const read=id=>$(id)?.innerHTML||'';
 export const text=id=>$(id)?.textContent||'';
 const modalKey=modal=>modal.name+':'+String(modal.extra??'');

@@ -283,6 +283,8 @@ function App(){
     `${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
   const commerceModal=['shop','crops'].includes(ui?.modal?.name);
+  const arenaBattle=ui?.modal?.name==='arena'&&!!(ui.arena?.data?.battle||ui.arena?.presentation);
+  const challengeBattle=challenge?.match?.phase==='battle';
   const modalSection={"shop-egg-detail":"shop","dragon-detail":"dragons","book-detail":ui?.returnModal?.name||"book"};
   const activeSection=modalSection[ui?.modal?.name]||ui?.modal?.name;
   if(state.buildings.some(b=>b.type==='arena'&&!b.stored))buttons.push(['⚔️','Arena','open-arena']);
@@ -301,11 +303,11 @@ function App(){
     {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>{ui.mode.fromShop?'Back to Shop':'Cancel'}</Button></Space></Card></div>}
     <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={activeSection===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
       <span>{icon}</span><b>{label}</b>{action==='open-book'&&<small>{txt('collectionProgress')}</small>}</Button>)}</nav>
-    <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal':commerceModal?'commerce-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
+    <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal'+(arenaBattle?' battle-modal':''):commerceModal?'commerce-modal':['dragons','book'].includes(ui?.modal?.name)?'collection-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
       width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden styles={{body:{height:commerceModal?'min(66dvh, 560px)':undefined,maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>
       {ui?.modal?.name==='arena'?<ArenaView arena={ui.arena}/>:<LegacyContent html={read('sheetBody')}/>}
     </Modal>
-    <Modal className="game-modal arena-modal" title="🗡️ Thách đấu" open={challengeOpen||!!challenge?.match}
+    <Modal className={'game-modal arena-modal'+(challengeBattle?' battle-modal':'')} title="🗡️ Thách đấu" open={challengeOpen||!!challenge?.match}
       onCancel={()=>challenge?.match?challengeRequest('leave'):setChallengeOpen(false)} footer={null}
       width={1120} destroyOnHidden styles={{body:{maxHeight:'min(84dvh, 850px)',overflowY:'auto'}}}>
       <ChallengeView status={challenge} request={challengeRequest} refresh={challengeStatus}/>

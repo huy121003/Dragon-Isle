@@ -235,11 +235,6 @@ function StatusIcons({dragon}){
 export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   const presentation=arena.presentation;
   const [frame,setFrame]=useState(0);
-  const stageRef=useRef(null);
-  useEffect(()=>{
-    if(arena.pendingSkill||presentation?.id)
-      stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
-  },[arena.pendingSkill,presentation?.id]);
   useEffect(()=>{
     setFrame(0);
     if(!presentation)return;
@@ -261,7 +256,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>
     <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')} disabled={arena.busy||arena.animating}>Forfeit</Button></div>
     {arena.error&&<div className="arena-error">{arena.error}</div>}
-    <div ref={stageRef} className={'battle-stage '+(impact?'fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
+    <div className={'battle-stage '+(impact?'fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
       <div className="battle-crowd"/><div className="battle-sun"/><div className="battle-floor"/>
       <div className="battle-side player"><div className="battle-name"><b>{attacker.nickname} · Lv{attacker.level}</b><Stars count={attacker.stars||0}/>
         <span className="arena-element-row">{badges(attacker.species)}<RarityGem id={speciesOf(attacker.species)?.rarity} element={speciesOf(attacker.species)?.elements?.[0]}/></span></div>
@@ -284,6 +279,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
       </div>}
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
+    <div className="battle-details-scroll" role="region" aria-label="Skills, dragon switch and recent moves" tabIndex={0}>
     <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':challenge&&!myTurn?'Waiting for opponent…':'Turn: '+attacker.nickname}</h3>
       <p className="battle-matchup-key">▲ Strong ×1.5 · ▼ Weak ×0.75 · based on the opponent's primary element</p></div>
       <div className="battle-skill-grid">{skillOptions.map(skill=>{
@@ -315,7 +311,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')+
         (e.damage&&e.matchup===1.5?' · ▲ Strong':e.damage&&e.matchup===.75?' · ▼ Weak':'')+
         (e.damage&&e.critical?' · ✦ Crit':'')+
-        (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div>
+        (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div></div>
   </div>;
 }
 export default function ArenaView({arena}){

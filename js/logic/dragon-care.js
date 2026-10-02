@@ -6,6 +6,7 @@
  * Feed cost and care deltas come from shared rules/config. This module only
  * validates the action, mutates state and triggers presentation/save effects.
  */
+/** Validate and perform one feeding action, including food charge and progression. */
 function feedDragon(id){
   const d=dragonById(id);
   if(!d)return;

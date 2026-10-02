@@ -186,18 +186,19 @@ async function start(){
             const profile=await readJson(file,null),revision=Math.max(0,Math.floor(Number(profile?.serverRevision)||0));
             json(res,200,profile,{'X-Dragon-Save-Revision':String(revision)});return;
           }
-          const expectedRevision=Number(req.headers['x-dragon-save-revision']);
-          if(!Number.isSafeInteger(expectedRevision)||expectedRevision<0){
-            json(res,428,{error:'Thiếu phiên bản bản lưu. Hãy tải lại trang.',code:'SAVE_REVISION_REQUIRED'});return;
+          const revisionHeader=req.headers['x-dragon-save-revision'];
+          const expectedRevision=revisionHeader==null?null:Number(revisionHeader);
+          if(expectedRevision!=null&&(!Number.isSafeInteger(expectedRevision)||expectedRevision<0)){
+            json(res,400,{error:'Phiên bản bản lưu không hợp lệ.',code:'SAVE_REVISION_INVALID'});return;
           }
           const value=await readBody(req,12_000_000);
           if(!validSave(value)){json(res,400,{error:'Bản lưu không hợp lệ.'});return;}
-          let nextRevision=expectedRevision;
+          let nextRevision=0;
           try{
             await updateJson(file,current=>{
               if(!auth.current(req))unauthorized();
               const currentRevision=Math.max(0,Math.floor(Number(current?.serverRevision)||0));
-              if(currentRevision!==expectedRevision){
+              if(expectedRevision!=null&&currentRevision!==expectedRevision){
                 const error=new Error('Tiến trình đã thay đổi trên thiết bị khác. Hãy tải lại để lấy bản mới nhất.');
                 error.status=409;error.code='SAVE_CONFLICT';error.serverRevision=currentRevision;throw error;
               }

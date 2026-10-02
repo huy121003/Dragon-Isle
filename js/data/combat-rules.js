@@ -43,6 +43,17 @@
   }
 
   /**
+   * Convert combat stats to the single Combat Power value used for ranking.
+   * @param {{hp:number,attack:number,defense:number}} value - Stats after element, rarity, level and star bonuses.
+   * @returns {number} Stable integer power score for sorting and rival scaling.
+   */
+  function power(value){
+    const weights=config.powerWeights;
+    return Math.max(0,Math.round(value.hp*weights.hp+value.attack*weights.attack+
+      value.defense*weights.defense));
+  }
+
+  /**
    * Element multiplier for a skill against the defender's PRIMARY element.
    */
   function matchup(skillElement,defenderParts,chart){
@@ -91,5 +102,5 @@
       (1-statusValue(target,"damage_reduction"))));
   }
 
-  return {stats,matchup,skillPower,damage,battleDamage,effectiveMaxHp,statusValue};
+  return {stats,power,matchup,skillPower,damage,battleDamage,effectiveMaxHp,statusValue};
 });

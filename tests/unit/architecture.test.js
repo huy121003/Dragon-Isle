@@ -12,6 +12,7 @@ describe('architecture boundaries',()=>{
     expect(read('js/save.js').split('\n').length).toBeLessThan(100);
   });
   it('keeps network, persistence and migrations separated',()=>{
+    expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');
     expect(read('index.html')).toContain('js/persistence/migrations.js');
     expect(read('index.html')).toContain('js/persistence/save-client.js');

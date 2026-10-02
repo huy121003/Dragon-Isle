@@ -3,7 +3,7 @@ const path=require('node:path');
 const {createApp,createHttpServer}=require('./server/app.cjs');
 
 const root=__dirname;
-const dataDir=process.env.DRAGON_ISLE_DATA_DIR||path.join(root,'data');
+const dataDir=path.resolve(process.env.DRAGON_ISLE_DATA_DIR||path.join(root,'data'));
 const args=process.argv.slice(2);
 function option(name,fallback){const at=args.indexOf(name);return at>=0?args[at+1]:fallback;}
 const host=option('--host','127.0.0.1'),port=Number(option('--port','8080'));

@@ -302,3 +302,35 @@
     .island-list{display:grid;gap:10px}.island-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #b4d7d2;border-radius:16px;background:linear-gradient(120deg,#f9fff7,#ddf4eb)}.island-item.locked{background:#e9f0f0;color:#667b81}.island-symbol{display:grid;place-items:center;flex:none;width:48px;height:48px;border-radius:15px;background:var(--island-color);font-size:27px;box-shadow:0 4px 0 #27495933}.island-info{display:grid;gap:2px;min-width:0;flex:1}.island-info small{font-size:12px}.island-progress{height:6px;background:#b7d2ca;border-radius:9px;overflow:hidden;margin-top:3px}.island-progress span{display:block;height:100%;background:#39a77c}.island-actions{flex:none}@media(max-width:470px){.island-item{gap:7px;padding:9px}.island-symbol{width:38px;height:38px;font-size:21px}.island-actions .btn{font-size:11px;padding:7px}}
     @media(prefers-reduced-motion:reduce){.btn,.dock-btn,.shop-item[data-action]{transition:none}
       .mystery-egg.ready,.egg-icon.ready{animation:none}}
+
+/* Shop cards keep prices and names on one clean line at desktop and phone widths. */
+.special-shop-cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.special-shop-cards .shop-item{min-width:0;align-items:center}
+.special-shop-cards .shop-item>span:nth-child(2){flex:1;min-width:0}
+.special-shop-cards .shop-item strong{flex:none;margin-left:4px}
+.special-shop-cards .shop-item small{overflow-wrap:anywhere}
+/* Eight navigation entries scroll horizontally on narrow screens. */
+#dock{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+#dock::-webkit-scrollbar{display:none}
+.dock-btn{flex:0 0 clamp(76px,10vw,112px)}
+.daily-mission-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;padding:11px 13px;border-radius:13px;background:#eaf6f1;color:#37616a}
+.daily-mission-header p{margin:0}.daily-mission-header>span{font-size:12px;white-space:nowrap}
+.daily-mission-list{display:grid;gap:9px}
+.daily-mission-card{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px;border:1px solid #dce9e5;border-radius:14px;background:#fff}
+.daily-mission-card.claimed{background:#f1faf3;border-color:#b9ddc8}
+.daily-mission-card.locked{opacity:.65}
+.daily-mission-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#e6f4ef;font-size:22px}
+.daily-mission-copy{min-width:0;display:grid;gap:4px}
+.daily-mission-copy>b{color:#285b63}
+.daily-mission-copy>small{color:#70848b;font-size:11px}
+.daily-mission-copy .daily-mission-reward{color:#98702e}
+.daily-mission-track{height:7px;border-radius:8px;background:#e8efeb;overflow:hidden}
+.daily-mission-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#58b88e,#4b9caa)}
+.daily-mission-card>.btn{white-space:nowrap}
+@media(max-width:590px){
+  #dock .dock-btn{min-width:76px;flex:0 0 76px}
+  .daily-mission-header{align-items:flex-start;flex-direction:column;gap:4px}
+  .daily-mission-card{grid-template-columns:36px minmax(0,1fr);gap:8px}
+  .daily-mission-icon{width:34px;height:34px;font-size:19px}
+  .daily-mission-card>.btn{grid-column:2;justify-self:start;min-height:34px;padding:6px 10px}
+}

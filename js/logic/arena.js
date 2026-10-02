@@ -105,7 +105,8 @@ async function arenaTurn(action,number){
       Math.max(timing.battleFinishMinMs,events.length*timing.battleEventMs+timing.battleFinishPaddingMs));
     if(response.result){
       const profile=await arenaRequestSave();
-      state=migrateSave(profile);
+      state=profile;
+      saveGame();
       ui.arena.result=response.result;
       ui.arena.data=await arenaRequest('list');
       updateUI();
@@ -118,7 +119,6 @@ async function arenaTurn(action,number){
 }
 /** Reload the server profile after Arena rewards are committed server-side. */
 async function arenaRequestSave(){
-  const response=await fetch('/api/save',{headers:{'X-Dragon-Account':currentAccount.id},cache:'no-store'});
-  if(!response.ok)throw new Error('Cannot load the reward. Reload the page.');
-  return response.json();
+  // Reload through the save client so its optimistic-concurrency revision stays current.
+  return loadGameFromServer();
 }

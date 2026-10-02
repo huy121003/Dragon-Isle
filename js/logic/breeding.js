@@ -44,10 +44,10 @@ function waitingBredEggForCave(caveId){
   return state.eggs.find(function(egg){return egg.source==="breed"&&!egg.hatcheryId&&
     (egg.caveId===caveId||!egg.caveId);});
 }
-/** Return whether a dragon is locked by an unfinished breeding timer. */
+/** Keep both parents locked until their ready result has been collected from the Cave. */
 function dragonBusy(id){
   return state.buildings.some(function(b){
-    return isBreedingCave(b)&&b.breeding&&b.breeding.readyAt>Date.now()&&
+    return isBreedingCave(b)&&b.breeding&&
       (b.breeding.fatherId===id||b.breeding.motherId===id);
   });
 }
@@ -84,8 +84,15 @@ function collectBreeding(caveId){
   if(!isBreedingCave(cave)||!cave.breeding||cave.breeding.readyAt>Date.now()){
     toast("Breeding is not finished.");return;
   }
+  if(!freeHatchery()){
+    toast("The Hatchery is full. Free a nest before collecting this bred egg.");return;
+  }
   const breeding=cave.breeding;
   const egg=addEgg(breeding.result,"breed",[breeding.fatherSpecies,breeding.motherSpecies],cave.id);
+  if(!egg.hatcheryId){
+    state.eggs=state.eggs.filter(function(item){return item.id!==egg.id;});
+    toast("No free Hatchery nest is available. The breeding result is still waiting in the Cave.");return;
+  }
   cave.breeding=null;
   gainPlayerXP(window.DragonConfig.progression.xpSources.breed);
   toast(egg.hatcheryId?"The bred egg entered the Hatchery.":"The Hatchery is full; the bred egg is waiting in Inventory.");

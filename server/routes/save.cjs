@@ -3,6 +3,7 @@ const {json,readBody,unauthorized}=require('../http.cjs');
 const {readJson,updateJson}=require('../store.cjs');
 const {validSave}=require('../validation.cjs');
 const systemConfig=require('../../js/config/system.js');
+const missions=require('../daily-missions.cjs');
 function createSaveRoutes({auth,profilesDir}){
   return async function handle(req,res,pathname){
     if(pathname!=='/api/save'||!['GET','PUT'].includes(req.method))return false;
@@ -13,7 +14,14 @@ function createSaveRoutes({auth,profilesDir}){
     }
     const file=path.join(profilesDir,user.id+'.json');
     if(req.method==='GET'){
-      const profile=await readJson(file,null),revision=Math.max(0,Math.floor(Number(profile?.serverRevision)||0));
+      let profile=await readJson(file,null);
+      if(profile){
+        const daily=missions.ensureState(profile.dailyMissions);
+        if(JSON.stringify(profile.dailyMissions)!==JSON.stringify(daily))
+          profile=await updateJson(file,current=>({...current,dailyMissions:daily}));
+        profile={...profile,dailyMissions:{...profile.dailyMissions,nextResetAt:missions.nextResetAt()}};
+      }
+      const revision=Math.max(0,Math.floor(Number(profile?.serverRevision)||0));
       json(res,200,profile,{'X-Dragon-Save-Revision':String(revision)});return true;
     }
     const header=req.headers['x-dragon-save-revision'],expected=header==null?null:Number(header);
@@ -22,9 +30,9 @@ function createSaveRoutes({auth,profilesDir}){
     }
     const value=await readBody(req,systemConfig.save.maxBytes);
     if(!validSave(value)){json(res,400,{error:'Bản lưu không hợp lệ.'});return true;}
-    let nextRevision=0;
+    let nextRevision=0,savedProfile=null;
     try{
-      await updateJson(file,current=>{
+      savedProfile=await updateJson(file,current=>{
         if(!auth.current(req))unauthorized();
         const revision=Math.max(0,Math.floor(Number(current?.serverRevision)||0));
         if(expected!=null&&revision!==expected){
@@ -32,10 +40,11 @@ function createSaveRoutes({auth,profilesDir}){
           error.status=409;error.code='SAVE_CONFLICT';error.serverRevision=revision;throw error;
         }
         const bank=current?.arenaBank||{gold:0,food:0,gems:0},claimed=value.arenaClaimed||{gold:0,food:0,gems:0};
+        const dailyMissions=missions.trackSave(current?.dailyMissions,current,value,Date.now());
         nextRevision=revision+1;
         return {...value,...Object.fromEntries(['gold','food','gems'].map(key=>[
           key,Math.max(0,(Number(value[key])||0)+Math.max(0,(bank[key]||0)-(Number(claimed[key])||0)))])),
-          arenaBank:bank,arenaClaimed:bank,serverRevision:nextRevision,savedAt:Date.now()};
+          dailyMissions,arenaBank:bank,arenaClaimed:bank,serverRevision:nextRevision,savedAt:Date.now()};
       });
     }catch(error){
       if(error.code==='SAVE_CONFLICT'){
@@ -43,7 +52,8 @@ function createSaveRoutes({auth,profilesDir}){
       }
       throw error;
     }
-    json(res,200,{ok:true,serverRevision:nextRevision},{'X-Dragon-Save-Revision':String(nextRevision)});
+    json(res,200,{ok:true,serverRevision:nextRevision,dailyMissions:{...savedProfile.dailyMissions,
+      nextResetAt:missions.nextResetAt()}},{'X-Dragon-Save-Revision':String(nextRevision)});
     return true;
   };
 }

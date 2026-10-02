@@ -1,6 +1,6 @@
 "use strict";
 
-/* LOGIC: Trứng tự tìm ô ấp còn trống; trứng dư nằm trong kho chờ ô tiếp theo. */
+/* LOGIC: Eggs use free Hatchery nests first; shop eggs can wait in Inventory. */
 /** Find one egg in current save state by numeric ID. */
 function eggById(id){return state.eggs.find(function(egg){return egg.id===id;});}
 /** Return all eggs currently occupying nests in one Hatchery. */
@@ -24,7 +24,7 @@ function assignIncubation(egg,house){
   egg.readyAt=egg.startedAt+hatchingSeconds(DATA.species[egg.species])*1000;
   return true;
 }
-/** Create an egg record, enqueue it, then auto-assign the next free Hatchery nest. */
+/** Create an egg, enqueue it, then assign any available Hatchery nest. Breeding checks space before calling this. */
 function addEgg(speciesId,source,parents,caveId){
   const egg={id:state.nextId++,species:speciesId,source:source,parents:parents||null,caveId:caveId||null,
     hatcheryId:null,startedAt:0,readyAt:0};

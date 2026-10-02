@@ -9,6 +9,7 @@ async function startGame(){
   if(!await authenticate())return;
   try{state=await loadGameFromServer();}
   catch(error){showAuthMessage(error.message);return;}
+  ensureDailyMissions();
 
   /* SAVE: Bản localStorage cũ bị xóa và không bao giờ tự ghép vào hồ sơ tài khoản. */
   try{window.localStorage.removeItem(SAVE_KEY);}catch(error){}

@@ -112,7 +112,8 @@ function updateInspector(){
       duration(upgradeSeconds(b))+'</button>';
   if(!b.upgradeEnds){
     body+='<button class="btn" data-action="move" data-id="'+b.id+'">Move</button>';
-    if(b.type==="habitat")body+='<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
+    if(b.type==="habitat")body+='<button class="btn" data-action="store" data-id="'+b.id+'"'+
+      (occupants(b).length?' disabled title="Move every dragon out before storing this Habitat"':'')+'>Store</button>'+
       (!occupants(b).length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell</button>':'');
   }
   body+='</div></div>';

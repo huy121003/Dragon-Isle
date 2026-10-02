@@ -21,6 +21,7 @@ function renderBreeding(id){
   dom.title.textContent=(premium?'✧ ':'💞 ')+buildingName(cave);
   if(cave.breeding){
     const ready=cave.breeding.readyAt<=Date.now();
+    const hatcheryFull=ready&&!freeHatchery();
     const father=dragonById(cave.breeding.fatherId),mother=dragonById(cave.breeding.motherId);
     const parents=[father,mother].map(function(d,i){
       const id=d?d.species:(i?cave.breeding.motherSpecies:cave.breeding.fatherSpecies);
@@ -30,13 +31,14 @@ function renderBreeding(id){
         '<span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></div>';
     }).join('<strong class="breed-heart">♥</strong>');
     dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · '+Math.round((1-breedingConfig.premium.timeFactor)*100)+'% faster · '+Math.round((breedingConfig.premium.rareFactor-1)*100)+'% higher relative chance for 3+ elements. ':'')+
-      'The bred egg enters an available Hatchery nest.</div>'+
+      (hatcheryFull?'The Hatchery is full. Free a nest to collect this result; it will stay here until then.':'The bred egg enters an available Hatchery nest.')+'</div>'+
       '<div class="panel '+(premium?'premium-breeding':'')+'"><div class="breed-parents">'+parents+'</div>'+
       (ready?'<div class="breed-ready-egg" aria-label="Bred egg ready"><span class="breed-egg-art">'+
         eggShellHtml({species:cave.breeding.result},true)+'</span></div>':'')+'<p>'+
       (ready?"Breeding finished. The egg is ready.":"Breeding.")+'</p>'+
       inlineTimer(cave.breeding.startedAt,cave.breeding.readyAt)+
-      (ready?'<button class="btn good" data-action="collect-breeding" data-id="'+id+'">Collect bred egg</button>':
+      (ready?'<button class="btn good" data-action="collect-breeding" data-id="'+id+'"'+
+        (hatcheryFull?' disabled title="Free a Hatchery nest before collecting"':'')+'>Collect bred egg</button>':
       '<button class="btn primary" data-action="skip-timer" data-kind="breed" data-id="'+id+'">♦ '+
         gemSkipCost(cave.breeding.readyAt,Date.now())+' Skip</button>')+'</div>';
     renderDragonPortraits();

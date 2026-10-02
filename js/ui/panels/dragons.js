@@ -55,7 +55,8 @@ function renderHabitat(id){
   else if(b.level<maxBuildingLevel(b))html+='<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
     money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems</button>';
   if(!b.upgradeEnds)html+='</div><div class="actions"><button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
-    '<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
+    '<button class="btn" data-action="store" data-id="'+b.id+'"'+
+    (ds.length?' disabled title="Move every dragon out before storing this Habitat"':'')+'>Store</button>'+
     (!ds.length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell Habitat</button>':'')+'</div>'+
     '</div><h3>Dragons in Habitat · '+ds.length+'</h3><div class="cards">';
   else html+='</div></div><h3>Dragons in Habitat · '+ds.length+'</h3><div class="cards">';

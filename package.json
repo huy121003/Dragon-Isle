@@ -10,7 +10,7 @@
     "economy:audit": "node scripts/economy-audit.cjs",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "test:legacy": "node tests/session-regression.cjs && node tests/auth-session-save-smoke.cjs && node tests/reconnect-ui-smoke.mjs && node tests/challenge-presence-smoke.cjs && node tests/challenge-presence-ui-smoke.mjs && node tests/combat-smoke.cjs && node tests/update-smoke.cjs && node tests/double-smoke.cjs && node tests/challenge-smoke.cjs && node tests/server-smoke.cjs && node tests/arena-ui-smoke.mjs"
+    "test:legacy": "node tests/session-regression.cjs && node tests/auth-session-save-smoke.cjs && node tests/reconnect-ui-smoke.mjs && node tests/challenge-presence-smoke.cjs && node tests/challenge-presence-ui-smoke.mjs && node tests/combat-smoke.cjs && node tests/update-smoke.cjs && node tests/daily-missions-smoke.cjs && node tests/double-smoke.cjs && node tests/challenge-smoke.cjs && node tests/server-smoke.cjs && node tests/arena-ui-smoke.mjs"
   },
   "dependencies": {
     "antd": "6.6.5",

@@ -8,9 +8,7 @@ function storeBuilding(id){
   const b=buildingById(id);
   if(!b||b.stored)return;
   if(b.type!=="habitat"||b.upgradeEnds){toast("Only Habitats can be stored.");return;}
-  if(b.type==="habitat"&&occupants(b).some(function(d){return dragonBusy(d.id);})){
-    toast("Wait for breeding dragons before storing this Habitat.");return;
-  }
+  if(occupants(b).length){toast("Move every dragon out of this Habitat before storing it.");return;}
   advanceWorld(Date.now());
   b.stored=true;ui.selection=null;
   toast(buildingName(b)+" was stored. Dragons stop producing gold and gems while it is stored.");

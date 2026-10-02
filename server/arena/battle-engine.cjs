@@ -11,7 +11,9 @@ const arenaConfig=require('../../js/config/arena.js');
 const combatConfig=require('../../js/config/combat.js');
 const progressionConfig=require('../../js/config/progression.js');
 
-function createBattleEngine({catalog,game,rng=Math.random}){
+function createBattleEngine({catalog,game,rng=()=>Math.random()}){
+  // Use a wrapper instead of capturing Math.random itself so test/runtime overrides
+  // made after service creation still affect the default RNG, matching legacy behavior.
   const elements=catalog.elements,rarities=catalog.rarities;
 
   /** Resolve element slots/rarity for a catalog or legacy species id. */

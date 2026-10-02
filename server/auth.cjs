@@ -25,7 +25,7 @@ async function createAuth(dataDir){
   const usersPath=path.join(dataDir,'users.json'),sessionsPath=path.join(dataDir,'sessions.json');
   let users=await readJson(usersPath,[]),sessions=await readJson(sessionsPath,[]);
   if(!Array.isArray(users)||!Array.isArray(sessions))throw new Error('Invalid account store');
-  /* AUTH: Kho từ bản trước chưa has role; chỉ người used đầu tiên được cấp quản trị. */
+  /* AUTH: Kho dữ liệu cũ chưa có role; chỉ tài khoản đầu tiên được cấp quyền quản trị. */
   if(users.length&&!users.some(user=>user.role==='admin')){
     users[0].role='admin';await writeJson(usersPath,users);
   }

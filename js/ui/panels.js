@@ -485,6 +485,8 @@ function renderBreeding(id){
   if(father.id===mother.id)html+='<div class="note">Choose two different dragons.</div>';
   else{
     const options=breedingOptions(father,mother,cave);
+    const breedTimes=options.map(option=>breedingSeconds(DATA.species[option.id],cave.level,cave,[father,mother]));
+    const minBreed=Math.min(...breedTimes),maxBreed=Math.max(...breedTimes);
     const tiers=[['1 element',s=>s.elements.length===1],['2 elements',s=>s.elements.length===2],
       ['3 elements',s=>s.elements.length===3],
       ['4 elements',s=>s.elements.length===4&&s.rarity!=="transcendent"],
@@ -499,6 +501,8 @@ function renderBreeding(id){
     for(let i=0;i<remainder;i++)totals[fractional[i]]++;
     html+='<section class="breed-probabilities"><h3>Offspring probabilities</h3>'+
       '<p class="muted">Chance for the selected parents in this '+esc(buildingName(cave))+'. Each breed makes one roll. A tier shows the combined chance of all its possible dragons.</p>'+
+      '<div class="note">Estimated breeding time for this parent combination: <b>'+duration(minBreed)+
+      (maxBreed!==minBreed?' – '+duration(maxBreed):'')+'</b>, depending on the offspring tier and elements.</div>'+
       '<div class="breed-chances">'+totals.map(function(n,i){return '<div class="breed-chance '+
         (n?'':'unavailable')+'"><small>'+tiers[i][0]+'</small><b>'+(n/100).toFixed(2)+
         '%</b><span>'+byTier[i].length+' possible '+(byTier[i].length===1?'dragon':'dragons')+'</span></div>';}).join('')+'</div></section>'+

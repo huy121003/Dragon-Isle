@@ -44,6 +44,13 @@ function guideStart(){
 }
 function guideDragons(){
   const level=DATA.progression.skillUnlockLevels,academy=DATA.progression.academyCaps;
+  const academyRows=DATA.progression.academyCaps.map((cap,index)=>{
+    if(index===0)return ['1',String(cap),'—','—','—','—','Có sẵn sau khi xây'];
+    const cost=academyUpgradeCost(index);
+    return [String(index+1),String(cap),'Lv'+cost.playerLevel,
+      cost.requiredDragons+' rồng Lv'+cost.requiredDragonLevel+'+',
+      money(cost.gold),money(cost.food),money(cost.gems)+' · '+duration(DATA.upgradeTimes.academy[index-1])];
+  });
   const starRows=DATA.progression.starUpgrades.map((rule,index)=>[
     String(index+1)+' ★','+'+((index+1)*5)+'%',String(rule.dragons)+' rồng cùng giống, Lv'+rule.level+'+',
     money(rule.gold),money(rule.food),money(rule.gems)]);
@@ -56,7 +63,10 @@ function guideDragons(){
     'Bốn vị trí skill mở lần lượt ở level '+level.join(', ')+'. Skill thường dựa trên phần trăm tấn công gốc; skill hệ dùng tấn công gốc cộng phần sát thương hệ.',
     'Giới hạn level mặc định là 30; Dragon Academy nâng giới hạn lần lượt thành '+academy.join(', ')+'. Level tối đa của rồng là '+DATA.progression.dragonMaxLevel+'.',
     'Double Element có ba skill hệ và một special skill của hệ lặp. Special có hồi chiêu; skill hồi máu hoặc phòng thủ thuần không gây sát thương.'
-  ])+'<h3>Nâng sao rồng</h3><p>Mỗi rồng bắt đầu với ☆☆☆☆☆. Mỗi sao cộng thêm 5% vào HP, tấn công và giáp theo chỉ số ở level hiện tại; tối đa ★★★★★ (+25%). Nâng sao không tăng sản lượng vàng hoặc gem.</p>'+
+  ])+'<h3>Dragon Academy</h3>'+
+    guideTable(['Cấp Academy','Cap rồng','Player Lv','Rồng sở hữu yêu cầu','Gold','Food','Gem · thời gian'],academyRows)+
+    '<p class="muted">Rồng dùng làm điều kiện Academy chỉ cần đang thuộc sở hữu và đạt level yêu cầu; không bị tiêu hao khi nâng cấp. Muốn nâng cấp tiếp phải phát triển đủ số rồng chạm cap của cấp Academy hiện tại.</p>'+
+    '<h3>Nâng sao rồng</h3><p>Mỗi rồng bắt đầu với ☆☆☆☆☆. Mỗi sao cộng thêm 5% vào HP, tấn công và giáp theo chỉ số ở level hiện tại; tối đa ★★★★★ (+25%). Nâng sao không tăng sản lượng vàng hoặc gem.</p>'+
     guideTable(['Sao mới','Chỉ số','Rồng hiến tế','Vàng','Thức ăn','Gem'],starRows)+
     '<p>Rồng hiến tế phải cùng đúng giống, 0 sao, không đang lai và đạt level yêu cầu. Game chọn rồng chưa vào Chuồng trước, sau đó chọn level thấp nhất đủ điều kiện. Rồng được chọn sẽ mất vĩnh viễn; rồng nâng sao vẫn giữ nguyên level và Chuồng.</p>'+
     '<div class="guide-callout">Vào Dragons để xem thức ăn, skill, chỉ số và nâng sao của từng rồng; Dragon Book ghi thông tin giống đã khám phá.</div>';

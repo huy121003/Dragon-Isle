@@ -39,6 +39,20 @@ describe('architecture boundaries',()=>{
     expect(main).not.toContain('window.DragonGame={');
   });
 
+  it('keeps building art primitives and type renderers separated',()=>{
+    const index=read('index.html');
+    const router=read('js/render/building-art.js');
+    expect(router.split('\n').length).toBeLessThan(80);
+    for(const file of ['building-primitives','habitat-art','facility-art','breeding-art','building-art'])
+      expect(index).toContain('js/render/'+file+'.js');
+    expect(read('js/render/building-primitives.js')).toContain('function structurePlinth');
+    expect(read('js/render/habitat-art.js')).toContain('function paintHabitatBiome');
+    expect(read('js/render/facility-art.js')).toContain('function paintHatchery');
+    expect(read('js/render/breeding-art.js')).toContain('function paintPremiumCave');
+    expect(router).toContain('function drawBuilding');
+    expect(router).not.toContain('function paintHabitatBiome');
+  });
+
   it('keeps network, persistence and migrations separated',()=>{
     expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');

@@ -49,6 +49,10 @@ function flushServerSave(){
       }
       serverSaveRevision=Math.max(serverSaveRevision+1,
         Math.floor(Number(body.serverRevision)||serverSaveRevision+1));
+      if(body.dailyMissions&&state){
+        state.dailyMissions=body.dailyMissions;
+        window.DragonRuntime?.emit?.('ui');
+      }
       serverWarningShown=false;
       window.DragonConnectionApi?.connected();
     }
@@ -84,4 +88,3 @@ window.DragonConnectionApi?.configure({
   setReadOnly:function(value){saveReadOnly=!!value;},
   flush:flushServerSave
 });
-

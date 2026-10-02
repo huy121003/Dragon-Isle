@@ -5,6 +5,7 @@ const arenaConfig=require('../js/config/arena.js');
 const progressionConfig=require('../js/config/progression.js');
 const {createEligibility}=require('./arena/eligibility.cjs');
 const {createBattleEngine}=require('./arena/battle-engine.cjs');
+const dailyMissions=require('./daily-missions.cjs');
 /**
  * Create the authoritative Arena service.
  * @param {object} options
@@ -146,6 +147,8 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     if(defenderResult)await updateJson(file(defenderResult.id),current=>({...(current||{}),
       wins:(current?.wins||0)+(defenderResult.won?1:0),
       losses:(current?.losses||0)+(defenderResult.won?0:1)}));
+    if(response.result)await updateJson(profile(user.id),current=>({...current,
+      dailyMissions:dailyMissions.addProgress(current.dailyMissions,'arena',1)}));
     if(award)await credit(user,award);
     return response;
   }

@@ -14,6 +14,7 @@ function newGame(){
     gold:starting.gold,food:starting.food,gems:starting.gems,expansions:0,land:land,regions:[],unlockedIslands:1,
     habitatPurchases:{fire:1},
     eggs:[],discovered:["fire"],recipes:[],
+    dailyMissions:{dayKey:"",progress:{},claimed:[]},
     buildings:[{id:1,type:"habitat",element:"fire",x:startX+11,y:startY+11,level:1,stored:false,
       storedGold:0,storedGems:0,purchaseCost:buildingBalance.habitat.cost,
       upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null},

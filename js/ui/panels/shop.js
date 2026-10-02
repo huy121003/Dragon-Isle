@@ -5,7 +5,6 @@ function renderShop(){
   dom.title.textContent="🏪 Shop";
   const economy=window.DragonConfig.economy,progression=window.DragonConfig.progression;
   const buildings=window.DragonConfig.buildings,breeding=window.DragonConfig.breeding;
-  const dragons=window.DragonConfig.dragons,farming=window.DragonConfig.farming;
   let html='<div class="tabs">'+
     [['special','Special buildings'],['habitats','Habitats'],['decorations','Decorations'],
       ['eggs','Eggs'],['supplies','Resources'],['save','💾 Data']]
@@ -26,15 +25,15 @@ function renderShop(){
     html+='<div class="note">Chọn công trình để đặt trên đảo. Vàng hoặc gem chỉ bị trừ khi đặt thành công; có thể quay lại Shop trước khi đặt.</div><div class="cards special-shop-cards">';
     const farms=farmCount(),limit=farmLimit(state.player.level);
     html+='<button class="shop-item" data-action="choose-build" data-type="farm"'+(farms>=limit?' disabled':'')+'><span class="shop-icon">🌱</span>'+
-      '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every '+progression.farms.everyLevels+' player levels · '+farming.crops.length+' crop products · 9×6 tiles</small></span><strong>● '+money(buildings.definitions.farm.cost)+'</strong></button>'+
+      '<span><b>Farm · '+farms+'/'+limit+'</b><small>More farms every '+progression.farms.everyLevels+' levels · 9×6</small></span><strong>● '+money(buildings.definitions.farm.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="cave"'+(state.buildings.some(b=>b.type==="cave")?' disabled':'')+'><span class="shop-icon">💞</span>'+
       '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● '+money(buildings.definitions.cave.cost)+'</strong></button>'+
       '<button class="shop-item premium-cave-offer" data-action="choose-build" data-type="premiumCave"'+
       (state.buildings.some(b=>b.type==="premiumCave")?' disabled':'')+'><span class="shop-icon">✧</span>'+
-      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>One only · 12×9 tiles · '+Math.round((1-breeding.premium.timeFactor)*100)+'% faster · '+Math.round((breeding.premium.rareFactor-1)*100)+'% more chance for 3+ elements</small></span>'+
+      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>'+Math.round((1-breeding.premium.timeFactor)*100)+'% faster · +'+Math.round((breeding.premium.rareFactor-1)*100)+'% chance for rare results</small></span>'+
       '<strong>♦ '+money(buildings.definitions.premiumCave.cost)+'</strong></button>'+
-      '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from '+dragons.initialLevelCapWithoutAcademy+' to '+progression.dragonMaxLevel+' across '+buildings.definitions.academy.maxLevel+' Academy levels</small></span><strong>● '+money(buildings.definitions.academy.cost)+'</strong></button>'+
-      '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● '+money(buildings.definitions.arena.cost)+'</strong></button>'+
+      '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>Raise dragon level cap · '+buildings.definitions.academy.maxLevel+' upgrades</small></span><strong>● '+money(buildings.definitions.academy.cost)+'</strong></button>'+
+      '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>3 vs 3 dragon battles · 12×12</small></span><strong>● '+money(buildings.definitions.arena.cost)+'</strong></button>'+
       '';
     html+='</div>';
   }else if(ui.shopTab==="decorations"){

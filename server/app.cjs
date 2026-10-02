@@ -9,6 +9,7 @@ const {createArenaRoutes}=require('./routes/arena.cjs');
 const {createChallengeRoutes}=require('./routes/challenge.cjs');
 const {createAuthRoutes}=require('./routes/auth.cjs');
 const {createSaveRoutes}=require('./routes/save.cjs');
+const {createDailyMissionRoutes}=require('./routes/daily-missions.cjs');
 const {createAdminRoutes}=require('./routes/admin.cjs');
 const {createStaticHandler}=require('./static.cjs');
 
@@ -27,6 +28,7 @@ async function createApp({root,dataDir,contentDir=path.join(root,'data'),secureC
     createChallengeRoutes({auth,challenge}),
     createAuthRoutes({auth,challenge,secureCookies,limited}),
     createAdminRoutes({auth,challenge,profilesDir}),
+    createDailyMissionRoutes({auth,profilesDir}),
     createSaveRoutes({auth,profilesDir})
   ];
   const serveStatic=createStaticHandler({root,dataDir:contentDir});

@@ -28,7 +28,7 @@ function refreshCountdowns(){
       finishedInSheet=true;
     }
   });
-  if(finishedInSheet&&ui.modal&&["hatchery","breeding","crops"].includes(ui.modal.name)){
+  if(finishedInSheet&&ui.modal&&["hatchery","breeding","crops","daily-missions"].includes(ui.modal.name)){
     const scroll=dom.body.scrollTop;renderModal();dom.body.scrollTop=scroll;
   }
 }
@@ -74,6 +74,7 @@ function beginMode(mode){
   closeModal();
 }
 function updateUI(){
+  if(typeof ensureDailyMissions==="function")ensureDailyMissions();
   updateHeader();updateInspector();updateTimerBar();
   if(ui.modal){
     const scroll=dom.body.scrollTop;
@@ -83,7 +84,7 @@ function updateUI(){
 }
 /* UI: Đồng bộ mục được chọn ở thanh điều hướng để biết người chơi đang ở đâu. */
 function syncDock(){
-  const section={shop:"open-shop",dragons:"open-dragons",book:"open-book",inventory:"open-inventory",islands:"open-islands",guide:"open-guide",arena:"open-arena"};
+  const section={shop:"open-shop",dragons:"open-dragons",book:"open-book",inventory:"open-inventory",islands:"open-islands",guide:"open-guide",arena:"open-arena","daily-missions":"open-daily-missions"};
   const arenaButton=document.getElementById("arenaDockButton");
   if(arenaButton)arenaButton.hidden=!state?.buildings.some(b=>b.type==="arena"&&!b.stored);
   const name=ui.modal&&ui.modal.name;

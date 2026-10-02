@@ -46,6 +46,8 @@ function handleAction(button){
     case "focus-island":focusIsland(id);break;
     case "unlock-island":unlockIsland(id);break;
     case "open-arena":openModal("arena");loadArena();break;
+    case "open-daily-missions":openModal("daily-missions");refreshDailyMissions();break;
+    case "claim-daily-mission":claimDailyMission(button.dataset.id);break;
     case "arena-toggle":arenaToggle(button.dataset.side,id);break;
     case "arena-save":arenaSaveTeam();break;
     case "arena-fight":arenaFight(button.dataset.opponent);break;

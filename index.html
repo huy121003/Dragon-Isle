@@ -59,6 +59,7 @@
     <div id="placementBar"><span id="placementText"></span><button class="btn danger" data-action="cancel-mode">Cancel</button></div>
   </main>
   <nav id="dock" aria-label="Main menu">
+    <button class="dock-btn" data-action="open-daily-missions"><span>📅</span>Daily Missions</button>
     <button class="dock-btn" data-action="open-islands"><span>🗺️</span>Islands</button>
     <button class="dock-btn" data-action="open-shop"><span>🏪</span>Shop</button>
     <button class="dock-btn" data-action="open-dragons"><span>🐲</span>Dragons</button>
@@ -66,7 +67,7 @@
     <button class="dock-btn" data-action="open-inventory"><span>🎒</span>Inventory</button>
     <button class="dock-btn" data-action="open-guide"><span>📚</span>Hướng dẫn</button>
     <button class="dock-btn" id="arenaDockButton" data-action="open-arena" hidden><span>⚔️</span>Arena</button>
-  </nav>
+</nav>
 </div>
 <div id="overlay" role="dialog" aria-modal="true" aria-label="Game dialog">
   <div id="sheet"><div class="sheet-head"><h2 id="sheetTitle" tabindex="-1"></h2><button class="btn icon" data-action="close-modal" aria-label="Close">×</button></div><div class="sheet-body" id="sheetBody"></div></div>
@@ -75,6 +76,7 @@
 <div id="react-root"></div>
   <script defer src="js/data/db-cache.js"></script>
   <script defer src="js/config/system.js"></script>
+  <script defer src="js/config/daily-missions.js"></script>
   <script defer src="js/config/progression.js"></script>
   <script defer src="js/config/economy.js"></script>
   <script defer src="js/config/buildings.js"></script>
@@ -121,6 +123,7 @@
   <script defer src="js/logic/skills.js"></script>
   <script defer src="js/logic/stars.js"></script>
   <script defer src="js/logic/arena.js"></script>
+  <script defer src="js/logic/daily-missions.js"></script>
   <script defer src="js/render/world-geometry.js"></script>
   <script defer src="js/render/world.js"></script>
   <script defer src="js/render/dragon-anatomy.js"></script>
@@ -147,6 +150,7 @@
   <script defer src="js/ui/panels/breeding.js"></script>
   <script defer src="js/ui/panels/book.js"></script>
   <script defer src="js/ui/panels/system.js"></script>
+  <script defer src="js/ui/panels/daily-missions.js"></script>
   <script defer src="js/ui/panels.js"></script>
   <script defer src="js/ui/guide/shared.js"></script>
   <script defer src="js/ui/guide/start.js"></script>

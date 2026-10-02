@@ -172,6 +172,13 @@ check('new accounts receive starter gold and food without changing existing save
  assert.equal(restored.food,37);
 });
 check('only habitats can be sold or stored and ready eggs block the next turn',()=>{
+  lifecycle.run('state=newGame();storeBuilding(1)');
+  assert.equal(lifecycle.run('buildingById(1).stored'),false,
+    'A Habitat containing its assigned dragon cannot be stored');
+  lifecycle.run('state=newGame();state.buildings.push({...buildingById(1),id:90,x:760,y:700});'+
+    'state.dragons[0].habitatId=90;storeBuilding(1)');
+  assert.equal(lifecycle.run('buildingById(1).stored'),true,
+    'An empty Habitat remains storable');
   lifecycle.run('state=newGame();state.buildings.push({id:91,type:"farm",x:740,y:704,level:1,stored:false});'+
     'storeBuilding(91);sellBuilding(91);');
   assert(lifecycle.run('!!buildingById(91)&&!buildingById(91).stored'));
@@ -198,6 +205,47 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
   lifecycle.run('renderBreeding(92)');
   assert(lifecycle.element('sheetBody').innerHTML.includes('previous bred egg'));
   assert(!lifecycle.element('sheetBody').innerHTML.includes('data-action="start-breeding"'));
+});
+check('breeding result stays in its cave while the Hatchery is full',()=>{
+ const g=lifecycle;
+ g.run('state=newGame();buildingById(3).level=5;for(let i=0;i<5;i++)addEgg("fire","shop");'+
+   'state.buildings.push({id:92,type:"cave",x:740,y:700,level:1,stored:false,breeding:{fatherId:2,motherId:77,'+
+   'fatherSpecies:"fire",motherSpecies:"water",result:"fire",startedAt:1,readyAt:Date.now()-1}});'+
+   'state.dragons.push({...state.dragons[0],id:77,species:"water",nickname:"Water"});collectBreeding(92)');
+ assert.equal(g.run('state.eggs.length'),5,'A full Hatchery must not create an Inventory egg');
+ assert(g.run('!!buildingById(92).breeding'),'The ready result remains in its Breeding Cave');
+ assert.equal(g.run('dragonBusy(2)'),true,'Parents remain locked until the result is collected');
+ g.run('state.eggs.shift();collectBreeding(92)');
+ assert.equal(g.run('state.eggs.length'),5);
+ assert.equal(g.run('state.eggs.at(-1).hatcheryId'),3,'The collected bred egg starts in the freed nest');
+ assert.equal(g.run('buildingById(92).breeding'),null);
+ assert.equal(g.run('dragonBusy(2)'),false);
+});
+check('daily mission panel renders the server-provided progress and reset time',()=>{
+ const g=lifecycle;
+ g.run('state=newGame();state.dailyMissions={dayKey:"server",progress:{hatch:1,collectGold:1000},'+
+   'claimed:[],nextResetAt:Date.now()+3600000};openModal("daily-missions")');
+ const html=g.element('sheetBody').innerHTML;
+ assert(html.includes('Daily Missions')||g.element('sheetTitle').textContent.includes('Daily Missions'));
+ assert(html.includes('1 / 1')&&html.includes('1,000 / 1,000'));
+ assert(html.includes('Resets at'));
+});
+check('mission action handlers no longer grant client-side progress',()=>{
+ const g=lifecycle;
+ g.run('state=newGame();state.gold=50000;state.food=50000;state.player.level=20;'+
+   'state.dailyMissions={dayKey:"server",progress:{feed:0,plant:0,collectFood:0,collectGold:0,hatch:0,breed:0},claimed:[]};'+
+   'state.buildings.push({id:92,type:"farm",x:750,y:700,level:4,stored:false,crop:null});'+
+   'feedDragon(2);plantCrop(92,"pumpkin");buildingById(92).crop.readyAt=Date.now()-1;'+
+   'harvest(buildingById(92));buildingById(1).storedGold=1500;collect(buildingById(1));'+
+   'state.buildings.push({id:93,type:"habitat",element:"water",x:760,y:700,level:1,stored:false});'+
+   'const egg=addEgg("water","shop");egg.readyAt=Date.now()-1;hatchEgg(egg.id,93);'+
+   'state.dragons.push({...state.dragons[0],id:77,species:"water",nickname:"Water",level:5});'+
+   'state.buildings.push({id:94,type:"cave",x:780,y:700,level:1,stored:false,breeding:{fatherId:2,motherId:77,'+
+   'fatherSpecies:"fire",motherSpecies:"water",result:"fire",startedAt:1,readyAt:Date.now()-1}});'+
+   'collectBreeding(94)');
+ const progress=snapshot(g,'state.dailyMissions.progress');
+ assert.deepEqual(progress,{feed:0,plant:0,collectFood:0,collectGold:0,hatch:0,breed:0},
+   'Only the server may calculate mission progress');
 });
 check('upgraded hatchery fills all nests and keeps ready eggs occupying slots',()=>{
  const g=lifecycle;
@@ -456,7 +504,8 @@ check('selling, storing, feeding and moving settle old income before rates chang
  income.run('collect(buildingById(1))');
  assert(Math.abs(income.run('state.gold')-saleBalance-before.gold)<.0001);
  assert.equal(income.run('state.gems'),gemBalance+1);
- income.run('state=newGame();state.lastTick=Date.now()-60000;storeBuilding(1)');
+ income.run('state=newGame();state.lastTick=Date.now()-60000;'+
+   'state.buildings.push({...buildingById(1),id:92,x:750,y:700});assignDragon(2,92);storeBuilding(1)');
  const stored=income.run('buildingById(1).storedGold');
  assert(stored>0);
  income.run('advanceWorld(Date.now()+60000)');
@@ -584,6 +633,8 @@ check('dragon detail back navigation and habitat actions follow their source and
  assert.equal(navigation.run('ui.modal.name'),'habitat');
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="sell"'),
    'Occupied Habitats cannot be sold');
+ assert(navigation.element('sheetBody').innerHTML.includes('data-action="store" data-id="1" disabled'),
+   'Occupied Habitats cannot be stored from the management panel');
  assert(navigation.element('sheetBody').innerHTML.includes('data-action="collect" data-id="1" disabled'));
  navigation.run('buildingById(1).storedGold=10;renderHabitat(1)');
  assert(navigation.element('sheetBody').innerHTML.includes('data-action="collect" data-id="1">'));

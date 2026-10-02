@@ -14,7 +14,7 @@ const combat=require('../../js/data/combat-rules.js');
 function createFighterFactory({catalog,game}){
   const elements=catalog.elements,rarities=catalog.rarities;
   const skillRegistry=new Map([
-    ...(game.skills.neutral||[]).map(skill=>[skill.id,{...skill,element:null}]),
+    ...(game.skills.neutral||[]).map(skill=>[skill.id,{...skill}]),
     ...Object.entries(game.skills.elemental||{}).flatMap(([element,list])=>
       list.map(skill=>[skill.id,{...skill,element}]))
   ]);

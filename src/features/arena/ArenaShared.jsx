@@ -88,14 +88,15 @@ export function TeamSlots({title,ids,dragons}){
   })}</div></div>;
 }
 export function ElementFilter({value,onChange}){
-  const elements=game()?.data?.elements||{};
+  const data=game()?.data||{},elements=data.elements||{};
+  const maxElements=Math.max(1,...Object.values(data.species||{}).map(species=>species.elements?.length||0));
   return <div className="arena-filter-wrap"><div className="arena-element-filter" role="group" aria-label="Filter by element">
     <button type="button" className={'arena-filter-btn'+(!value.length?' active':'')} aria-pressed={!value.length}
       onClick={()=>onChange([])}>All</button>
     {Object.entries(elements).map(([id,e])=><button key={id} type="button"
       className={'arena-filter-btn'+(value.includes(id)?' active selected':'')} title={e.name+(value.includes(id)?' · Selected':'')}
-      aria-label={'Filter: '+e.name} aria-pressed={value.includes(id)} disabled={value.length>=4&&!value.includes(id)}
-      onClick={()=>onChange(value.includes(id)?value.filter(item=>item!==id):value.length<4?[...value,id]:value)}>
+      aria-label={'Filter: '+e.name} aria-pressed={value.includes(id)} disabled={value.length>=maxElements&&!value.includes(id)}
+      onClick={()=>onChange(value.includes(id)?value.filter(item=>item!==id):value.length<maxElements?[...value,id]:value)}>
       <ElementFlag id={id}/>{value.includes(id)&&<span className="filter-check" aria-hidden="true">✓</span>}</button>)}
-  </div><small className="filter-count">{value.length}/4 elements selected · match all selected elements</small></div>;
+  </div><small className="filter-count">{value.length}/{maxElements} elements selected · match all selected elements</small></div>;
 }

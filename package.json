@@ -6,7 +6,8 @@
     "build": "node scripts/build-cache.cjs && vite build",
     "start": "node server.cjs",
     "pretest": "npm run build",
-    "test": "node tests/combat-smoke.cjs && node tests/update-smoke.cjs && node tests/double-smoke.cjs && node tests/challenge-smoke.cjs && node tests/server-smoke.cjs && node tests/arena-ui-smoke.mjs"
+    "test": "node tests/combat-smoke.cjs && node tests/update-smoke.cjs && node tests/double-smoke.cjs && node tests/challenge-smoke.cjs && node tests/server-smoke.cjs && node tests/arena-ui-smoke.mjs",
+    "economy:audit": "node scripts/economy-audit.cjs"
   },
   "dependencies": {
     "antd": "6.6.5",

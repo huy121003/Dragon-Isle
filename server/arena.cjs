@@ -258,8 +258,10 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       response={battle:publicBattle(b)};
       return {...setup,battle:b};
     });
-    if(response.result)await updateJson(profile(user.id),current=>({...current,
-      dailyMissions:dailyMissions.addProgress(current.dailyMissions,'arena',1)}));
+    // Entering and immediately forfeiting is not an Arena fight for the daily mission.
+    if(response.result?.events.some(event=>event.side==='attack'&&event.skill))
+      await updateJson(profile(user.id),current=>({...current,
+        dailyMissions:dailyMissions.addProgress(current.dailyMissions,'arena',1)}));
     if(award)await credit(user,award);
     return response;
   }

@@ -35,7 +35,7 @@ function guideStart(){
     'Xây Chuồng theo hệ, đặt rồng có hệ phù hợp để sản xuất vàng và gem. Chạm Chuồng để thu tài nguyên.',
     'Trồng cây ở Nông trại để lấy thức ăn; cho rồng ăn để tăng cấp. Mở đất, đảo và công trình để mở rộng.',
     'Lai hai rồng trong Hang lai tạo, chuyển trứng sang Lồng ấp rồi chọn Chuồng phù hợp khi trứng nở.',
-    'Khám phá giống mới trong Dragon Book; dùng rồng từ level 10 để lập đội Đấu trường.'
+    'Khám phá giống mới trong Dragon Book; dùng rồng từ level '+window.DragonConfig.arena.minBattleLevel+' để lập đội Đấu trường.'
   ])+'<h3>Thao tác trên đảo</h3>'+guideList([
     'Chạm hoặc click công trình để mở thông tin. Nhấn giữ khoảng 0,5 giây rồi kéo để di chuyển; có thể dùng nút Move.',
     'Kéo nền để di chuyển bản đồ; dùng hai ngón hoặc con lăn chuột để thu phóng. Công trình phải nằm trọn trên đất đã mở.',
@@ -43,36 +43,38 @@ function guideStart(){
   ])+'<div class="guide-callout">Các bảng phía dưới lấy level, chi phí, thời gian và bảng hệ từ dữ liệu đang dùng trong game.</div>';
 }
 function guideDragons(){
-  const level=DATA.progression.skillUnlockLevels,academy=DATA.progression.academyCaps;
-  const academyRows=DATA.progression.academyCaps.map((cap,index)=>{
+  const progression=window.DragonConfig.progression,combat=window.DragonConfig.combat,world=window.DragonConfig.world;
+  const level=progression.skillUnlockLevels,academy=progression.academyCaps;
+  const maxStars=combat.star.max,starPct=Math.round(combat.star.statBonusPerStar*100);
+  const academyRows=academy.map((cap,index)=>{
     if(index===0)return ['1',String(cap),'—','—','—','—','Có sẵn sau khi xây'];
     const cost=academyUpgradeCost(index);
     return [String(index+1),String(cap),'Lv'+cost.playerLevel,
       cost.requiredDragons+' rồng Lv'+cost.requiredDragonLevel+'+',
-      money(cost.gold),money(cost.food),money(cost.gems)+' · '+duration(DATA.upgradeTimes.academy[index-1])];
+      money(cost.gold),money(cost.food),money(cost.gems)+' · '+duration(window.DragonConfig.buildings.upgradeTimes.academy[index-1])];
   });
-  const starRows=DATA.progression.starUpgrades.map((rule,index)=>[
-    String(index+1)+' ★','+'+((index+1)*5)+'%',String(rule.dragons)+' rồng cùng giống, Lv'+rule.level+'+',
+  const starRows=progression.starUpgrades.map((rule,index)=>[
+    String(index+1)+' ★','+'+((index+1)*starPct)+'%',String(rule.dragons)+' rồng cùng giống, Lv'+rule.level+'+',
     money(rule.gold),money(rule.food),money(rule.gems)]);
   return '<h3>Giống, hệ và chỉ số</h3>'+guideList([
     'Game có '+Object.keys(DATA.elements).length+' hệ và '+BOOK_SPECIES_IDS.length+' giống trong Dragon Book. Hệ đầu tiên là hệ chủ đạo; rồng 2 hệ đảo thứ tự là hai giống khác nhau.',
     'Rồng 3 hệ giữ hệ chủ đạo và một cặp hệ phụ duy nhất; rồng 4 hệ có bốn hệ khác nhau. Double Element có bốn slot nhưng chỉ ba hệ thật: hệ chủ đạo lặp hai lần.',
     'HP, tấn công và phòng thủ lấy từ chỉ số từng hệ, trọng số vị trí hệ, bậc hiếm và level. Arena đánh theo lượt, không có chỉ số tốc độ.'
   ])+'<h3>Cho ăn và mở skill</h3>'+guideList([
-    'Cho rồng ăn '+4+' lần để tăng một level. Mỗi lần ở level 1 tốn '+money(dragonFeedCost(1))+' thức ăn; ở level 30 tốn '+money(dragonFeedCost(30))+'. Chi phí tăng theo level.',
+    'Cho rồng ăn '+world.feeding.feedsPerLevel+' lần để tăng một level. Mỗi lần ở level 1 tốn '+money(dragonFeedCost(1))+' thức ăn; ở level 30 tốn '+money(dragonFeedCost(30))+'. Chi phí tăng theo level.',
     'Bốn vị trí skill mở lần lượt ở level '+level.join(', ')+'. Skill thường dựa trên phần trăm tấn công gốc; skill hệ dùng tấn công gốc cộng phần sát thương hệ.',
-    'Giới hạn level mặc định là 30; Dragon Academy nâng giới hạn lần lượt thành '+academy.join(', ')+'. Level tối đa của rồng là '+DATA.progression.dragonMaxLevel+'.',
+    'Giới hạn level mặc định là '+window.DragonConfig.dragons.initialLevelCapWithoutAcademy+'; Dragon Academy nâng giới hạn lần lượt thành '+academy.join(', ')+'. Level tối đa của rồng là '+progression.dragonMaxLevel+'.',
     'Double Element có ba skill hệ và một special skill của hệ lặp. Special có hồi chiêu; skill hồi máu hoặc phòng thủ thuần không gây sát thương.'
   ])+'<h3>Dragon Academy</h3>'+
     guideTable(['Cấp Academy','Cap rồng','Player Lv','Rồng sở hữu yêu cầu','Gold','Food','Gem · thời gian'],academyRows)+
     '<p class="muted">Rồng dùng làm điều kiện Academy chỉ cần đang thuộc sở hữu và đạt level yêu cầu; không bị tiêu hao khi nâng cấp. Muốn nâng cấp tiếp phải phát triển đủ số rồng chạm cap của cấp Academy hiện tại.</p>'+
-    '<h3>Nâng sao rồng</h3><p>Mỗi rồng bắt đầu với ☆☆☆☆☆. Mỗi sao cộng thêm 5% vào HP, tấn công và giáp theo chỉ số ở level hiện tại; tối đa ★★★★★ (+25%). Nâng sao không tăng sản lượng vàng hoặc gem.</p>'+
+    '<h3>Nâng sao rồng</h3><p>Mỗi rồng bắt đầu với '+('☆'.repeat(maxStars))+'. Mỗi sao cộng thêm '+starPct+'% vào HP, tấn công và giáp theo chỉ số ở level hiện tại; tối đa '+('★'.repeat(maxStars))+' (+'+(maxStars*starPct)+'%). Nâng sao không tăng sản lượng vàng hoặc gem.</p>'+
     guideTable(['Sao mới','Chỉ số','Rồng hiến tế','Vàng','Thức ăn','Gem'],starRows)+
     '<p>Rồng hiến tế phải cùng đúng giống, 0 sao, không đang lai và đạt level yêu cầu. Game chọn rồng chưa vào Chuồng trước, sau đó chọn level thấp nhất đủ điều kiện. Rồng được chọn sẽ mất vĩnh viễn; rồng nâng sao vẫn giữ nguyên level và Chuồng.</p>'+
     '<div class="guide-callout">Vào Dragons để xem thức ăn, skill, chỉ số và nâng sao của từng rồng; Dragon Book ghi thông tin giống đã khám phá.</div>';
 }
 function guideBreeding(){
-  const rules=window.DragonEconomy.breeding;
+  const rules=window.DragonConfig.breeding;
   const percent=value=>(value*100).toLocaleString('vi-VN',{maximumFractionDigits:2});
   const tierRows=Object.entries(window.DragonConfig.breeding.tierWeights).map(([parents,weights])=>[
     esc(parents.replace('+',' + ')),weights[0]+'% / '+weights[1]+'%']);
@@ -88,19 +90,19 @@ function guideBreeding(){
     label,duration(breedingSeconds(species,1,null)),
     duration(breedingSeconds(species,1,{type:'premiumCave'})),duration(hatchingSeconds(species))]);
   return '<h3>Điều kiện và tỷ lệ</h3>'+guideList([
-    'Hai cá thể khác nhau từ level '+DATA.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
-    'Thời gian lai tăng theo bậc rồng có thể sinh ra, độ muộn của các hệ và độ phức tạp của cặp bố mẹ. Tổ hợp có nhiều hệ khác nhau hoặc bố mẹ khác bậc sẽ cộng thêm thời gian; Hang Premium vẫn nhanh hơn '+Math.round((1-rules.premiumTimeFactor)*100)+'%.',
+    'Hai cá thể khác nhau từ level '+window.DragonConfig.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
+    'Thời gian lai tăng theo bậc rồng có thể sinh ra, độ muộn của các hệ và độ phức tạp của cặp bố mẹ. Tổ hợp có nhiều hệ khác nhau hoặc bố mẹ khác bậc sẽ cộng thêm thời gian; Hang Premium vẫn nhanh hơn '+Math.round((1-rules.premium.timeFactor)*100)+'%.',
     'Thông thường con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ. Double Element là ngoại lệ về hệ phụ.',
-    'Nếu có kết quả 3 hệ: tỷ lệ gốc '+percent(rules.threeBase)+'%, cộng '+percent(rules.threePerTenLevels)+' điểm % mỗi 10 level trung bình, tối đa '+percent(rules.threeCap)+'%.',
-    'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ với ít nhất 4 hệ khác nhau khi gộp lại. Cả bốn hệ của con đều lấy từ bố mẹ và tra theo '+FOUR_IDS.length+' tổ hợp được ghi trong danh mục. Nếu bộ hệ của bố mẹ không chứa tổ hợp nào trong danh mục thì xác suất rồng 4 hệ bằng 0. Tỷ lệ '+percent(rules.fourBase)+'% ban đầu, tăng theo level trung bình từ '+rules.fourGrowthStartLevel+' và tối đa '+percent(rules.fourCap)+'%.',
-    'Double Element cần hai bố mẹ đều có 4 ô hệ, mỗi bên có ít nhất 3 hệ khác nhau, cùng hệ chủ đạo và từ level '+rules.doubleMinParentLevel+'. Hai giống Double của hệ chủ đạo đó đều có cơ hội xuất hiện, kể cả khi hệ phụ không có trong bố mẹ. Tỷ lệ '+percent(rules.doubleBase)+'% ban đầu, tối đa '+percent(rules.doubleCap)+'%.',
+    'Nếu có kết quả 3 hệ: tỷ lệ gốc '+percent(rules.three.base)+'%, cộng '+percent(rules.three.perTenLevels)+' điểm % mỗi 10 level trung bình, tối đa '+percent(rules.three.cap)+'%.',
+    'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ với ít nhất 4 hệ khác nhau khi gộp lại. Cả bốn hệ của con đều lấy từ bố mẹ và tra theo '+FOUR_IDS.length+' tổ hợp được ghi trong danh mục. Nếu bộ hệ của bố mẹ không chứa tổ hợp nào trong danh mục thì xác suất rồng 4 hệ bằng 0. Tỷ lệ '+percent(rules.four.base)+'% ban đầu, tăng theo level trung bình từ '+rules.four.growthStartLevel+' và tối đa '+percent(rules.four.cap)+'%.',
+    'Double Element cần hai bố mẹ đều có 4 ô hệ, mỗi bên có ít nhất 3 hệ khác nhau, cùng hệ chủ đạo và từ level '+rules.double.minParentLevel+'. Hai giống Double của hệ chủ đạo đó đều có cơ hội xuất hiện, kể cả khi hệ phụ không có trong bố mẹ. Tỷ lệ '+percent(rules.double.base)+'% ban đầu, tối đa '+percent(rules.double.cap)+'%.',
     'Phần còn lại chia cho 1 và 2 hệ theo bảng dưới nếu có kết quả hợp lệ. Trong mỗi bậc, giống nhận hệ chung của bố mẹ có trọng số cao hơn; tỷ lệ từng giống có thể khác nhau.',
-    'Hang Lai Tinh Tú mua một lần với '+money(DATA.buildings.premiumCave.cost)+' gem, không bán hay cất kho. Tỷ lệ của mỗi kết quả từ 3 hệ trở lên nhân '+rules.premiumRareFactor+' (ví dụ 2% thành '+(2*rules.premiumRareFactor).toLocaleString('vi-VN')+'%), phần tăng lấy từ nhóm 1–2 hệ để tổng vẫn là 100%. Thời gian lai giảm 20%.'
+    'Hang Lai Tinh Tú mua một lần với '+money(window.DragonConfig.buildings.definitions.premiumCave.cost)+' gem, không bán hay cất kho. Tỷ lệ của mỗi kết quả từ 3 hệ trở lên nhân '+rules.premium.rareFactor+' (ví dụ 2% thành '+(2*rules.premium.rareFactor).toLocaleString('vi-VN')+'%), phần tăng lấy từ nhóm 1–2 hệ để tổng vẫn là 100%. Thời gian lai giảm '+Math.round((1-rules.premium.timeFactor)*100)+'%.'
   ])+'<h3>Tỷ lệ chia phần còn lại cho 1 / 2 hệ</h3>'+guideTable(['Số hệ bố mẹ','1 hệ / 2 hệ'],tierRows)+
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Hang thường','Hang xịn','Trong Lồng ấp'],durationRows)+
     '<p class="muted">Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([
       'Hang lai không thể mở lượt mới khi chưa lấy trứng của lượt trước. Trứng lai từ Hang đó phải được ấp xong hoặc bán trước khi dùng Hang cho lượt khác.',
-      'Lồng ấp có 1–'+DATA.buildings.hatchery.maxLevel+' ô theo level, mỗi ô ấp một trứng độc lập. Trứng hoàn tất vẫn chiếm ô cho đến khi nở hoặc được bán; trứng dư ở Inventory tự vào ô trống.',
+      'Lồng ấp có 1–'+window.DragonConfig.buildings.definitions.hatchery.maxLevel+' ô theo level, mỗi ô ấp một trứng độc lập. Trứng hoàn tất vẫn chiếm ô cho đến khi nở hoặc được bán; trứng dư ở Inventory tự vào ô trống.',
       'Khi trứng nở, cần Chuồng còn chỗ và cùng ít nhất một hệ của rồng. Giống mới được ghi vào Dragon Book; công thức của cặp bố mẹ được lưu trong Recipes.'
     ])+'<div class="guide-callout">Trong Hang lai, tỷ lệ theo bậc là tổng các giống cùng bậc; mở từng nhóm để xem tỷ lệ chính xác của từng giống.</div>';
 }
@@ -116,11 +118,13 @@ function guideIslands(){
     return [esc(DATA.elements[element].name),String(level),price?
       (price.vang?money(price.vang)+' vàng':money(price.gem)+' gem'):'—'];
   });
-  const buildings=Object.entries(DATA.buildings).map(([type,b])=>[
-    esc(b.name),type==='hatchery'?'Có sẵn':type==='habitat'?'Theo hệ và lượt mua':
-      money(b.cost)+(type==='premiumCave'?' gem':' vàng'),
-    String(b.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất']);
-  const capacityRows=Array.from({length:DATA.buildings.habitat.maxLevel},(_,index)=>{
+  const buildings=Object.entries(DATA.buildings).map(([type,b])=>{
+    const balance=window.DragonConfig.buildings.definitions[type];
+    return [esc(b.name),type==='hatchery'?'Có sẵn':type==='habitat'?'Theo hệ và lượt mua':
+      money(balance.cost)+(type==='premiumCave'?' gem':' vàng'),
+      String(balance.maxLevel),type==='habitat'?'Có thể bán/cất':type==='hatchery'?'Có sẵn; không bán':'Không bán/cất'];
+  });
+  const capacityRows=Array.from({length:window.DragonConfig.buildings.definitions.habitat.maxLevel},(_,index)=>{
     const level=index+1,fire={type:'habitat',element:'fire',level},time={type:'habitat',element:'time',level};
     return [String(level),String(habitatCapacity(level)),
       money(habitatGoldCapacity(fire)),money(habitatGoldCapacity(time)),
@@ -139,12 +143,12 @@ function guideIslands(){
       (money(standardUpgradeCost(lv4).gold)+'G + '+money(standardUpgradeCost(lv4).gems)+'💎'),
       duration(upgradeSeconds(lv2))+' / '+duration(upgradeSeconds(lv3))+' / '+duration(upgradeSeconds(lv4))];
   });
-  const hatcheryRows=window.DragonEconomy.hatchery.nests.map((nests,index)=>[
-    String(index+1),String(nests),index<window.DragonEconomy.progression.hatcheryUpgradeLevels.length?
-      'Player Lv'+window.DragonEconomy.progression.hatcheryUpgradeLevels[index]:'—']);
+  const hatcheryRows=window.DragonConfig.buildings.hatchery.nests.map((nests,index)=>[
+    String(index+1),String(nests),index<window.DragonConfig.progression.hatcheryUpgradeLevels.length?
+      'Player Lv'+window.DragonConfig.progression.hatcheryUpgradeLevels[index]:'—']);
   return '<h3>Đất, đảo và hệ mở khóa</h3>'+guideList([
     'Đảo mở tuần tự: cần mở hết vùng của đảo trước, đạt level mua trứng hệ đảo, sở hữu ít nhất một rồng có hệ đó và đủ gem. Rồng lai có chứa hệ đảo cũng được tính.',
-    'Mở một vùng đất nhận '+window.DragonEconomy.progression.xpSources.land+' XP người chơi; mua đảo mới nhận '+window.DragonEconomy.progression.xpSources.island+' XP.',
+    'Mở một vùng đất nhận '+window.DragonConfig.progression.xpSources.land+' XP người chơi; mua đảo mới nhận '+window.DragonConfig.progression.xpSources.island+' XP.',
     'Chuồng và trứng 1 hệ trong Shop mở theo level hệ bên dưới. Vùng đất mở theo ô vuông và phải nối với vùng đã sở hữu.'
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+
     '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level','Giá trứng 1 hệ'],unlocks)+
@@ -153,30 +157,30 @@ function guideIslands(){
     '<h3>Sức chứa Habitat theo cấp</h3>'+guideTable(['Cấp','Rồng','Vàng Lửa','Vàng Time','Gem Lửa','Gem Time'],capacityRows)+
     '<h3>Sức chứa Hatchery</h3>'+guideTable(['Cấp','Nest','Level nâng cấp yêu cầu'],hatcheryRows)+
     guideList([
-      'Chuồng cấp 1–4 chứa lần lượt '+window.DragonEconomy.habitat.dragonCapacity.join(', ')+' rồng cùng hệ phù hợp. Sức chứa vàng và gem cũng tăng theo cấp Chuồng.',
+      'Chuồng cấp 1–4 chứa lần lượt '+window.DragonConfig.buildings.habitat.dragonCapacity.join(', ')+' rồng cùng hệ phù hợp. Sức chứa vàng và gem cũng tăng theo cấp Chuồng.',
       'Giá Chuồng phụ thuộc hệ được mở khóa và tổng số Chuồng hệ đó từng mua, kể cả những Chuồng đã bán. Ví dụ Chuồng Lửa tiếp theo giá '+money(habitatPurchaseCost('fire'))+' vàng; Chuồng Time tiếp theo giá '+money(habitatPurchaseCost('time'))+' vàng. Shop hiển thị giá thực tế và số lần mua.',
       'Giá mua Chuồng tăng theo số lần mua cùng hệ. Giá nâng cấp không phụ thuộc số thứ tự mua mà phụ thuộc hệ và cấp Chuồng; hệ mở càng muộn thì giá, Gem yêu cầu và thời gian nâng càng cao. Các nâng cấp trước đây chỉ tốn vàng nay đều yêu cầu cả Gold + Gem; Dragon Academy vẫn giữ Gold + Food + Gem. Tiền bán vẫn dựa trên giá mua thực tế của Chuồng đó.',
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
-      'Tất cả yêu cầu mở khóa và nâng cấp chỉ xét đến Player Lv'+window.DragonEconomy.progression.contentLevelCap+'. Từ Lv'+window.DragonEconomy.progression.contentLevelCap+' trở lên không mở thêm quyền mới; level tiếp tục tăng và chỉ nhận thưởng Gold/Food/Gem. Số Nông trại tối đa là '+window.DragonEconomy.progression.maxFarms+'.',
-      'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+DATA.buildings.hatchery.maxLevel+'; mỗi level mở thêm một ô ấp trứng.'
+      'Tất cả yêu cầu mở khóa và nâng cấp chỉ xét đến Player Lv'+window.DragonConfig.progression.contentLevelCap+'. Từ Lv'+window.DragonConfig.progression.contentLevelCap+' trở lên không mở thêm quyền mới; level tiếp tục tăng và chỉ nhận thưởng Gold/Food/Gem. Số Nông trại tối đa là '+window.DragonConfig.progression.farms.maxFarms+'.',
+      'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+window.DragonConfig.buildings.definitions.hatchery.maxLevel+'; mỗi level mở thêm một ô ấp trứng.'
     ]);
 }
 function guideResources(){
   const crops=DATA.crops.map((crop,index)=>[esc(crop.name),'Farm Lv'+(index+1),money(crop.cost)+' vàng',
     duration(crop.duration),money(crop.yield)+' thức ăn']);
-  const progression=window.DragonEconomy.progression;
+  const progression=window.DragonConfig.progression,rewards=progression.rewards,income=progression.incomeGrowth;
   const rarityEntries=Object.entries(DATA.rarities);
   const goldRows=[1,10,30,50,100].map(function(level){
-    const steps=level-1,scale=1+progression.goldLevelLinear*steps+
-      progression.goldLevelQuadratic*steps*steps;
+    const steps=level-1,scale=1+income.linear*steps+
+      income.quadratic*steps*steps;
     return [String(level),...rarityEntries.map(([,rarity])=>money(Math.round(rarity.income*scale)))];
   });
   const xpLevels=[1,2,3,4,5,10,15,20,30,40,50,60,75,100,150,200];
   const xpRows=xpLevels.map(level=>[
     String(level)+' → '+(level+1),money(playerXPNeeded(level))+' XP',
-    money(progression.levelGoldBase+progression.levelGoldStep*(level+1))+' vàng',
-    money(progression.levelFoodBase+progression.levelFoodStep*(level+1))+' thức ăn',
-    String(progression.levelGems+((level+1)%5===0?progression.milestoneGemBonus:0))+' gem']);
+    money(rewards.goldBase+rewards.goldStep*(level+1))+' vàng',
+    money(rewards.foodBase+rewards.foodStep*(level+1))+' thức ăn',
+    String(rewards.gems+((level+1)%rewards.milestoneEvery===0?rewards.milestoneGemBonus:0))+' gem']);
   const source=progression.xpSources;
   const xpSourceRows=[
     ['Xây công trình',Object.entries(source.buildingBuild).map(([type,xp])=>type+' '+xp).join(' · ')+' XP'],
@@ -192,10 +196,10 @@ function guideResources(){
   return '<h3>Tiền, thức ăn và gem</h3>'+guideList([
     'Chỉ rồng đang ở Chuồng hoạt động trên đảo mới tạo vàng và gem. Chuồng đã cất, rồng chưa có Chuồng hoặc rồng đã bán không tạo thu nhập. Tài nguyên đã tích trong Chuồng vẫn giữ lại sau khi bán hoặc chuyển rồng.',
     'Vàng cơ sở dựa vào bậc hiếm và level rồng; hạnh phúc, đói và cấp Chuồng điều chỉnh tiếp. Khi Chuồng đầy vàng, phải thu trước khi sản xuất tiếp.',
-    'Mỗi rồng trong Chuồng hoạt động tạo '+DATA.gemPerDragonPerHour+' gem mỗi giờ, không tăng theo level. Tiến độ gem theo từng rồng được giữ khi chuyển Chuồng; Chuồng đầy gem thì dừng tạo thêm.',
-    'Thức ăn dùng để cho rồng ăn và một số nâng cấp. Shop bán với giá '+money(window.DragonEconomy.progression.foodGoldPrice)+' vàng / thức ăn; Nông trại trồng cây để thu hoạch.',
+    'Mỗi rồng trong Chuồng hoạt động tạo '+window.DragonConfig.world.gemPerDragonPerHour+' gem mỗi giờ, không tăng theo level. Tiến độ gem theo từng rồng được giữ khi chuyển Chuồng; Chuồng đầy gem thì dừng tạo thêm.',
+    'Thức ăn dùng để cho rồng ăn và một số nâng cấp. Shop bán với giá '+money(window.DragonConfig.progression.foodGoldPrice)+' vàng / thức ăn; Nông trại trồng cây để thu hoạch.',
     'Shop tính giá trứng 1 hệ theo giá gốc của giống và mốc mở hệ; hệ mở muộn có giá cao hơn. Công trình có giá niêm yết; Chuồng tăng giá theo hệ và số lần đã mua, kể cả sau khi bán.',
-    'Gem dùng mua đảo, một số trứng và tua thời gian; hiện tại khoảng '+Math.round(window.DragonEconomy.timers.secondsPerGem/60)+' phút còn lại tương ứng một gem, có giới hạn chi phí tua tối đa.',
+    'Gem dùng mua đảo, một số trứng và tua thời gian; hiện tại khoảng '+Math.round(window.DragonConfig.timers.secondsPerGem/60)+' phút còn lại tương ứng một gem, có giới hạn chi phí tua tối đa.',
     'Mỗi lần tăng player level nhận vàng, thức ăn và gem; các level chia hết cho 5 có thêm gem.'
   ])+'<h3>Vàng cơ sở theo level rồng · mỗi giờ</h3>'+guideTable(
     ['Level',...rarityEntries.map(([,rarity])=>esc(rarity.name))],goldRows)+
@@ -212,23 +216,29 @@ function guideResources(){
     ]);
 }
 function guideArena(){
+  const arena=window.DragonConfig.arena,combat=window.DragonConfig.combat;
+  const values=Object.values(DRAGON_DB.typeChart).flatMap(row=>Object.values(row));
+  const strong=Math.max(...values),weak=Math.min(...values);
+  const critChance=Math.round(combat.critical.chance*100),cooldownMinutes=Math.round(arena.cooldownMs/60000);
   return '<h3>Đội hình và lượt đánh</h3>'+guideList([
-    'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng ba rồng từ level 10 cho đội tấn công và ba rồng cho đội phòng thủ. Rồng đang lai không tham gia.',
+    'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng '+arena.teamSize+' rồng từ level '+arena.minBattleLevel+' cho đội tấn công và '+arena.teamSize+' rồng cho đội phòng thủ. Rồng đang lai không tham gia.',
     'Arena đánh theo lượt. Người chơi chọn skill hoặc đổi rồng (tốn một lượt); đội phòng thủ chọn skill đang mở và không hồi chiêu theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
-    'Bốn ô skill mở theo level '+DATA.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
-    'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân 2; ▼ Weak nhân 0,5; skill thường không có hệ nên hệ số là 1.',
-    'Sát thương còn chịu giáp, biến thiên ngẫu nhiên khoảng 90–110%, trạng thái đang có và chí mạng. Xác suất crit 10%, hệ số crit 1,5.',
+    'Bốn ô skill mở theo level '+window.DragonConfig.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
+    'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân '+strong+'; ▼ Weak nhân '+weak+'; skill thường không có hệ nên hệ số là 1.',
+    'Sát thương còn chịu giáp, biến thiên ngẫu nhiên khoảng '+Math.round(combat.variance.min*100)+'–'+Math.round(combat.variance.max*100)+'%, trạng thái đang có và chí mạng. Xác suất crit '+critChance+'%, hệ số crit '+combat.critical.multiplier+'.',
     'Dưới HP có icon trạng thái và số lượt còn lại: tăng/giảm tấn công, giáp, giảm sát thương, độc, đóng băng, hồi phục, tăng HP và giảm chính xác.',
     'Special Skill có thể hồi máu, tẩy trạng thái xấu, tăng HP tối đa hoặc đánh 2–3 nhịp có tỷ lệ hụt từng nhịp. Hiệu ứng cùng loại không cộng dồn: làm mới thời gian theo giá trị lớn hơn và giữ mức tác dụng mạnh hơn.',
-    'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận tính là thua và chờ 15 phút trước trận tiếp theo.'
+    'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận tính là thua và chờ '+cooldownMinutes+' phút trước trận tiếp theo.'
   ])+'<div class="guide-callout">Chỉ báo Strong/Weak ở ô skill theo đối thủ đang đứng sân; khi đổi rồng, chúng được tính lại.</div>';
 }
 function guideChallenge(){
+  const challenge=window.DragonConfig.challenge,arena=window.DragonConfig.arena;
+  const onlineSeconds=Math.round(challenge.lobbySaveFreshMs/1000),inviteSeconds=Math.round(challenge.inviteMs/1000);
   return '<h3>Thách đấu trực tiếp</h3>'+guideList([
-    'Có ít nhất ba rồng từ level 10 để hiện nút Thách đấu. Không cần xây Arena.',
-    'Danh sách chỉ hiển thị người chơi đủ điều kiện, bật nhận lời mời và còn online. Online được tính khi bản lưu tiến trình trên máy chủ mới hơn 35 giây; game tự lưu khoảng mỗi 10 giây.',
-    'Gửi lời mời và chờ đối thủ xác nhận trong 30 giây. Nếu đối thủ từ chối hoặc hết thời gian, cả hai được thông báo.',
-    'Sau khi đồng ý, mỗi bên chọn riêng ba rồng đủ level và không đang lai. Đối thủ chỉ thấy bạn đã sẵn sàng, không thấy đội hình cho đến lúc cả hai chốt.',
+    'Có ít nhất '+challenge.teamSize+' rồng từ level '+arena.minBattleLevel+' để hiện nút Thách đấu. Không cần xây Arena.',
+    'Danh sách chỉ hiển thị người chơi đủ điều kiện, bật nhận lời mời và còn online. Online được tính khi bản lưu tiến trình trên máy chủ mới hơn '+onlineSeconds+' giây; game tự lưu định kỳ.',
+    'Gửi lời mời và chờ đối thủ xác nhận trong '+inviteSeconds+' giây. Nếu đối thủ từ chối hoặc hết thời gian, cả hai được thông báo.',
+    'Sau khi đồng ý, mỗi bên chọn riêng '+challenge.teamSize+' rồng đủ level và không đang lai. Đối thủ chỉ thấy bạn đã sẵn sàng, không thấy đội hình cho đến lúc cả hai chốt.',
     'Trận đấu dùng skill và luật sát thương Arena, nhưng hai người chơi tự chọn lượt. Không có vàng, thức ăn, gem hoặc thời gian hồi sau trận.',
     'Mỗi tài khoản chỉ nhận một lời mời hoặc tham gia một trận cùng lúc. Công tắc nhận thách đấu có thể bật/tắt; đăng xuất hoặc ngừng lưu tiến trình sẽ đưa tài khoản về offline.'
   ]);
@@ -268,6 +278,8 @@ function guideSpecialSkills(){
 }
 function guideElements(){
   const ids=Object.keys(DATA.elements),chart=DRAGON_DB.typeChart;
+  const values=ids.flatMap(attacker=>ids.map(target=>chart[attacker][target]??1));
+  const strongMultiplier=Math.max(...values),weakMultiplier=Math.min(...values);
   const rows=ids.map(function(id){
     const strong=ids.filter(target=>chart[id][target]>1);
     const weak=ids.filter(source=>chart[source][id]>1);
@@ -275,8 +287,8 @@ function guideElements(){
     return [elementFlag(id,true,'sm'),flags(strong),flags(weak)];
   });
   return '<p>Hệ của skill quyết định hệ mà rồng có thể khắc; hệ chủ đạo của mục tiêu quyết định nó bị khắc bởi hệ nào. Mỗi hệ khắc đúng hai hệ và bị đúng hai hệ khác khắc.</p>'+ 
-    guideTable(['Hệ','Đánh mạnh vào ×1,5','Bị khắc bởi ×1,5'],rows)+
-    '<p class="muted">Chạm hoặc rê chuột lên cờ để xem tên hệ. Đánh vào hệ khắc lại mình gây ×0,75 sát thương. Các cặp còn lại ×1. Rồng đa hệ vẫn chỉ dùng hệ đầu tiên để nhận sát thương hệ.</p>';
+    guideTable(['Hệ','Đánh mạnh vào ×'+strongMultiplier,'Bị khắc bởi ×'+strongMultiplier],rows)+
+    '<p class="muted">Chạm hoặc rê chuột lên cờ để xem tên hệ. Đánh vào hệ khắc lại mình gây ×'+weakMultiplier+' sát thương. Các cặp còn lại ×1. Rồng đa hệ vẫn chỉ dùng hệ đầu tiên để nhận sát thương hệ.</p>';
 }
 function guideUpdates(){
   return '<h3>Thay đổi gần đây</h3><div class="guide-updates">'+GUIDE_UPDATES.map(function(item){

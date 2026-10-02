@@ -2,6 +2,7 @@
 
 /* Khởi động: nạp tiến trình, tính thời gian vắng mặt, gắn sự kiện và vòng lặp khung hình. */
 async function startGame(){
+const runtime=window.DragonConfig.system.runtime;
 if(!await authenticate())return;
 try{state=await loadGameFromServer();}
 catch(error){showAuthMessage(error.message);return;}
@@ -19,7 +20,7 @@ ui.camera.zoom=clamp(Math.min(viewW/(home.size*DATA.tileW*1.15),
   viewH/(home.size*DATA.tileH*1.15)),.1,.75);
 ui.camera.x=homeCenter.x;ui.camera.y=homeCenter.y;
 updateUI();
-if(offline.elapsed>=60000)openModal("welcome",offline);
+if(offline.elapsed>=runtime.offlineWelcomeMs)openModal("welcome",offline);
 dom.canvas.addEventListener("pointerdown",pointerDown);
 dom.canvas.addEventListener("pointermove",pointerMove);
 dom.canvas.addEventListener("pointerup",pointerUp);
@@ -61,7 +62,7 @@ document.addEventListener("visibilitychange",function(){
   else{
     const report=advanceWorld(Date.now());
     updateUI();
-    if(report.elapsed>=60000)openModal("welcome",report);
+    if(report.elapsed>=runtime.offlineWelcomeMs)openModal("welcome",report);
   }
 });
 let lastHabitatRefresh=0;
@@ -71,13 +72,13 @@ setInterval(function(){
     updateUI();
   }else{
     updateHeader();updateInspector();refreshCountdowns();updateTimerBar();
-    if(ui.modal?.name==="habitat"&&now-lastHabitatRefresh>=5000){
+    if(ui.modal?.name==="habitat"&&now-lastHabitatRefresh>=runtime.habitatRefreshMs){
       lastHabitatRefresh=now;
       renderHabitat(ui.modal.extra);
     }
   }
-},1000);
-setInterval(function(){advanceWorld(Date.now());saveGame();},10000);
+},runtime.worldTickMs);
+setInterval(function(){advanceWorld(Date.now());saveGame();},runtime.autosaveMs);
 let lastFrame=performance.now();
 function frame(time){
   const dt=clamp((time-lastFrame)/1000,0,.05);lastFrame=time;

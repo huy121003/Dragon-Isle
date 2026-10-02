@@ -1,8 +1,9 @@
 /**
  * Authoritative Arena/Challenge battle engine.
  *
- * This module owns fighter construction, status effects, AI skill scoring and
- * turn resolution. It does not read/write player files or award resources.
+ * This module owns status effects, AI skill scoring and turn resolution.
+ * Fighter construction and public DTO/event snapshots are delegated to sibling
+ * modules. It does not read/write player files or award resources.
  *
  * Randomness is injectable through rng so tests can replay exact battles.
  */

@@ -3,6 +3,9 @@
 /* UI PANEL: Shop and egg-product detail presentation. */
 function renderShop(){
   dom.title.textContent="🏪 Shop";
+  const economy=window.DragonConfig.economy,progression=window.DragonConfig.progression;
+  const buildings=window.DragonConfig.buildings,breeding=window.DragonConfig.breeding;
+  const dragons=window.DragonConfig.dragons,farming=window.DragonConfig.farming;
   let html='<div class="tabs">'+
     [['special','Special buildings'],['habitats','Habitats'],['decorations','Decorations'],
       ['eggs','Eggs'],['supplies','Resources'],['save','💾 Data']]
@@ -15,7 +18,7 @@ function renderShop(){
       const need=contentRequirementLevel(ELEMENT_UNLOCK[element]||99),locked=state.player.level<need;
       html+='<button class="shop-item" data-action="choose-build" data-type="habitat" data-element="'+element+'"'+(locked?' disabled':'')+'>'+
         '<span class="shop-icon" style="color:'+e.color+'">'+elementFlag(element,false,'lg')+'</span><span><b>Habitat '+e.name+
-        '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+
+        '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level '+buildings.definitions.habitat.maxLevel)+
         ' · Purchased '+(state.habitatPurchases[element]||0)+'×</small></span><strong>● '+money(habitatPurchaseCost(element))+'</strong></button>';
     });
     html+='</div>';
@@ -23,21 +26,21 @@ function renderShop(){
     html+='<div class="note">Chọn công trình để đặt trên đảo. Vàng hoặc gem chỉ bị trừ khi đặt thành công; có thể quay lại Shop trước khi đặt.</div><div class="cards special-shop-cards">';
     const farms=farmCount(),limit=farmLimit(state.player.level);
     html+='<button class="shop-item" data-action="choose-build" data-type="farm"'+(farms>=limit?' disabled':'')+'><span class="shop-icon">🌱</span>'+
-      '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every 5 player levels · four crop levels · 9×6 tiles</small></span><strong>● '+money(DATA.buildings.farm.cost)+'</strong></button>'+
+      '<span><b>Farm · '+farms+'/'+limit+'</b><small>One additional Farm every '+progression.farms.everyLevels+' player levels · '+farming.crops.length+' crop products · 9×6 tiles</small></span><strong>● '+money(buildings.definitions.farm.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="cave"'+(state.buildings.some(b=>b.type==="cave")?' disabled':'')+'><span class="shop-icon">💞</span>'+
-      '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● '+money(DATA.buildings.cave.cost)+'</strong></button>'+
+      '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● '+money(buildings.definitions.cave.cost)+'</strong></button>'+
       '<button class="shop-item premium-cave-offer" data-action="choose-build" data-type="premiumCave"'+
       (state.buildings.some(b=>b.type==="premiumCave")?' disabled':'')+'><span class="shop-icon">✧</span>'+
-      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>One only · 12×9 tiles · 20% faster · '+Math.round((window.DragonEconomy.breeding.premiumRareFactor-1)*100)+'% more chance for 3+ elements</small></span>'+
-      '<strong>♦ '+money(DATA.buildings.premiumCave.cost)+'</strong></button>'+
-      '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● '+money(DATA.buildings.academy.cost)+'</strong></button>'+
-      '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● '+money(DATA.buildings.arena.cost)+'</strong></button>'+
+      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>One only · 12×9 tiles · '+Math.round((1-breeding.premium.timeFactor)*100)+'% faster · '+Math.round((breeding.premium.rareFactor-1)*100)+'% more chance for 3+ elements</small></span>'+
+      '<strong>♦ '+money(buildings.definitions.premiumCave.cost)+'</strong></button>'+
+      '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from '+dragons.initialLevelCapWithoutAcademy+' to '+progression.dragonMaxLevel+' across '+buildings.definitions.academy.maxLevel+' Academy levels</small></span><strong>● '+money(buildings.definitions.academy.cost)+'</strong></button>'+
+      '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● '+money(buildings.definitions.arena.cost)+'</strong></button>'+
       '';
     html+='</div>';
   }else if(ui.shopTab==="decorations"){
     html+='<div class="cards"><button class="shop-item" data-action="choose-build" data-type="decor">'+
       '<span class="shop-icon">🚩</span><span><b>Flagpole</b><small>Island decoration · 3×3 tiles</small></span>'+
-      '<strong>● '+money(DATA.buildings.decor.cost)+'</strong></button></div>';
+      '<strong>● '+money(buildings.definitions.decor.cost)+'</strong></button></div>';
   }else if(ui.shopTab==="eggs"){
     html+='<div class="note">The shop sells pure element eggs. Prices depend on rarity and unlock level. Purchased eggs enter an available Hatchery nest.</div>'+ 
       '<div class="cards">';
@@ -68,14 +71,14 @@ function renderShop(){
       '</div><div class="actions"><button class="btn primary" data-action="export-save">Download save JSON</button>'+ 
       '<label class="btn good" for="saveImport">Import save JSON</label>'+ 
       '<input id="saveImport" type="file" accept=".json,application/json" class="visually-hidden"></div>'+ 
-      '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to '+money(window.DragonEconomy.starting.gold)+' gold, '+money(window.DragonEconomy.starting.food)+' food, '+money(window.DragonEconomy.starting.gems)+' gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+
+      '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to '+money(economy.starting.gold)+' gold, '+money(economy.starting.food)+' food, '+money(economy.starting.gems)+' gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+
       '<button class="btn danger" data-action="factory-reset">Reset game</button></div>'+
       '<details class="panel"><summary>Testing &amp; debug</summary><div class="actions"><button class="btn" data-action="topup-test">Grant test resources</button>'+
       '<button class="btn" data-action="toggle-iso-debug" aria-pressed="'+ui.debugIso+'">'+
       (ui.debugIso?'✓ Isometric debug: on':'◇ Isometric debug: off')+'</button></div>'+
-      '<p>Sets a minimum of 10 million gold, 100,000 food and 10,000 gems.</p></details>';
+      '<p>Sets a minimum of '+money(economy.testResources.gold)+' gold, '+money(economy.testResources.food)+' food and '+money(economy.testResources.gems)+' gems.</p></details>';
   }else{
-    const economy=window.DragonEconomy,price=economy.progression.foodGoldPrice,packs=economy.shop.resourcePacks;
+    const price=progression.foodGoldPrice,packs=economy.shop.resourcePacks;
     html+='<div class="note">Resource exchange · rates are intentionally asymmetric so Gold ↔ Gem cannot be looped for profit.</div>'+
       '<h3>🪙 Gold with Gems</h3><div class="cards food-shop-cards">';
     packs.goldForGems.forEach(function(pack,index){
@@ -98,7 +101,8 @@ function renderShop(){
         '<small>'+(state.gems<pack.cost?'Need '+money(pack.cost-state.gems)+' more gems':'Premium food pack')+'</small></span>'+
         '<strong>♦ '+money(pack.cost)+'</strong></button>';
     });
-    [[100,'🍎'],[500,'🥕'],[2000,'🌾']].forEach(function([count,icon]){
+    economy.shop.standardFoodAmounts.forEach(function(count,index){
+      const icon=['🍎','🥕','🌾'][index]||'🍲';
       const cost=count*price,missing=Math.max(0,cost-state.gold);
       html+='<button class="shop-item food-offer" data-action="buy-food" data-count="'+count+'"'+(missing?' disabled':'')+'>'+
         '<span class="shop-icon">'+icon+'</span><span class="food-offer-copy"><b>'+money(count)+' food</b>'+

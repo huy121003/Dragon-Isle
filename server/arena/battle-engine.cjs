@@ -212,6 +212,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     if(target.hp===0)nextFighter(battle,other);
   }
 
+  /** True when a battle side still has at least one living fighter. */
   const alive=group=>group.some(fighter=>fighter.hp>0);
 
   /** Resolve one player-vs-player Challenge action. */
@@ -291,7 +292,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     return {won:alive(left)&&(!alive(right)||remaining(left)>remaining(right)),events:battle.events};
   }
 
-  return {makeFighter,fight,publicBattle,active,chooseDefenseSkill,strike,liveTurn,finish,readySkills};
+  return {makeFighter,fight,publicBattle,active,alive,chooseDefenseSkill,strike,liveTurn,finish,readySkills};
 }
 
 module.exports={createBattleEngine};

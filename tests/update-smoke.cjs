@@ -246,7 +246,7 @@ check('element unlocks, hatchery gates and crop timers follow the progression cu
  assert.deepEqual(snapshot(balance,'[1,2,3,4].map(hatcheryUpgradePlayerLevel)'),[5,12,22,35]);
  assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.duration)'),[30,180,900,7200]);
  assert.deepEqual(snapshot(balance,'DATA.upgradeTimes'),{
-   habitat:[45,180,600],farm:[30,120,480],hatchery:[90,300,900,2400],academy:[300,900,2700,7200]
+   habitat:[45,180,600],farm:[30,120,480],hatchery:[90,300,900,2400],academy:[300,900,1800,3600,7200,14400]
  });
 });
 const income=await boot();
@@ -822,13 +822,26 @@ check('island purchase requires egg level and a dragon carrying its element',()=
  g.run('unlockIsland(3)');
  assert.equal(g.run('state.unlockedIslands'),3);
 });
-check('Academy uses placement and upgrade gates/cost formula',()=>{
- game.run('state.player.level=30;state.gold=500000;state.food=100000;state.gems=1000;'+
+check('Academy uses seven levels, dragon gates and balanced costs',()=>{
+ game.run('state.player.level=60;state.gold=5000000;state.food=1000000;state.gems=5000;'+
    'state.buildings.push({id:91,type:"academy",level:1,x:738,y:703,stored:false,upgradeEnds:0})');
+ assert.deepEqual(snapshot(game,'DATA.progression.academyCaps'),[40,50,60,70,80,90,100]);
+ assert.equal(game.run('DATA.buildings.academy.maxLevel'),7);
+ assert.deepEqual(snapshot(game,'DATA.progression.academyUpgrades.map(x=>[x.playerLevel,x.requiredDragons,x.requiredDragonLevel])'),
+   [[10,2,40],[18,3,50],[28,4,60],[38,5,70],[48,6,80],[58,8,90]]);
  assert(game.run('academyUpgradeCost(2).gold')>game.run('academyUpgradeCost(1).gold')*2);
  assert.equal(game.run('academyUpgradeCost(1).gold'),17600);
+ assert.equal(game.run('academyUpgradeCost(1).requiredDragons'),2);
+ assert.equal(game.run('academyUpgradeCost(1).requiredDragonLevel'),40);
  assert.equal(game.run('upgradeSeconds({type:"academy",level:2})'),900);
- game.run('beginMode({kind:"move",id:91})');
+ game.run('upgradeBuilding(91)');
+ assert.equal(game.run('buildingById(91).upgradeEnds'),0);
+ assert(game.element('toast').textContent.includes('2 dragons at level 40'));
+ game.run('state.dragons.push({...state.dragons[0],id:101,level:40,habitatId:null},'+
+   '{...state.dragons[0],id:102,level:40,habitatId:null});upgradeBuilding(91)');
+ assert(game.run('buildingById(91).upgradeEnds')>0);
+ assert.equal(game.run('state.dragons.filter(d=>d.level>=40).length'),2,'Academy requirement must not consume dragons');
+ game.run('buildingById(91).upgradeEnds=0;beginMode({kind:"move",id:91})');
  assert.equal(game.run('ui.mode.kind'),'move');
  game.run('completePlacement(738,705)');
  assert.equal(game.run('buildingById(91).y'),705);

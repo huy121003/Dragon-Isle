@@ -39,7 +39,7 @@ function handleAction(button){
     case "guide-tab":
       if(GUIDE_SECTIONS.some(section=>section[0]===button.dataset.tab)){
         ui.guideTab=button.dataset.tab;renderGuide();dom.body.scrollTop=0;
-        window.dispatchEvent(new Event('dragon-ui-update'));
+        notifyReactRuntime();
       }
       break;
     case "show-world":showWorld();break;
@@ -122,7 +122,7 @@ function handleAction(button){
       if(slot!=="father"&&slot!=="mother")break;
       ui[slot==="father"?"breedFatherQuery":"breedMotherQuery"]=String(button.dataset.query||"");
       if(ui.modal?.name==="breeding")renderBreeding(ui.modal.extra);
-      window.dispatchEvent(new Event("dragon-ui-update"));
+      notifyReactRuntime();
       requestAnimationFrame(()=>{
         const field=document.querySelector('.game-modal [data-breed-search="'+slot+'"]')||
           document.querySelector('[data-breed-search="'+slot+'"]');
@@ -134,7 +134,7 @@ function handleAction(button){
         if(ui.breedDraft[button.dataset.slot==="father"?"mother":"father"]===id)break;
         ui.breedDraft[button.dataset.slot]=id;
         if(ui.modal?.name==="breeding")renderBreeding(ui.modal.extra);
-        window.dispatchEvent(new Event("dragon-ui-update"));
+        notifyReactRuntime();
       }
       break;
     case "collect-breeding":collectBreeding(id);break;
@@ -188,4 +188,10 @@ function handleAction(button){
     case "store":storeBuilding(id);break;
     case "sell":sellBuilding(id);break;
   }
+}
+
+/** Publish imperative legacy UI changes to React, keeping event fallback for standalone scripts. */
+function notifyReactRuntime(){
+  if(window.DragonRuntime?.emit){window.DragonRuntime.emit('ui');return;}
+  window.dispatchEvent(new Event('dragon-ui-update'));
 }

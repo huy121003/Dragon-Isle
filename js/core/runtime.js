@@ -1,9 +1,11 @@
 "use strict";
 (function(){
   const listeners=new Set();
-  function emit(){
-    for(const listener of [...listeners])try{listener();}catch(error){console.error(error);}
-    window.dispatchEvent(new Event("dragon-ui-update"));
+  function emit(reason="ui"){
+    for(const listener of [...listeners])try{listener(reason);}catch(error){console.error(error);}
+    const event=typeof CustomEvent==='function'?new CustomEvent("dragon-ui-update",{detail:{reason}}):new Event("dragon-ui-update");
+    if(!('detail' in event))Object.defineProperty(event,'detail',{value:{reason}});
+    window.dispatchEvent(event);
   }
   function subscribe(listener){
     listeners.add(listener);return function(){listeners.delete(listener);};

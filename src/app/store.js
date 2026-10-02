@@ -13,10 +13,19 @@ function readGameRuntime(){
 export const useAppStore=create(set=>({
   /** React consumes this event-driven compatibility snapshot. */
   gameRuntime:null,
+  /** Separate counters let shell state and time-driven HUDs subscribe independently. */
+  runtimeRevision:0,
+  uiRevision:0,
+  worldRevision:0,
   connection:connectionState(),
   adminOpen:false,
   challengeOpen:false,
-  syncGameRuntime:()=>set({gameRuntime:readGameRuntime()}),
+  syncGameRuntime:(reason='ui')=>set(state=>({
+    gameRuntime:readGameRuntime(),
+    runtimeRevision:state.runtimeRevision+1,
+    uiRevision:state.uiRevision+(reason==='tick'?0:1),
+    worldRevision:state.worldRevision+(reason==='tick'?1:0)
+  })),
   syncConnection:()=>set({connection:{...connectionState()}}),
   setAdminOpen:adminOpen=>set({adminOpen}),
   setChallengeOpen:challengeOpen=>set({challengeOpen}),

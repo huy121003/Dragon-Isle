@@ -13,6 +13,7 @@ import {useAppStore} from './store.js';
 import LegacyContent from '../components/LegacyContent.jsx';
 import GameHud from '../components/GameHud.jsx';
 import GameDock from '../components/GameDock.jsx';
+import RuntimeContent from '../components/RuntimeContent.jsx';
 
 export default function GameShell(){
   const {account,ready:authReady}=useAuth();
@@ -49,9 +50,9 @@ export default function GameShell(){
   return <>
     <ReconnectModal connection={connection}/>
     <GameHud account={account} state={state} xpNeeded={xpNeeded} onAdmin={()=>setAdmin(true)} refProp={hudRef}/>
-    {read('timersBar')&&<div className="react-timers"><LegacyContent html={read('timersBar')}/></div>}
+    {read('timersBar')&&<div className="react-timers"><RuntimeContent id="timersBar" world/></div>}
     {ui?.selection&&!ui?.mode&&!ui?.modal&&!challengeOpen&&!challenge?.match&&!admin&&read('inspector')&&
-      <aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
+      <aside className="react-inspector"><RuntimeContent id="inspector" world ui/></aside>}
     {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>
       {text('placementText')}
       <Button danger onClick={()=>send({action:'cancel-mode'})}>{ui.mode.fromShop?'Back to Shop':'Cancel'}</Button>

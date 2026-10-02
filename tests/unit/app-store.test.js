@@ -3,7 +3,8 @@ import {useAppStore} from '../../src/app/store.js';
 
 describe('app store',()=>{
   beforeEach(()=>{
-    useAppStore.setState({gameRuntime:null,adminOpen:false,challengeOpen:false,
+    useAppStore.setState({gameRuntime:null,runtimeRevision:0,uiRevision:0,worldRevision:0,
+      adminOpen:false,challengeOpen:false,
       connection:{status:'connected',blocked:false,since:0,nextRetryAt:0,attempts:0,message:''}});
   });
   afterEach(()=>vi.unstubAllGlobals());
@@ -39,5 +40,16 @@ describe('app store',()=>{
     useAppStore.getState().syncGameRuntime();
     expect(useAppStore.getState().gameRuntime).not.toBe(published);
     expect(useAppStore.getState().gameRuntime.state.gold).toBe(40);
+  });
+
+  it('keeps world-tick subscriptions separate from app-shell UI changes',()=>{
+    const runtime={state:{gold:25},ui:{modal:null},account:{id:'u1'},data:{}};
+    vi.stubGlobal('window',{DragonGame:runtime});
+    useAppStore.getState().syncGameRuntime('tick');
+    expect(useAppStore.getState().worldRevision).toBe(1);
+    expect(useAppStore.getState().uiRevision).toBe(0);
+    useAppStore.getState().syncGameRuntime('ui');
+    expect(useAppStore.getState().worldRevision).toBe(1);
+    expect(useAppStore.getState().uiRevision).toBe(1);
   });
 });

@@ -3,11 +3,16 @@
 ui.arena={data:null,draft:{attack:[],defense:[]},phase:"teams",busy:false,result:null,error:null,
   presentation:null,animating:false,pendingSkill:null};
 let arenaAnimationTimer=0;
+/** Publish Arena UI changes through the React runtime, with a legacy event fallback. */
+function notifyArenaRuntime(){
+  if(window.DragonRuntime?.emit){window.DragonRuntime.emit('ui');return;}
+  window.dispatchEvent(new Event('dragon-ui-update'));
+}
 /** Clear client-only battle animation state after the authoritative turn events finish rendering. */
 function finishArenaPresentation(){
   clearTimeout(arenaAnimationTimer);
   ui.arena.presentation=null;ui.arena.animating=false;
-  window.dispatchEvent(new Event('dragon-ui-update'));
+  notifyArenaRuntime();
 }
 /**
  * Call one Arena API endpoint.
@@ -35,7 +40,7 @@ async function loadArena(){
     ui.arena.draft={attack:ui.arena.data.attack.slice(),defense:ui.arena.data.defense.slice()};
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;if(ui.modal?.name==='arena')renderArena();
-  window.dispatchEvent(new Event('dragon-ui-update'));
+  notifyArenaRuntime();
 }
 /** Toggle one eligible dragon in the local attack/defense draft without mutating server state. */
 function arenaToggle(side,id){
@@ -48,7 +53,7 @@ function arenaToggle(side,id){
   else if(!dragon.canBattle){toast(dragon.battleReason||'This dragon cannot battle.');return;}
   else if(team.length<teamSize)team.push(id);
   else {toast('Each team can have at most '+teamSize+' dragons.');return;}
-  renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
+  renderArena();notifyArenaRuntime();
 }
 /** Validate and persist both Arena teams through the authoritative server. */
 async function arenaSaveTeam(){
@@ -61,7 +66,7 @@ async function arenaSaveTeam(){
     await arenaRequest('team','PUT',{attack,defense});
     ui.arena.data=await arenaRequest('list');ui.arena.phase="opponents";toast('Teams saved. Choose an opponent.');
   }catch(error){ui.arena.error=error.message;}
-  ui.arena.busy=false;renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
+  ui.arena.busy=false;renderArena();notifyArenaRuntime();
 }
 /** Start an Arena match against a selected opponent after forcing a safe save. */
 async function arenaFight(opponentId){
@@ -74,7 +79,7 @@ async function arenaFight(opponentId){
     ui.arena.data.battle=started.battle;
     ui.arena.result=null;
   }catch(error){ui.arena.error=error.message;}
-  ui.arena.busy=false;renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
+  ui.arena.busy=false;renderArena();notifyArenaRuntime();
 }
 /** Submit one player turn and stage returned authoritative events for client animation. */
 async function arenaTurn(action,number){
@@ -82,7 +87,7 @@ async function arenaTurn(action,number){
   if(ui.arena.busy||ui.arena.animating||!battle)return;
   ui.arena.busy=true;ui.arena.error=null;
   ui.arena.pendingSkill=action==='skill'?battle.attack[battle.activeAttack]?.skills[number]?.name:null;
-  renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
+  renderArena();notifyArenaRuntime();
   try{
     const payload={action,expectedTurn:battle.turn};
     if(action==='skill')payload.skillIndex=number;
@@ -109,7 +114,7 @@ async function arenaTurn(action,number){
     ui.arena.error=error.message;
     try{ui.arena.data=await arenaRequest('list');}catch(ignore){}
   }
-  ui.arena.pendingSkill=null;ui.arena.busy=false;renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
+  ui.arena.pendingSkill=null;ui.arena.busy=false;renderArena();notifyArenaRuntime();
 }
 /** Reload the server profile after Arena rewards are committed server-side. */
 async function arenaRequestSave(){

@@ -76,11 +76,13 @@ legacy game runtime -> DragonRuntime notifications -> Zustand snapshot -> React 
 ```
 
 `useGameRuntime` subscribes to runtime notifications and reads the latest snapshot from Zustand;
-it does not poll globals on a React timer. The legacy simulation remains the owner of saved game
-state during this migration. World ticks publish a snapshot after updating resources/countdowns,
-and direct canvas selections publish after updating the inspector. New React features should use
-Zustand selectors or TanStack Query hooks instead of reading globals in render code. Domain state
-can move into Zustand incrementally behind the same view boundary without changing save format.
+it does not poll globals on a React timer. Runtime notifications distinguish `ui` changes from
+`tick` changes. The shell subscribes to UI revisions, while the HUD and time-sensitive panels
+subscribe to world revisions. This keeps a one-second resource/countdown refresh from rendering
+the whole shell. The legacy simulation remains the owner of saved game state during this migration.
+New React features should use Zustand selectors or TanStack Query hooks instead of reading globals
+in render code. Domain state can move into Zustand incrementally behind the same view boundary
+without changing save format.
 
 ### Browser runtime
 

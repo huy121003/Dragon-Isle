@@ -6,7 +6,8 @@ function finishUpgrades(time){
   state.buildings.forEach(function(b){
     if(b.upgradeEnds&&b.upgradeEnds<=time){
       b.level=Math.min(maxBuildingLevel(b),b.level+1);b.upgradeEnds=0;b.upgradeStartedAt=0;finished++;
-      if(b.type==="habitat")gainPlayerXP(20);
+      const xp=window.DragonEconomy.progression.xpSources;
+      gainPlayerXP(xp.buildingUpgradeBase+xp.buildingUpgradePerLevel*b.level);
       if(b.type==="hatchery")autoAssignWaitingEggs();
     }
   });
@@ -144,7 +145,7 @@ function completePlacement(x,y){
     state.buildings.push(building);
     if(type==="hatchery")autoAssignWaitingEggs();
     ui.selection={type:"building",id:building.id};
-    if(type==="habitat")gainPlayerXP(15);
+    if(type==="habitat")gainPlayerXP(window.DragonEconomy.progression.xpSources.habitatBuild);
     toast("Built "+buildingName(building)+".");
   }
   const f=placementFootprint(mode);

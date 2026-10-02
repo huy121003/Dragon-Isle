@@ -4,6 +4,7 @@
  * Island/Land actions and camera navigation for the world map.
  * Pricing and gates are delegated to shared state/rule helpers.
  */
+/** Buy one adjacent land region using Gold or Gems. */
 function unlockLand(x,y,currency){
   const region=regionOf(x,y);
   if(!region||region.index>=state.unlockedIslands||unlocked(x,y)||!regionAdjacent(region))return;
@@ -19,6 +20,7 @@ function unlockLand(x,y,currency){
   ui.selection=null;
   AUDIO.play("place");updateUI();saveGame();
 }
+/** Unlock the next island after progression, ownership and Gem requirements pass. */
 function unlockIsland(index){
   if(!Number.isInteger(index)||index!==state.unlockedIslands||index>=DATA.islands.length)return;
   const issue=islandUnlockIssue(index);
@@ -34,6 +36,7 @@ function unlockIsland(index){
   focusIsland(index);
   toast("Unlocked "+island.name+"!");AUDIO.play("place");updateUI();saveGame();
 }
+/** Center/zoom the camera onto one island without changing progression state. */
 function focusIsland(index){
   const island=DATA.islands[index];if(!island)return;
   const center=gridToScreen(island.x+island.size/2,island.y+island.size/2);
@@ -43,6 +46,7 @@ function focusIsland(index){
   clampCamera();
   ui.selection=null;closeModal();updateUI();
 }
+/** Fit every island into the current viewport. */
 function showWorld(){
   const points=DATA.islands.flatMap(i=>footprintVertices(i.x,i.y,i.size,i.size));
   const xs=points.map(p=>p.x),ys=points.map(p=>p.y);

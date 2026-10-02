@@ -3,8 +3,8 @@ const detailActions=new Set(['shop-egg-detail','book-detail','dragon-detail']);
 const backActions=new Set(['shop-egg-back','book-back','dragon-back']);
 const savedModalScroll=new Map();
 
-export const $=id=>document.getElementById(id);
-export const game=()=>window.DragonRuntime?.game?.()||window.DragonGame;
+export const $=id=>typeof document==='undefined'?null:document.getElementById(id);
+export const game=()=>typeof window==='undefined'?null:(window.DragonRuntime?.game?.()||window.DragonGame);
 export const read=id=>$(id)?.innerHTML||'';
 export const text=id=>$(id)?.textContent||'';
 const modalKey=modal=>modal.name+':'+String(modal.extra??'');
@@ -25,7 +25,8 @@ export function send(data){
   });
 }
 
-export function connectionApi(){return window.DragonConnectionApi;}
+export function connectionApi(){return typeof window==='undefined'?null:window.DragonConnectionApi;}
 export function connectionState(){
-  return window.DragonConnectionState||{status:'connected',blocked:false,since:0,nextRetryAt:0,attempts:0,message:''};
+  return typeof window!=='undefined'&&window.DragonConnectionState?
+    window.DragonConnectionState:{status:'connected',blocked:false,since:0,nextRetryAt:0,attempts:0,message:''};
 }

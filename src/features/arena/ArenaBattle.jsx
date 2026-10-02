@@ -40,7 +40,7 @@ const effectNames={poison:'POISON',regen:'REGEN',heal:'HEAL',cleanse:'CLEANSE',
   freeze:'FROZEN',vitality:'MAX HP ↑',damage_up:'DAMAGE ↑',damage_down:'DAMAGE ↓',
   armor_up:'ARMOR ↑',armor_down:'ARMOR ↓',damage_reduction:'GUARD',accuracy_down:'ACCURACY ↓'};
 function MatchupMark({value}){
-  if(value!==2&&value!==.5)return null;
+  if(!(value>1||value<1))return null;
   const strong=value>1,label=strong?'Strong':'Weak';
   return <span className={'matchup-mark '+(strong?'strong':'weak')}
     title={`${label} elemental matchup · ×${value}`} aria-label={`${label} · ×${value}`}>
@@ -106,7 +106,9 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   useEffect(()=>{
     setFrame(0);
     if(!presentation)return;
-    const handles=presentation.events.map((_,i)=>setTimeout(()=>setFrame(i+1),120+i*1600));
+    const timing=window.DragonConfig.system.presentation;
+    const handles=presentation.events.map((_,i)=>
+      setTimeout(()=>setFrame(i+1),timing.battleEventLeadMs+i*timing.battleEventMs));
     return()=>handles.forEach(clearTimeout);
   },[presentation?.id]);
   const battle=useMemo(()=>presentation?battleSnapshot(presentation.before,presentation.events,frame):arena.data?.battle,
@@ -149,7 +151,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
     </div>
     <div className="battle-details-scroll" role="region" aria-label="Skills, dragon switch and recent moves" tabIndex={0}>
     <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':challenge&&!myTurn?'Waiting for opponent…':'Turn: '+attacker.nickname}</h3>
-      <p className="battle-matchup-key">▲ Strong ×2 · ▼ Weak ×0.5 · based on the opponent's primary element</p></div>
+      <p className="battle-matchup-key">▲ Strong · ▼ Weak · exact multiplier is shown on each skill</p></div>
       <div className="battle-skill-grid">{skillOptions.map(skill=>{
         const offensive=skill.element&&(!skill.special||skill.power+skill.bonus>0);
         const matchup=offensive?game()?.skillMatchup?.(skill.element,defender.species):1;
@@ -177,7 +179,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         e.skipped?`${e.actor} missed a turn · Frozen`:
         `${e.actor} used ${e.skill} → ${e.target}: `+
         (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')+
-        (e.damage&&e.matchup===2?' · ▲ Strong':e.damage&&e.matchup===.5?' · ▼ Weak':'')+
+        (e.damage&&e.matchup>1?' · ▲ Strong':e.damage&&e.matchup<1?' · ▼ Weak':'')+
         (e.damage&&e.critical?' · ✦ Crit':'')+
         (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div></div>
   </div>;

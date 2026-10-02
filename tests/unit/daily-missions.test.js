@@ -24,6 +24,30 @@ describe('server daily missions',()=>{
     expect(daily.progress.collectGold).toBe(missionConfig.objectives.collectGold.goal);
   });
 
+  it('counts planting and harvesting even when other resource changes offset them in one save',()=>{
+    const now=Date.parse('2026-10-02T12:00:00+07:00');
+    const beforePlant={gold:100,food:100,dragons:[],eggs:[],
+      buildings:[{id:2,type:'farm',level:1,crop:null}]};
+    const afterPlant={...beforePlant,gold:200,
+      buildings:[{id:2,type:'farm',level:1,crop:{id:'wheat',startedAt:now,readyAt:now+60_000}}]};
+    expect(missions.delta(beforePlant,afterPlant,now).plant).toBe(1);
+
+    const beforeHarvest={...afterPlant,food:100,
+      buildings:[{id:2,type:'farm',level:1,crop:{id:'wheat',startedAt:1,readyAt:2}}]};
+    const afterHarvest={...beforeHarvest,food:50,
+      buildings:[{id:2,type:'farm',level:1,crop:null}]};
+    expect(missions.delta(beforeHarvest,afterHarvest,now).collectFood).toBeGreaterThan(0);
+
+    const replanted={...beforeHarvest,gold:200,food:50,
+      buildings:[{id:2,type:'farm',level:1,crop:{id:'wheat',startedAt:now,readyAt:now+60_000}}]};
+    expect(missions.delta(beforeHarvest,replanted,now)).toMatchObject({plant:1,collectFood:20});
+
+    const unripe={...beforeHarvest,
+      buildings:[{id:2,type:'farm',level:1,crop:{id:'wheat',startedAt:now,readyAt:now+60_000}}]};
+    expect(missions.delta(unripe,afterHarvest,now).collectFood).toBe(0);
+    expect(missions.delta(beforeHarvest,{...afterHarvest,buildings:[]},now).collectFood).toBe(0);
+  });
+
   it('ignores the daily progress supplied by the client and resets from server time',()=>{
     const saved={dayKey:'2026-10-01',progress:{hatch:1},claimed:['hatch']};
     const now=Date.parse('2026-10-02T06:00:00+07:00');

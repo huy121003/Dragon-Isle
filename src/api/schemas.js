@@ -26,6 +26,11 @@ export const AdminUserSchema=UserSchema.extend({
   }).nullable().optional()
 });
 export const AdminUsersSchema=z.object({users:z.array(AdminUserSchema)});
+export const ResourcePatchSchema=z.object({
+  gold:z.number().int().min(0).max(1_000_000_000_000).optional(),
+  food:z.number().int().min(0).max(1_000_000_000).optional(),
+  gems:z.number().int().min(0).max(1_000_000_000).optional()
+}).strict().refine(value=>Object.keys(value).length>0,'At least one resource is required');
 
 export function parseWith(schema,value,label='API response'){
   const parsed=schema.safeParse(value);

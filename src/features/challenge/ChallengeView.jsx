@@ -1,6 +1,8 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Button,Switch} from 'antd';
-import {Battle,ElementFilter,RosterCard} from '../arena/ArenaView.jsx';
+import {Battle} from '../arena/ArenaBattle.jsx';
+import {ElementFilter,RosterCard} from '../arena/ArenaShared.jsx';
+import '../../arena.css';
 import '../../challenge.css';
 import {game} from '../../app/game-bridge.js';
 

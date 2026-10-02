@@ -1304,7 +1304,7 @@ check('every new building silhouette renders by day and night',()=>{
 check('all building art remains within its diamond base width',()=>{
  const bounds=snapshot(game,'(()=>{const out=[];ui.debugIso=true;'+
    'for(const type of ["habitat","farm","hatchery","academy","arena","cave","premiumCave","decor"])'+
-   'for(let level=1;level<=Math.min(5,DATA.buildings[type].maxLevel);level++){' +
+   'for(let level=1;level<=DATA.buildings[type].maxLevel;level++){' +
    'const b={id:910,type,element:"fire",x:740,y:699,level,stored:false,'+
    'crop:type==="farm"?{id:"wheat",readyAt:Date.now()-1}:null};'+
    'out.push({type,level,...drawBuilding(b,12345)});'+

@@ -10,6 +10,7 @@ const combat=require('../../js/data/combat-rules.js');
 const arenaConfig=require('../../js/config/arena.js');
 const combatConfig=require('../../js/config/combat.js');
 const progressionConfig=require('../../js/config/progression.js');
+const {createFighterFactory}=require('./fighter.cjs');
 
 /**
  * Create the authoritative combat engine shared by Arena and live Challenge.
@@ -20,40 +21,7 @@ const progressionConfig=require('../../js/config/progression.js');
 function createBattleEngine({catalog,game,rng=()=>Math.random()}){
   // Use a wrapper instead of capturing Math.random itself so test/runtime overrides
   // made after service creation still affect the default RNG, matching legacy behavior.
-  const elements=catalog.elements,rarities=catalog.rarities;
-
-  /** Resolve element slots/rarity for a catalog or legacy species id. */
-  function species(id){
-    const raw=catalog.species.find(dragon=>dragon.id===id);
-    const parts=raw?.elements||id.split('>');
-    const doubled=raw?.doHiem==='transcendent'&&parts.length===4&&
-      parts[0]===parts[1]&&new Set(parts).size===3;
-    if(!parts.length||parts.length>4||parts.some(element=>!elements[element])||
-      (!doubled&&new Set(parts).size!==parts.length))return null;
-    const rarity=raw?.doHiem||(parts.length===1?'common':parts.length===2?
-      parts.some(element=>['light','dark','metal'].includes(element))?'epic':'rare':
-      parts.length===3?'legendary':'mythic');
-    return {parts,rarity};
-  }
-
-  /**
-   * Convert an owned dragon into a mutable battle fighter.
-   * @param {object} dragon - Saved owned-dragon record.
-   */
-  function makeFighter(dragon){
-    const resolved=species(dragon.species);if(!resolved)return null;
-    const stats=combat.stats(resolved.parts,resolved.rarity,dragon.level,elements,rarities,dragon.stars);
-    const skillIds=(catalog.species.find(item=>item.id===dragon.species)?.skillIds||
-      (resolved.parts.length===1?['claw','slam',resolved.parts[0]+'-1',resolved.parts[0]+'-2']:
-        (resolved.parts.length===2?['claw','slam']:resolved.parts.length===3?['claw']:[])
-          .concat(resolved.parts.map(element=>element+'-1'))));
-    const registry=[...(game.skills.neutral||[]),
-      ...Object.entries(game.skills.elemental||{}).flatMap(([element,list])=>
-        list.map(skill=>({...skill,element})))];
-    return {...dragon,parts:resolved.parts,rarity:resolved.rarity,maxHp:stats.hp,
-      hp:stats.hp,attack:stats.attack,defense:stats.defense,
-      statuses:[],cooldowns:[0,0,0,0],skills:skillIds.map(id=>registry.find(skill=>skill.id===id))};
-  }
+  const {makeFighter}=createFighterFactory({catalog,game});
 
   /** Currently active fighter for one battle side. */
   function active(battle,side){

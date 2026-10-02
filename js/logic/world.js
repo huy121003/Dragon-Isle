@@ -51,7 +51,7 @@ function gainPlayerXP(value){
   state.player.xp+=value;
   let levels=0,rewardGold=0,rewardFood=0,rewardGems=0;
   const rules=window.DragonEconomy.progression;
-  while(state.player.level<60&&state.player.xp>=playerXPNeeded(state.player.level)){
+  while(state.player.level<rules.playerMaxLevel&&state.player.xp>=playerXPNeeded(state.player.level)){
     state.player.xp-=playerXPNeeded(state.player.level);
     state.player.level++;
     levels++;
@@ -72,6 +72,8 @@ function recordDragonFeeding(dragon){
   dragon.feedProgress=dragonFeedProgress(dragon)+1;
   if(dragon.feedProgress===4){
     dragon.feedProgress=0;dragon.level++;
+    const xp=window.DragonEconomy.progression.xpSources;
+    gainPlayerXP(xp.dragonLevelBase+Math.floor(dragon.level/10)*xp.dragonLevelPerTen);
     toast(dragon.nickname+" ("+DATA.species[dragon.species].name+") reached level "+dragon.level+"!");
   }else toast(dragon.nickname+" has been fed "+dragon.feedProgress+"/4 times at level "+dragon.level+".");
 }

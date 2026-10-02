@@ -36,12 +36,19 @@ describe('logic architecture boundaries',()=>{
   it('keeps core state/calculations/migrations off DATA balance facades',()=>{
     const state=read('js/core/state.js');
     const calculations=read('js/core/calculations.js');
+    const selectors=read('js/core/selectors.js');
+    const selling=read('js/logic/selling.js');
     const migrations=read('js/persistence/migrations.js');
     expect(state).not.toContain('DATA.buildings.habitat.cost');
-    expect(calculations).not.toMatch(/DATA\\.(progression|upgradeTimes|gemPerDragonPerHour)/);
-    expect(calculations).not.toMatch(/DATA\\.buildings(?:\\[[^\\]]+\\]|\\.[A-Za-z0-9_]+)\\.cost/);
+    expect(calculations).not.toContain('DATA.progression');
+    expect(calculations).not.toContain('DATA.upgradeTimes');
+    expect(calculations).not.toContain('DATA.gemPerDragonPerHour');
+    expect(calculations).not.toContain('DATA.buildings.habitat.cost');
+    expect(calculations).not.toContain('DATA.buildings[type].cost');
+    expect(selectors).not.toContain('DATA.buildings[building.type].maxLevel');
+    expect(selling).not.toContain('DATA.buildings[b.type].sellRate');
     expect(migrations).not.toContain('DATA.progression');
-    expect(migrations).not.toMatch(/DATA\\.buildings\\[out\\.type\\]\\.maxLevel/);
+    expect(migrations).not.toContain('DATA.buildings[out.type].maxLevel');
   });
 
   it('does not reintroduce core combat/arena/challenge balance constants in services',()=>{

@@ -160,7 +160,10 @@ assert(arena.includes("require('../js/config/arena.js')"),'Arena rewards must us
 assert(arena.includes("require('../js/config/progression.js')"),'Arena reward scaling must use shared progression config');
 assert(arena.includes('progressionConfig.contentLevelCap'),'Arena reward scaling must stop at content cap');
 assert(!arena.includes("require('../data/economy.js')"),'Arena service must not depend on the legacy economy facade');
-assert(profile.includes("require('../data/economy.js')"),'Server starter resources must use shared economy config');
+assert(profile.includes("require('../js/config/economy.js')"),'Server starter resources must use direct economy config');
+assert(profile.includes("require('../js/config/buildings.js')"),'Server starter habitat price must use direct building config');
+assert(!profile.includes("require('../data/economy.js')"),'Server profile must not depend on the legacy economy facade');
+assert(!profile.includes('game.buildings.habitat.cost'),'Server profile must not read removed balance values from game.json');
 assert(guide.includes('Strong nhân 2')&&guide.includes('Weak nhân 0,5'),'Guide combat multipliers are stale');
 assert(guide.includes('Rồng sở hữu yêu cầu'),'Academy ownership requirements must be documented');
 

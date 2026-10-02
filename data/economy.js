@@ -1,7 +1,7 @@
 /* Editable economy and animation constants shared by the browser modules. */
 window.DragonEconomy={
   starting:{gold:10000,food:2500,gems:20},
-  progression:{playerMaxLevel:60,xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
+  progression:{xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
     levelGoldBase:1000,levelGoldStep:250,levelFoodBase:200,levelFoodStep:50,
     levelGems:1,milestoneGemBonus:3,
     xpSources:{buildingBuild:{habitat:35,farm:30,cave:75,premiumCave:100,academy:100,arena:100,decor:5},

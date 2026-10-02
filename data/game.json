@@ -211,44 +211,44 @@
     "food": 100000,
     "gems": 10000
   },
-  "gemPerDragonPerHour": 1,
+  "gemPerDragonPerHour": 0.5,
   "progression": {
     "dragonMaxLevel": 100,
     "starUpgrades": [
       {
         "dragons": 2,
         "level": 30,
-        "gold": 50000,
-        "food": 5000,
-        "gems": 10
+        "gold": 75000,
+        "food": 7500,
+        "gems": 8
       },
       {
         "dragons": 4,
         "level": 40,
-        "gold": 150000,
-        "food": 15000,
-        "gems": 25
+        "gold": 200000,
+        "food": 20000,
+        "gems": 20
       },
       {
         "dragons": 6,
         "level": 50,
-        "gold": 350000,
-        "food": 35000,
-        "gems": 50
+        "gold": 500000,
+        "food": 50000,
+        "gems": 45
       },
       {
         "dragons": 8,
         "level": 60,
-        "gold": 750000,
-        "food": 75000,
-        "gems": 100
+        "gold": 1200000,
+        "food": 120000,
+        "gems": 90
       },
       {
         "dragons": 10,
         "level": 70,
-        "gold": 1500000,
-        "food": 150000,
-        "gems": 200
+        "gold": 2500000,
+        "food": 250000,
+        "gems": 180
       }
     ],
     "breedLevel": 5,

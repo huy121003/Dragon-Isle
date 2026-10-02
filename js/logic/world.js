@@ -6,22 +6,26 @@ function finishUpgrades(time){
   state.buildings.forEach(function(b){
     if(b.upgradeEnds&&b.upgradeEnds<=time){
       b.level=Math.min(maxBuildingLevel(b),b.level+1);b.upgradeEnds=0;b.upgradeStartedAt=0;finished++;
-      const xp=window.DragonEconomy.progression.xpSources;
+      const xp=window.DragonConfig.progression.xpSources;
       gainPlayerXP(xp.buildingUpgradeBase+xp.buildingUpgradePerLevel*b.level);
       if(b.type==="hatchery")autoAssignWaitingEggs();
     }
   });
   return finished;
 }
+/**
+ * Advance offline/real-time production to the supplied timestamp.
+ * @param {number} now - Epoch milliseconds.
+ */
 function advanceWorld(now){
-  const delta = Math.max(0,Math.min(now-state.lastTick,12*60*60*1000));
+  const delta=window.DragonRules.world.elapsedMs(state.lastTick,now);
   if(delta<=0){state.lastTick=now;return {gold:0,finished:0,elapsed:0};}
   const startGold = state.buildings.reduce(function(sum,b){return sum+(b.storedGold||0);},0);
   let remaining=delta,clock=state.lastTick,finished=0;
   const houses = new Map(state.buildings.filter(function(b){return b.type==="habitat"&&!b.stored;})
     .map(function(b){return [b.id,b];}));
   while(remaining>0){
-    const step=Math.min(remaining,60000);
+    const step=Math.min(remaining,window.DragonConfig.world.simulationStepMs);
     clock+=step;
     finished+=finishUpgrades(clock);
     const minutes=step/60000;
@@ -38,8 +42,8 @@ function advanceWorld(now){
           house.storedGems=Math.min(gemLimit,(house.storedGems||0)+earned);
         }
       }
-      d.hunger=clamp(d.hunger+minutes,0,100);
-      if(d.hunger>=50) d.happiness=clamp(d.happiness-minutes*(d.hunger>=90?1:.35),0,100);
+      const needs=window.DragonRules.world.advanceNeeds(d,minutes);
+      d.hunger=needs.hunger;d.happiness=needs.happiness;
     });
     remaining-=step;
   }
@@ -47,17 +51,15 @@ function advanceWorld(now){
   const endGold=state.buildings.reduce(function(sum,b){return sum+(b.storedGold||0);},0);
   return {gold:endGold-startGold,finished:finished,elapsed:delta};
 }
+/** Add player XP and apply every crossed level reward. */
 function gainPlayerXP(value){
   state.player.xp+=value;
   let levels=0,rewardGold=0,rewardFood=0,rewardGems=0;
-  const rules=window.DragonEconomy.progression;
   while(state.player.xp>=playerXPNeeded(state.player.level)){
     state.player.xp-=playerXPNeeded(state.player.level);
-    state.player.level++;
-    levels++;
-    rewardGold+=rules.levelGoldBase+rules.levelGoldStep*state.player.level;
-    rewardFood+=rules.levelFoodBase+rules.levelFoodStep*state.player.level;
-    rewardGems+=rules.levelGems+(state.player.level%5===0?rules.milestoneGemBonus:0);
+    state.player.level++;levels++;
+    const reward=window.DragonRules.progression.levelReward(state.player.level);
+    rewardGold+=reward.gold;rewardFood+=reward.food;rewardGems+=reward.gems;
   }
   if(levels){
     state.gold+=rewardGold;state.food+=rewardFood;state.gems+=rewardGems;
@@ -70,12 +72,13 @@ function gainPlayerXP(value){
 function recordDragonFeeding(dragon){
   if(dragon.level>=dragonLevelCap())return;
   dragon.feedProgress=dragonFeedProgress(dragon)+1;
-  if(dragon.feedProgress===4){
+  const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
+  if(dragon.feedProgress===feedsPerLevel){
     dragon.feedProgress=0;dragon.level++;
     const xp=window.DragonEconomy.progression.xpSources;
     gainPlayerXP(xp.dragonLevelBase+Math.floor(dragon.level/10)*xp.dragonLevelPerTen);
     toast(dragon.nickname+" ("+DATA.species[dragon.species].name+") reached level "+dragon.level+"!");
-  }else toast(dragon.nickname+" has been fed "+dragon.feedProgress+"/4 times at level "+dragon.level+".");
+  }else toast(dragon.nickname+" has been fed "+dragon.feedProgress+"/"+feedsPerLevel+" times at level "+dragon.level+".");
 }
 function spendGold(cost){if(state.gold<cost){toast("Not enough gold.");return false;}state.gold-=cost;return true;}
 /* LOGIC: Gói thử nghiệm nạp đến mức tối thiểu, không cộng dồn vô hạn khi chạm nhiều lần. */
@@ -97,10 +100,10 @@ function buildLockReason(type,element){
   if(!DATA.buildings[type])return "This building does not exist.";
   if(type==="hatchery")return "The fixed Hatchery is already on the island and cannot be bought.";
   if(type==="farm"&&farmCount()>=farmLimit(state.player.level)){
-    const next=(Math.floor(state.player.level/window.DragonEconomy.progression.farmEveryLevels)+1)*
-      window.DragonEconomy.progression.farmEveryLevels;
+    const farmConfig=window.DragonConfig.progression.farms;
+    const next=(Math.floor(state.player.level/farmConfig.everyLevels)+1)*farmConfig.everyLevels;
     return "Farm limit reached ("+farmCount()+"/"+farmLimit(state.player.level)+"). "+
-      (farmLimit(state.player.level)<window.DragonEconomy.progression.maxFarms?
+      (farmLimit(state.player.level)<farmConfig.maxFarms?
         "Unlock another at player level "+next+".":"Maximum reached.");
   }
   if(type==="habitat"&&!DATA.elements[element])return "Unknown Habitat element.";
@@ -150,7 +153,7 @@ function completePlacement(x,y){
     state.buildings.push(building);
     if(type==="hatchery")autoAssignWaitingEggs();
     ui.selection={type:"building",id:building.id};
-    gainPlayerXP(window.DragonEconomy.progression.xpSources.buildingBuild[type]||0);
+    gainPlayerXP(window.DragonConfig.progression.xpSources.buildingBuild[type]||0);
     toast("Built "+buildingName(building)+".");
   }
   const f=placementFootprint(mode);
@@ -189,8 +192,8 @@ function feedDragon(id){
   if(state.food<cost){toast("Requires "+money(cost)+" food to feed "+d.nickname+".");return;}
   advanceWorld(Date.now());
   state.food-=cost;
-  d.hunger=clamp(d.hunger-8,0,100);
-  d.happiness=clamp(d.happiness+5,0,100);
+  const needs=window.DragonRules.world.feedNeeds(d);
+  d.hunger=needs.hunger;d.happiness=needs.happiness;
   recordDragonFeeding(d);
   const home=buildingById(d.habitatId);
   if(home&&!home.stored){const center=buildingCenter(home);burst(center.x,center.y,"#ffb0bd",12);}

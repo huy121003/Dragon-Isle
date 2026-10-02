@@ -85,7 +85,8 @@ try{
   assert.doesNotMatch(opponents,/arena-roster-grid/);
   const refill=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
     data:{...data,attemptsRemaining:1}}}));
-  assert.match(refill,/Restore all attempts · 5 gems/);
+  assert.match(refill,/Restore all attempts · /);
+  assert.match(refill,/class="resource-amount resource-gems" role="img" aria-label="5 gems"/);
   assert.match(refill,/Your rival list stays until all five are defeated/);
   const defeated=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
     data:{...data,defeatedOpponentIds:['bot-1']}}}));

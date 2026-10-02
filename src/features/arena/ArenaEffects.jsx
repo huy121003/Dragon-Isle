@@ -53,7 +53,7 @@ function DamageMarks({event}){
       <span aria-hidden="true">✦</span> CRIT</span>}
   </span>;
 }
-export function SkillEffect({event,frame}){
+export function SkillEffect({event,frame,anchors}){
   if(!event||(!event.damage&&!event.heal&&!event.special&&!event.skipped&&!event.misses))return null;
   const theme=game()?.data?.elements?.[event.element];
   const element=theme||effectIcons[event.element]?event.element:'neutral';
@@ -67,13 +67,23 @@ export function SkillEffect({event,frame}){
     event.skipped?'FROZEN':effectNames[effect]||'STATUS';
   const styleType=event.statusTick||event.skipped?'status-tick':
     event.special?'special':event.element?'elemental':'normal';
+  const targetSide=self?event.side:event.targetSide||
+    (event.side==='attack'?'defense':'attack');
+  const origin=anchors?.[event.side],target=anchors?.[targetSide];
+  const geometry=origin&&target?{
+    '--origin':origin.x+'px','--target':target.x+'px',
+    '--fx-origin-y':origin.y+'px','--fx-target-y':target.y+'px',
+    '--fx-damage-y':Math.max(24,target.y-42)+'px',
+    '--fx-distance':Math.hypot(target.x-origin.x,target.y-origin.y)+'px',
+    '--fx-angle':Math.atan2(target.y-origin.y,target.x-origin.x)+'rad'
+  }:{};
   return <div key={frame} className={'battle-skill-fx element-'+element+' '+
     (event.side==='attack'?'toward-right':'toward-left')+
     (self?' self-target':'')+(support?' support':'')+
     (event.critical?' critical':'')+(event.misses&&!event.damage?' missed':'')+
     ' '+styleType+' effect-'+effect+(event.special?' special-'+
       (event.skillId?.endsWith('-double-2')?'mantle':'crown'):'')}
-    style={{'--fx':color}} aria-label={`${event.skill}: ${caption}`}>
+    style={{'--fx':color,...geometry}} aria-label={`${event.skill}: ${caption}`}>
     <span className="fx-trail"/><span className="fx-projectile"><i>{illustrated?
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href={'#flag-'+element}/></svg>:
       effectIcons[element]}</i></span>

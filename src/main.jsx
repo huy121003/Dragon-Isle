@@ -156,8 +156,8 @@ function Admin({open,onClose}){
   const [editing,setEditing]=useState(null),[saving,setSaving]=useState(false);
   const [editForm]=Form.useForm(),[bulkForm]=Form.useForm();
   useEffect(()=>{
-    if(editing)editForm.setFieldsValue({gold:editing.progress?.gold??500,
-      food:editing.progress?.food??50,gems:editing.progress?.gems??10});
+    if(editing)editForm.setFieldsValue({gold:editing.progress?.gold??10000,
+      food:editing.progress?.food??2500,gems:editing.progress?.gems??20});
   },[editing,editForm]);
   async function load(){
     setLoading(true);
@@ -289,10 +289,9 @@ function App(){
   if(!authReady)return <div className="react-loading"><Spin size="large"/></div>;
   if(!account)return <Auth onDone={()=>{}}/>;
   if(!state)return <div className="react-loading"><Spin size="large" tip="Loading dragon island"/></div>;
-  const xp=state.player.level>=60?100:Math.min(100,Math.round(state.player.xp/game().xpNeeded(state.player.level)*100));
-  const xpNeeded=state.player.level>=60?0:game().xpNeeded(state.player.level);
-  const xpLabel=state.player.level>=60?'MAX LEVEL':
-    `${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
+  const xpNeeded=game().xpNeeded(state.player.level);
+  const xp=Math.min(100,Math.round(state.player.xp/xpNeeded*100));
+  const xpLabel=`${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
   const commerceModal=['shop','crops'].includes(ui?.modal?.name);
   const arenaBattle=ui?.modal?.name==='arena'&&!!(ui.arena?.data?.battle||ui.arena?.presentation);

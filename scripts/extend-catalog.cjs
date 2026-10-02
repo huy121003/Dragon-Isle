@@ -58,7 +58,7 @@ function extendCatalog(db,game){
   }
   db.khac=Object.fromEntries(ids.map(id=>[id,ids.filter(target=>expansion.wins[id].includes(target))]));
   db.rarities[doubleElements.rarity.id]=clone(doubleElements.rarity);
-  game.breedingTimes[doubleElements.rarity.id]=10800;
+  game.breedingTimes[doubleElements.rarity.id]=3600;
   globalThis.DragonDatabase=db;
   // Use the same factory, rarity, colors, stats, passive and skills as all existing dragons.
   const rulesPath=require.resolve('../js/data/dragon-rules.js');

@@ -126,10 +126,11 @@ function updateInspector(){
     body+='<p>'+ds.length+'/'+habitatCapacity(b.level)+' dragons · '+goldPerMinute(habitatIncomePerMinute(b))+' gold/min</p>'+
       '<p>💎 '+habitatGemRate(b)+' gem/hour · one gem per dragon/hour'+
       ((b.storedGems||0)>=habitatGemCapacity(b)?' · gem storage full':ds.length?' · next gem in '+duration(gemNextSeconds(b)):'')+'</p>'+
-      '<div class="row"><span class="pill">🪙 '+goldDecimal(b.storedGold)+' gold</span>'+ 
+      '<div class="row"><span class="pill">🪙 '+goldDecimal(b.storedGold)+' gold</span>'+
       '<span class="pill">💎 '+money(b.storedGems||0)+'/'+habitatGemCapacity(b)+' stored gems</span></div>'+
       '<p>Gold capacity: '+money(habitatGoldCapacity(b))+'</p>'+
-      '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
+      '<div class="actions"><button class="btn" data-action="habitat-menu" data-id="'+b.id+'">Habitat details</button>'+
+      '<button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
       (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
       goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
     ds.forEach(function(d){body+='<button class="btn" data-action="inspect-dragon" data-id="'+d.id+'">🐲 '+esc(d.nickname)+' · '+esc(DATA.species[d.species].name)+'</button>';});

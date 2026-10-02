@@ -79,7 +79,7 @@ function canonicalSpeciesId(id){
   if(typeof id!=="string")return id;
   if(speciesStore[id])return id;
   const parts=id.split(">");
-  if(parts.length<3||parts.length>4||new Set(parts).size!==parts.length||
+  if(parts.length<3||parts.length>CONFIG.dragons.maxElementsPerDragon||new Set(parts).size!==parts.length||
     parts.some(function(e){return !DATA.elements[e];}))return id;
   if(parts.length===3)return [parts[0]].concat(parts.slice(1).sort(function(a,b){
     return elementOrder[a]-elementOrder[b];

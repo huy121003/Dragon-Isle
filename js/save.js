@@ -24,7 +24,8 @@ function exportSaveJson(){
 }
 async function importSaveJson(file){
   try{
-    if(file.size>12000000)throw new Error('The save exceeds 12 MB.');
+    const maxBytes=window.DragonConfig.system.save.maxBytes;
+    if(file.size>maxBytes)throw new Error('The save exceeds '+Math.round(maxBytes/1_000_000)+' MB.');
     const parsed=JSON.parse(await file.text());
     const restored=migrateSave(parsed);
     state=restored;

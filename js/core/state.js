@@ -206,7 +206,7 @@ function dragonLevelCap(){
 function academyUpgradeCost(level){
   const a=window.DragonEconomy.academy,step=DATA.progression.academyUpgrades[level-1];
   if(!step)return null;
-  return {playerLevel:step.playerLevel,gold:Math.round(a.baseGold*Math.pow(a.costFactor,level)),
+  return {playerLevel:contentRequirementLevel(step.playerLevel),gold:Math.round(a.baseGold*Math.pow(a.costFactor,level)),
     food:Math.round(a.baseFood*Math.pow(a.costFactor,level)),
     gems:Math.round(a.baseGems*Math.pow(a.costFactor,level))};
 }
@@ -321,7 +321,7 @@ function upgradeSeconds(building){
 }
 function hatcheryUpgradePlayerLevel(level){
   const gates=window.DragonEconomy.progression.hatcheryUpgradeLevels;
-  return gates[Math.max(0,Math.floor(Number(level)||1)-1)]||1;
+  return contentRequirementLevel(gates[Math.max(0,Math.floor(Number(level)||1)-1)]||1);
 }
 function islandUnlockCost(index){
   if(index<=0)return 0;

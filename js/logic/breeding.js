@@ -1,11 +1,11 @@
 "use strict";
 
-/* Four-element offspring need two triple parents; Double offspring need two four-slot parents. */
-const BREED_TIER_WEIGHTS={
-  "1+1":[25,75],"1+2":[20,80],"1+3":[18,82],"1+4":[16,84],
-  "2+2":[20,80],"2+3":[18,82],"2+4":[16,84],
-  "3+3":[16,84],"3+4":[15,85],"4+4":[14,86]
-};
+/**
+ * Breeding orchestration.
+ *
+ * Candidate discovery uses the catalog; probabilities/durations are delegated
+ * to js/rules/breeding.js. This file owns only gameplay state mutation/UI side effects.
+ */
 function breedingOptions(father,mother,cave){
   if(!father||!mother||father.id===mother.id)return [];
   const F=DATA.species[father.species],M=DATA.species[mother.species];
@@ -34,57 +34,46 @@ function breedingOptions(father,mother,cave){
   });
   const readyForDouble=F.elements.length===4&&M.elements.length===4&&
     F.elements[0]===M.elements[0]&&
-    father.level>=window.DragonEconomy.breeding.doubleMinParentLevel&&
-    mother.level>=window.DragonEconomy.breeding.doubleMinParentLevel&&
+    father.level>=window.DragonConfig.breeding.double.minParentLevel&&
+    mother.level>=window.DragonConfig.breeding.double.minParentLevel&&
     new Set(F.elements).size>=3&&new Set(M.elements).size>=3;
   groups[4]=!readyForDouble?[]:DOUBLE_IDS.filter(function(id){
     return DATA.species[id].elements[0]===F.elements[0];
   });
   const tierKey=[F.elements.length,M.elements.length].sort(function(a,b){return a-b;}).join("+");
-  const rules=window.DragonEconomy.breeding,avg=(father.level+mother.level)/2;
-  const three=groups[2].length?Math.min(rules.threeCap,
-    rules.threeBase+Math.floor(avg/10)*rules.threePerTenLevels):0;
-  const four=groups[3].length&&F.elements.length===3&&M.elements.length===3&&pool.length>=4?
-    Math.min(rules.fourCap,rules.fourBase+
-      Math.floor(Math.max(0,avg-rules.fourGrowthStartLevel)/10)*rules.fourPerTenLevels):0;
-  const double=groups[4].length?Math.min(rules.doubleCap,
-    rules.doubleBase+Math.floor((avg-rules.doubleMinParentLevel)/10)*rules.doublePerTenLevels):0;
-  const rareFactor=cave?.type==='premiumCave'?rules.premiumRareFactor:1;
-  const boostedThree=three*rareFactor,boostedFour=four*rareFactor,boostedDouble=double*rareFactor;
-  const low=1-boostedThree-boostedFour-boostedDouble,base=BREED_TIER_WEIGHTS[tierKey];
-  const two=groups[1].length?low*base[1]/(base[0]+base[1]):0;
-  const weights=[low-two,two,boostedThree,boostedFour,boostedDouble];
+  const avg=(father.level+mother.level)/2;
+  const rare=window.DragonRules.breeding.rareTierChances({
+    averageLevel:avg,hasThree:!!groups[2].length,hasFour:!!groups[3].length,
+    hasDouble:!!groups[4].length,bothTriple:F.elements.length===3&&M.elements.length===3,
+    poolSize:pool.length,premium:cave?.type==="premiumCave"
+  });
+  const common=window.DragonRules.breeding.commonTierChances(
+    tierKey,rare.three+rare.four+rare.double,!!groups[1].length);
+  const weights=[common.one,common.two,rare.three,rare.four,rare.double];
   return groups.flatMap(function(ids,index){
     if(!ids.length||!weights[index])return [];
     const bias=ids.map(function(id){
-      const parts=DATA.species[id].elements;
-      return 1+.3*parts.filter(e=>F.elements.includes(e)&&M.elements.includes(e)).length+
-        .1*(F.elements.includes(parts[0])?1:0)+.1*(M.elements.includes(parts[0])?1:0);
+      return window.DragonRules.breeding.candidateBias(
+        DATA.species[id].elements,F.elements,M.elements);
     });
     const groupTotal=bias.reduce(function(sum,n){return sum+n;},0);
     return ids.map(function(id,i){return {id:id,chance:weights[index]*bias[i]/groupTotal};});
   });
 }
+/**
+ * Breeding duration in seconds. The unused level parameter is retained for
+ * compatibility with existing callers until the legacy signature is removed.
+ */
 function breedingSeconds(species,level,cave,parents){
   const s=typeof species==="string"?DATA.species[species]:species;
   if(!s)return 60;
-  const rules=window.DragonEconomy.breeding,tier=dragonTimeTier(s);
-  const levelPressure=s.elements.reduce(function(sum,element){
-    return sum+(ELEMENT_UNLOCK[element]||1);
-  },0)/s.elements.length;
-  let base=(rules.timeByTier[tier]||rules.timeByTier[4])+
-    Math.min(rules.maxElementBonusSeconds,levelPressure*rules.elementLevelSeconds);
   const parentSpecies=(parents||[]).map(function(parent){
     if(typeof parent==="string")return DATA.species[parent];
     if(parent?.species)return DATA.species[parent.species];
     return parent;
   }).filter(Boolean);
-  if(parentSpecies.length===2){
-    const union=new Set(parentSpecies.flatMap(parent=>parent.elements));
-    base+=Math.max(0,union.size-2)*rules.combinationSecondsPerExtraElement;
-    if(parentSpecies[0].elements.length!==parentSpecies[1].elements.length)base+=rules.mixedTierSeconds;
-  }
-  return Math.round(base*(cave?.type==='premiumCave'?rules.premiumTimeFactor:1));
+  return window.DragonRules.breeding.seconds(
+    s,dragonTimeTier(s),ELEMENT_UNLOCK,parentSpecies,cave?.type==="premiumCave");
 }
 function isBreedingCave(building){return building?.type==='cave'||building?.type==='premiumCave';}
 function dragonBusy(id){
@@ -124,7 +113,7 @@ function collectBreeding(caveId){
   const breeding=cave.breeding;
   const egg=addEgg(breeding.result,"breed",[breeding.fatherSpecies,breeding.motherSpecies],cave.id);
   cave.breeding=null;
-  gainPlayerXP(window.DragonEconomy.progression.xpSources.breed);
+  gainPlayerXP(window.DragonConfig.progression.xpSources.breed);
   toast(egg.hatcheryId?"The bred egg entered the Hatchery.":"The Hatchery is full; the bred egg is waiting in Inventory.");
   const center=buildingCenter(cave);burst(center.x,center.y,"#efbdff",20);
   AUDIO.play("egg");openModal(egg.hatcheryId?"hatchery":"inventory",egg.hatcheryId||null);saveGame();

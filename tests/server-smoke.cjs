@@ -6,6 +6,7 @@ const path=require('node:path');
 const net=require('node:net');
 const {spawn}=require('node:child_process');
 const economyRules=require('../data/economy.js');
+const dailyMissions=require('../server/daily-missions.cjs');
 const root=path.resolve(__dirname,'..');
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dragon-isle-auth-'));
 for(const name of ['dragons.json','game.json'])fs.copyFileSync(path.join(root,'data',name),path.join(temporary,name));
@@ -233,6 +234,12 @@ async function launch(port){
       {action:'skill',skillIndex:2,expectedTurn:round.battle.turn})).json();
     assert.equal(round.result?.won,true,'An Arena victory completes and keeps its existing rewards');
     assert(round.result.reward.gold>0&&round.result.reward.food>0&&round.result.reward.gems>0);
+    const profileFile=path.join(temporary,'profiles',idA+'.json');
+    const winnerProfile=JSON.parse(fs.readFileSync(profileFile,'utf8'));
+    assert.equal(winnerProfile.dailyMissions.progress.arena,1,
+      'A finished battle with player skills advances the Arena mission');
+    winnerProfile.dailyMissions=dailyMissions.emptyState();
+    fs.writeFileSync(profileFile,JSON.stringify(winnerProfile));
     assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,1);
     const afterWin=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert(afterWin.defeatedOpponentIds.includes(choices.opponents[0].id),
@@ -245,6 +252,9 @@ async function launch(port){
       const result=await (await arenaCall('turn','POST',cookieAdmin,
         {action:'forfeit',expectedTurn:match.battle.turn})).json();
       assert.equal(result.result.won,false);
+      const afterForfeit=JSON.parse(fs.readFileSync(profileFile,'utf8'));
+      assert.equal(afterForfeit.dailyMissions.progress.arena,0,
+        'Forfeiting without using a skill must not complete the Arena mission');
     }
     const exhausted=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(exhausted.attemptsRemaining,0);

@@ -28,6 +28,7 @@ async function boot(saveValue,options={}){
   const storage=new Map();if(options.legacyLocal)storage.set('dragon-isle-save',options.legacyLocal);
   let remote=options.remote!==undefined?options.remote:(saveValue?JSON.parse(saveValue):null);
   let remoteRevision=Math.max(0,Math.floor(Number(remote?.serverRevision)||0));
+  const network=options.networkState||{down:false};
   const document={getElementById:element,createElement:()=>element('float'+Math.random()),
     querySelectorAll:()=>[],addEventListener(){},hidden:false};
   const window={devicePixelRatio:1,location:{protocol:options.protocol||'http:'},
@@ -39,6 +40,7 @@ async function boot(saveValue,options={}){
     if(url==='/api/auth/me')return options.noAuth?{ok:false,status:401}:
       {ok:true,status:200,json:async()=>({user:{id:'demo',username:'demo'}})};
     if(url==='/api/save'&&request.method==='PUT'){
+      if(network.down)throw new TypeError('network offline');
       const expected=Number(request.headers?.['X-Dragon-Save-Revision']);
       if(Number.isSafeInteger(expected)&&expected!==remoteRevision)
         return {ok:false,status:409,headers:{get:()=>null},json:async()=>({error:'Save conflict',code:'SAVE_CONFLICT',serverRevision:remoteRevision})};
@@ -61,7 +63,7 @@ async function boot(saveValue,options={}){
     vm.runInContext(source,context,{filename:src,timeout:2000});
   }
   await vm.runInContext('window.gameBootPromise',context);
-  return {context,element,drawCalls,storage,fetchCalls,
+  return {context,element,drawCalls,storage,fetchCalls,network,getRemote:()=>remote,
     run(code){return vm.runInContext(code,context,{timeout:2000});}};
 }
 function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+')'));}
@@ -120,6 +122,21 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
  g.run('refreshCountdowns()');
  assert.equal(g.run('window.refreshCount'),1,'A completed timer must not redraw the panel every second');
 });
+{
+ const g=await boot();
+ g.network.down=true;
+ g.run('state.gold=54321');
+ assert.equal(await g.run('saveGame()'),false);
+ assert(g.run('pendingServerSave!==null'),'Failed network save must stay queued');
+ assert.equal(g.run('saveReadOnly'),false,'Network loss must not make the tab read-only');
+ g.network.down=false;
+ assert.equal(await g.run('flushServerSave()'),true);
+ assert.equal(g.run('pendingServerSave'),null);
+ assert.equal(g.getRemote().gold,54321);
+ const latestPut=g.fetchCalls.filter(x=>x.url==='/api/save'&&x.request.method==='PUT').at(-1);
+ assert.equal(latestPut.request.keepalive,true,'Small snapshots should use fetch keepalive');
+ console.log('PASS network failure keeps the latest save queued and retries safely');
+}
 check('saves preserve player levels above 60',()=>{
  const high=snapshot(game,'newGame()');
  high.player.level=125;high.player.xp=777;

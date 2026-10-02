@@ -396,26 +396,38 @@ function flushServerSave(){
     while(pendingServerSave){
       const snapshot=pendingServerSave;
       pendingServerSave=null;
-      const response=await fetch('/api/save',{method:'PUT',headers:{'Content-Type':'application/json',
-        'X-Dragon-Account':currentAccount.id,'X-Dragon-Save-Revision':String(serverSaveRevision)},
-        body:snapshot,cache:'no-store'});
+      let response;
+      try{
+        response=await fetch('/api/save',{method:'PUT',headers:{'Content-Type':'application/json',
+          'X-Dragon-Account':currentAccount.id,'X-Dragon-Save-Revision':String(serverSaveRevision)},
+          body:snapshot,cache:'no-store',keepalive:snapshot.length<=50000});
+      }catch(cause){
+        if(!pendingServerSave)pendingServerSave=snapshot;
+        const error=new Error('Connection lost. Progress is queued and will retry automatically.');
+        error.code='SAVE_NETWORK';error.cause=cause;throw error;
+      }
       const body=await response.json().catch(function(){return {};});
       if(!response.ok){
         const error=new Error(body.error||(response.status===401?'Session expired.':
           response.status===409?'Progress changed on another device. Reload to continue safely.':
           'Cannot save the JSON profile.'));
-        error.code=body.code||'';throw error;
+        error.code=body.code||(response.status>=500?'SAVE_RETRYABLE':'');
+        if(error.code==='SAVE_RETRYABLE'&&!pendingServerSave)pendingServerSave=snapshot;
+        throw error;
       }
       serverSaveRevision=Math.max(serverSaveRevision+1,
         Math.floor(Number(body.serverRevision)||serverSaveRevision+1));
+      serverWarningShown=false;
     }
     return true;
   })().catch(function(error){
-      pendingServerSave=null;
-      if(error.code==='SAVE_CONFLICT')saveReadOnly=true;
+      if(error.code==='SAVE_CONFLICT'){
+        pendingServerSave=null;saveReadOnly=true;
+      }
       if(!serverWarningShown){
         serverWarningShown=true;
-        toast(error.message+(error.code==='SAVE_CONFLICT'?'':' Check the connection and reload.'));
+        toast(error.message+(error.code==='SAVE_CONFLICT'||error.code==='SAVE_NETWORK'||
+          error.code==='SAVE_RETRYABLE'?'':' Check the connection and reload.'));
       }
       return false;
   }).finally(function(){serverSaveBusy=false;});

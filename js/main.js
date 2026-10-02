@@ -52,6 +52,10 @@ document.addEventListener("change",function(event){
 dom.overlay.addEventListener("click",function(event){if(event.target===dom.overlay)closeModal();});
 window.addEventListener("resize",resizeCanvas);
 window.addEventListener("beforeunload",function(){advanceWorld(Date.now());saveGame();});
+window.addEventListener("pagehide",function(){advanceWorld(Date.now());saveGame();});
+window.addEventListener("online",function(){
+  if(state&&!saveReadOnly){advanceWorld(Date.now());saveGame();}
+});
 document.addEventListener("visibilitychange",function(){
   if(document.hidden){advanceWorld(Date.now());saveGame();}
   else{

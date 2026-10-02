@@ -18,7 +18,7 @@ try{
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
     ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
   globalThis.window={DragonGame:{skillMatchup:(element,target)=>
-    element==='fire'&&target==='water'?.75:element==='fire'&&target==='ice'?1.5:1,
+    element==='fire'&&target==='water'?.5:element==='fire'&&target==='ice'?2:1,
     data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
     water:{mark:'💧',name:'Water',color:'#48e'},earth:{mark:'◆',name:'Earth',color:'#a86'},
     wind:{mark:'🌀',name:'Wind',color:'#6ab'},ice:{mark:'❄',name:'Ice',color:'#9ce'},
@@ -110,11 +110,11 @@ try{
     event:{damage:300,element:'thunder',skill:'Sky Thunder',side:'defense',critical:true}}));
   assert.match(counterEffect,/toward-left critical/);assert.match(counterEffect,/✦<\/span> CRIT/);
   const strongCrit=renderToStaticMarkup(React.createElement(SkillEffect,{frame:3,
-    event:{damage:345,matchup:1.5,element:'fire',skill:'Inferno',side:'attack',critical:true}}));
+    event:{damage:345,matchup:2,element:'fire',skill:'Inferno',side:'attack',critical:true}}));
   assert.match(strongCrit,/−345/);assert.match(strongCrit,/matchup-mark strong/);
   assert.match(strongCrit,/matchup-mark crit/);
   const weak=renderToStaticMarkup(React.createElement(SkillEffect,{frame:4,
-    event:{damage:88,matchup:.75,element:'fire',skill:'Ember',side:'attack'}}));
+    event:{damage:88,matchup:.5,element:'fire',skill:'Ember',side:'attack'}}));
   assert.match(weak,/matchup-mark weak/);assert.doesNotMatch(weak,/matchup-mark crit/);
   const normal=renderToStaticMarkup(React.createElement(SkillEffect,{frame:5,
     event:{damage:99,matchup:1,element:null,skill:'Claw',side:'attack'}}));

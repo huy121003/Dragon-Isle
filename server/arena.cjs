@@ -82,7 +82,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
         const seconds=Math.ceil((setup.cooldownUntil-Date.now())/1000);
         throw Object.assign(new Error('Remaining: '+Math.floor(seconds/60)+' minutes '+(seconds%60)+' seconds until the next battle.'),{status:429});
       }
-      if(!owned(attackerProfile,setup.attack))throw Object.assign(new Error('Set three eligible attack dragons.'),{status:400});
+      if(!owned(attackerProfile,setup.attack))throw Object.assign(new Error('Set '+arenaConfig.teamSize+' eligible attack dragons.'),{status:400});
       const attack=summary(attackerProfile,setup.attack).map(fighter).filter(Boolean);
       const defense=summary(defenderProfile,defenderSetup.defense).map(fighter).filter(Boolean);
       if(!attack.length||!defense.length)throw Object.assign(new Error('Invalid team.'),{status:400});
@@ -92,7 +92,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       battle={opponent:defender.username,opponentId:defender.id,turn:1,attack,defense,activeAttack:0,activeDefense:0,
         events:[],reward:{gold:rewardRules.goldBase+rewardRules.goldPerOpponentLevel*rewardLevel,
           food:rewardRules.foodBase+rewardRules.foodPerOpponentLevel*rewardLevel,
-          gems:rewardRules.gemBase+Math.floor(rewardLevel/20)*rewardRules.gemPer20Levels}};
+          gems:rewardRules.gemBase+Math.floor(rewardLevel/rewardRules.gemLevelStep)*rewardRules.gemPer20Levels}};
       return {...setup,cooldownUntil:0,battle};
     });
     return {battle:publicBattle(battle)};

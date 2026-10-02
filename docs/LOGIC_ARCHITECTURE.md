@@ -65,6 +65,35 @@ Mỗi file chỉ nên sở hữu **một domain**. Ví dụ:
 
 Nếu file bắt đầu xử lý nhiều domain không liên quan, tách file trước khi thêm logic mới.
 
+## App bootstrap và legacy UI
+
+### Browser runtime
+
+```text
+js/main.js                 authenticated boot sequence only
+js/app/events.js           DOM/window lifecycle and input bindings
+js/app/runtime-loops.js    world tick, autosave and animation frame loop
+js/app/bridge.js           legacy game state -> React compatibility bridge
+```
+
+`js/main.js` không chứa event listener chi tiết, interval hay bridge implementation.
+Các cadence/timing vẫn đọc từ `js/config/system.js`.
+
+### Modal panels
+
+```text
+js/ui/panels.js            modal router only
+js/ui/panels/shop.js       shop + egg product detail
+js/ui/panels/dragons.js    dragon/Habitat/assignment
+js/ui/panels/hatchery.js   incubation/ready egg flow
+js/ui/panels/breeding.js   breeding/recipe presentation
+js/ui/panels/book.js       collection/species/reveal
+js/ui/panels/*.js          other domain-specific panels
+```
+
+Panel domain files chỉ render presentation và gửi action; gameplay formula/state mutation
+phải nằm ở rule/logic layer tương ứng.
+
 ## Module map cho Arena / Challenge
 
 ### Server Arena

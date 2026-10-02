@@ -2,6 +2,9 @@
 (function(root){
 'use strict';
 const DB=root.DragonDatabase;
+const COMBAT_CONFIG=root.DragonConfig?.combat||(typeof module!=="undefined"&&module.exports?require("../config/combat.js"):null);
+const DRAGON_CONFIG=root.DragonConfig?.dragons||(typeof module!=="undefined"&&module.exports?require("../config/dragons.js"):null);
+const WORLD_CONFIG=root.DragonConfig?.world||(typeof module!=="undefined"&&module.exports?require("../config/world.js"):null);
 const ELEMENTS=DB.elements, ELEMENT_IDS=Object.keys(ELEMENTS);
 const TYPE_CHART=DB.typeChart, KHAC=DB.khac;
 const RARITY=DB.rarities, PAIRS=DB.pairs, TRIPLES=DB.triples;
@@ -13,7 +16,7 @@ function mix(a, b, t) {
 }
 
 /* LOGIC: Trọng số chỉ số và thứ tự hệ được áp dụng cho rồng lai. */
-const WEIGHTS = { 1: [1], 2: [0.6, 0.4], 3: [0.5, 0.3, 0.2], 4: [0.4, 0.3, 0.2, 0.1] };
+const WEIGHTS=COMBAT_CONFIG.elementWeights;
 function typeMultiplier(attackElement, defenderElements) {
   return TYPE_CHART[attackElement][defenderElements[0]];
 }
@@ -35,7 +38,11 @@ function hienTuongRong(elements) {
   return 'A fusion of ' + elements.map(e => ELEMENTS[e].ten).join(', ') + '.';
 }
 
-function stageOf(level) { return level < 10 ? 'non' : (level < 30 ? 'truongThanh' : 'toiThuong'); }
+/** Catalog lifecycle stage derived from centralized dragon thresholds. */
+function stageOf(level){
+  return level<DRAGON_CONFIG.stages.adultAt?'non':
+    level<DRAGON_CONFIG.stages.elderAt?'truongThanh':'toiThuong';
+}
 
 function buildDragon(elements) {
   const els = elements.slice(0, 4);
@@ -47,7 +54,7 @@ function buildDragon(elements) {
   // --- Chỉ số gốc: pha theo trọng số 60/40, 50/30/20, ... ---
   // The repeated affinity owns two slots, but the base blend stays comparable
   // to the corresponding three-element dragon before applying the middle tier.
-  const w = rarityId==='transcendent'?[.25,.25,.3,.2]:WEIGHTS[Math.min(els.length, 4)];
+  const w=rarityId==='transcendent'?COMBAT_CONFIG.transcendentWeights:WEIGHTS[Math.min(els.length,4)];
   const chiSo = { hp: 0, tanCong: 0, phongThu: 0 };
   E.forEach((e, i) => Object.keys(chiSo).forEach(k => { chiSo[k] += e.chiSo[k] * w[i]; }));
   Object.keys(chiSo).forEach(k => { chiSo[k] = Math.round(chiSo[k] * R.heSoChiSo * 10) / 10; });
@@ -117,11 +124,16 @@ function getStats(dragon, level) {
   return {hp:value.hp,tanCong:value.attack,phongThu:value.defense,chiMang:0.10};
 }
 // XP cần để lên level kế
-function xpToNext(level) { return Math.round(40 * Math.pow(level, 1.5)); }
+/** Legacy catalog XP helper kept deterministic for debug/catalog callers. */
+function xpToNext(level){
+  return Math.round(DRAGON_CONFIG.xp.base*Math.pow(level,DRAGON_CONFIG.xp.exponent));
+}
 // Vàng/giờ = base × 1.15^(lv-1) × (0.5 + hạnh phúc/100) × (1 + 0.1 × level chuồng) × (đói ? 0.5 : 1)
 function goldPerHour(dragon, level, hanhPhuc, levelChuong, doi) {
-  return Math.round(dragon.vangGioGoc * Math.pow(1.15, level - 1) * (0.5 + hanhPhuc / 100)
-    * (1 + 0.1 * levelChuong) * (doi >= 100 ? 0.5 : 1));
+  const income=WORLD_CONFIG.goldIncome;
+  return Math.round(dragon.vangGioGoc*Math.pow(DRAGON_CONFIG.catalogIncomeLevelMultiplier,level-1)*
+    (income.happinessBase+hanhPhuc/100)*(1+income.habitatLevelBonus*levelChuong)*
+    (doi>=income.starvationAt?income.starvationMultiplier:1));
 }
 
 /* ---------- Danh sách dựng sẵn ---------- */

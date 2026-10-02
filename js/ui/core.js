@@ -47,13 +47,13 @@ function updateHeader(){
     return collected.has(id);
   }).length+"/"+BOOK_SPECIES_IDS.length;
   document.getElementById("playerLevel").textContent="Level "+state.player.level;
-  const maxLevel=window.DragonEconomy.progression.playerMaxLevel,maximum=state.player.level>=maxLevel,needed=maximum?0:playerXPNeeded(state.player.level);
-  const shown=maximum?0:Math.max(0,Math.floor(state.player.xp));
+  const needed=playerXPNeeded(state.player.level);
+  const shown=Math.max(0,Math.floor(state.player.xp));
   const track=document.getElementById("xpTrack");
-  document.getElementById("xpFill").style.width=(maximum?100:clamp(shown/needed*100,0,100))+"%";
-  document.getElementById("xpText").textContent=maximum?"MAX LEVEL":money(shown)+" / "+money(needed)+" XP";
-  track.setAttribute("aria-valuenow",maximum?maxLevel:shown);
-  track.setAttribute("aria-valuemax",maximum?maxLevel:needed);
+  document.getElementById("xpFill").style.width=clamp(shown/needed*100,0,100)+"%";
+  document.getElementById("xpText").textContent=money(shown)+" / "+money(needed)+" XP";
+  track.setAttribute("aria-valuenow",shown);
+  track.setAttribute("aria-valuemax",needed);
 }
 function stopMode(){ui.mode=null;dom.bar.classList.remove("visible");}
 function beginMode(mode){

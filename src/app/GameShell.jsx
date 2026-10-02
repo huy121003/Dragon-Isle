@@ -5,7 +5,6 @@ import ChallengeView from '../features/challenge/ChallengeView.jsx';
 import { $,game,read,send,text } from './game-bridge.js';
 import {useGameRuntime} from './useGameRuntime.js';
 import {useAuth} from '../features/auth/useAuth.js';
-import {useAppStore} from '../store/app-store.js';
 import AuthView from '../features/auth/AuthView.jsx';
 import AdminPanel from '../features/admin/AdminPanel.jsx';
 import ReconnectModal from '../features/connection/ReconnectModal.jsx';
@@ -22,7 +21,9 @@ export default function GameShell(){
   const setAdmin=useAppStore(state=>state.setAdminOpen);
   const hudRef=useRef(null),dockRef=useRef(null);
   const challengeCtl=useChallenge(account,connection);
-  const {challenge,open:challengeOpen,setOpen:setChallengeOpen,status:challengeStatus,request:challengeRequest}=challengeCtl;
+  const {challenge,status:challengeStatus,request:challengeRequest}=challengeCtl;
+  const challengeOpen=useAppStore(state=>state.challengeOpen);
+  const setChallengeOpen=useAppStore(state=>state.setChallengeOpen);
 
   useEffect(()=>{
     if(!account||!hudRef.current||!dockRef.current)return;

@@ -10,6 +10,10 @@
   return Object.freeze({
     /** Visual/lifecycle stage thresholds. */
     stages:Object.freeze({adultAt:10,elderAt:30}),
+    /** Legacy dragon XP helper retained for catalog/debug callers. */
+    xp:Object.freeze({base:40,exponent:1.5}),
+    /** Legacy catalog income helper: multiplicative level growth. Runtime income uses progression config. */
+    catalogIncomeLevelMultiplier:1.15,
     /** Resale values grow by this fraction for every level above 1. */
     resale:Object.freeze({minimumGold:100,levelBonus:.05}),
     /** Feed progress is clamped to [0, feedsPerLevel-1]. */

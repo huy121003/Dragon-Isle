@@ -5,6 +5,7 @@ const {readJson}=require('./store.cjs');
 const challengeConfig=require('../js/config/challenge.js');
 const {createPresence}=require('./challenge/presence.cjs');
 const {createChallengeStore}=require('./challenge/store.cjs');
+/** Create an HTTP-aware Challenge domain error. */
 function error(message,status=409){return Object.assign(new Error(message),{status});}
 /**
  * Create the live Challenge state machine.
@@ -169,6 +170,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
       await persist();return {match:view(match,user.id)};
     });
   }
+  /** Apply one optimistic-concurrency-checked live duel action and persist the resulting match. */
   async function turn(user,body){
     return locked(async()=>{
       await sweep();const match=matches.get(byUser.get(user.id));

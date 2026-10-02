@@ -22,6 +22,7 @@
       gemBase:Object.freeze({habitat:2,farm:1,hatchery:3}),
       gemLevelFactor:1.8,habitatGemUnlockLinear:.035
     }),
+    farm:Object.freeze({yieldBonusPerExtraLevel:.20}),
     academy:Object.freeze({baseGold:8000,baseFood:800,baseGems:5,costFactor:2.2})
   });
 });

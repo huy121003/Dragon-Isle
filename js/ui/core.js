@@ -124,7 +124,7 @@ function updateInspector(){
   if(b.type==="habitat"){
     const ds=occupants(b);
     body+='<p>'+ds.length+'/'+habitatCapacity(b.level)+' dragons · '+goldPerMinute(habitatIncomePerMinute(b))+' gold/min</p>'+
-      '<p>💎 '+habitatGemRate(b)+' gem/hour · '+DATA.gemPerDragonPerHour+' gem per dragon/hour'+
+      '<p>💎 '+habitatGemRate(b)+' gem/hour · '+window.DragonConfig.world.gemPerDragonPerHour+' gem per dragon/hour'+
       ((b.storedGems||0)>=habitatGemCapacity(b)?' · gem storage full':ds.length?' · next gem in '+duration(gemNextSeconds(b)):'')+'</p>'+
       '<div class="row"><span class="pill">🪙 '+goldDecimal(b.storedGold)+' gold</span>'+
       '<span class="pill">💎 '+money(b.storedGems||0)+'/'+habitatGemCapacity(b)+' stored gems</span></div>'+
@@ -150,17 +150,17 @@ function updateInspector(){
       '">Manage eggs</button></div>';
   }else if(isBreedingCave(b)){
     body+='<p>'+(b.breeding?(b.breeding.readyAt<=Date.now()?"The bred egg is ready.":"Breeding"):
-      "Choose two dragons at level 5 or above to breed.")+'</p><div class="actions"><button class="btn good" data-action="breeding-menu" data-id="'+b.id+
+      "Choose two dragons at level "+window.DragonConfig.progression.breedLevel+" or above to breed.")+'</p><div class="actions"><button class="btn good" data-action="breeding-menu" data-id="'+b.id+
       '">Open '+esc(buildingName(b))+'</button></div>';
   }else if(b.type==="arena"){
     body+='<p>Set attack and defense teams to challenge another player.</p><div class="actions">'+
       '<button class="btn good" data-action="open-arena">Enter Arena</button></div>';
   }else if(b.type==="academy"){
-    body+='<p>Dragon level cap: <b>'+dragonLevelCap()+'</b> / 100.</p>';
+    body+='<p>Dragon level cap: <b>'+dragonLevelCap()+'</b> / '+window.DragonConfig.progression.dragonMaxLevel+'.</p>';
     if(b.level<maxBuildingLevel(b)){
       const cost=academyUpgradeCost(b.level);
       const qualified=academyQualifiedDragonCount(cost);
-      body+='<p>Next cap: '+DATA.progression.academyCaps[b.level]+'. Requires player level '+cost.playerLevel+
+      body+='<p>Next cap: '+window.DragonConfig.progression.academyCaps[b.level]+'. Requires player level '+cost.playerLevel+
         ', '+money(cost.gold)+' gold, '+money(cost.food)+' food, '+money(cost.gems)+' gems, and '+
         '<b>'+qualified+'/'+cost.requiredDragons+'</b> owned dragons at level '+cost.requiredDragonLevel+'+.</p>';
     }

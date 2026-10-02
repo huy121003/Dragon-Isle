@@ -62,6 +62,7 @@ function guideDragons(){
 }
 function guideBreeding(){
   const rules=window.DragonEconomy.breeding;
+  const percent=value=>(value*100).toLocaleString('vi-VN',{maximumFractionDigits:2});
   const tierRows=Object.entries(BREED_TIER_WEIGHTS).map(([parents,weights])=>[
     esc(parents.replace('+',' + ')),weights[0]+'% / '+weights[1]+'%']);
   const durationRows=Object.entries(DATA.breedingTimes).map(([id,seconds])=>[
@@ -70,11 +71,11 @@ function guideBreeding(){
   return '<h3>Điều kiện và tỷ lệ</h3>'+guideList([
     'Hai cá thể khác nhau từ level '+DATA.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
     'Thông thường con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ. Double Element là ngoại lệ về hệ phụ.',
-    'Nếu có kết quả 3 hệ: tỷ lệ gốc '+(rules.threeBase*100)+'%, cộng '+(rules.threePerTenLevels*100)+' điểm % mỗi 10 level trung bình, tối đa '+(rules.threeCap*100)+'%.',
-    'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ với ít nhất 4 hệ khác nhau khi gộp lại. Cả bốn hệ của con đều lấy từ bố mẹ và tra theo '+FOUR_IDS.length+' tổ hợp được ghi trong danh mục. Nếu bộ hệ của bố mẹ không chứa tổ hợp nào trong danh mục thì xác suất rồng 4 hệ bằng 0. Tỷ lệ '+(rules.fourBase*100)+'% ban đầu, tăng theo level trung bình từ '+rules.fourGrowthStartLevel+' và tối đa '+(rules.fourCap*100)+'%.',
-    'Double Element cần hai bố mẹ đều có 4 ô hệ, mỗi bên có ít nhất 3 hệ khác nhau, cùng hệ chủ đạo và từ level '+rules.doubleMinParentLevel+'. Hai giống Double của hệ chủ đạo đó đều có cơ hội xuất hiện, kể cả khi hệ phụ không có trong bố mẹ. Tỷ lệ '+(rules.doubleBase*100)+'% ban đầu, tối đa '+(rules.doubleCap*100)+'%.',
+    'Nếu có kết quả 3 hệ: tỷ lệ gốc '+percent(rules.threeBase)+'%, cộng '+percent(rules.threePerTenLevels)+' điểm % mỗi 10 level trung bình, tối đa '+percent(rules.threeCap)+'%.',
+    'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ với ít nhất 4 hệ khác nhau khi gộp lại. Cả bốn hệ của con đều lấy từ bố mẹ và tra theo '+FOUR_IDS.length+' tổ hợp được ghi trong danh mục. Nếu bộ hệ của bố mẹ không chứa tổ hợp nào trong danh mục thì xác suất rồng 4 hệ bằng 0. Tỷ lệ '+percent(rules.fourBase)+'% ban đầu, tăng theo level trung bình từ '+rules.fourGrowthStartLevel+' và tối đa '+percent(rules.fourCap)+'%.',
+    'Double Element cần hai bố mẹ đều có 4 ô hệ, mỗi bên có ít nhất 3 hệ khác nhau, cùng hệ chủ đạo và từ level '+rules.doubleMinParentLevel+'. Hai giống Double của hệ chủ đạo đó đều có cơ hội xuất hiện, kể cả khi hệ phụ không có trong bố mẹ. Tỷ lệ '+percent(rules.doubleBase)+'% ban đầu, tối đa '+percent(rules.doubleCap)+'%.',
     'Phần còn lại chia cho 1 và 2 hệ theo bảng dưới nếu có kết quả hợp lệ. Trong mỗi bậc, giống nhận hệ chung của bố mẹ có trọng số cao hơn; tỷ lệ từng giống có thể khác nhau.',
-    'Hang Lai Tinh Tú mua một lần với '+money(DATA.buildings.premiumCave.cost)+' gem, không bán hay cất kho. Tỷ lệ của mỗi kết quả từ 3 hệ trở lên nhân '+rules.premiumRareFactor+' (ví dụ 2% thành 2,4%), phần tăng lấy từ nhóm 1–2 hệ để tổng vẫn là 100%. Thời gian lai giảm 20%.'
+    'Hang Lai Tinh Tú mua một lần với '+money(DATA.buildings.premiumCave.cost)+' gem, không bán hay cất kho. Tỷ lệ của mỗi kết quả từ 3 hệ trở lên nhân '+rules.premiumRareFactor+' (ví dụ 2% thành '+(2*rules.premiumRareFactor).toLocaleString('vi-VN')+'%), phần tăng lấy từ nhóm 1–2 hệ để tổng vẫn là 100%. Thời gian lai giảm 20%.'
   ])+'<h3>Tỷ lệ chia phần còn lại cho 1 / 2 hệ</h3>'+guideTable(['Số hệ bố mẹ','1 hệ / 2 hệ'],tierRows)+
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Hang thường','Hang xịn','Trong Lồng ấp'],durationRows)+
     '<p class="muted">Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([

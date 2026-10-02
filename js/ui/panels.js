@@ -65,7 +65,7 @@ function renderShop(){
       '<span><b>Breeding Cave</b><small>One cave · 12×9 tiles</small></span><strong>● '+money(DATA.buildings.cave.cost)+'</strong></button>'+
       '<button class="shop-item premium-cave-offer" data-action="choose-build" data-type="premiumCave"'+
       (state.buildings.some(b=>b.type==="premiumCave")?' disabled':'')+'><span class="shop-icon">✧</span>'+
-      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>One only · 12×9 tiles · 20% faster · 20% more chance for 3+ elements</small></span>'+
+      '<span><b>'+esc(DATA.buildings.premiumCave.name)+'</b><small>One only · 12×9 tiles · 20% faster · '+Math.round((window.DragonEconomy.breeding.premiumRareFactor-1)*100)+'% more chance for 3+ elements</small></span>'+
       '<strong>♦ '+money(DATA.buildings.premiumCave.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="academy"'+(state.buildings.some(b=>b.type==="academy")?' disabled':'')+'><span class="shop-icon">✦</span><span><b>Dragon Academy</b><small>One per island · raises the dragon level cap from 30 to 100 across five building levels</small></span><strong>● '+money(DATA.buildings.academy.cost)+'</strong></button>'+
       '<button class="shop-item" data-action="choose-build" data-type="arena"'+(state.buildings.some(b=>b.type==="arena")?' disabled':'')+'><span class="shop-icon">⚔️</span><span><b>Arena</b><small>One arena · 12×12 tiles</small></span><strong>● '+money(DATA.buildings.arena.cost)+'</strong></button>'+
@@ -399,7 +399,7 @@ function renderBreeding(id){
         '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+'</small>'+
         '<span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></div>';
     }).join('<strong class="breed-heart">♥</strong>');
-    dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · 20% faster · 20% higher relative chance for 3+ elements. ':'')+
+    dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · 20% faster · '+Math.round((window.DragonEconomy.breeding.premiumRareFactor-1)*100)+'% higher relative chance for 3+ elements. ':'')+
       'The bred egg enters an available Hatchery nest.</div>'+
       '<div class="panel '+(premium?'premium-breeding':'')+'"><div class="breed-parents">'+parents+'</div>'+
       (ready?'<div class="breed-ready-egg" aria-label="Bred egg ready"><span class="breed-egg-art">'+
@@ -432,7 +432,7 @@ function renderBreeding(id){
   if(!available.some(function(d){return d.id===ui.breedDraft.mother&&d.id!==ui.breedDraft.father;}))
     ui.breedDraft.mother=available.find(function(d){return d.id!==ui.breedDraft.father;}).id;
   let html=(premium?'<div class="premium-breeding-banner"><span class="premium-seal">✧</span><div><b>Celestial Breeding Sanctuary</b>'+
-    '<small>20% faster · 1.20× chance for dragons with 3 or more elements</small></div></div>':'')+
+    '<small>20% faster · '+window.DragonEconomy.breeding.premiumRareFactor.toFixed(2)+'× chance for dragons with 3 or more elements</small></div></div>':'')+
     '<div class="note">Choose two dragons at level 5 or above. Each parent has its own element filter and name search.</div>'+
     '<div class="breed-selection">';
   [["father","Father"],["mother","Mother"]].forEach(function(slot){

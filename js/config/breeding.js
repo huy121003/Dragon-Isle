@@ -16,6 +16,8 @@
     four:Object.freeze({base:.0225,perTenLevels:.003,cap:.045,growthStartLevel:30}),
     double:Object.freeze({base:.009,perTenLevels:.0015,cap:.018,minParentLevel:40}),
     premium:Object.freeze({rareFactor:1.40,timeFactor:.80}),
+    /** Defensive fallback for malformed/unknown species; normal species use timeByTier. */
+    fallbackSeconds:60,
     timeByTier:Object.freeze({1:45,2:180,3:600,4:1800,double:3600}),
     elementLevelSeconds:8,maxElementBonusSeconds:1800,
     combinationSecondsPerExtraElement:45,mixedTierSeconds:30,

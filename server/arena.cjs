@@ -92,7 +92,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       battle={opponent:defender.username,opponentId:defender.id,turn:1,attack,defense,activeAttack:0,activeDefense:0,
         events:[],reward:{gold:rewardRules.goldBase+rewardRules.goldPerOpponentLevel*rewardLevel,
           food:rewardRules.foodBase+rewardRules.foodPerOpponentLevel*rewardLevel,
-          gems:rewardRules.gemBase+Math.floor(rewardLevel/rewardRules.gemLevelStep)*rewardRules.gemPer20Levels}};
+          gems:rewardRules.gemBase+Math.floor(rewardLevel/rewardRules.gemLevelStep)*rewardRules.gemPerLevelStep}};
       return {...setup,cooldownUntil:0,battle};
     });
     return {battle:publicBattle(battle)};

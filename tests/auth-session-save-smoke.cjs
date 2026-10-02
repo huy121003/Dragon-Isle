@@ -118,15 +118,42 @@ function eligibleProfile(){
     const resumed=await putSave(a2,idA,{...refreshed.body,gold:33333},refreshed.revision);
     assert.equal(resumed.res.status,200);assert.equal(resumed.revision,3);
 
+    const concurrentA=await getSave(a0,idA),concurrentB=await getSave(a2,idA);
+    assert.equal(concurrentA.revision,3);assert.equal(concurrentB.revision,3);
+    const concurrent=await Promise.all([
+      putSave(a0,idA,{...concurrentA.body,gold:40001},3),
+      putSave(a2,idA,{...concurrentB.body,gold:40002},3)
+    ]);
+    assert.deepEqual(concurrent.map(x=>x.res.status).sort(),[200,409],
+      'Exactly one concurrent save with the same revision may commit');
+    const afterConcurrent=await getSave(a2,idA);
+    assert.equal(afterConcurrent.revision,4);
+    assert([40001,40002].includes(afterConcurrent.body.gold));
+    const normalized=await putSave(a2,idA,{...afterConcurrent.body,gold:33333},4);
+    assert.equal(normalized.res.status,200);assert.equal(normalized.revision,5);
+
     const profileB=eligibleProfile();profileB.gold=44444;
     const saveB=await putSave(b0,idB,profileB,0);
     assert.equal(saveB.res.status,200);
 
-    await stop(child);child=await launch(port);
+    const preCrash=await getSave(a2,idA);
+    const huge={...preCrash.body,gold:35555,
+      land:Array.from({length:180000},(_,i)=>(i%1000)+','+(Math.floor(i/1000)%1000))};
+    const crashWrite=putSave(a2,idA,huge,preCrash.revision).catch(()=>null);
+    await new Promise(r=>setTimeout(r,2));
+    await stop(child);await crashWrite;child=await launch(port);
     assert.equal((await me(a0)).status,200,'Sessions must survive a server restart');
     assert.equal((await me(a2)).status,200);
+    const afterCrash=await getSave(a2,idA);
+    assert([33333,35555].includes(afterCrash.body.gold),
+      'Interrupted atomic save must leave either the previous or complete next profile');
+    assert([5,6].includes(afterCrash.revision));
+    const restoredSmall={...afterCrash.body,gold:33333,land:first.land};
+    const stabilized=await putSave(a2,idA,restoredSmall,afterCrash.revision);
+    assert.equal(stabilized.res.status,200);
     const persisted=await getSave(a2,idA);
-    assert.equal(persisted.body.gold,33333);assert.equal(persisted.revision,3);
+    assert.equal(persisted.body.gold,33333);
+    assert.equal(persisted.revision,afterCrash.revision+1);
 
     let bStatus=await (await challenge('status','GET',b0)).json();
     assert(bStatus.players.some(p=>p.id===idA),'Fresh save + active session should be online');

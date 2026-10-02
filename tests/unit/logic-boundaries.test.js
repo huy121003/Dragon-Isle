@@ -64,15 +64,19 @@ describe('logic architecture boundaries',()=>{
     const core=read('js/ui/core.js');
     const dock=read('src/components/GameDock.jsx');
     const arenaView=read('src/features/arena/ArenaView.jsx');
+    const arenaShared=read('src/features/arena/ArenaShared.jsx');
+    const arenaBattle=read('src/features/arena/ArenaBattle.jsx');
     const challengeView=read('src/features/challenge/ChallengeView.jsx');
-    for(const source of [guide,core,dock,arenaView,challengeView])
+    for(const source of [guide,core,dock,arenaView,arenaShared,arenaBattle,challengeView])
       expect(source).not.toContain('DragonEconomy');
     expect(guide).not.toContain('DATA.progression');
     expect(guide).not.toContain('DATA.gemPerDragonPerHour');
     expect(core).not.toContain('DATA.progression');
     expect(core).not.toContain('DATA.gemPerDragonPerHour');
     expect(dock).toContain('DragonConfig.arena');
-    expect(arenaView).toContain('DragonConfig.arena');
+    expect(arenaShared).toContain('DragonConfig.arena');
+    expect(arenaShared).toContain('DragonConfig.dragons');
+    expect(arenaBattle).toContain('DragonConfig.system.presentation');
     expect(challengeView).toContain('DragonConfig.challenge');
   });
 

@@ -5,8 +5,9 @@ test('register, keep session, queue save offline and reconnect',async({page,cont
   await expect(page.getByRole('heading',{name:'Dragon Isle'})).toBeVisible();
 
   await page.getByRole('button',{name:'Register'}).click();
-  await page.getByLabel('Username').fill('e2e_trainer');
-  await page.getByLabel('Password').fill('strong-pass-123');
+  const auth=page.locator('.react-auth');
+  await auth.getByRole('textbox',{name:/Username/}).fill('e2e_trainer');
+  await auth.locator('input[type="password"]').fill('strong-pass-123');
   await page.getByRole('button',{name:'Create account'}).click();
 
   await expect(page.getByText(/Level 1 · e2e_trainer/)).toBeVisible({timeout:15000});

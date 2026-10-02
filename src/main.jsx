@@ -8,17 +8,26 @@ import {inlineStyle} from './inline-style.mjs';
 import './ui.css';
 const $=id=>document.getElementById(id);
 const game=()=>window.DragonGame;
-const commerceActions=new Set(['buy-food','plant','harvest']);
+const resetScrollActions=new Set(['shop-tab','book-tab','book-page','guide-tab']);
+const detailActions=new Set(['shop-egg-detail','book-detail','dragon-detail']);
+const backActions=new Set(['shop-egg-back','book-back','dragon-back']);
+const savedModalScroll=new Map();
+const modalKey=modal=>modal.name+':'+String(modal.extra??'');
 function send(data){
-  const modalName=game()?.ui.modal?.name;
-  const keepScroll=commerceActions.has(data.action)&&['shop','crops'].includes(modalName);
-  const scroller=keepScroll?document.querySelector('.commerce-modal .ant-modal-body'):null;
+  const modal=game()?.ui.modal;
+  const scroller=modal?
+    document.querySelector('.game-modal:not(.arena-modal) .ant-modal-body'):null;
   const scrollTop=scroller?.scrollTop;
+  if(modal&&detailActions.has(data.action))savedModalScroll.set(modalKey(modal),scrollTop);
   game()?.action(data);
-  if(scroller&&game()?.ui.modal?.name===modalName)
+  const next=game()?.ui.modal;
+  if(next&&scroller)
     requestAnimationFrame(()=>{
-      const current=document.querySelector('.commerce-modal .ant-modal-body');
-      if(current&&game()?.ui.modal?.name===modalName)current.scrollTop=scrollTop;
+      const current=document.querySelector('.game-modal:not(.arena-modal) .ant-modal-body');
+      if(!current||game()?.ui.modal?.name!==next.name||game()?.ui.modal?.extra!==next.extra)return;
+      current.scrollTop=resetScrollActions.has(data.action)?0:
+        modal?.name===next.name&&modal?.extra===next.extra?scrollTop:
+        backActions.has(data.action)?savedModalScroll.get(modalKey(next))||0:0;
     });
 }
 const read=id=>$(id)?.innerHTML||'';
@@ -41,14 +50,14 @@ function convert(node,key){
     if(node.classList.contains('breed-dragon'))return <button key={key} type="button"
       className={node.className} disabled={node.disabled}
       aria-pressed={node.getAttribute('aria-pressed')||undefined}
-      onClick={()=>send({...d})}>{children()}</button>;
+      onClick={e=>{e.stopPropagation();send({...d});}}>{children()}</button>;
     const danger=node.classList.contains('danger');
     return <Button key={key} type={node.classList.contains('primary')||node.classList.contains('good')?'primary':'default'}
       danger={danger} disabled={node.disabled} className={node.className}
       title={node.title||undefined} aria-label={node.getAttribute('aria-label')||undefined}
       aria-pressed={node.getAttribute('aria-pressed')||undefined}
       role={node.getAttribute('role')||undefined} aria-selected={node.getAttribute('aria-selected')||undefined}
-      onClick={()=>send({...d})}>{children()}</Button>;
+      onClick={e=>{e.stopPropagation();send({...d});}}>{children()}</Button>;
   }
   if(tag==='canvas'&&d.dragonArt){
     return <DragonCanvas key={key} species={d.dragonArt} level={Number(d.artLevel)||1}
@@ -56,11 +65,13 @@ function convert(node,key){
         className:node.className,style:node.getAttribute('style')?{width:node.style.width||undefined}:undefined}}/>;
   }
   if(tag==='input'&&node.type==='file'){
-    return <input key={key} type="file" id={node.id} accept={node.accept}
+    return <input key={key} type="file" id={node.id==='saveImport'?'reactSaveImport':node.id}
+      className={node.className} accept={node.accept}
       onChange={e=>{e.stopPropagation();const file=e.target.files?.[0];if(file)game()?.importSave(file);}}/>;
   }
   if(tag==='input'&&d.breedSearch){
-    return <input key={key} type="search" className={node.className} defaultValue={node.value}
+    return <input key={key} type="search" className={node.className} value={node.value}
+      data-breed-search={d.breedSearch}
       placeholder={node.placeholder} aria-label={node.getAttribute('aria-label')}
       onChange={e=>{
         const slot=d.breedSearch,query=e.target.value;
@@ -72,12 +83,25 @@ function convert(node,key){
   for(const attr of Array.from(node.attributes)){
     const name=attr.name;
     if(name==='class')props.className=attr.value;
-    else if(name==='for')props.htmlFor=attr.value;
+    else if(name==='for')props.htmlFor=attr.value==='saveImport'?'reactSaveImport':attr.value;
+    else if(name==='tabindex')props.tabIndex=Number(attr.value);
     else if(name==='style'){
       props.style=inlineStyle(attr.value);
     }else if(!name.startsWith('on')&&!['value','disabled'].includes(name))props[name]=attr.value;
   }
   if(tag==='progress')return <Progress key={key} percent={Math.round((Number(node.value)/Math.max(1,Number(node.max)))*100)} showInfo={false}/>;
+  if(d.action&&node.getAttribute('role')==='button'){
+    props.onClick=e=>{
+      e.stopPropagation();
+      if(e.target.closest('button,a,input,select,textarea'))return;
+      send({...d});
+    };
+    props.onKeyDown=e=>{
+      if(e.target===e.currentTarget&&['Enter',' '].includes(e.key)){
+        e.preventDefault();e.stopPropagation();send({...d});
+      }
+    };
+  }
   return React.createElement(tag,props,...children());
 }
 function LegacyContent({html}){
@@ -204,17 +228,22 @@ function Admin({open,onClose}){
 function App(){
   const [tick,setTick]=useState(0),[account,setAccount]=useState(null),[authReady,setAuthReady]=useState(false),[admin,setAdmin]=useState(false);
   const [challenge,setChallenge]=useState(null),[challengeOpen,setChallengeOpen]=useState(false);
+  const challengeSequence=React.useRef(0),challengeRequestBusy=React.useRef(false);
   async function challengeStatus(){
+    const sequence=++challengeSequence.current;
     try{
       const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
       if(!response.ok)return;
       const next=await response.json();
+      if(sequence!==challengeSequence.current)return;
       if(next.notice)message.info(next.notice,5);
-      setChallenge({...next,error:null,busy:false});
+      setChallenge(current=>({...next,error:current?.error||null,busy:challengeRequestBusy.current}));
       if(next.match)setChallengeOpen(true);
     }catch(error){}
   }
   async function challengeRequest(route,body,method='POST'){
+    if(challengeRequestBusy.current)return;
+    challengeRequestBusy.current=true;
     try{
       setChallenge(current=>({...current,busy:true,error:null}));
       if(['invite','select'].includes(route)&&!await game()?.save())
@@ -224,7 +253,8 @@ function App(){
       const result=await response.json();
       if(!response.ok)throw new Error(result.error||'Challenge request failed.');
       await challengeStatus();
-    }catch(error){setChallenge(current=>({...current,error:error.message,busy:false}));}
+    }catch(error){setChallenge(current=>({...current,error:error.message}));}
+    finally{challengeRequestBusy.current=false;setChallenge(current=>({...current,busy:false}));}
   }
   useEffect(()=>{
     document.body.classList.add('react-ready');
@@ -253,6 +283,8 @@ function App(){
     `${Math.floor(state.player.xp).toLocaleString('en-US')} / ${xpNeeded.toLocaleString('en-US')} XP`;
   const buttons=[['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']];
   const commerceModal=['shop','crops'].includes(ui?.modal?.name);
+  const modalSection={"shop-egg-detail":"shop","dragon-detail":"dragons","book-detail":ui?.returnModal?.name||"book"};
+  const activeSection=modalSection[ui?.modal?.name]||ui?.modal?.name;
   if(state.buildings.some(b=>b.type==='arena'&&!b.stored))buttons.push(['⚔️','Arena','open-arena']);
   if(state.dragons.filter(dragon=>dragon.level>=10).length>=3)
     buttons.push(['🗡️','Thách đấu','open-challenge']);
@@ -267,7 +299,7 @@ function App(){
     {read('timersBar')&&<div className="react-timers"><LegacyContent html={read('timersBar')}/></div>}
     {ui?.selection&&!ui?.mode&&read('inspector')&&<aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
     {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>{ui.mode.fromShop?'Back to Shop':'Cancel'}</Button></Space></Card></div>}
-    <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={ui?.modal?.name===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
+    <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={activeSection===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
       <span>{icon}</span><b>{label}</b>{action==='open-book'&&<small>{txt('collectionProgress')}</small>}</Button>)}</nav>
     <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal':commerceModal?'commerce-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
       width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden styles={{body:{height:commerceModal?'min(66dvh, 560px)':undefined,maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>

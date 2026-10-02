@@ -125,7 +125,8 @@ function updateInspector(){
       '<div class="row"><span class="pill">🪙 '+goldDecimal(b.storedGold)+' gold</span>'+ 
       '<span class="pill">💎 '+money(b.storedGems||0)+'/'+habitatGemCapacity(b)+' stored gems</span></div>'+
       '<p>Gold capacity: '+money(habitatGoldCapacity(b))+'</p>'+
-      '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'">Thu '+
+      '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
+      (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
       goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
     ds.forEach(function(d){body+='<button class="btn" data-action="inspect-dragon" data-id="'+d.id+'">🐲 '+esc(d.nickname)+' · '+esc(DATA.species[d.species].name)+'</button>';});
     body+='</div>';
@@ -194,7 +195,7 @@ function syncDock(){
   });
 }
 function closeModal(){
-  ui.modal=null;ui.returnModal=null;
+  ui.modal=null;ui.returnModal=null;ui.dragonReturn=null;
   dom.overlay.classList.remove("open");dom.body.innerHTML="";syncDock();
   if(ui.lastFocus&&ui.lastFocus.isConnected&&ui.lastFocus.focus)ui.lastFocus.focus();
   ui.lastFocus=null;

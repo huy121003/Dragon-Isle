@@ -26,6 +26,13 @@ try{
     legend:{name:'Legend',color:'#8155c5'},primal:{name:'Primal',color:'#8b8e83'},
     time:{name:'Time',color:'#b7aba4'}},
     rarities:{common:{name:'Common',color:'#aaa'}}}}};
+  const {default:ChallengeView}=await server.ssrLoadModule('/src/ChallengeView.jsx');
+  const invitation={busy:true,match:{phase:'invited',outgoing:false,opponent:'Bela',until:Date.now()+60000}};
+  const invitationHtml=renderToStaticMarkup(React.createElement(ChallengeView,
+    {status:invitation,request:()=>{},refresh:()=>{}}));
+  assert.match(invitationHtml,/Challenge from Bela/);
+  assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Accept/);
+  assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Decline/);
   const dragon={id:2,nickname:'Alex',species:'fire',level:20,hp:500,maxHp:500,
     canBattle:true,skills:[{index:0,name:'Flame Slash',power:1.3,unlocked:true,element:'fire'}]};
   const unavailable={...dragon,id:4,nickname:'Bé',level:9,canBattle:false,battleReason:'Requires level 10'};

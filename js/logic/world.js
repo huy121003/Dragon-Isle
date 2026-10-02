@@ -51,7 +51,7 @@ function gainPlayerXP(value){
   state.player.xp+=value;
   let levels=0,rewardGold=0,rewardFood=0,rewardGems=0;
   const rules=window.DragonEconomy.progression;
-  while(state.player.level<rules.playerMaxLevel&&state.player.xp>=playerXPNeeded(state.player.level)){
+  while(state.player.xp>=playerXPNeeded(state.player.level)){
     state.player.xp-=playerXPNeeded(state.player.level);
     state.player.level++;
     levels++;

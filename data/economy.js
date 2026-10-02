@@ -1,10 +1,10 @@
 /* Editable economy and animation constants shared by the browser modules. */
 window.DragonEconomy={
-  starting:{gold:3000,food:500},
+  starting:{gold:10000,food:2500,gems:20},
   progression:{earlyXpFactor:.22,earlyXpUntilLevel:20,fullXpLevel:45,
-    levelGoldBase:100,levelGoldStep:50,levelFoodBase:20,levelFoodStep:10,
-    levelGems:1,milestoneGemBonus:2,landXp:40,islandXp:150,
-    farmEveryLevels:5,maxFarms:12,feedBase:5,feedLinear:2,feedQuadratic:.12,
+    levelGoldBase:1000,levelGoldStep:250,levelFoodBase:200,levelFoodStep:50,
+    levelGems:1,milestoneGemBonus:3,landXp:40,islandXp:150,
+    farmEveryLevels:5,maxFarms:12,feedBase:10,feedLinear:3,feedQuadratic:.18,
     goldLevelLinear:.08,goldLevelQuadratic:.0004,goldIncomeMultiplier:2.5,
     foodGoldPrice:15},
   breeding:{threeBase:.15,threePerTenLevels:.015,threeCap:.27,
@@ -12,17 +12,19 @@ window.DragonEconomy={
     doubleBase:.009,doublePerTenLevels:.0015,doubleCap:.018,doubleMinParentLevel:40,
     premiumRareFactor:1.40,premiumTimeFactor:.80},
   island:{gemPerIsland:100},
-  land:{homeFirstRegionGold:400,nextIslandMultiplier:2,expansionMultiplier:1.2},
+  land:{homeFirstRegionGold:1200,nextIslandMultiplier:2,expansionMultiplier:1.2,goldPerGem:5000},
   habitat:{goldBase:5000,goldPerUnlockLevel:450,goldLevelFactor:6},
   shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
     habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,
-    eggBaseMultiplier:1.4,eggUnlockLinear:.18,eggUnlockQuadratic:.012,
+    eggBaseMultiplier:2.2,eggUnlockLinear:.18,eggUnlockQuadratic:.012,
     resourcePacks:{
       goldForGems:[{cost:5,amount:20000},{cost:20,amount:100000},{cost:50,amount:300000}],
       gemsForGold:[{cost:75000,amount:3},{cost:300000,amount:10},{cost:900000,amount:25}],
       foodForGems:[{cost:5,amount:1500},{cost:15,amount:6000},{cost:40,amount:20000}]
     }},
-  buildings:{upgradeFactor:2.25},
+  buildings:{upgradeFactor:2.25,sellMultiplier:1.75},
+  timers:{secondsPerGem:600,maxSkipGems:120},
+  rewards:{arenaGoldBase:2500,arenaGoldPerOpponentLevel:250,arenaFoodBase:250,arenaFoodPerOpponentLevel:40,arenaGemBase:1,arenaGemPer20Levels:1},
   academy:{baseGold:8000,baseFood:800,baseGems:5,costFactor:2.2,baseUpgradeSeconds:300,timeFactor:2.2},
   visual:{daySeconds:480,weatherParticles:10}
 };

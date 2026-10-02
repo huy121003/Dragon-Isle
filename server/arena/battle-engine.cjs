@@ -1,9 +1,9 @@
 /**
  * Authoritative Arena/Challenge battle engine.
  *
- * This module owns status effects, AI skill scoring and turn resolution.
- * Fighter construction and public DTO/event snapshots are delegated to sibling
- * modules. It does not read/write player files or award resources.
+ * This module owns status-effect mutation and turn resolution. Fighter
+ * construction, AI scoring and public DTO/event snapshots are delegated to
+ * sibling modules. It does not read/write player files or award resources.
  *
  * Randomness is injectable through rng so tests can replay exact battles.
  */
@@ -13,6 +13,7 @@ const combatConfig=require('../../js/config/combat.js');
 const progressionConfig=require('../../js/config/progression.js');
 const {createFighterFactory}=require('./fighter.cjs');
 const {record,publicBattle}=require('./battle-view.cjs');
+const {createBattleAi}=require('./battle-ai.cjs');
 
 /**
  * Create the authoritative combat engine shared by Arena and live Challenge.
@@ -51,46 +52,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     }else fighter.statuses.push({kind:effect.kind,turns:effect.duration,value:effect.value||0,element});
   }
 
-  /** Skills that are unlocked and not cooling down for a fighter. */
-  function readySkills(fighter){
-    return fighter.skills.map((skill,index)=>({skill,index})).filter(({skill,index})=>
-      skill&&fighter.level>=progressionConfig.skillUnlockLevels[index]&&!(fighter.cooldowns?.[index]>0));
-  }
-
-  /** Server-side defensive AI. Higher score means more useful in current state. */
-  function chooseDefenseSkill(battle){
-    const actor=active(battle,'defense'),target=active(battle,'attack'),ready=readySkills(actor);
-    if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
-    const incoming=Math.max(1,...readySkills(target).map(({skill})=>
-      combat.battleDamage(target,actor,skill,catalog.typeChart)));
-    const ai=arenaConfig.ai;
-    const score=({skill})=>{
-      const effect=skill.effect,kind=effect?.kind;
-      const hitDamage=combat.battleDamage(actor,target,skill,catalog.typeChart);
-      const hits=kind==='multi'?effect.hits:1;
-      const accuracy=1-Math.min(combatConfig.maxAccuracyPenalty,
-        (kind==='multi'?effect.missChance:0)+combat.statusValue(actor,'accuracy_down'));
-      let value=Math.min(target.hp,hitDamage*hits*accuracy);
-      const already=kind&&actor.statuses.some(status=>status.kind===kind);
-      const enemyHas=kind&&target.statuses.some(status=>status.kind===kind);
-      const missing=Math.max(0,combat.effectiveMaxHp(actor)-actor.hp);
-      if(kind==='heal'||kind==='cleanse')value+=Math.min(missing,actor.maxHp*effect.value)*ai.healWeight;
-      else if(kind==='regen'&&!already)
-        value+=Math.min(missing,actor.maxHp*effect.value*effect.duration)*ai.regenWeight;
-      else if(kind==='vitality'&&!already)value+=actor.maxHp*effect.value*ai.vitalityWeight;
-      else if(kind==='freeze'&&!enemyHas)value+=incoming*ai.freezeWeight*accuracy;
-      else if(kind==='poison'&&!enemyHas)
-        value+=Math.min(target.hp,target.maxHp*effect.value*effect.duration)*ai.poisonWeight*accuracy;
-      else if(kind==='damage_up'&&!already)
-        value+=hitDamage*ai.damageBuffHitWeight+incoming*effect.value*ai.damageBuffIncomingWeight;
-      else if(['armor_up','damage_reduction'].includes(kind)&&!already)
-        value+=incoming*effect.value*ai.defenseWeight;
-      else if(['armor_down','damage_down','accuracy_down'].includes(kind)&&!enemyHas)
-        value+=incoming*(effect.value||ai.defaultDebuffValue)*ai.debuffWeight*accuracy;
-      return value;
-    };
-    return ready.reduce((best,item)=>score(item)>score(best)?item:best);
-  }
+  const {readySkills,chooseDefenseSkill}=createBattleAi({typeChart:catalog.typeChart});
 
   /**
    * Resolve one skill, including status ticks, misses, crits, cooldowns and knockout switching.

@@ -8,9 +8,9 @@ function newGame(){
   const origin=DATA.islands[0],startX=origin.x+DATA.islandRegionSize,startY=origin.y+DATA.islandRegionSize;
   for(let y=startY;y<startY+DATA.islandRegionSize;y++)
     for(let x=startX;x<startX+DATA.islandRegionSize;x++)land.push(x+","+y);
+  const starting=window.DragonConfig.economy.starting,care=window.DragonConfig.world.initialDragon;
   return {version:SAVE_VERSION,lastTick:Date.now(),savedAt:Date.now(),nextId:4,player:{level:1,xp:0},
-    gold:window.DragonEconomy.starting.gold,food:window.DragonEconomy.starting.food,
-    gems:window.DragonEconomy.starting.gems,expansions:0,land:land,regions:[],unlockedIslands:1,
+    gold:starting.gold,food:starting.food,gems:starting.gems,expansions:0,land:land,regions:[],unlockedIslands:1,
     habitatPurchases:{fire:1},
     eggs:[],discovered:["fire"],recipes:[],
     buildings:[{id:1,type:"habitat",element:"fire",x:startX+11,y:startY+11,level:1,stored:false,
@@ -19,7 +19,7 @@ function newGame(){
       {id:3,type:"hatchery",element:null,x:startX,y:startY,level:1,stored:false,
         storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null}],
     dragons:[{id:2,species:"fire",nickname:uniqueNickname([]),level:1,stars:0,xp:0,feedProgress:0,
-      hunger:10,happiness:80,habitatId:1,gemProgress:0}]};
+      hunger:care.hunger,happiness:care.happiness,habitatId:1,gemProgress:0}]};
 }
 /* Tên cá thể lấy ngẫu nhiên và không trùng, kể cả khi số dragons vượt danh sách mẫu. */
 function uniqueNickname(taken){
@@ -168,49 +168,42 @@ function buildingById(id){return state.buildings.find(function(b){return b.id===
 function dragonById(id){return state.dragons.find(function(d){return d.id===id;});}
 function occupants(building){return state.dragons.filter(function(d){return d.habitatId===building.id;});}
 function maxBuildingLevel(building){return DATA.buildings[building.type].maxLevel;}
+/** Return the effective level used by content gates while player level remains unlimited. */
 function contentRequirementLevel(level){
-  const cap=window.DragonEconomy.progression.contentLevelCap;
-  return Math.min(cap,Math.max(1,Math.floor(Number(level)||1)));
+  return window.DragonRules.progression.contentRequirementLevel(level);
 }
+/** Dragon slots available in a Habitat level. */
 function habitatCapacity(level){
-  const row=window.DragonEconomy.habitat.dragonCapacity;
-  return row[clamp(Math.floor(Number(level)||1)-1,0,row.length-1)];
+  return window.DragonRules.buildings.capacityAt(level,window.DragonConfig.buildings.habitat.dragonCapacity);
 }
+/** Egg slots available in a Hatchery level. */
 function hatcheryCapacity(level){
-  const row=window.DragonEconomy.hatchery.nests;
-  return row[clamp(Math.floor(Number(level)||1)-1,0,row.length-1)];
+  return window.DragonRules.buildings.capacityAt(level,window.DragonConfig.buildings.hatchery.nests);
 }
 function habitatHasRoom(building){return building.type==="habitat"&&!building.stored&&!building.upgradeEnds&&
   occupants(building).length<habitatCapacity(building.level);}
+/** XP required for the next player level. */
 function playerXPNeeded(level){
-  const n=Math.max(1,Math.floor(Number(level)||1));
-  const rules=window.DragonEconomy.progression;
-  return Math.round(rules.xpBase+rules.xpLinear*n+
-    rules.xpPower*Math.pow(n,rules.xpExponent));
+  return window.DragonRules.progression.playerXPNeeded(level);
 }
 function dragonXPNeeded(level){return Math.ceil(DATA.progression.xpBase*Math.pow(level,DATA.progression.xpExponent));}
+/** Food consumed by one feed action at a dragon level. */
 function dragonFeedCost(level){
-  const n=clamp(Math.floor(Number(level)||1),1,DATA.progression.dragonMaxLevel);
-  const rules=window.DragonEconomy.progression;
-  return Math.ceil(rules.feedBase+rules.feedLinear*n+rules.feedQuadratic*n*n);
+  return window.DragonRules.progression.dragonFeedCost(level,DATA.progression.dragonMaxLevel);
 }
+/** Maximum Farm count unlocked for a player level. */
 function farmLimit(level){
-  const rules=window.DragonEconomy.progression;
-  return Math.min(rules.maxFarms,1+Math.floor(Math.max(1,level)/rules.farmEveryLevels));
+  return window.DragonRules.progression.farmLimit(level);
 }
 function farmCount(){return state.buildings.filter(function(b){return b.type==="farm";}).length;}
 function dragonLevelCap(){
   const academy=state?.buildings.find(b=>b.type==="academy"&&!b.stored);
   return academy?DATA.progression.academyCaps[Math.min(academy.level-1,DATA.progression.academyCaps.length-1)]:30;
 }
+/** Cost and ownership gates for the next Dragon Academy level. */
 function academyUpgradeCost(level){
-  const a=window.DragonEconomy.academy,step=DATA.progression.academyUpgrades[level-1];
-  if(!step)return null;
-  return {playerLevel:contentRequirementLevel(step.playerLevel),
-    requiredDragons:step.requiredDragons||0,requiredDragonLevel:step.requiredDragonLevel||dragonLevelCap(),
-    gold:Math.round(a.baseGold*Math.pow(a.costFactor,level)),
-    food:Math.round(a.baseFood*Math.pow(a.costFactor,level)),
-    gems:Math.round(a.baseGems*Math.pow(a.costFactor,level))};
+  return window.DragonRules.buildings.academyUpgradeCost(
+    level,DATA.progression.academyUpgrades[level-1],dragonLevelCap(),contentRequirementLevel);
 }
 function academyQualifiedDragonCount(cost){
   if(!cost)return 0;
@@ -225,13 +218,16 @@ function dragonStats(dragon){
   return window.DragonCombat.stats(species.elements,species.rarity,dragon.level,
     DRAGON_DB.elements,DRAGON_DB.rarities,dragon.stars);
 }
+/**
+ * Gold/hour generated by one dragon in a Habitat.
+ * Level growth comes from progression config; care/Habitat multipliers come from world rules.
+ */
 function dragonIncome(dragon,building){
-  const base = DATA.rarities[DATA.species[dragon.species].rarity].income;
+  const base=DATA.rarities[DATA.species[dragon.species].rarity].income;
   const steps=Math.max(0,Math.min(DATA.progression.dragonMaxLevel,dragon.level)-1);
-  const rates=window.DragonEconomy.progression;
-  const growth=1+rates.goldLevelLinear*steps+rates.goldLevelQuadratic*steps*steps;
-  return base*growth*rates.goldIncomeMultiplier*(0.5+dragon.happiness/100)*
-    (1+0.1*building.level)*(dragon.hunger>=100?.5:1);
+  const rates=window.DragonConfig.progression.incomeGrowth;
+  const growth=1+rates.linear*steps+rates.quadratic*steps*steps;
+  return base*growth*rates.multiplier*window.DragonRules.world.incomeMultiplier(dragon,building.level);
 }
 /* LOGIC: Gold gốc trong dữ liệu là gold/hour; hiển thị và tích lũy theo phút. */
 function dragonIncomePerMinute(dragon,building){
@@ -241,53 +237,32 @@ function habitatIncomePerMinute(building){
   if(!building||building.type!=="habitat"||building.stored)return 0;
   return occupants(building).reduce(function(sum,d){return sum+dragonIncomePerMinute(d,building);},0);
 }
+/** Maximum uncollected Gold stored by a Habitat. */
 function habitatGoldCapacity(building){
-  const unlock=ELEMENT_UNLOCK[building.element]||1;
-  const rules=window.DragonEconomy.habitat;
-  return Math.round((rules.goldBase+rules.goldPerUnlockLevel*(unlock-1))*
-    Math.pow(rules.goldLevelFactor,building.level-1));
+  return window.DragonRules.buildings.habitatGoldCapacity(building.level,ELEMENT_UNLOCK[building.element]||1);
 }
+/** Maximum uncollected Gems stored by a Habitat. */
 function habitatGemCapacity(building){
-  const unlock=ELEMENT_UNLOCK[building.element]||1;
-  const base=window.DragonEconomy.habitat.gemCapacityBase;
-  return (base+Math.floor((unlock-1)/10))*building.level;
+  return window.DragonRules.buildings.habitatGemCapacity(building.level,ELEMENT_UNLOCK[building.element]||1);
 }
+/** Purchase price for the next Habitat of an element. */
 function habitatPurchaseCost(element,purchased=state?.habitatPurchases?.[element]||0){
-  const unlock=Math.max(0,(ELEMENT_UNLOCK[element]||1)-1);
-  const count=Math.max(0,Math.floor(Number(purchased)||0));
-  const rules=window.DragonEconomy.shop;
-  const unlockScale=1+rules.habitatUnlockLinear*unlock+
-    rules.habitatUnlockQuadratic*unlock*unlock;
-  const repeatScale=1+rules.habitatRepeatLinear*count+
-    rules.habitatRepeatQuadratic*count*count;
-  return Math.ceil(DATA.buildings.habitat.cost*unlockScale*repeatScale/10)*10;
+  return window.DragonRules.buildings.habitatPurchaseCost(
+    DATA.buildings.habitat.cost,ELEMENT_UNLOCK[element]||1,purchased);
 }
 function buildingPurchaseCost(type,element){
   return type==='habitat'?habitatPurchaseCost(element):DATA.buildings[type].cost;
 }
-function dragonTimeTier(species){
-  if(!species)return 1;
-  if(species.rarity==="transcendent")return "double";
-  return clamp(species.elements.length,1,4);
-}
+/** Incubation/breeding tier derived from species structure. */
+function dragonTimeTier(species){return window.DragonRules.hatching.tierOf(species);}
+/** Egg incubation duration in seconds. */
 function hatchingSeconds(species){
-  if(!species)return 30;
-  const rules=window.DragonEconomy.hatching,tier=dragonTimeTier(species);
-  if(tier===1)return rules.pureElementSeconds[species.elements[0]]||60;
-  const levelPressure=species.elements.reduce(function(sum,element){
-    return sum+(ELEMENT_UNLOCK[element]||1);
-  },0)/species.elements.length;
-  return Math.round((rules.tierSeconds[tier]||rules.tierSeconds[4])+
-    Math.min(rules.maxElementBonusSeconds,levelPressure*rules.elementLevelSeconds));
+  return window.DragonRules.hatching.seconds(species,ELEMENT_UNLOCK);
 }
+/** Shop price for a pure-element egg. */
 function shopEggPrice(species){
-  const base=species.detail.giaTrung;
-  const rarity={common:1,rare:2,epic:4,legendary:8,mythic:16}[species.rarity]||1;
-  const unlock=ELEMENT_UNLOCK[species.elements[0]]||1;
-  const step=unlock-1,rules=window.DragonEconomy.shop;
-  const scale=rarity*rules.eggBaseMultiplier*(1+rules.eggUnlockLinear*step+
-    rules.eggUnlockQuadratic*step*step);
-  return base.vang?{vang:Math.ceil(base.vang*scale/10)*10}:{gem:Math.ceil(base.gem*scale)};
+  return window.DragonRules.buildings.eggPrice(
+    species.detail.giaTrung,species.rarity,ELEMENT_UNLOCK[species.elements[0]]||1);
 }
 /* GEM: Mỗi cá thể hoàn thành một chu kỳ riêng, không cộng gộp giờ lẻ của nhiều dragons. */
 function habitatGemRate(building){return !building||building.type!=="habitat"||building.stored?0:
@@ -300,41 +275,35 @@ function gemNextSeconds(building){
   return Math.ceil((1-Math.max(...dragons.map(function(d){return d.gemProgress||0;})))*
     3600/DATA.gemPerDragonPerHour);
 }
+/** Gold component of a standard building upgrade. */
 function upgradeCost(building){
-  const base=building.type==='habitat'?habitatPurchaseCost(building.element,0):
+  const base=building.type==="habitat"?habitatPurchaseCost(building.element,0):
     buildingPurchaseCost(building.type,building.element);
-  return Math.round(base*Math.pow(window.DragonEconomy.buildings.upgradeFactor,building.level));
+  return window.DragonRules.buildings.upgradeGoldCost(base,building.level);
 }
+/** Gold+Gem cost of Habitat/Farm/Hatchery upgrades. */
 function standardUpgradeCost(building){
-  const rules=window.DragonEconomy.buildings;
-  const gold=upgradeCost(building);
-  const baseGem=rules.upgradeGemBase[building.type]||0;
-  let gems=Math.ceil(baseGem*Math.pow(rules.upgradeGemLevelFactor,Math.max(0,building.level-1)));
-  if(building.type==='habitat'){
-    const unlock=contentRequirementLevel(ELEMENT_UNLOCK[building.element]||1)-1;
-    gems=Math.ceil(gems*(1+rules.habitatGemUnlockLinear*unlock));
-  }
-  return {gold,gems};
+  const base=building.type==="habitat"?habitatPurchaseCost(building.element,0):
+    buildingPurchaseCost(building.type,building.element);
+  const unlock=contentRequirementLevel(ELEMENT_UNLOCK[building.element]||1);
+  return window.DragonRules.buildings.standardUpgradeCost(building.type,building.level,base,unlock);
 }
+/** Upgrade duration in seconds; Habitat time also scales by element unlock tier. */
 function upgradeSeconds(building){
   const times=DATA.upgradeTimes[building.type];
   if(!times)return 0;
   const base=times[Math.min(building.level-1,times.length-1)];
-  if(building.type!=='habitat')return base;
-  const unlock=Math.max(0,contentRequirementLevel(ELEMENT_UNLOCK[building.element]||1)-1);
-  const rules=window.DragonEconomy.habitat;
-  const scale=1+rules.upgradeTimeUnlockLinear*unlock+
-    rules.upgradeTimeUnlockQuadratic*unlock*unlock;
-  return Math.round(base*scale);
+  if(building.type!=="habitat")return base;
+  return window.DragonRules.buildings.habitatUpgradeSeconds(
+    base,contentRequirementLevel(ELEMENT_UNLOCK[building.element]||1));
 }
+/** Player-level gate for upgrading from the current Hatchery level. */
 function hatcheryUpgradePlayerLevel(level){
-  const gates=window.DragonEconomy.progression.hatcheryUpgradeLevels;
+  const gates=window.DragonConfig.progression.hatcheryUpgradeLevels;
   return contentRequirementLevel(gates[Math.max(0,Math.floor(Number(level)||1)-1)]||1);
 }
-function islandUnlockCost(index){
-  if(index<=0)return 0;
-  return index*window.DragonEconomy.island.gemPerIsland;
-}
+/** Gem price for unlocking an island index. */
+function islandUnlockCost(index){return window.DragonRules.buildings.islandUnlockCost(index);}
 function islandUnlockIssue(index){
   const island=DATA.islands[index];
   if(!island||index<=0||index!==state.unlockedIslands)return "Unlock the previous island first.";
@@ -348,14 +317,9 @@ function islandUnlockIssue(index){
   if(state.gems<cost)return "Requires "+cost+" gems to unlock "+island.name+".";
   return "";
 }
+/** Gold price for a land region on an island tier. */
 function landRegionCost(index,opened){
-  const prices=window.DragonEconomy.land;
-  const tier=Math.max(0,Math.floor(Number(index)||0));
-  let amount=prices.homeFirstRegionGold*
-    (1+prices.islandTierLinear*tier+prices.islandTierQuadratic*tier*tier);
-  for(let region=1;region<Math.max(1,opened);region++)
-    amount=Math.round(amount*prices.expansionMultiplier);
-  return Math.round(amount);
+  return window.DragonRules.buildings.landRegionCost(index,opened);
 }
 function landCost(x,y){
   const region=regionOf(x,y),index=region?.index||0;
@@ -371,8 +335,8 @@ function expansionTiles(x,y){
   return tiles;
 }
 function expansionCost(x,y){return Math.round(landCost(x,y)*expansionTiles(x,y).length);}
+/** Instant Gem alternative for a land expansion. */
 function expansionGemCost(x,y){
-  const gold=expansionCost(x,y),rate=window.DragonEconomy.land.goldPerGem;
-  return Math.max(1,Math.ceil(gold/rate));
+  return window.DragonRules.buildings.goldToGemCost(expansionCost(x,y));
 }
 function cropById(id){return DATA.crops.find(function(c){return c.id===id;});}

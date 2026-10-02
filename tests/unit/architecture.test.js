@@ -18,7 +18,7 @@ describe('architecture boundaries',()=>{
   });
   it('uses the React ecosystem for app and server state boundaries',()=>{
     expect(read('src/main.jsx')).toContain('QueryClientProvider');
-    expect(read('src/store/app-store.js')).toContain("from 'zustand'");
+    expect(read('src/app/store.js')).toContain("from 'zustand'");
     expect(read('src/features/challenge/useChallenge.js')).toContain("from '@tanstack/react-query'");
     expect(read('server/validation.cjs')).toContain("require('zod')");
   });

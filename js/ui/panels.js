@@ -156,7 +156,7 @@ function renderShopEggDetail(id){
     (price.vang?state.gold>=cost:state.gems>=cost);
   dom.title.textContent="🥚 Eggs "+s.name;
   dom.body.innerHTML='<div class="note">Pure element egg · incubates in '+
-    duration(DATA.rarities[s.rarity].incubate)+'</div>'+dragonDetailHtml(s,null)+
+    duration(hatchingSeconds(s))+'</div>'+dragonDetailHtml(s,null)+
     '<div class="actions"><button class="btn" data-action="shop-egg-back">‹ Shop</button>'+ 
     '<button class="btn good" data-action="buy-egg" data-species="'+s.id+'"'+
     (canBuy?'':' disabled')+'>Buy '+

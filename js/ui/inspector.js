@@ -71,7 +71,7 @@ function updateInspector(){
       (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
       goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
     ds.forEach(function(d){body+='<button class="btn" data-action="inspect-dragon" data-id="'+d.id+'">🐲 '+esc(d.nickname)+' · '+
-      esc(DATA.species[d.species].name)+' · ⚡ '+money(dragonCombatPower(d))+'</button>';});
+      esc(DATA.species[d.species].name)+'</button>';});
     body+='</div>';
   }else if(b.type==="farm"){
     if(!b.crop)body+='<p>Choose a crop to produce food.</p><div class="actions"><button class="btn good" data-action="crop-menu" data-id="'+b.id+'">Plant crop</button></div>';

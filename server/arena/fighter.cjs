@@ -45,7 +45,7 @@ function createFighterFactory({catalog,game}){
       (resolved.parts.length===1?['claw','slam',resolved.parts[0]+'-1',resolved.parts[0]+'-2']:
         (resolved.parts.length===2?['claw','slam']:resolved.parts.length===3?['claw']:[])
           .concat(resolved.parts.map(element=>element+'-1'))));
-    return {...dragon,parts:resolved.parts,rarity:resolved.rarity,maxHp:stats.hp,
+    return {...dragon,power:combat.power(stats),parts:resolved.parts,rarity:resolved.rarity,maxHp:stats.hp,
       hp:stats.hp,attack:stats.attack,defense:stats.defense,
       statuses:[],cooldowns:[0,0,0,0],skills:skillIds.map(id=>skillRegistry.get(id))};
   }

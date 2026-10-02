@@ -5,6 +5,9 @@ import React from 'react';
 import {inlineStyle} from '../src/inline-style.mjs';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
+import arenaConfig from '../js/config/arena.js';
+import challengeConfig from '../js/config/challenge.js';
+import combatConfig from '../js/config/combat.js';
 const skillStyle=inlineStyle('--skill-color:#2F8FE8; --element:#E8452C; border-color:red');
 assert.equal(skillStyle['--skill-color'],'#2F8FE8');
 assert.equal(skillStyle['--element'],'#E8452C');
@@ -17,7 +20,7 @@ try{
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
     ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
-  globalThis.window={DragonGame:{skillMatchup:(element,target)=>
+  globalThis.window={DragonConfig:{arena:arenaConfig,challenge:challengeConfig,combat:combatConfig},DragonGame:{skillMatchup:(element,target)=>
     element==='fire'&&target==='water'?.5:element==='fire'&&target==='ice'?2:1,
     data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
     water:{mark:'💧',name:'Water',color:'#48e'},earth:{mark:'◆',name:'Earth',color:'#a86'},
@@ -35,7 +38,8 @@ try{
   assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Decline/);
   const dragon={id:2,nickname:'Alex',species:'fire',level:20,hp:500,maxHp:500,
     canBattle:true,skills:[{index:0,name:'Flame Slash',power:1.3,unlocked:true,element:'fire'}]};
-  const unavailable={...dragon,id:4,nickname:'Bé',level:9,canBattle:false,battleReason:'Requires level 10'};
+  const unavailable={...dragon,id:4,nickname:'Bé',level:arenaConfig.minBattleLevel-1,canBattle:false,
+    battleReason:'Requires level '+arenaConfig.minBattleLevel};
   const data={attack:[],defense:[],dragons:[dragon,unavailable],wins:4,losses:2,
     opponents:[{id:'other',username:'Bela',level:2,wins:3,losses:5,
       team:[{...dragon,id:3,species:'water'}]}],cooldownUntil:0};
@@ -58,13 +62,14 @@ try{
   assert.doesNotMatch(setup,/<select id="arena-element-filter"/);
   assert.match(setup,/Wins <b>4<\/b>/);assert.match(setup,/Losses <b>2<\/b>/);
   assert.match(setup,/OK · Confirm teams<\/span><\/button>/);
-  assert.match(setup,/Requires level 10/);assert.match(setup,/disabled=""/);
+  assert.match(setup,new RegExp('Requires level '+arenaConfig.minBattleLevel));assert.match(setup,/disabled=""/);
   assert.doesNotMatch(setup,/arena-enemy-dragon/);
   const opponents=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents'}}));
   assert.match(opponents,/arena-enemy-dragon/);assert.match(opponents,/Water Dragon/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
-  const full={...arena,draft:{attack:[2,5,9],defense:[2,5,9]}};
+  const fullIds=Array.from({length:arenaConfig.teamSize},(_,index)=>index===0?2:index+4);
+  const full={...arena,draft:{attack:fullIds,defense:fullIds}};
   const fullSetup=renderToStaticMarkup(React.createElement(ArenaView,{arena:full}));
   assert.doesNotMatch(fullSetup.match(/<div class="arena-save-bar">(.*?)<\/div>/)[1],/disabled=""/);
   const battle={opponent:'Bela',turn:1,attack:[dragon],defense:[{...dragon,id:3,species:'water',nickname:'Milo'}],

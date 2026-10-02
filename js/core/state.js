@@ -201,14 +201,22 @@ function farmLimit(level){
 function farmCount(){return state.buildings.filter(function(b){return b.type==="farm";}).length;}
 function dragonLevelCap(){
   const academy=state?.buildings.find(b=>b.type==="academy"&&!b.stored);
-  return academy?DATA.progression.academyCaps[Math.min(academy.level-1,4)]:30;
+  return academy?DATA.progression.academyCaps[Math.min(academy.level-1,DATA.progression.academyCaps.length-1)]:30;
 }
 function academyUpgradeCost(level){
   const a=window.DragonEconomy.academy,step=DATA.progression.academyUpgrades[level-1];
   if(!step)return null;
-  return {playerLevel:contentRequirementLevel(step.playerLevel),gold:Math.round(a.baseGold*Math.pow(a.costFactor,level)),
+  return {playerLevel:contentRequirementLevel(step.playerLevel),
+    requiredDragons:step.requiredDragons||0,requiredDragonLevel:step.requiredDragonLevel||dragonLevelCap(),
+    gold:Math.round(a.baseGold*Math.pow(a.costFactor,level)),
     food:Math.round(a.baseFood*Math.pow(a.costFactor,level)),
     gems:Math.round(a.baseGems*Math.pow(a.costFactor,level))};
+}
+function academyQualifiedDragonCount(cost){
+  if(!cost)return 0;
+  return state.dragons.filter(function(dragon){
+    return dragon.level>=cost.requiredDragonLevel;
+  }).length;
 }
 function dragonFeedProgress(dragon){return clamp(Math.floor(Number(dragon.feedProgress)||0),0,3);}
 function stageOf(dragon){return dragon.level<10?"Young":dragon.level<30?"Adult":"Elder";}

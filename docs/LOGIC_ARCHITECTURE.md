@@ -18,6 +18,7 @@ Chứa source-of-truth cho các tham số có thể thay đổi mà không nên 
 - `system.js`: save version/size, autosave, reconnect, session và rate-limit policy.
 
 Không trộn công thức hoặc side effect vào config; logic tiêu thụ các tham số này ở tầng rule/service.
+Bản đồ owner/đơn vị của từng file config nằm tại `js/config/README.md`.
 
 **Không đặt** `toast`, `fetch`, `Date.now()`, `Math.random()` hoặc mutation state trong config.
 
@@ -63,6 +64,34 @@ Mỗi file chỉ nên sở hữu **một domain**. Ví dụ:
 - `selling.js`: resale.
 
 Nếu file bắt đầu xử lý nhiều domain không liên quan, tách file trước khi thêm logic mới.
+
+## Module map cho Arena / Challenge
+
+### Server Arena
+
+```text
+server/arena/fighter.cjs       species resolution + fighter construction
+server/arena/battle-ai.cjs     ready skill + defensive AI scoring
+server/arena/battle-view.cjs   event snapshot + public battle DTO
+server/arena/battle-engine.cjs status/status-effect mutation + turn resolution
+server/arena/eligibility.cjs   team ownership/level/breeding eligibility
+server/arena.cjs               persistence orchestration + reward/cooldown flow
+```
+
+`battle-engine.cjs` không đọc/ghi profile file và không tự cấp reward. Persistence,
+reward và cooldown thuộc `server/arena.cjs`; fighter/AI/public DTO được tách sang module riêng.
+
+### React Arena / Challenge
+
+```text
+src/features/arena/ArenaShared.jsx shared roster/filter/visual primitives
+src/features/arena/ArenaBattle.jsx battle replay + controls + effects
+src/features/arena/ArenaView.jsx   team/opponent screen orchestration
+src/features/challenge/ChallengeView.jsx uses ArenaShared + ArenaBattle
+```
+
+`ChallengeView` không import ngược toàn bộ `ArenaView`; nó chỉ tái sử dụng đúng module con
+cần thiết. Điều này tránh dependency vòng và giữ screen orchestration tách khỏi component dùng chung.
 
 ### 4. UI
 

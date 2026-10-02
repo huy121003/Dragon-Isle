@@ -30,9 +30,9 @@ function renderIslands(){
   DATA.islands.forEach(function(island,index){
     const owned=index<state.unlockedIslands,next=index===state.unlockedIslands;
     const count=owned?islandRegionCount(index):0,total=islandRegionTotal(index);
-    const ready=next&&islandComplete(index-1)&&state.player.level>=(island.playerLevel||1);
+    const issue=next?islandUnlockIssue(index):"",ready=next&&!issue;
     const element=island.element&&DATA.elements[island.element];
-    html+='<div class="island-item '+(owned?'owned':'locked')+'"><span class="island-symbol" style="--island-color:'+(element?element.color:'#86c981')+'">'+(element?element.mark:'🏝️')+'</span><div class="island-info"><b>'+(index+1)+'. '+esc(island.name)+'</b><small>'+(element?element.name+' element · ':'Starting island · ')+island.size+'×'+island.size+' tiles</small><small>'+esc(island.description||'')+'</small><small>'+(owned?count+'/'+total+' regions unlocked':next?'♦ '+money(islandUnlockCost(index))+' gems'+(state.player.level<(island.playerLevel||1)?' · Requires player level '+island.playerLevel:''):'Unlock the previous island first')+'</small>'+(owned?'<div class="island-progress"><span style="width:'+(count/total*100)+'%"></span></div>':'')+'</div><div class="island-actions">'+
+    html+='<div class="island-item '+(owned?'owned':'locked')+'"><span class="island-symbol" style="--island-color:'+(element?element.color:'#86c981')+'">'+(element?element.mark:'🏝️')+'</span><div class="island-info"><b>'+(index+1)+'. '+esc(island.name)+'</b><small>'+(element?element.name+' element · ':'Starting island · ')+island.size+'×'+island.size+' tiles</small><small>'+esc(island.description||'')+'</small><small>'+(owned?count+'/'+total+' regions unlocked':next?'♦ '+money(islandUnlockCost(index))+' gems'+(issue?' · '+esc(issue):''):'Unlock the previous island first')+'</small>'+(owned?'<div class="island-progress"><span style="width:'+(count/total*100)+'%"></span></div>':'')+'</div><div class="island-actions">'+
       (owned?'<button class="btn primary" data-action="focus-island" data-id="'+index+'">View on map</button>':ready?'<button class="btn good" data-action="unlock-island" data-id="'+index+'">Unlock · ♦ '+money(islandUnlockCost(index))+'</button>':
       '<button class="btn" disabled>🔒 Locked</button>')+'</div></div>';
   });

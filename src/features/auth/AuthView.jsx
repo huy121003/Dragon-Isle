@@ -1,14 +1,17 @@
 import React,{useState} from 'react';
 import {useMutation,useQueryClient} from '@tanstack/react-query';
 import {Button,Card,Form,Input,Typography} from 'antd';
+import {z} from 'zod';
 import {apiFetch} from '../../api/http.js';
 
+const CredentialsSchema=z.object({username:z.string().regex(/^[A-Za-z0-9_]{3,24}$/),
+  password:z.string().min(8).max(128)});
 export default function AuthView(){
   const [mode,setMode]=useState('login'),[error,setError]=useState('');
   const queryClient=useQueryClient();
   const mutation=useMutation({
     mutationFn:values=>apiFetch('/api/auth/'+mode,{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(values)
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(credentials)
     }),
     onSuccess:async()=>{
       await queryClient.invalidateQueries({queryKey:['auth','me']});

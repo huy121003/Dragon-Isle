@@ -3,6 +3,7 @@ const game=require('../data/game.json');
 const economyConfig=require('../js/config/economy.js');
 const buildingConfig=require('../js/config/buildings.js');
 const systemConfig=require('../js/config/system.js');
+const worldConfig=require('../js/config/world.js');
 
 /**
  * Tạo profile tối thiểu khi admin cấp tài nguyên trước lần đăng nhập đầu tiên.
@@ -26,7 +27,8 @@ function newProfile(){
       upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null},
       {id:3,type:'hatchery',element:null,x:startX,y:startY,level:1,stored:false,
         storedGold:0,storedGems:0,upgradeEnds:0,upgradeStartedAt:0,crop:null,breeding:null}],
-    dragons:[{id:2,species:'fire',nickname:'Alex',level:1,stars:0,xp:0,feedProgress:0,hunger:10,happiness:80,
+    dragons:[{id:2,species:'fire',nickname:'Alex',level:1,stars:0,xp:0,feedProgress:0,
+      hunger:worldConfig.initialDragon.hunger,happiness:worldConfig.initialDragon.happiness,
       habitatId:1,gemProgress:0}]};
 }
 module.exports={newProfile};

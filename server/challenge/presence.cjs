@@ -6,6 +6,10 @@
  */
 const config=require('../../js/config/challenge.js');
 
+/**
+ * Create Challenge presence/reconnect policy around injected auth/profile/clock dependencies.
+ * Keeps online visibility and reconnect grace math out of the Challenge state machine.
+ */
 function createPresence({auth,users,profile,now,heartbeatMs=config.heartbeatMs,reconnectMs=config.reconnectGraceMs}){
   /** True when an account is eligible to stay inside an existing challenge. */
   function sessionAvailable(id){

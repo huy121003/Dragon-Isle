@@ -27,7 +27,8 @@ function renderBreeding(id){
       const id=d?d.species:(i?cave.breeding.motherSpecies:cave.breeding.fatherSpecies);
       const s=DATA.species[id];
       return '<div class="breed-parent">'+dragonPortrait(id,d?.level||1,'large')+
-        '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+'</small>'+
+      '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+
+        (d?' · ⚡ '+money(dragonCombatPower(d))+' power':'')+'</small>'+
         '<span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></div>';
     }).join('<strong class="breed-heart">♥</strong>');
     dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · '+Math.round((1-breedingConfig.premium.timeFactor)*100)+'% faster · '+Math.round((breedingConfig.premium.rareFactor-1)*100)+'% higher relative chance for 3+ elements. ':'')+
@@ -54,7 +55,7 @@ function renderBreeding(id){
   }
   const available=state.dragons.filter(function(d){
     return d.level>=breedLevel&&!dragonBusy(d.id);
-  });
+  }).slice().sort((a,b)=>dragonCombatPower(b)-dragonCombatPower(a)||a.id-b.id);
   if(available.length<2){
     dom.body.innerHTML='<div class="note">Requires two dragons at level '+breedLevel+
       ' or above that are not breeding elsewhere. Feed dragons '+feedsPerLevel+' times per level.</div>';
@@ -82,7 +83,7 @@ function renderBreeding(id){
       html+='<button class="breed-dragon '+(selected?'selected':'')+(other?' unavailable':'')+'" data-action="breed-select"'+
         ' data-slot="'+slot[0]+'" data-id="'+d.id+'" aria-pressed="'+selected+'"'+(other?' disabled':'')+'>'+ 
         dragonPortrait(s.id,d.level,'small')+
-        '<span class="breed-dragon-text"><b>'+esc(d.nickname)+' · Lv'+d.level+'</b>'+
+        '<span class="breed-dragon-text"><b>'+esc(d.nickname)+' · Lv'+d.level+'</b><small class="dragon-power">⚡ '+money(dragonCombatPower(d))+' power</small>'+
         '<small title="'+esc(s.name)+'">'+esc(s.name)+'</small><span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></span>'+
         '<span class="selection-check">'+(selected?'✓':'○')+'</span></button>';
     });

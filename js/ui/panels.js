@@ -226,7 +226,7 @@ function renderHabitat(id){
     '<button class="btn primary" data-action="skip-timer" data-kind="upgrade" data-id="'+b.id+'">♦ '+
     gemSkipCost(b.upgradeEnds,Date.now())+' Skip</button>';
   else if(b.level<maxBuildingLevel(b))html+='<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
-    money(upgradeCost(b))+' gold</button>';
+    money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems</button>';
   if(!b.upgradeEnds)html+='</div><div class="actions"><button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
     '<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
     (!ds.length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell Habitat</button>':'')+'</div>'+

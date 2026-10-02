@@ -111,8 +111,9 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
 });
 check('new accounts receive starter gold and food without changing existing saves',()=>{
  const fresh=snapshot(game,'newGame()');
- assert.equal(fresh.gold,3000);
- assert.equal(fresh.food,500);
+ assert.equal(fresh.gold,10000);
+ assert.equal(fresh.food,2500);
+ assert.equal(fresh.gems,20);
  fresh.gold=126;fresh.food=37;
  const restored=snapshot(game,'migrateSave('+JSON.stringify(fresh)+')');
  assert.equal(restored.gold,126);
@@ -386,10 +387,10 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  balance.run('state.gold=0;renderCrops('+farmId+');window.DragonGame.action({action:"plant",id:"'+farmId+'",crop:"dragonfruit"})');
  assert.equal(balance.run('state.buildings.at(-1).crop'),null);
  assert(balance.element('toast').textContent.includes('Not enough gold'));
- balance.run('state.gold=9500');
+ balance.run('state.gold=20000');
  balance.run('window.DragonGame.action({action:"plant",id:"'+farmId+'",crop:"dragonfruit"})');
  assert.equal(balance.run('state.buildings.at(-1).crop.id'),'dragonfruit');
- assert.equal(balance.run('state.gold'),3500);
+ assert.equal(balance.run('state.gold'),8000);
  balance.run('state.buildings.at(-1).crop.readyAt=Date.now()-1;harvest(state.buildings.at(-1))');
  assert(balance.run('state.food')>100);
 });
@@ -405,7 +406,7 @@ check('Shop purchase and Farm planting keep their panels stable',()=>{
  assert.equal(commerce.run('ui.modal'),null,'Placement temporarily exposes the island');
  assert.equal(commerce.run('ui.mode.fromShop'),true);
  assert(commerce.element('placementText').textContent.includes('on placement'));
- assert.equal(commerce.run('state.gold'),9880,'Choosing a plot does not charge before placement');
+ assert.equal(commerce.run('state.gold'),8500,'Choosing a plot does not charge before placement');
  commerce.run('handleAction({dataset:{action:"cancel-mode"}})');
  assert.equal(commerce.run('ui.modal.name'),'shop');
  assert.equal(commerce.run('ui.shopTab'),'special');
@@ -448,7 +449,7 @@ check('dragon detail back navigation and habitat actions follow their source and
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="move"'));
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="store"'));
  navigation.run('ui.shopTab="save";openModal("shop")');
- assert(navigation.element('sheetBody').innerHTML.includes('3,000 gold, 500 food'));
+ assert(navigation.element('sheetBody').innerHTML.includes('10,000 gold, 2,500 food'));
  assert(navigation.element('sheetBody').innerHTML.includes('<summary>Testing &amp; debug</summary>'));
 });
 check('a waiting egg enters the only free Hatchery without a chooser popup',()=>{
@@ -527,19 +528,19 @@ check('four-element and Double breeding follow the parent recipes',()=>{
 });
 const premium=await boot();
 check('Celestial Sanctuary costs gems once and persists through saves',()=>{
- premium.run('state=newGame();state.gems=119;ui.shopTab="special";renderShop()');
+ premium.run('state=newGame();state.gems=249;ui.shopTab="special";renderShop()');
  assert(premium.element('sheetBody').innerHTML.includes('data-type="premiumCave"'));
- assert(premium.element('sheetBody').innerHTML.includes('♦ 120'));
+ assert(premium.element('sheetBody').innerHTML.includes('♦ 250'));
  premium.run('beginMode({kind:"buy",type:"premiumCave"})');
  const site=snapshot(premium,'(()=>{for(let y=692;y<716;y++)for(let x=738;x<762;x++)'+
    'if(getBuildValid(x,y,ui.mode))return {x,y};return null})()');
  assert(site,'The starting island needs a free premium cave plot');
  premium.run('completePlacement('+site.x+','+site.y+')');
  assert.equal(premium.run('state.buildings.filter(b=>b.type==="premiumCave").length'),0);
- assert.equal(premium.run('state.gems'),119);
- premium.run('state.gems=120;completePlacement('+site.x+','+site.y+')');
+ assert.equal(premium.run('state.gems'),249);
+ premium.run('state.gems=250;completePlacement('+site.x+','+site.y+')');
  assert.equal(premium.run('state.gems'),0);
- assert.equal(premium.run('state.gold'),3000,'Gem purchase must not charge gold');
+ assert.equal(premium.run('state.gold'),10000,'Gem purchase must not charge gold');
  assert.equal(premium.run('state.buildings.filter(b=>b.type==="premiumCave").length'),1);
  assert(premium.run('buildLockReason("premiumCave")'));
  premium.run('storeBuilding(state.buildings.at(-1).id);sellBuilding(state.buildings.at(-1).id)');
@@ -675,12 +676,12 @@ check('16 element-ordered islands open in two compact rings around home',()=>{
 });
 check('region purchase and placement work',()=>{
  game.run('state.gold=500000;var firstLandPrice=expansionCost(739,691);unlockLand(739,691)');
- assert.equal(game.run('firstLandPrice'),400);
+ assert.equal(game.run('firstLandPrice'),1200);
  assert(game.run('state.regions.includes("0:1:0")'));
  assert(game.run('unlocked(744,680)'));
  assert(game.run('footprintValid(744,678,{w:6,h:6})'));
  assert.equal(game.run('islandRegionCount(0)'),2);
- assert(game.run('expansionCost(715,670)')>400);
+ assert(game.run('expansionCost(715,670)')>1200);
 });
 check('island unlock and land expansion costs increase by island and progress',()=>{
  const g=game;
@@ -691,7 +692,7 @@ check('island unlock and land expansion costs increase by island and progress',(
  for(let i=1;i<16;i++)assert.equal(g.run('islandUnlockCost('+i+')'),i*100);
  assert.equal(g.run('DATA.islands.some(i=>Object.hasOwn(i,"gemCost"))'),false);
  g.run('state=newGame();state.regions.push("1:1:1")');
- assert.equal(g.run('expansionCost(739,691)'),400);
+ assert.equal(g.run('expansionCost(739,691)'),1200);
  const home=g.run('landCost(715,670)'),fire=g.run('landCost(715,592)');
  assert(fire>home,'The next island costs more per tile at the same expansion count');
  g.run('state.regions.push("0:0:0")');
@@ -701,11 +702,11 @@ check('island unlock and land expansion costs increase by island and progress',(
    'const prices=[];for(let opened=1;opened<=8;opened++){state.regions=ids.slice(0,opened);'+
    'prices.push(Math.round(landCost(island.x+1,island.y+1)*DATA.islandRegionSize**2));}'+
    'return prices;});})()');
- assert.deepEqual(bands[0],[400,480,576,691,829,995,1194,1433],
-   'Origin Island starts at 400 gold and rises 20% each region');
- assert.equal(bands[1][0],2866,'Fire Island starts at twice the final home expansion');
- assert.equal(bands[1][7],10267,'Fire Island expansions grow by 20%');
- assert.equal(bands[2][0],20534,'Water Island starts at twice the final Fire expansion');
+ assert.deepEqual(bands[0],[1200,1440,1728,2074,2489,2987,3584,4301],
+   'Origin Island starts at 1,200 gold and rises 20% each region');
+ assert.equal(bands[1][0],8602,'Fire Island starts at twice the final home expansion');
+ assert.equal(bands[1][7],30821,'Fire Island expansions grow by 20%');
+ assert.equal(bands[2][0],61642,'Water Island starts at twice the final Fire expansion');
  for(let i=0;i<bands.length;i++){
    for(let opened=1;opened<8;opened++)
      if(i&&bands[i][opened-1]>Number.MAX_SAFE_INTEGER/2)
@@ -750,7 +751,7 @@ check('Academy uses placement and upgrade gates/cost formula',()=>{
  game.run('state.player.level=30;state.gold=500000;state.food=100000;state.gems=1000;'+
    'state.buildings.push({id:91,type:"academy",level:1,x:738,y:703,stored:false,upgradeEnds:0})');
  assert(game.run('academyUpgradeCost(2).gold')>game.run('academyUpgradeCost(1).gold')*2);
- assert.equal(game.run('academyUpgradeCost(1).gold'),7500);
+ assert.equal(game.run('academyUpgradeCost(1).gold'),17600);
  assert.equal(game.run('upgradeSeconds({type:"academy",level:2})'),660);
  game.run('beginMode({kind:"move",id:91})');
  assert.equal(game.run('ui.mode.kind'),'move');

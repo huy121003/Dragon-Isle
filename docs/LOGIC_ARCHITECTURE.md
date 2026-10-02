@@ -166,6 +166,18 @@ src/features/challenge/ChallengeView.jsx uses ArenaShared + ArenaBattle
 ```
 
 `ChallengeView` không import ngược toàn bộ `ArenaView`; nó chỉ tái sử dụng đúng module con
+
+### Server Challenge
+
+```text
+server/challenge/presence.cjs  online/reconnect policy
+server/challenge/store.cjs     persisted match/notices index
+server/challenge/view.cjs      perspective-correct public DTO mapping
+server/challenge.cjs           invitation/select/battle/leave state transitions
+```
+
+`server/challenge.cjs` không tự đảo attack/defense để phục vụ từng client; việc đó thuộc
+`view.cjs`, giúp authoritative match state luôn giữ một orientation duy nhất.
 cần thiết. Điều này tránh dependency vòng và giữ screen orchestration tách khỏi component dùng chung.
 
 ### 4. UI

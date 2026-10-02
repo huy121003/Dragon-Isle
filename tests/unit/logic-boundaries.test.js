@@ -73,12 +73,14 @@ describe('logic architecture boundaries',()=>{
       .map(name=>read('js/ui/guide/'+name+'.js')).concat(read('js/ui/guide.js')).join('\n');
     const core=read('js/ui/core.js');
     const inspector=read('js/ui/inspector.js');
+    const actions=read('js/ui/actions.js');
+    const shop=read('js/ui/panels/shop.js');
     const dock=read('src/components/GameDock.jsx');
     const arenaView=read('src/features/arena/ArenaView.jsx');
     const arenaShared=read('src/features/arena/ArenaShared.jsx');
     const arenaBattle=read('src/features/arena/ArenaBattle.jsx');
     const challengeView=read('src/features/challenge/ChallengeView.jsx');
-    for(const source of [guide,core,inspector,dock,arenaView,arenaShared,arenaBattle,challengeView])
+    for(const source of [guide,core,inspector,actions,shop,dock,arenaView,arenaShared,arenaBattle,challengeView])
       expect(source).not.toContain('DragonEconomy');
     expect(guide).not.toContain('DATA.progression');
     expect(guide).not.toContain('DATA.gemPerDragonPerHour');
@@ -86,6 +88,12 @@ describe('logic architecture boundaries',()=>{
     expect(core).not.toContain('DATA.gemPerDragonPerHour');
     expect(inspector).not.toContain('DATA.progression');
     expect(inspector).not.toContain('DATA.gemPerDragonPerHour');
+    expect(actions).not.toContain('DragonEconomy');
+    expect(shop).not.toContain('DragonEconomy');
+    expect(actions).toContain('DragonConfig.dragons.maxElementsPerDragon');
+    expect(actions).toContain('DragonConfig.economy.shop.standardFoodAmounts');
+    expect(shop).toContain('economy.shop.standardFoodAmounts');
+    expect(shop).toContain('buildings.definitions.habitat.maxLevel');
     expect(dock).toContain('DragonConfig.arena');
     expect(arenaShared).toContain('DragonConfig.arena');
     expect(arenaShared).toContain('DragonConfig.dragons');

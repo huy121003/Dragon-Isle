@@ -9,6 +9,7 @@ describe('architecture boundaries',()=>{
   it('keeps entrypoints thin',()=>{
     expect(read('src/main.jsx').split('\n').length).toBeLessThan(40);
     expect(read('server.cjs').split('\n').length).toBeLessThan(45);
+    expect(read('js/main.js').split('\n').length).toBeLessThan(50);
     expect(read('js/save.js').split('\n').length).toBeLessThan(100);
   });
   it('keeps the legacy modal router thin and panel domains split',()=>{
@@ -22,6 +23,20 @@ describe('architecture boundaries',()=>{
     expect(read('js/ui/panels/hatchery.js')).toContain('function renderHatchery');
     expect(read('js/ui/panels/breeding.js')).toContain('function renderBreeding');
     expect(read('js/ui/panels/book.js')).toContain('function renderBook');
+  });
+
+  it('separates boot, browser events, runtime loops and React bridge',()=>{
+    const index=read('index.html');
+    const main=read('js/main.js');
+    expect(index).toContain('js/app/events.js');
+    expect(index).toContain('js/app/runtime-loops.js');
+    expect(index).toContain('js/app/bridge.js');
+    expect(main).toContain('bindGameEvents(runtime)');
+    expect(main).toContain('startGameRuntimeLoops(runtime)');
+    expect(main).toContain('installGameBridge()');
+    expect(main).not.toContain('addEventListener("pointerdown"');
+    expect(main).not.toContain('requestAnimationFrame(frame)');
+    expect(main).not.toContain('window.DragonGame={');
   });
 
   it('keeps network, persistence and migrations separated',()=>{

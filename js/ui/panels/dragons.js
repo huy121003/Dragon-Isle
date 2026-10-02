@@ -28,7 +28,7 @@ function renderDragons(){
       ' · '+(home?(home.stored?"Stored Habitat":buildingName(home)):"No Habitat")+
       (home&&!home.stored?' · '+goldPerMinute(dragonIncomePerMinute(d,home))+' gold/min':'')+
       (busy?' · 💞 Breeding':'')+' · '+(d.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(d)+'/'+feedsPerLevel+' feedings')+'</small><div class="meter"><span style="width:'+progress+'%"></span></div>'+
-      '<div class="actions"><button class="btn good" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button>'+
+      '<div class="actions"><button class="btn resource-action" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+resourceAmount('food',feedCost)+'</button>'+
       '<button class="btn" data-action="assign-menu" data-id="'+d.id+'"'+(busy?' disabled':'')+'>Change Habitat</button></div></div></div>';
   });
   dom.body.innerHTML=html+"</div>";
@@ -56,12 +56,12 @@ function renderHabitat(id){
       buildingFootprint(b,b.level+1).h+' free tiles.':'')+'</p>'+
     '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
     (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
-    goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
+    resourceAmount('gold',goldDecimal(b.storedGold))+resourceAmount('gems',b.storedGems||0)+'</button>';
   if(b.upgradeEnds)html+=inlineTimer(b.upgradeStartedAt,b.upgradeEnds)+
-    '<button class="btn primary" data-action="skip-timer" data-kind="upgrade" data-id="'+b.id+'">♦ '+
-    gemSkipCost(b.upgradeEnds,Date.now())+' Skip</button>';
-  else if(b.level<maxBuildingLevel(b))html+='<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
-    money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems</button>';
+    '<button class="btn resource-action" data-action="skip-timer" data-kind="upgrade" data-id="'+b.id+'">Skip · '+
+    resourceAmount('gems',gemSkipCost(b.upgradeEnds,Date.now()))+'</button>';
+  else if(b.level<maxBuildingLevel(b))html+='<button class="btn resource-action" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
+    resourceAmount('gold',standardUpgradeCost(b).gold)+resourceAmount('gems',standardUpgradeCost(b).gems)+'</button>';
   if(!b.upgradeEnds)html+='</div><div class="actions"><button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
     '<button class="btn" data-action="store" data-id="'+b.id+'"'+
     (ds.length?' disabled title="Move every dragon out before storing this Habitat"':'')+'>Store</button>'+

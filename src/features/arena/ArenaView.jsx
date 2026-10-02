@@ -188,7 +188,7 @@ function MatchupMark({value}){
 function DamageMarks({event}){
   return <span className="fx-marks">
     {event.damage>0&&<MatchupMark value={event.matchup}/>}
-    {event.damage>0&&event.critical&&<span className="matchup-mark crit" aria-label="Critical hit · ×1.5">
+    {event.damage>0&&event.critical&&<span className="matchup-mark crit" aria-label={`Critical hit · ×${combatConfig().critical.multiplier}`}>
       <span aria-hidden="true">✦</span> CRIT</span>}
   </span>;
 }

@@ -1,7 +1,7 @@
 /* Editable economy and animation constants shared by the browser modules. */
 window.DragonEconomy={
   starting:{gold:10000,food:2500,gems:20},
-  progression:{xpBase:90,xpLinear:35,xpPower:18,xpExponent:1.55,
+  progression:{xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
     levelGoldBase:1000,levelGoldStep:250,levelFoodBase:200,levelFoodStep:50,
     levelGems:1,milestoneGemBonus:3,
     xpSources:{habitatBuild:35,buildingUpgradeBase:30,buildingUpgradePerLevel:15,

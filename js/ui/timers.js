@@ -13,8 +13,8 @@ function updateTimerBar(){
         action='<button class="btn good" data-action="view-ready-egg" data-id="'+task.id+'">View dragon</button>';
       }else if(task.kind==="crop")action='<button class="btn good" data-action="harvest" data-id="'+task.id+'">Harvest</button>';
       else if(task.kind==="breed")action='<button class="btn good" data-action="collect-breeding" data-id="'+task.id+'">Collect egg</button>';
-    }else action='<button class="btn primary" data-action="skip-timer" data-kind="'+task.kind+
-      '" data-id="'+task.id+'">♦ '+remaining+' Skip</button>';
+    }else action='<button class="btn resource-action" data-action="skip-timer" data-kind="'+task.kind+
+      '" data-id="'+task.id+'">Skip · '+resourceAmount('gems',remaining)+'</button>';
     return '<div class="timer-card"><div class="timer-top"><b>'+esc(task.label)+'</b><small>'+
       Math.floor(percent)+'%</small></div><div class="timer-track"><span style="width:'+percent+
       '%"></span></div><div class="timer-bottom"><small>'+(ready?'Ready':duration(secondsLeft(task.end)))+

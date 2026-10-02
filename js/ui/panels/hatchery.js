@@ -18,8 +18,8 @@ function renderHatchery(id){
       (ready?'View details and choose a Habitat':'Remaining: '+countdown(egg.readyAt))+'</small>'+ 
       inlineTimer(egg.startedAt,egg.readyAt)+'</div>'+ 
       (ready?'<button class="btn good" data-action="view-ready-egg" data-id="'+egg.id+'">View dragon</button>':
-      '<button class="btn primary" data-action="speed-hatch" data-id="'+egg.id+'">♦ '+
-      gemSkipCost(egg.readyAt,Date.now())+' Skip</button>')+'</div>';
+      '<button class="btn resource-action" data-action="speed-hatch" data-id="'+egg.id+'">Skip · '+
+      resourceAmount('gems',gemSkipCost(egg.readyAt,Date.now()))+'</button>')+'</div>';
   });
   html+='<h3>Stored eggs · '+waiting.length+'</h3>';
   if(incubating.length>=hatcheryCapacity(b.level))html+='<p>All nests are occupied. Hatch or sell a ready egg to free a nest.</p>';
@@ -34,8 +34,8 @@ function renderHatchery(id){
     const required=hatcheryUpgradePlayerLevel(b.level);
     html+='<div class="actions">'+(b.upgradeEnds?inlineTimer(b.upgradeStartedAt,b.upgradeEnds):
       state.player.level<required?'<span class="pill">Upgrade Hatchery to level '+(b.level+1)+' at player level '+required+'</span>':
-      '<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
-      money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems</button>')+'</div>';
+      '<button class="btn resource-action" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
+      resourceAmount('gold',standardUpgradeCost(b).gold)+resourceAmount('gems',standardUpgradeCost(b).gems)+'</button>')+'</div>';
   }
   dom.body.innerHTML=html;
 }

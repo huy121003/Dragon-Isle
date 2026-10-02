@@ -21,6 +21,22 @@ body.react-ready #inspector,body.react-ready #placementBar,body.react-ready #ove
 .react-content .food-offer.ant-btn{min-height:76px;flex-wrap:wrap;gap:10px}
 .react-content .food-offer .food-offer-copy{min-width:0;flex:1 1 100px}
 .react-content .food-offer strong{margin-left:auto;white-space:nowrap}
+/* Resource amounts remain legible in compact actions and identify their currency by icon. */
+.resource-amount{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:3px 7px;border:1px solid transparent;border-radius:999px;white-space:nowrap;font-size:.95em;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.25;vertical-align:middle}
+.resource-amount .resource-icon{font-size:1.15em;line-height:1}
+.resource-gold{color:#704708;background:#fff0bb;border-color:#e8bd55}
+.resource-food{color:#426726;background:#e8f7cb;border-color:#a6cd6b}
+.resource-gems{color:#205a84;background:#dff4ff;border-color:#83c9e8}
+.react-content .ant-btn.resource-action,.arena-view .ant-btn.resource-action{min-height:42px;padding:7px 11px;border:1px solid #3d907c;border-bottom:3px solid #216657;border-radius:12px;background:linear-gradient(155deg,#d9f8e7,#92dfbf);color:#174f43;box-shadow:0 4px 12px #1f7d6530;font-weight:850;transition:transform .15s,box-shadow .15s,filter .15s}
+.react-content .ant-btn.resource-action:hover:not(:disabled),.arena-view .ant-btn.resource-action:hover:not(:disabled){filter:saturate(1.15) brightness(1.03);box-shadow:0 5px 14px #1f7d6545;transform:translateY(-1px)}
+.react-content .ant-btn.resource-action:disabled,.arena-view .ant-btn.resource-action:disabled{filter:grayscale(.5);box-shadow:none}
+.react-content .ant-btn.resource-action:has(.resource-gems):not(:has(.resource-gold,.resource-food)),.arena-view .ant-btn.resource-action:has(.resource-gems):not(:has(.resource-gold,.resource-food)){border-color:#68a9d3;border-bottom-color:#2874a8;background:linear-gradient(155deg,#e0f3ff,#9bd1f3);color:#205a84;box-shadow:0 4px 12px #2772a032}
+.react-content .ant-btn.resource-action:has(.resource-gold):not(:has(.resource-gems,.resource-food)){border-color:#d9ae57;border-bottom-color:#ad7931;background:linear-gradient(155deg,#fff1c9,#f6cf78);color:#6e470e;box-shadow:0 4px 12px #a8752930}
+.react-content .resource-action .resource-amount,.arena-view .resource-action .resource-amount{margin-inline:2px}
+.react-content .shop-item.resource-offer.ant-btn{border:1px solid #badccf;background:linear-gradient(145deg,#fffef6,#e7f7ee);box-shadow:0 4px 0 #c5e2d5,0 7px 14px #275b4d1c}
+.react-content .shop-item.resource-offer.ant-btn:hover:not(:disabled){background:linear-gradient(145deg,#fff9df,#daf5e6)}
+.react-content .shop-item.resource-offer strong{display:inline-flex;flex-wrap:wrap;justify-content:flex-end;gap:3px;color:inherit}
+@media(max-width:470px){.react-content .resource-action{line-height:1.45}.react-content .shop-item.resource-offer strong{justify-content:flex-start}}
 .commerce-modal .react-content .tabs{position:sticky;top:0;z-index:2;background:#fffdf5;padding:4px 0 10px}
 .commerce-modal .react-content .tabs,.collection-modal .react-content .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
 .commerce-modal .react-content .tabs .ant-btn,.collection-modal .react-content .tabs .ant-btn{flex:none;white-space:nowrap}

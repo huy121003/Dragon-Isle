@@ -15,11 +15,11 @@ function renderCrops(id){
   DATA.crops.forEach(function(c,index){
     const yieldAmount=Math.round(c.yield*(1+(b.level-1)*.2));
     const locked=index>=b.level;
-    html+='<button class="shop-item" data-action="plant" data-id="'+id+'" data-crop="'+c.id+'"'+
+    html+='<button class="shop-item resource-offer" data-action="plant" data-id="'+id+'" data-crop="'+c.id+'"'+
       (locked?' disabled':'')+'>'+
       '<span class="shop-icon">🌿</span><span><b>'+c.name+'</b><small>'+duration(c.duration)+' → '+
-      money(yieldAmount)+' food</small></span><strong>'+
-      (locked?'Unlocks at level '+(index+1):state.gold<c.cost?'Need '+money(c.cost-state.gold)+' gold':'● '+money(c.cost))+'</strong></button>';
+      resourceAmount('food',yieldAmount)+'</small></span><strong>'+
+      (locked?'Unlocks at level '+(index+1):state.gold<c.cost?'Need '+resourceAmount('gold',c.cost-state.gold):resourceAmount('gold',c.cost))+'</strong></button>';
   });
   dom.body.innerHTML=html+'</div>';
 }

@@ -17,6 +17,16 @@ function countdown(end){return '<span data-end="'+end+'">'+duration(secondsLeft(
 function esc(value){return String(value).replace(/[&<>"']/g,function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
 });}
+/* One visual vocabulary for prices, exchanges and resource rewards. */
+function resourceAmount(kind,amount){
+  const names={gold:"gold",food:"food",gems:"gems"};
+  const icons={gold:"🪙",food:"🍎",gems:"💎"};
+  if(!Object.hasOwn(names,kind))return "";
+  const value=typeof amount==="string"?esc(amount):money(amount);
+  return '<span class="resource-amount resource-'+kind+'" role="img" aria-label="'+
+    value+' '+names[kind]+'"><span class="resource-icon" aria-hidden="true">'+
+    icons[kind]+'</span><span class="resource-value" aria-hidden="true">'+value+'</span></span>';
+}
 function refreshCountdowns(){
   let finishedInSheet=false;
   document.querySelectorAll("[data-end]").forEach(function(el){
@@ -69,7 +79,7 @@ function beginMode(mode){
   dom.bar.classList.add("visible");
   const f=placementFootprint(mode);
   dom.barText.textContent=mode.kind==="buy"?"Tap a free plot to place "+(mode.type==="habitat"?"Habitat "+DATA.elements[mode.element].name:DATA.buildings[mode.type].name)+" · "+f.w+"×"+f.h+" tiles · "+
-    (mode.type==="premiumCave"?"♦ ":"● ")+money(buildingPurchaseCost(mode.type,mode.element))+" on placement":
+    (mode.type==="premiumCave"?"💎 ":"🪙 ")+money(buildingPurchaseCost(mode.type,mode.element))+" on placement":
     mode.kind==="inventory"?"Drag or tap a tile to place a stored building":"Drag or tap a tile to move this building";
   closeModal();
 }

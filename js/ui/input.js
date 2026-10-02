@@ -252,10 +252,30 @@ function handleAction(button){
     case "logout":logoutAccount();break;
     case "buy-food":{
       const count=Number(button.dataset.count);
-      if(![10,100,500].includes(count))break;
+      if(![100,500,2000].includes(count))break;
       const cost=count*window.DragonEconomy.progression.foodGoldPrice;
       if(spendGold(cost)){state.food+=count;toast("Bought "+money(count)+" food for "+money(cost)+" gold.");updateUI();saveGame();}
       break;
+    }
+    case "buy-resource-pack":{
+      const kind=button.dataset.kind,index=Number(button.dataset.index);
+      const packs=window.DragonEconomy.shop.resourcePacks;
+      const list=packs?.[kind],pack=Array.isArray(list)?list[index]:null;
+      if(!pack||!Number.isFinite(pack.cost)||!Number.isFinite(pack.amount)||pack.cost<=0||pack.amount<=0)break;
+      if(kind==="goldForGems"){
+        if(state.gems<pack.cost){toast("Not enough gems.");break;}
+        state.gems-=pack.cost;state.gold+=pack.amount;
+        toast("Exchanged "+money(pack.cost)+" gems for "+money(pack.amount)+" gold.");
+      }else if(kind==="gemsForGold"){
+        if(state.gold<pack.cost){toast("Not enough gold.");break;}
+        state.gold-=pack.cost;state.gems+=pack.amount;
+        toast("Exchanged "+money(pack.cost)+" gold for "+money(pack.amount)+" gems.");
+      }else if(kind==="foodForGems"){
+        if(state.gems<pack.cost){toast("Not enough gems.");break;}
+        state.gems-=pack.cost;state.food+=pack.amount;
+        toast("Bought "+money(pack.amount)+" food for "+money(pack.cost)+" gems.");
+      }else break;
+      updateUI();saveGame();break;
     }
     case "unlock-land":unlockLand(Number(button.dataset.x),Number(button.dataset.y));break;
     case "unlock-land-gem":unlockLand(Number(button.dataset.x),Number(button.dataset.y),"gem");break;

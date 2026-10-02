@@ -27,6 +27,8 @@
       habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,
       eggBaseMultiplier:2.2,eggUnlockLinear:.18,eggUnlockQuadratic:.012,
       eggRarityMultiplier:Object.freeze({common:1,rare:2,epic:4,legendary:8,mythic:16,transcendent:20}),
+      /** Standard Food bundles purchased with Gold; cost = amount * progression.foodGoldPrice. */
+      standardFoodAmounts:Object.freeze([100,500,2000]),
       resourcePacks:Object.freeze({
         goldForGems:Object.freeze([{cost:5,amount:20000},{cost:20,amount:100000},{cost:50,amount:300000}]),
         gemsForGold:Object.freeze([{cost:75000,amount:3},{cost:300000,amount:10},{cost:900000,amount:25}]),

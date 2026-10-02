@@ -2,6 +2,7 @@ const path=require('node:path');
 const {json,readBody,unauthorized}=require('../http.cjs');
 const {readJson,updateJson}=require('../store.cjs');
 const {validSave}=require('../validation.cjs');
+const systemConfig=require('../../js/config/system.js');
 function createSaveRoutes({auth,profilesDir}){
   return async function handle(req,res,pathname){
     if(pathname!=='/api/save'||!['GET','PUT'].includes(req.method))return false;
@@ -19,7 +20,7 @@ function createSaveRoutes({auth,profilesDir}){
     if(expected!=null&&(!Number.isSafeInteger(expected)||expected<0)){
       json(res,400,{error:'Phiên bản bản lưu không hợp lệ.',code:'SAVE_REVISION_INVALID'});return true;
     }
-    const value=await readBody(req,12_000_000);
+    const value=await readBody(req,systemConfig.save.maxBytes);
     if(!validSave(value)){json(res,400,{error:'Bản lưu không hợp lệ.'});return true;}
     let nextRevision=0;
     try{

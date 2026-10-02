@@ -1,5 +1,5 @@
 /* Editable economy and animation constants shared by the browser modules. */
-window.DragonEconomy={
+const DragonEconomy={
   starting:{gold:10000,food:2500,gems:20},
   progression:{contentLevelCap:60,xpBase:60,xpLinear:25,xpPower:8,xpExponent:1.5,
     levelGoldBase:1000,levelGoldStep:250,levelFoodBase:200,levelFoodStep:50,
@@ -39,3 +39,5 @@ window.DragonEconomy={
   academy:{baseGold:8000,baseFood:800,baseGems:5,costFactor:2.2},
   visual:{daySeconds:480,weatherParticles:10}
 };
+if(typeof window!=="undefined")window.DragonEconomy=DragonEconomy;
+if(typeof module!=="undefined"&&module.exports)module.exports=DragonEconomy;

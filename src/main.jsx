@@ -238,7 +238,8 @@ function App(){
       const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
       if(response.status===401){window.DragonConnectionApi?.expire();return;}
       if(!response.ok){
-        if(response.status>=500)window.DragonConnectionApi?.fail('Challenge server is unavailable.');
+        if([502,503,504].includes(response.status))window.DragonConnectionApi?.fail('Challenge server is unavailable.');
+        else setChallenge(current=>({...current,error:'Challenge status is temporarily unavailable.'}));
         return;
       }
       const next=await response.json();
@@ -262,7 +263,7 @@ function App(){
       if(response.status===401){window.DragonConnectionApi?.expire();return;}
       const result=await response.json().catch(()=>({}));
       if(!response.ok){
-        if(response.status>=500)window.DragonConnectionApi?.fail('Challenge server is unavailable.');
+        if([502,503,504].includes(response.status))window.DragonConnectionApi?.fail('Challenge server is unavailable.');
         throw new Error(result.error||'Challenge request failed.');
       }
       await challengeStatus();

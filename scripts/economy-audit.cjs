@@ -20,6 +20,17 @@ function feedCost(level){
   const r=economy.progression;
   return Math.ceil(r.feedBase+r.feedLinear*level+r.feedQuadratic*level*level);
 }
+function standardUpgrade(type,level,element="fire"){
+  const base=type==="habitat"
+    ? game.buildings.habitat.cost*(1+economy.shop.habitatUnlockLinear*((game.elementUnlocks[element]||1)-1)+
+      economy.shop.habitatUnlockQuadratic*((game.elementUnlocks[element]||1)-1)**2)
+    : game.buildings[type].cost;
+  const gold=Math.round(base*Math.pow(economy.buildings.upgradeFactor,level));
+  const baseGem=economy.buildings.upgradeGemBase[type]||0;
+  let gems=Math.ceil(baseGem*Math.pow(economy.buildings.upgradeGemLevelFactor,Math.max(0,level-1)));
+  if(type==="habitat")gems=Math.ceil(gems*(1+economy.buildings.habitatGemUnlockLinear*((game.elementUnlocks[element]||1)-1)));
+  return {gold,gems};
+}
 function academyCost(level){
   const a=economy.academy;
   return {
@@ -94,6 +105,13 @@ console.table([1,10,20,40,60,80,100].map(level=>({
 
 console.log("\nAcademy upgrades");
 console.table([1,2,3,4].map(level=>({level,...academyCost(level),seconds:game.upgradeTimes.academy[level-1]})));
+
+console.log("\nStandard building upgrade resource costs");
+console.table([
+  ...[1,2,3].flatMap(level=>["fire","time"].map(element=>({type:"habitat",element,toLevel:level+1,...standardUpgrade("habitat",level,element)}))),
+  ...[1,2,3].map(level=>({type:"farm",element:"—",toLevel:level+1,...standardUpgrade("farm",level)})),
+  ...[1,2,3,4].map(level=>({type:"hatchery",element:"—",toLevel:level+1,...standardUpgrade("hatchery",level)}))
+]);
 
 console.log("\nBuilding upgrade times");
 console.table(Object.entries(game.upgradeTimes).flatMap(([type,times])=>

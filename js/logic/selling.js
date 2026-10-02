@@ -13,7 +13,7 @@ function sellBuilding(id){
     toast("Wait for breeding dragons before selling the Habitat.");return;
   }
   const refund=Math.round((b.purchaseCost||habitatPurchaseCost(b.element,0))*
-    Math.pow(window.DragonConfig.buildings.upgrade.goldFactor,b.level-1)*DATA.buildings[b.type].sellRate*window.DragonConfig.buildings.upgrade.sellMultiplier);
+    Math.pow(window.DragonConfig.buildings.upgrade.goldFactor,b.level-1)*\n    window.DragonConfig.buildings.definitions[b.type].sellRate*\n    window.DragonConfig.buildings.upgrade.sellMultiplier);
   if(!window.confirm("Sell "+buildingName(b)+" for "+money(refund)+" gold?"))return;
   state.gold+=refund+(b.storedGold||0);
   state.gems+=Math.max(0,Math.floor(Number(b.storedGems)||0));

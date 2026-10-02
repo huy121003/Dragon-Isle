@@ -2,6 +2,7 @@
 (function(root){
 'use strict';
 const WEIGHTS={1:[1],2:[.6,.4],3:[.5,.3,.2],4:[.4,.3,.2,.1]};
+const DEFENSE_SCALE=.6;
 function stats(parts,rarity,level,elements,rarities,stars=0){
   const l=Math.max(1,Math.min(100,Number(level)||1));
   const weights=rarity==='transcendent'?[.25,.25,.3,.2]:WEIGHTS[parts.length];
@@ -13,7 +14,7 @@ function stats(parts,rarity,level,elements,rarities,stars=0){
   const starMultiplier=1+starLevel*.05;
   return {hp:Math.round(Math.round(base('hp')*5*hpGrowth)*starMultiplier),
     attack:Math.round(Math.round(base('tanCong')*growth)*starMultiplier),
-    defense:Math.round(Math.round(base('phongThu')*growth)*starMultiplier)};
+    defense:Math.round(Math.round(base('phongThu')*growth*DEFENSE_SCALE)*starMultiplier)};
 }
 function matchup(skillElement,defenderParts,chart){
   return skillElement?chart[skillElement][defenderParts[0]]:1;

@@ -12,6 +12,7 @@
     rewards:Object.freeze({goldBase:2500,goldPerOpponentLevel:250,foodBase:250,
       foodPerOpponentLevel:40,gemBase:1,gemPer20Levels:1}),
     ai:Object.freeze({healWeight:1.1,regenWeight:.8,vitalityWeight:.7,freezeWeight:.55,
-      poisonWeight:.5,damageBuffWeight:.5,defenseWeight:.8,debuffWeight:.5})
+      poisonWeight:.5,damageBuffHitWeight:.4,damageBuffIncomingWeight:.5,
+      defenseWeight:.8,debuffWeight:.5,defaultDebuffValue:.2})
   });
 });

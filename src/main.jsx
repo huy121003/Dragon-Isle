@@ -311,7 +311,8 @@ function App(){
         <Button onClick={()=>send({action:'logout'})}>Sign out</Button></Space>
     </header>
     {read('timersBar')&&<div className="react-timers"><LegacyContent html={read('timersBar')}/></div>}
-    {ui?.selection&&!ui?.mode&&read('inspector')&&<aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
+    {ui?.selection&&!ui?.mode&&!ui?.modal&&!challengeOpen&&!challenge?.match&&!admin&&read('inspector')&&
+      <aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
     {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>{ui.mode.fromShop?'Back to Shop':'Cancel'}</Button></Space></Card></div>}
     <nav ref={dockRef} className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={activeSection===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
       <span>{icon}</span><b>{label}</b>{action==='open-book'&&<small>{txt('collectionProgress')}</small>}</Button>)}</nav>

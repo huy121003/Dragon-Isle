@@ -103,11 +103,6 @@ function pointerUp(event){
   if(!inside(cell.x,cell.y)){ui.selection=null;updateInspector();return;}
   const b=buildingAt(cell.x,cell.y);
   if(b){
-    if(b.type==="habitat"){
-      ui.selection={type:"building",id:b.id};
-      openModal("habitat",b.id);
-      return;
-    }
     ui.selection={type:"building",id:b.id};
   }else if(islandAt(cell.x,cell.y)>=0&&!unlocked(cell.x,cell.y)){
     const index=islandAt(cell.x,cell.y);
@@ -220,6 +215,7 @@ function handleAction(button){
       break;
     }
     case "hatchery-menu":openModal("hatchery",id);break;
+    case "habitat-menu":openModal("habitat",id);break;
     case "start-incubation":startIncubation(id,Number(button.dataset.building));break;
     case "speed-hatch":speedHatch(id);break;
     case "skip-timer":skipTimer(button.dataset.kind,id);break;

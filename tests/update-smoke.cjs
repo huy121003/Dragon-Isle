@@ -64,6 +64,36 @@ require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join
 const balance=await boot();
 const lifecycle=await boot();
 const countdownUI=await boot();
+const habitatTap=await boot();
+check('tapping a Habitat opens its inspector before optional full details',()=>{
+ const g=habitatTap;
+ g.run('state=newGame();ui.modal=null;ui.selection=null;focusIsland(0)');
+ const point=snapshot(g,'(()=>{const b=state.buildings.find(b=>b.type==="habitat");'+
+   'const p=gridToScreen(b.x+.5,b.y+.5);return worldToScreen(p.x,p.y+islandBob(0));})()');
+ const event=JSON.stringify({clientX:point.x,clientY:point.y,pointerId:1,pointerType:'mouse'});
+ g.run('pointerDown({...'+event+',preventDefault(){}});pointerUp({...'+event+',preventDefault(){}})');
+ assert.equal(g.run('ui.modal'),null);
+ assert.equal(g.run('ui.selection.type'),'building');
+ assert(g.element('inspector').innerHTML.includes('data-action="habitat-menu"'));
+ g.run('handleAction({dataset:{action:"habitat-menu",id:String(ui.selection.id)}})');
+ assert.equal(g.run('ui.modal.name'),'habitat');
+});
+check('other building taps use one inspector and open management only on request',()=>{
+ const g=habitatTap;
+ g.run('state=newGame();focusIsland(0)');
+ const point=snapshot(g,'(()=>{const b=state.buildings[0],p=gridToScreen(b.x+.5,b.y+.5);'+
+   'return worldToScreen(p.x,p.y+islandBob(0));})()');
+ const event=JSON.stringify({clientX:point.x,clientY:point.y,pointerId:2,pointerType:'mouse'});
+ for(const [type,action] of [['farm','crop-menu'],['hatchery','hatchery-menu'],
+   ['cave','breeding-menu'],['premiumCave','breeding-menu'],['arena','open-arena'],
+   ['academy','upgrade'],['decor','move']]){
+   g.run('state.buildings[0].type='+JSON.stringify(type)+';ui.selection=null;ui.modal=null;'+
+     'pointerDown({...'+event+',preventDefault(){}});pointerUp({...'+event+',preventDefault(){}})');
+   assert.equal(g.run('ui.modal'),null,type+' should not auto-open a popup');
+   assert(g.element('inspector').innerHTML.includes('data-action="'+action+'"'),
+     type+' should expose its relevant action in the inspector');
+ }
+});
 check('finished crop refreshes once and shows Harvest without reopening Farm',()=>{
  const g=countdownUI,expires=Date.now()+3000;
  g.run('state.buildings.push({id:98,type:"farm",level:1,stored:false,crop:{id:DATA.crops[0].id,'+

@@ -229,6 +229,7 @@ function App(){
   const [tick,setTick]=useState(0),[account,setAccount]=useState(null),[authReady,setAuthReady]=useState(false),[admin,setAdmin]=useState(false);
   const [challenge,setChallenge]=useState(null),[challengeOpen,setChallengeOpen]=useState(false);
   const challengeSequence=React.useRef(0),challengeRequestBusy=React.useRef(false);
+  const hudRef=React.useRef(null),dockRef=React.useRef(null);
   async function challengeStatus(){
     const sequence=++challengeSequence.current;
     try{
@@ -273,6 +274,17 @@ function App(){
     const timer=setInterval(challengeStatus,2000);
     return()=>clearInterval(timer);
   },[account?.id]);
+  useEffect(()=>{
+    if(!account||!hudRef.current||!dockRef.current)return;
+    const root=$('react-root');
+    const resize=()=>{
+      root.style.setProperty('--hud-height',hudRef.current.getBoundingClientRect().height+'px');
+      root.style.setProperty('--dock-height',dockRef.current.getBoundingClientRect().height+'px');
+    };
+    const observer=new ResizeObserver(resize);
+    observer.observe(hudRef.current);observer.observe(dockRef.current);resize();
+    return()=>{observer.disconnect();root.style.removeProperty('--hud-height');root.style.removeProperty('--dock-height');};
+  },[account?.id,!!game()?.state]);
   const state=game()?.state,ui=game()?.ui;
   if(!authReady)return <div className="react-loading"><Spin size="large"/></div>;
   if(!account)return <Auth onDone={()=>{}}/>;
@@ -291,7 +303,7 @@ function App(){
   if(state.dragons.filter(dragon=>dragon.level>=10).length>=3)
     buttons.push(['🗡️','Thách đấu','open-challenge']);
   return <>
-    <header className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><div className="hud-xp-track" role="progressbar" aria-label="Player experience" aria-valuemin={0} aria-valuenow={state.player.level>=60?60:Math.floor(state.player.xp)} aria-valuemax={state.player.level>=60?60:xpNeeded}><span className="hud-xp-fill" style={{width:xp+'%'}}/><span className="hud-xp-label">{xpLabel}</span></div></div></div>
+    <header ref={hudRef} className="react-hud"><div className="hud-identity"><span className="hud-dragon">🐉</span><div><b>Dragon Isle</b><small>Level {state.player.level} · {account.username}</small><div className="hud-xp-track" role="progressbar" aria-label="Player experience" aria-valuemin={0} aria-valuenow={state.player.level>=60?60:Math.floor(state.player.xp)} aria-valuemax={state.player.level>=60?60:xpNeeded}><span className="hud-xp-fill" style={{width:xp+'%'}}/><span className="hud-xp-label">{xpLabel}</span></div></div></div>
       <div className="hud-resources"><Card size="small"><span>🪙</span><b>{txt('goldAmount')}</b><small>{txt('incomeRate')}</small></Card>
         <Card size="small"><span>🍎</span><b>{txt('foodAmount')}</b></Card>
         <Card size="small"><span>💎</span><b>{txt('gemAmount')}</b></Card></div>
@@ -301,7 +313,7 @@ function App(){
     {read('timersBar')&&<div className="react-timers"><LegacyContent html={read('timersBar')}/></div>}
     {ui?.selection&&!ui?.mode&&read('inspector')&&<aside className="react-inspector"><LegacyContent html={read('inspector')}/></aside>}
     {ui?.mode&&<div className="react-placement"><Card size="small"><Space wrap>{txt('placementText')}<Button danger onClick={()=>send({action:'cancel-mode'})}>{ui.mode.fromShop?'Back to Shop':'Cancel'}</Button></Space></Card></div>}
-    <nav className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={activeSection===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
+    <nav ref={dockRef} className="react-dock" aria-label="Main menu">{buttons.map(([icon,label,action])=><Button key={action} className={activeSection===action.slice(5)?'selected':''} onClick={()=>action==='open-challenge'?(setChallengeOpen(true),challengeStatus()):send({action})}>
       <span>{icon}</span><b>{label}</b>{action==='open-book'&&<small>{txt('collectionProgress')}</small>}</Button>)}</nav>
     <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal'+(arenaBattle?' battle-modal':''):commerceModal?'commerce-modal':['dragons','book'].includes(ui?.modal?.name)?'collection-modal':'')} title={txt('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
       width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden styles={{body:{height:commerceModal?'min(66dvh, 560px)':undefined,maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>

@@ -10,9 +10,9 @@ body.react-ready #inspector,body.react-ready #placementBar,body.react-ready #ove
 .hud-resources{display:flex;gap:7px;flex:1;justify-content:center}.hud-resources .ant-card{box-shadow:0 3px 0 #cee8dc;border:1px solid #e1eadb}.hud-resources .ant-card-body{padding:5px 10px;display:flex;gap:5px;align-items:center}.hud-resources b{color:#2b5262}.hud-resources small{color:#33936e;font-size:10px}.hud-tools{flex-wrap:wrap;justify-content:flex-end}
 .react-dock{position:absolute;bottom:0;left:0;right:0;display:flex;gap:8px;justify-content:center;overflow-x:auto;overscroll-behavior-x:contain;padding:9px 10px calc(env(safe-area-inset-bottom) + 9px);background:linear-gradient(#e9fff2f4,#d2f0eaf4);box-shadow:0 -5px 24px #225d6340;backdrop-filter:blur(10px)}
 .react-dock .ant-btn{height:58px;flex:0 1 120px;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;line-height:1.2;box-shadow:0 3px 0 #b9dfd2}.react-dock .ant-btn span{font-size:23px}.react-dock .ant-btn b{font-size:11px}.react-dock .ant-btn small{font-size:9px;color:#5c8491}.react-dock .ant-btn.selected{background:#d0f7dc;border-color:#50bc98}
-.react-timers{position:absolute;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 91px);overflow-x:auto;max-height:120px}.react-timers .react-content{display:flex;gap:7px;width:max-content}.react-timers .timer-card{pointer-events:auto;box-shadow:0 6px 16px #315c6840}
-.react-inspector{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 86px);left:12px;width:min(390px,calc(100vw - 24px));max-height:46dvh;overflow:auto;box-shadow:0 10px 36px #24556a55;border-radius:21px}.react-inspector .panel{box-shadow:none}
-.react-placement{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 86px);transform:translateX(-50%);max-width:calc(100vw - 24px);text-align:center}
+.react-timers{position:absolute;left:10px;right:10px;top:calc(var(--hud-height,91px) + 8px);overflow-x:auto;max-height:120px}.react-timers .react-content{display:flex;gap:7px;width:max-content}.react-timers .timer-card{pointer-events:auto;box-shadow:0 6px 16px #315c6840}
+.react-inspector{position:absolute;bottom:calc(var(--dock-height,78px) + 8px);left:12px;width:min(390px,calc(100vw - 24px));max-height:min(46dvh,calc(100dvh - var(--hud-height,91px) - var(--dock-height,78px) - 24px));overflow:auto;box-shadow:0 10px 36px #24556a55;border-radius:21px}.react-inspector .panel{box-shadow:none}
+.react-placement{position:absolute;left:50%;bottom:calc(var(--dock-height,78px) + 8px);transform:translateX(-50%);max-width:calc(100vw - 24px);text-align:center}
 .react-auth,.react-loading{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 25% 20%,#c6f8df,#8ddadd 60%,#7db8dd);padding:20px}
 .login-card{width:min(440px,100%);box-shadow:0 20px 55px #205a7560;text-align:center}.login-card .ant-card-body{padding:28px}.login-card .ant-form{text-align:left}.login-crest{font-size:52px;background:#fff0c5;display:inline-grid;place-items:center;width:88px;height:88px;border-radius:26px}.auth-switch{display:flex;gap:10px;margin:22px 0}.auth-switch .ant-btn{flex:1}
 .game-modal .ant-modal-content{background:#fffdf5;border:2px solid #fff;box-shadow:0 22px 70px #173d4c80}.game-modal .ant-modal-title{font-size:20px;color:#296078}.game-modal .ant-modal-body{overscroll-behavior:contain}
@@ -22,12 +22,18 @@ body.react-ready #inspector,body.react-ready #placementBar,body.react-ready #ove
 .react-content .food-offer .food-offer-copy{min-width:0;flex:1 1 100px}
 .react-content .food-offer strong{margin-left:auto;white-space:nowrap}
 .commerce-modal .react-content .tabs{position:sticky;top:0;z-index:2;background:#fffdf5;padding:4px 0 10px}
+.commerce-modal .react-content .tabs,.collection-modal .react-content .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+.commerce-modal .react-content .tabs .ant-btn,.collection-modal .react-content .tabs .ant-btn{flex:none;white-space:nowrap}
 .collection-modal .react-content>.element-filter-wrap,.collection-modal .react-content>.book-toolbar{position:sticky;top:0;z-index:3;background:#fffdf5;padding:5px 0;box-shadow:0 5px 10px #fffdf5}
 .collection-modal .book-toolbar .tabs{margin-bottom:2px}
 .collection-modal .book-toolbar .element-filter{padding-top:3px}
 .react-content .special-shop-cards .shop-item.ant-btn,.react-content .crop-shop-cards .shop-item.ant-btn{min-height:92px}
 .react-content .food-shop-cards .food-offer.ant-btn{min-height:92px}
 .react-content .crop-progress{margin-top:12px}
+.react-content .shop-item:not(.egg-shop-card)>span:not(.shop-icon),.react-content .shop-item:not(.egg-shop-card)>strong{min-width:0;overflow-wrap:anywhere}
+.react-content .shop-item:not(.egg-shop-card)>strong{white-space:normal}
+.react-content .breed-start-action{margin:12px 0 16px}
+.react-content .breed-start-action .ant-btn{min-width:min(100%,220px);min-height:44px}
 /* CỬA HÀNG TRỨNG: Ba vùng nội dung cố định, hai nút luôn nằm trên một hàng riêng. */
 .react-content .egg-shop-card{display:grid;grid-template-columns:60px minmax(0,1fr) 70px;gap:8px;align-items:center;min-width:0;width:100%;padding:11px}
 .react-content .egg-shop-card .egg-plinth{width:58px;height:68px}
@@ -44,5 +50,6 @@ body.react-ready #inspector,body.react-ready #placementBar,body.react-ready #ove
 @media(max-width:560px){.admin-resource-form{grid-template-columns:1fr}}
 @media(max-width:360px){.react-content .egg-shop-card{grid-template-columns:54px minmax(0,1fr) 60px;gap:6px}.react-content .egg-shop-card .egg-plinth{width:52px}.react-content .egg-shop-card .dragon-preview{width:60px;height:54px}}
 #toast{z-index:1200}
-@media(max-width:690px){.react-hud{gap:5px;padding:calc(env(safe-area-inset-top) + 5px) 7px 6px}.hud-identity{min-width:135px;flex:1}.hud-identity b{font-size:13px}.hud-dragon{font-size:22px}.hud-resources{order:3;width:100%;justify-content:space-around}.hud-resources .ant-card-body{padding:3px 6px;font-size:11px}.hud-tools .ant-btn{padding:2px 7px;font-size:11px;height:29px}.react-timers{top:calc(env(safe-area-inset-top) + 102px)}.react-dock{gap:5px;justify-content:flex-start}.react-dock .ant-btn{flex:0 0 76px;height:55px;padding-inline:3px}.react-dock .ant-btn b{font-size:10px}.game-modal{top:auto!important;margin:0!important;max-width:100vw!important;padding:0!important;position:absolute;bottom:0;width:100%!important}.game-modal .ant-modal-content{border-radius:22px 22px 0 0}.game-modal .ant-modal-body{max-height:72dvh!important}}
-@media(max-height:500px){.react-hud{padding-top:3px}.react-timers{top:70px}.react-dock .ant-btn{height:44px}.react-inspector{max-height:42dvh}}
+@media(max-width:690px){.react-hud{gap:5px;padding:calc(env(safe-area-inset-top) + 5px) 7px 6px}.hud-identity{min-width:135px;flex:1}.hud-identity b{font-size:13px}.hud-dragon{font-size:22px}.hud-resources{order:3;width:100%;justify-content:space-around}.hud-resources .ant-card-body{padding:3px 6px;font-size:11px}.hud-tools .ant-btn{padding:2px 7px;font-size:11px;height:29px}.react-dock{gap:5px;justify-content:flex-start}.react-dock .ant-btn{flex:0 0 76px;height:55px;padding-inline:3px}.react-dock .ant-btn b{font-size:10px}.game-modal{top:auto!important;margin:0!important;max-width:100vw!important;padding:0!important;position:absolute;bottom:0;width:100%!important}.game-modal .ant-modal-content{border-radius:22px 22px 0 0}.game-modal .ant-modal-body{max-height:72dvh!important}}
+@media(max-width:470px){.react-content .island-item{display:grid;grid-template-columns:38px minmax(0,1fr)}.react-content .island-actions{grid-column:1/-1}.react-content .island-actions .ant-btn{width:100%}.react-content .hatchery-egg-card>.ant-btn,.react-content .inventory-egg-card>.ant-btn{width:100%}}
+@media(max-height:500px){.react-hud{padding-top:3px}.react-dock .ant-btn{height:44px}.react-inspector{max-height:min(42dvh,calc(100dvh - var(--hud-height,91px) - var(--dock-height,78px) - 20px))}}

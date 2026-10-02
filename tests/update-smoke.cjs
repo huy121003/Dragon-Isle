@@ -717,6 +717,9 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
  game.run('ui.modal={name:"breeding",extra:92};renderBreeding(92)');
  let html=game.element('sheetBody').innerHTML;
  assert(html.includes('data-target="breed-father"')&&html.includes('data-target="breed-mother"'));
+ assert(html.indexOf('data-action="start-breeding"')>html.indexOf('breed-probabilities')&&
+   html.indexOf('data-action="start-breeding"')<html.indexOf('breed-results'),
+   'Start breeding should be available before the long possible-dragon list');
  assert(html.includes('data-breed-search="father"')&&html.includes('data-breed-search="mother"'));
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"fire"}})');
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"water"}})');

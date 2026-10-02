@@ -6,7 +6,7 @@ function renderDragons(){
   const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
   let html='<div class="note">Tap a dragon card for its stats and skills. Feed '+feedsPerLevel+' times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+
     '<div class="dragon-sort" role="group" aria-label="Sort dragons"><span>Sort:</span>'+[
-      ['power','⚡ Combat Power'],['level','Level'],['stars','Stars']].map(([key,label])=>
+      ['level','Level'],['stars','Stars']].map(([key,label])=>
         '<button class="btn '+(ui.dragonSort===key?'active':'')+'" data-action="dragon-sort" data-sort="'+key+'">'+label+'</button>').join('')+'</div><div class="cards">';
   const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements))
     .slice().sort((a,b)=>{
@@ -23,7 +23,6 @@ function renderDragons(){
     html+='<div class="dragon-card" data-action="dragon-detail" data-id="'+d.id+'" role="button" tabindex="0">'+
       dragonPortrait(s.id,d.level,'small')+
       '<div class="dragon-info"><b>'+esc(d.nickname)+' · Level '+d.level+'</b>'+dragonStars(d.stars)+
-      '<small class="dragon-power">⚡ Combat Power '+money(dragonCombatPower(d))+'</small>'+
       '<span class="dragon-summary">'+
       elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span><small>'+esc(s.name)+' · '+stageOf(d)+
       ' · '+(home?(home.stored?"Stored Habitat":buildingName(home)):"No Habitat")+
@@ -74,7 +73,7 @@ function renderHabitat(id){
     const s=DATA.species[d.species],stats=dragonStats(d);
     html+='<button class="shop-item" data-action="dragon-detail" data-id="'+d.id+'">'+
       dragonPortrait(s.id,d.level,'small')+'<span><b>'+esc(d.nickname)+' · Lv'+d.level+'</b>'+dragonStars(d.stars)+'<small>'+esc(s.name)+
-      ' · '+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+(dragonBusy(d.id)?' · 💞 Breeding':'')+'</small><small class="dragon-power">⚡ '+money(dragonCombatPower(d))+' power · 🪙 '+goldPerMinute(dragonIncomePerMinute(d,b))+
+      ' · '+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+(dragonBusy(d.id)?' · 💞 Breeding':'')+'</small><small>🪙 '+goldPerMinute(dragonIncomePerMinute(d,b))+
       '/min · ❤️ '+stats.hp+' · ⚔️ '+stats.attack+' · 🛡️ '+stats.defense+'</small></span></button>';
   });
   dom.body.innerHTML=html+'</div>';
@@ -98,7 +97,7 @@ function renderAssign(dragonId){
   const s=DATA.species[d.species];
   dom.title.textContent="Choose a Habitat for "+d.nickname;
   const homes=state.buildings.filter(function(b){return habitatHasRoom(b)&&s.elements.includes(b.element);});
-  let html='<div class="note">⚡ '+esc(d.nickname)+' Combat Power: <b>'+money(dragonCombatPower(d))+'</b></div><div class="cards">';
+  let html='<div class="cards">';
   if(!homes.length)html+='<div class="note">No matching Habitat has room. Build or upgrade one.</div>';
   homes.forEach(function(b){
     html+='<button class="shop-item" data-action="assign" data-dragon="'+dragonId+'" data-building="'+b.id+'">'+

@@ -2,7 +2,7 @@
 
 /* STATE: Chỉ dữ liệu tiến trình nằm trong save; camera, sheet và thao tác kéo là tạm thời. */
 const SAVE_KEY = "dragon-isle-save";
-const SAVE_VERSION = 12;
+const SAVE_VERSION = window.DragonConfig.system.save.version;
 function newGame(){
   const land = [];
   const origin=DATA.islands[0],startX=origin.x+DATA.islandRegionSize,startY=origin.y+DATA.islandRegionSize;

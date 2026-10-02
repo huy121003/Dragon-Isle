@@ -104,7 +104,13 @@ console.table([1,10,20,40,60,80,100].map(level=>({
 })));
 
 console.log("\nAcademy upgrades");
-console.table([1,2,3,4].map(level=>({level,...academyCost(level),seconds:game.upgradeTimes.academy[level-1]})));
+console.table([1,2,3,4,5,6].map(level=>({
+  fromLevel:level,toLevel:level+1,...academyCost(level),
+  playerGate:game.progression.academyUpgrades[level-1]?.playerLevel,
+  requiredDragons:game.progression.academyUpgrades[level-1]?.requiredDragons,
+  requiredDragonLevel:game.progression.academyUpgrades[level-1]?.requiredDragonLevel,
+  seconds:game.upgradeTimes.academy[level-1]
+})));
 
 console.log("\nStandard building upgrade resource costs");
 console.table([

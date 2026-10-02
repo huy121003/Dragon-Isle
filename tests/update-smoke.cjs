@@ -224,7 +224,7 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  balance.run('updateHeader()');
  assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(5)')+' XP');
  balance.run('state.player.level=60;state.player.xp=0;updateHeader()');
- assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(60)')+' XP');
+ assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('money(playerXPNeeded(60))')+' XP');
  balance.run('gainPlayerXP(playerXPNeeded(60))');
  assert.equal(balance.run('state.player.level'),61);
 });

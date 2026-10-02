@@ -8,7 +8,8 @@ function newGame(){
   const origin=DATA.islands[0],startX=origin.x+DATA.islandRegionSize,startY=origin.y+DATA.islandRegionSize;
   for(let y=startY;y<startY+DATA.islandRegionSize;y++)
     for(let x=startX;x<startX+DATA.islandRegionSize;x++)land.push(x+","+y);
-  const starting=window.DragonConfig.economy.starting,care=window.DragonConfig.world.initialDragon,\n    buildingBalance=window.DragonConfig.buildings.definitions;
+  const starting=window.DragonConfig.economy.starting,care=window.DragonConfig.world.initialDragon,
+    buildingBalance=window.DragonConfig.buildings.definitions;
   return {version:SAVE_VERSION,lastTick:Date.now(),savedAt:Date.now(),nextId:4,player:{level:1,xp:0},
     gold:starting.gold,food:starting.food,gems:starting.gems,expansions:0,land:land,regions:[],unlockedIslands:1,
     habitatPurchases:{fire:1},

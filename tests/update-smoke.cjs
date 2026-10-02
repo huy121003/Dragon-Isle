@@ -4,6 +4,8 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
+const progressionConfig=require('../js/config/progression.js');
+const combatConfig=require('../js/config/combat.js');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const scripts=[...html.matchAll(/<script defer src="([^"]+)"/g)].map(m=>m[1]);
 assert(scripts.length>=15,'Thiếu các module script');
@@ -458,7 +460,7 @@ check('five dragon stars consume only qualified duplicates and raise all combat 
  assert.equal(stars.run('starDonors(state.dragons[0]).length'),0);
  assert.equal(stars.run('upgradeDragonStar(2)'),false);
  for(let rank=0;rank<5;rank++){
-   const rule=JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).progression.starUpgrades[rank];
+   const rule=progressionConfig.starUpgrades[rank];
    stars.run('for(let i=0;i<'+rule.dragons+';i++)state.dragons.push({id:1000+'+rank+'*100+i,'+
      'species:"fire",nickname:"Donor "+i,level:'+rule.level+',stars:0,habitatId:null})');
    assert.equal(stars.run('starDonors(state.dragons.find(d=>d.id===2)).length'),rule.dragons);
@@ -467,7 +469,8 @@ check('five dragon stars consume only qualified duplicates and raise all combat 
    assert.equal(stars.run('state.dragons.filter(d=>d.id>=1000).length'),0);
    const enhanced=snapshot(stars,'dragonStats(state.dragons.find(d=>d.id===2))');
    for(const stat of ['hp','attack','defense'])
-     assert.equal(enhanced[stat],Math.round(original[stat]*(1+(rank+1)*.05)));
+     assert.equal(enhanced[stat],Math.round(original[stat]*
+       (1+(rank+1)*combatConfig.star.statBonusPerStar)));
  }
  assert.equal(stars.run('upgradeDragonStar(2)'),false);
  assert.equal(stars.run('state.dragons.length'),4,'Target and ineligible dragons remain');

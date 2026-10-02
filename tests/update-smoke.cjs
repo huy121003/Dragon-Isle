@@ -385,7 +385,7 @@ check('Hatchery movement and XP for land and island',()=>{
  assert(g.run('state.player.level')>=2);
  g.run('state.player.level=10;state.player.xp=0;state.gems=1000;'+
    'state.regions=[...new Set([...state.regions,...Array.from({length:9},(_,i)=>`0:${i%3}:${Math.floor(i/3)}`)])];unlockIsland(1)');
- assert.equal(g.run('state.player.xp'),300);
+ assert.equal(g.run('state.player.xp'),150);
 });
 check('two-element breeding is favored and chance labels have two decimals',()=>{
  balance.run('state.dragons.push({id:state.nextId++,species:"water",level:5,habitatId:null});'+
@@ -590,22 +590,23 @@ check('16 element-ordered islands open in two compact rings around home',()=>{
 });
 check('region purchase and placement work',()=>{
  game.run('state.gold=500000;var firstLandPrice=expansionCost(739,691);unlockLand(739,691)');
- assert.equal(game.run('firstLandPrice'),421);
+ assert.equal(game.run('firstLandPrice'),400);
  assert(game.run('state.regions.includes("0:1:0")'));
  assert(game.run('unlocked(744,680)'));
  assert(game.run('footprintValid(744,678,{w:6,h:6})'));
  assert.equal(game.run('islandRegionCount(0)'),2);
- assert(game.run('expansionCost(715,670)')>421);
+ assert(game.run('expansionCost(715,670)')>400);
 });
 check('island unlock and land expansion costs increase by island and progress',()=>{
  const g=game;
  assert.equal(g.run('islandUnlockCost(0)'),0);
- assert.equal(g.run('islandUnlockCost(1)'),74);
- assert.equal(g.run('islandUnlockCost(15)'),645);
+ assert.equal(g.run('islandUnlockCost(1)'),100);
+ assert.equal(g.run('islandUnlockCost(15)'),1500);
  for(let i=2;i<16;i++)assert(g.run('islandUnlockCost('+i+')')>g.run('islandUnlockCost('+(i-1)+')'));
+ for(let i=1;i<16;i++)assert.equal(g.run('islandUnlockCost('+i+')'),i*100);
  assert.equal(g.run('DATA.islands.some(i=>Object.hasOwn(i,"gemCost"))'),false);
  g.run('state=newGame();state.regions.push("1:1:1")');
- assert.equal(g.run('expansionCost(739,691)'),421);
+ assert.equal(g.run('expansionCost(739,691)'),400);
  const home=g.run('landCost(715,670)'),fire=g.run('landCost(715,592)');
  assert(fire>home,'The next island costs more per tile at the same expansion count');
  g.run('state.regions.push("0:0:0")');
@@ -615,17 +616,50 @@ check('island unlock and land expansion costs increase by island and progress',(
    'const prices=[];for(let opened=1;opened<=8;opened++){state.regions=ids.slice(0,opened);'+
    'prices.push(Math.round(landCost(island.x+1,island.y+1)*DATA.islandRegionSize**2));}'+
    'return prices;});})()');
- assert.equal(bands[0][0],421,'Origin Island starts at a few hundred gold');
+ assert.deepEqual(bands[0],[400,480,576,691,829,995,1194,1433],
+   'Origin Island starts at 400 gold and rises 20% each region');
+ assert.equal(bands[1][0],2866,'Fire Island starts at twice the final home expansion');
+ assert.equal(bands[1][7],10267,'Fire Island expansions grow by 20%');
+ assert.equal(bands[2][0],20534,'Water Island starts at twice the final Fire expansion');
  for(let i=0;i<bands.length;i++){
    for(let opened=1;opened<8;opened++)
-     assert(bands[i][opened]>bands[i][opened-1],`Island ${i} must get pricier with expansion`);
-   if(i)assert(bands[i][0]>bands[i-1][7],
-     `Island ${i} must cost more than the last expansion on island ${i-1}`);
+     if(i&&bands[i][opened-1]>Number.MAX_SAFE_INTEGER/2)
+       assert(Math.abs(bands[i][opened]/bands[i][opened-1]-1.2)<1e-12,
+         `Island ${i} expansion ${opened+1} grows by 20% even past safe integers`);
+     else assert.equal(bands[i][opened],Math.round(bands[i][opened-1]*1.2),
+       `Island ${i} expansion ${opened+1} follows its own pricing rule`);
+   if(i)assert.equal(bands[i][0],bands[i-1][7]*2,
+     `Island ${i} must start at twice the previous island's last expansion`);
  }
  g.run('state.regions=["0:1:1","0:0:0","0:0:1","0:1:0","0:2:0","0:2:1","0:0:2","0:1:2","0:2:2"];'+
    'state.gems=1000;state.player.level=60;unlockIsland(1)');
- assert.equal(g.run('state.gems'),926);
+ assert.equal(g.run('state.gems'),900);
  assert.equal(g.run('state.unlockedIslands'),2);
+});
+const islandGate=await boot();
+check('island purchase requires egg level and a dragon carrying its element',()=>{
+ const g=islandGate;
+ g.run('state=newGame();state.unlockedIslands=2;state.player.level=60;state.gems=1000;'+
+   'state.regions=Array.from({length:9},(_,n)=>"1:"+(n%3)+":"+Math.floor(n/3))');
+ assert(g.run('islandUnlockIssue(2)').includes('Water element'));
+ g.run('renderIslands();ui.selection={type:"island",index:2};updateInspector()');
+ assert(g.element('sheetBody').innerHTML.includes('Own at least one dragon'));
+ assert(g.element('inspector').innerHTML.includes('Own at least one dragon'));
+ g.run('unlockIsland(2)');
+ assert.equal(g.run('state.unlockedIslands'),2);
+ assert.equal(g.run('state.gems'),1000);
+ const hybrid=g.run('Object.keys(DATA.species).find(id=>DATA.species[id].elements.length>1&&DATA.species[id].elements.includes("water"))');
+ assert(hybrid,'Catalog contains a hybrid with the Water element');
+ g.run('state.dragons[0].species='+JSON.stringify(hybrid));
+ assert.equal(g.run('islandUnlockIssue(2)'), '');
+ g.run('unlockIsland(2)');
+ assert.equal(g.run('state.unlockedIslands'),3);
+ assert.equal(g.run('state.gems'),800);
+ g.run('state.regions=Array.from({length:9},(_,n)=>"2:"+(n%3)+":"+Math.floor(n/3));'+
+   'state.player.level=2;state.dragons[0].species="earth"');
+ assert(g.run('islandUnlockIssue(3)').includes('player level 3'));
+ g.run('unlockIsland(3)');
+ assert.equal(g.run('state.unlockedIslands'),3);
 });
 check('Academy uses placement and upgrade gates/cost formula',()=>{
  game.run('state.player.level=30;state.gold=500000;state.food=100000;state.gems=1000;'+

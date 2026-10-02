@@ -283,16 +283,41 @@ function upgradeSeconds(building){
 }
 function islandUnlockCost(index){
   if(index<=0)return 0;
-  const prices=window.DragonEconomy.island;
-  return Math.round(prices.baseGemCost+prices.linearGemCost*index+
-    prices.quadraticGemCost*index*index);
+  return index*window.DragonEconomy.island.gemPerIsland;
+}
+function islandUnlockIssue(index){
+  const island=DATA.islands[index];
+  if(!island||index<=0||index!==state.unlockedIslands)return "Unlock the previous island first.";
+  if(!islandComplete(index-1))return "Fully unlock "+DATA.islands[index-1].name+" before buying the next island.";
+  const level=Math.max(island.playerLevel||1,DATA.elementUnlocks[island.element]||1);
+  if(state.player.level<level)return "Requires player level "+level+" to unlock "+island.name+" and buy its element egg.";
+  if(island.element&&!state.dragons.some(function(dragon){
+    return DATA.species[dragon.species]?.elements.includes(island.element);
+  }))return "Own at least one dragon with the "+DATA.elements[island.element].name+" element to unlock "+island.name+".";
+  const cost=islandUnlockCost(index);
+  if(state.gems<cost)return "Requires "+cost+" gems to unlock "+island.name+".";
+  return "";
+}
+function landRegionCost(index,opened){
+  const prices=window.DragonEconomy.land;
+  if(index===0){
+    let amount=prices.homeFirstRegionGold;
+    for(let region=1;region<Math.max(1,opened);region++)
+      amount=Math.round(amount*prices.expansionMultiplier);
+    return amount;
+  }
+  let amount=landRegionCost(0,islandRegionTotal(0)-1);
+  for(let island=1;island<=index;island++){
+    amount=Math.round(amount*prices.nextIslandMultiplier);
+    const expansions=island===index?Math.max(1,opened):islandRegionTotal(island)-1;
+    for(let region=1;region<expansions;region++)
+      amount=Math.round(amount*prices.expansionMultiplier);
+  }
+  return amount;
 }
 function landCost(x,y){
-  const region=regionOf(x,y),opened=region?islandRegionCount(region.index):0;
-  const prices=window.DragonEconomy.land;
-  const progress=prices.firstIslandMultiplier*Math.pow(prices.regionMultiplier,opened);
-  const islandPremium=prices.islandStep*(region?.index||0);
-  return prices.basePerTile*(progress+islandPremium);
+  const region=regionOf(x,y),index=region?.index||0;
+  return landRegionCost(index,region?islandRegionCount(index):1)/DATA.islandRegionSize**2;
 }
 function expansionTiles(x,y){
   const r=regionOf(x,y),tiles=[];

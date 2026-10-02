@@ -102,7 +102,7 @@ function guideIslands(){
       money(habitatGoldCapacity({type:'habitat',element:'time',level}))];
   });
   return '<h3>Đất, đảo và hệ mở khóa</h3>'+guideList([
-    'Đảo mở tuần tự: cần mở hết vùng của đảo trước, đủ level người chơi và gem của đảo kế tiếp.',
+    'Đảo mở tuần tự: cần mở hết vùng của đảo trước, đạt level mua trứng hệ đảo, sở hữu ít nhất một rồng có hệ đó và đủ gem. Rồng lai có chứa hệ đảo cũng được tính.',
     'Mở một vùng đất nhận '+window.DragonEconomy.progression.landXp+' XP người chơi; mua đảo mới nhận '+window.DragonEconomy.progression.islandXp+' XP.',
     'Chuồng và trứng 1 hệ trong Shop mở theo level hệ bên dưới. Vùng đất mở theo ô vuông và phải nối với vùng đã sở hữu.'
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+

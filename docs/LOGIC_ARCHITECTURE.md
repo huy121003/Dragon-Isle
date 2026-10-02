@@ -113,9 +113,10 @@ reward và cooldown thuộc `server/arena.cjs`; fighter/AI/public DTO được t
 ### React Arena / Challenge
 
 ```text
-src/features/arena/ArenaShared.jsx shared roster/filter/visual primitives
-src/features/arena/ArenaBattle.jsx battle replay + controls + effects
-src/features/arena/ArenaView.jsx   team/opponent screen orchestration
+src/features/arena/ArenaShared.jsx  shared roster/filter/visual primitives
+src/features/arena/ArenaEffects.jsx battle snapshot/effect/status presentation
+src/features/arena/ArenaBattle.jsx  battle controls + action dispatch
+src/features/arena/ArenaView.jsx    team/opponent screen orchestration
 src/features/challenge/ChallengeView.jsx uses ArenaShared + ArenaBattle
 ```
 

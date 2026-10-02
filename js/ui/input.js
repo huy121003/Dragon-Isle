@@ -137,10 +137,13 @@ function handleAction(button){
     case "shop-egg-detail":openModal("shop-egg-detail",button.dataset.species);break;
     case "shop-egg-back":openModal("shop");break;
     case "open-dragons":openModal("dragons");break;
-    case "dragon-detail":openModal("dragon-detail",id);break;
-    case "back-habitat":{
-      const house=buildingById(id);
-      openModal(house&&house.type==="habitat"&&!house.stored?"habitat":"dragons",id);break;
+    case "dragon-detail":
+      ui.dragonReturn=ui.modal?.name==="habitat"?{name:"habitat",extra:ui.modal.extra}:{name:"dragons"};
+      openModal("dragon-detail",id);break;
+    case "dragon-back":{
+      const back=ui.dragonReturn||{name:"dragons"};ui.dragonReturn=null;
+      const house=back.name==="habitat"?buildingById(back.extra):null;
+      openModal(house&&!house.stored?"habitat":"dragons",house?.id);break;
     }
     case "open-book":openModal("book");break;
     case "open-inventory":openModal("inventory");break;
@@ -208,7 +211,14 @@ function handleAction(button){
     case "choose-build":beginMode({kind:"buy",type:button.dataset.type,element:button.dataset.element||null,fromShop:true});break;
     case "place-inventory":beginMode({kind:"inventory",id:id});break;
     case "buy-egg":buyEgg(button.dataset.species);break;
-    case "egg-find-home":openModal("choose-hatchery",id);break;
+    case "egg-find-home":{
+      const rooms=state.buildings.filter(b=>b.type==="hatchery"&&!b.stored&&
+        eggsInHatchery(b.id).length<hatcheryCapacity(b.level));
+      if(rooms.length===1)startIncubation(id,rooms[0].id);
+      else if(rooms.length>1)openModal("choose-hatchery",id);
+      else toast("The Hatchery is full. Hatch or sell a ready egg to free a nest.");
+      break;
+    }
     case "hatchery-menu":openModal("hatchery",id);break;
     case "start-incubation":startIncubation(id,Number(button.dataset.building));break;
     case "speed-hatch":speedHatch(id);break;
@@ -226,7 +236,8 @@ function handleAction(button){
       if(ui.modal?.name==="breeding")renderBreeding(ui.modal.extra);
       window.dispatchEvent(new Event("dragon-ui-update"));
       requestAnimationFrame(()=>{
-        const field=document.querySelector('[data-breed-search="'+slot+'"]');
+        const field=document.querySelector('.game-modal [data-breed-search="'+slot+'"]')||
+          document.querySelector('[data-breed-search="'+slot+'"]');
         if(field){field.focus();field.setSelectionRange(field.value.length,field.value.length);}
       });break;
     }

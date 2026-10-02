@@ -105,12 +105,12 @@ function renderShop(){
       '</div><div class="actions"><button class="btn primary" data-action="export-save">Download save JSON</button>'+ 
       '<label class="btn good" for="saveImport">Import save JSON</label>'+ 
       '<input id="saveImport" type="file" accept=".json,application/json" class="visually-hidden"></div>'+ 
-      '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to 500 gold, 50 food, 10 gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+ 
+      '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to '+money(window.DragonEconomy.starting.gold)+' gold, '+money(window.DragonEconomy.starting.food)+' food, 10 gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+
       '<button class="btn danger" data-action="factory-reset">Reset game</button></div>'+
-      '<div class="panel"><h3>Testing</h3><button class="btn" data-action="topup-test">Grant test resources</button>'+
+      '<details class="panel"><summary>Testing &amp; debug</summary><div class="actions"><button class="btn" data-action="topup-test">Grant test resources</button>'+
       '<button class="btn" data-action="toggle-iso-debug" aria-pressed="'+ui.debugIso+'">'+
-      (ui.debugIso?'✓ Isometric debug: on':'◇ Isometric debug: off')+'</button>'+
-      '<p>Sets a minimum of 10 million gold, 100,000 food and 10,000 gems.</p></div>';
+      (ui.debugIso?'✓ Isometric debug: on':'◇ Isometric debug: off')+'</button></div>'+
+      '<p>Sets a minimum of 10 million gold, 100,000 food and 10,000 gems.</p></details>';
   }else{
     const price=window.DragonEconomy.progression.foodGoldPrice;
     html+='<div class="note">Buy food with gold · '+money(price)+' gold per food. Purchases are added instantly.</div>'+
@@ -158,7 +158,7 @@ function elementFilter(target,selected){
 function matchesElementFilter(species,selected){return !selected.length||selected.every(id=>species.elements.includes(id));}
 function renderDragons(){
   dom.title.textContent="🐲 Owned Dragons · "+state.dragons.length;
-  let html='<div class="note">Feed a dragon four times to level up. Dragon level cap: '+dragonLevelCap()+'. Each feeding costs food equal to its level.</div>'+elementFilter('dragon',ui.dragonElements)+'<div class="cards">';
+  let html='<div class="note">Tap a dragon card for its stats and skills. Feed four times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+'<div class="cards">';
   const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements));
   if(!visible.length)html+='<div class="note">No dragons match all selected elements.</div>';
   visible.forEach(function(d){
@@ -174,8 +174,7 @@ function renderDragons(){
       ' · '+(home?(home.stored?"Stored Habitat":buildingName(home)):"No Habitat")+
       (home&&!home.stored?' · '+goldPerMinute(dragonIncomePerMinute(d,home))+' gold/min':'')+
       (busy?' · 💞 Breeding':'')+' · '+(d.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(d)+'/4 feedings')+'</small><div class="meter"><span style="width:'+progress+'%"></span></div>'+
-      '<div class="actions"><button class="btn primary" data-action="dragon-detail" data-id="'+d.id+'">View stats and skills</button>'+ 
-      '<button class="btn good" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button>'+
+      '<div class="actions"><button class="btn good" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button>'+
       '<button class="btn" data-action="assign-menu" data-id="'+d.id+'"'+(busy?' disabled':'')+'>Change Habitat</button></div></div></div>';
   });
   dom.body.innerHTML=html+"</div>";
@@ -200,17 +199,19 @@ function renderHabitat(id){
     ' Gold income is the total from dragons. Production stops at capacity. Hunger and happiness affect income.'+
     (b.level<maxBuildingLevel(b)?' Next upgrade needs '+buildingFootprint(b,b.level+1).w+'×'+
       buildingFootprint(b,b.level+1).h+' free tiles.':'')+'</p>'+
-    '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'">Thu '+
+    '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
+    (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
     goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
   if(b.upgradeEnds)html+=inlineTimer(b.upgradeStartedAt,b.upgradeEnds)+
     '<button class="btn primary" data-action="skip-timer" data-kind="upgrade" data-id="'+b.id+'">♦ '+
     gemSkipCost(b.upgradeEnds,Date.now())+' Skip</button>';
   else if(b.level<maxBuildingLevel(b))html+='<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
     money(upgradeCost(b))+' gold</button>';
-  html+='</div><div class="actions"><button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
+  if(!b.upgradeEnds)html+='</div><div class="actions"><button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
     '<button class="btn" data-action="store" data-id="'+b.id+'">Store</button>'+
-    '<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell Habitat</button></div>'+
+    (!ds.length?'<button class="btn danger" data-action="sell" data-id="'+b.id+'">Sell Habitat</button>':'')+'</div>'+
     '</div><h3>Dragons in Habitat · '+ds.length+'</h3><div class="cards">';
+  else html+='</div></div><h3>Dragons in Habitat · '+ds.length+'</h3><div class="cards">';
   if(!ds.length)html+='<p>This Habitat is empty. Assign a dragon of the matching element.</p>';
   ds.forEach(function(d){
     const s=DATA.species[d.species],stats=dragonStats(d);
@@ -227,8 +228,8 @@ function renderDragonDetail(id){
   if(!d){closeModal();return;}
   dom.title.textContent='🐉 Dragon details';
   dom.body.innerHTML=dragonDetailHtml(DATA.species[d.species],d)+
-    '<div class="actions"><button class="btn" data-action="back-habitat" data-id="'+
-    (d.habitatId||0)+'">Back to Habitat</button><button class="btn danger" data-action="sell-dragon" data-id="'+d.id+'">Sell dragon</button></div>';
+    '<div class="actions"><button class="btn" data-action="dragon-back">‹ Back to '+
+    (ui.dragonReturn?.name==="habitat"?'Habitat':'Dragons')+'</button></div>';
   renderDragonPortraits();
 }
 function renderInventory(){
@@ -238,10 +239,12 @@ function renderInventory(){
   let html='<div class="note">Eggs wait for an available Hatchery. Stored buildings keep their levels.</div>'+
     '<h3>🥚 Waiting eggs · '+waiting.length+'</h3>';
   if(!waiting.length)html+='<p>No waiting eggs. Buy one from the Shop or breed dragons.</p>';
+  const room=!!freeHatchery();
   waiting.forEach(function(egg){
     html+='<div class="egg-card">'+eggShellHtml(egg,false)+
       '<div><b>Mystery Egg</b><small>Waiting for a free nest</small></div>'+
-      '<button class="btn good" data-action="egg-find-home" data-id="'+egg.id+'">Incubate</button></div>';
+      '<button class="btn good" data-action="egg-find-home" data-id="'+egg.id+'"'+
+      (room?'':' disabled')+'>'+(room?'Incubate':'Hatchery full')+'</button></div>';
   });
   html+='<h3>🏠 Stored buildings · '+stored.length+'</h3><div class="cards">';
   if(!stored.length)html+='<p>Select a building on the island and choose Store.</p>';
@@ -257,22 +260,23 @@ function renderCrops(id){
   const b=buildingById(id);
   if(!b||b.type!=="farm"){closeModal();return;}
   dom.title.textContent="🌱 Plant crop · Farm level "+b.level;
+  if(b.crop){
+    dom.body.innerHTML='<div class="panel crop-progress"><b>'+esc(cropById(b.crop.id).name)+' is growing</b><p>'+
+      inlineTimer(b.crop.startedAt,b.crop.readyAt)+'</p>'+
+      (b.crop.readyAt<=Date.now()?'<button class="btn good" data-action="harvest" data-id="'+id+'">Harvest</button>':'')+'</div>';
+    return;
+  }
   let html='<div class="cards crop-shop-cards">';
   DATA.crops.forEach(function(c,index){
     const yieldAmount=Math.round(c.yield*(1+(b.level-1)*.2));
     const locked=index>=b.level;
     html+='<button class="shop-item" data-action="plant" data-id="'+id+'" data-crop="'+c.id+'"'+
-      (locked||b.crop?' disabled':'')+'>'+
+      (locked?' disabled':'')+'>'+
       '<span class="shop-icon">🌿</span><span><b>'+c.name+'</b><small>'+duration(c.duration)+' → '+
       money(yieldAmount)+' food</small></span><strong>'+
       (locked?'Unlocks at level '+(index+1):state.gold<c.cost?'Need '+money(c.cost-state.gold)+' gold':'● '+money(c.cost))+'</strong></button>';
   });
-  html+='</div>';
-  if(b.crop)html+='<div class="panel crop-progress"><b>'+esc(cropById(b.crop.id).name)+' is growing</b><p>'+
-    inlineTimer(b.crop.startedAt,b.crop.readyAt)+'</p><div class="actions">'+
-    (b.crop.readyAt<=Date.now()?'<button class="btn good" data-action="harvest" data-id="'+id+'">Harvest</button>':'')+
-    '<button class="btn" data-action="close-modal">Done</button></div></div>';
-  dom.body.innerHTML=html;
+  dom.body.innerHTML=html+'</div>';
 }
 function renderAssign(dragonId){
   const d=dragonById(dragonId);

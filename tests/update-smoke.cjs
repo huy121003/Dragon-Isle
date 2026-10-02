@@ -370,11 +370,48 @@ check('Shop purchase and Farm planting keep their panels stable',()=>{
  assert.equal(commerce.run('dom.body.scrollTop'),48);
  assert.equal(commerce.run('buildingById(91).crop.id'),'wheat');
  assert(commerce.element('sheetBody').innerHTML.includes('crop-progress'));
- assert(commerce.element('sheetBody').innerHTML.includes('data-action="plant" data-id="91" data-crop="wheat" disabled'));
+ assert(!commerce.element('sheetBody').innerHTML.includes('data-action="plant"'),
+   'An active Farm shows only its crop progress');
  commerce.run('buildingById(91).crop.readyAt=Date.now()-1;'+
    'handleAction({dataset:{action:"harvest",id:"91"}})');
  assert.equal(commerce.run('ui.modal.name'),'crops');
  assert.equal(commerce.run('buildingById(91).crop'),null);
+ assert(commerce.element('sheetBody').innerHTML.includes('data-action="plant"'),
+   'Harvest returns directly to crop choices');
+});
+const navigation=await boot();
+check('dragon detail back navigation and habitat actions follow their source and state',()=>{
+ navigation.run('state=newGame();openModal("dragons");handleAction({dataset:{action:"dragon-detail",id:"2"}})');
+ assert.equal(navigation.run('ui.modal.name'),'dragon-detail');
+ assert(navigation.element('sheetBody').innerHTML.includes('Back to Dragons'));
+ assert.equal((navigation.element('sheetBody').innerHTML.match(/data-action="sell-dragon"/g)||[]).length,1);
+ navigation.run('handleAction({dataset:{action:"dragon-back"}})');
+ assert.equal(navigation.run('ui.modal.name'),'dragons');
+ assert(navigation.element('sheetBody').innerHTML.includes('role="button" tabindex="0"'));
+ assert(!navigation.element('sheetBody').innerHTML.includes('View stats and skills'),
+   'The dragon card itself opens details without a duplicate button');
+ navigation.run('openModal("habitat",1);handleAction({dataset:{action:"dragon-detail",id:"2"}});'+
+   'handleAction({dataset:{action:"dragon-back"}})');
+ assert.equal(navigation.run('ui.modal.name'),'habitat');
+ assert(!navigation.element('sheetBody').innerHTML.includes('data-action="sell"'),
+   'Occupied Habitats cannot be sold');
+ assert(navigation.element('sheetBody').innerHTML.includes('data-action="collect" data-id="1" disabled'));
+ navigation.run('buildingById(1).storedGold=10;renderHabitat(1)');
+ assert(navigation.element('sheetBody').innerHTML.includes('data-action="collect" data-id="1">'));
+ navigation.run('buildingById(1).upgradeEnds=Date.now()+60000;renderHabitat(1)');
+ assert(!navigation.element('sheetBody').innerHTML.includes('data-action="move"'));
+ assert(!navigation.element('sheetBody').innerHTML.includes('data-action="store"'));
+ navigation.run('ui.shopTab="save";openModal("shop")');
+ assert(navigation.element('sheetBody').innerHTML.includes('3,000 gold, 500 food'));
+ assert(navigation.element('sheetBody').innerHTML.includes('<summary>Testing &amp; debug</summary>'));
+});
+check('a waiting egg enters the only free Hatchery without a chooser popup',()=>{
+ navigation.run('state=newGame();addEgg("fire");var waitingEgg=addEgg("fire");openModal("inventory")');
+ assert.equal(navigation.run('waitingEgg.hatcheryId'),null);
+ assert(navigation.element('sheetBody').innerHTML.includes('Hatchery full'));
+ navigation.run('state.eggs.shift();renderInventory();handleAction({dataset:{action:"egg-find-home",id:String(waitingEgg.id)}})');
+ assert.equal(navigation.run('ui.modal.name'),'hatchery');
+ assert.equal(navigation.run('waitingEgg.hatcheryId'),3);
 });
 check('Hatchery movement and XP for land and island',()=>{
  const g=balance;

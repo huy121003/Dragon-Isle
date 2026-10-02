@@ -37,7 +37,7 @@ let saveWarningShown = false;
 const ui = {modal:null,shopTab:"special",bookTab:"all",bookPage:0,guideTab:"start",
   breedFatherElements:[],breedMotherElements:[],breedFatherQuery:"",breedMotherQuery:"",
   dragonElements:[],bookElements:[],fixedDay:false,dayOffset:0,debugIso:false,
-  returnModal:null,
+  returnModal:null,dragonReturn:null,
   breedDraft:{father:null,mother:null},selection:null,mode:null,pointers:new Map(),gesture:null,
   camera:{x:0,y:0,zoom:.9},
   toastTimer:0,particleCursor:0,particles:Array.from({length:110},function(){return {life:0};})};

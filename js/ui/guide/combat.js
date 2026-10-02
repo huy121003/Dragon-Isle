@@ -8,7 +8,7 @@ function guideArena(){
   const critChance=Math.round(combat.critical.chance*100);
   return '<h3>Đội hình và lượt đánh</h3>'+guideList([
     'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng '+arena.teamSize+' rồng từ level '+arena.minBattleLevel+' cho đội tấn công. Rồng đang lai không tham gia.',
-    'Arena tạo ba đối thủ máy dựa trên cấp người chơi và sức mạnh đội rồng đã chọn. Mỗi khung 8 giờ có ba lượt, làm mới lúc 00:00, 08:00 và 16:00 theo giờ Việt Nam.',
+    'Arena tạo năm đối thủ máy lần đầu bạn vào đấu trường. Danh sách giữ nguyên qua các mốc hồi lượt; hạ hết năm đối thủ sẽ tạo vòng mới và hồi đầy lượt. Mỗi khung 8 giờ có ba lượt, làm mới lúc 00:00, 08:00 và 16:00 theo giờ Việt Nam; bạn cũng có thể dùng gem để hồi đầy lượt ngay.',
     'Arena đánh theo lượt. Người chơi chọn skill hoặc chạm avatar rồng dự bị để đổi rồng (tốn một lượt); đối thủ chọn skill đang mở theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
     'Bốn ô skill mở theo level '+window.DragonConfig.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
     'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân '+strong+'; ▼ Weak nhân '+weak+'; skill thường không có hệ nên hệ số là 1.',

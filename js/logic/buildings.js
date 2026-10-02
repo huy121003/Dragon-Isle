@@ -10,7 +10,7 @@ function unlockLand(x,y,currency){
     state.gems-=gemCost;
   }else if(!spendGold(cost))return;
   state.regions.push(region.id);state.expansions+=tiles.length;
-  gainPlayerXP(window.DragonEconomy.progression.xpSources.land);
+  gainPlayerXP(window.DragonConfig.progression.xpSources.land);
   const effect=gridToScreen(x+.5,y+.5);burst(effect.x,effect.y,"#c9f89b",15);
   ui.selection=null;
   AUDIO.play("place");updateUI();saveGame();
@@ -25,7 +25,7 @@ function unlockIsland(index){
   ui.cloudReveal={index,startedAt:performance.now()};
   const middle=Math.floor(island.size/DATA.islandRegionSize/2);
   state.regions.push(index+":"+middle+":"+middle);
-  gainPlayerXP(window.DragonEconomy.progression.xpSources.island);
+  gainPlayerXP(window.DragonConfig.progression.xpSources.island);
   ui.selection=null;
   focusIsland(index);
   toast("Unlocked "+island.name+"!");AUDIO.play("place");updateUI();saveGame();
@@ -100,9 +100,9 @@ function plantCrop(buildingId,cropId){
 function harvest(b){
   if(!b.crop||Date.now()<b.crop.readyAt){toast("The crop is not ready.");return;}
   const crop=cropById(b.crop.id);
-  const amount=Math.round(crop.yield*(1+(b.level-1)*.2));
+  const amount=Math.round(crop.yield*(1+(b.level-1)*window.DragonConfig.buildings.farm.yieldBonusPerExtraLevel));
   state.food+=amount;b.crop=null;
-  gainPlayerXP(window.DragonEconomy.progression.xpSources.crop[DATA.crops.indexOf(crop)]||0);
+  gainPlayerXP(window.DragonConfig.progression.xpSources.crop[DATA.crops.indexOf(crop)]||0);
   const center=buildingCenter(b);
   burst(center.x,center.y,"#a8e873",18);
   floating("+"+money(amount)+" food",center.x,center.y-12);
@@ -129,7 +129,7 @@ function sellBuilding(id){
     toast("Wait for breeding dragons before selling the Habitat.");return;
   }
   const refund=Math.round((b.purchaseCost||habitatPurchaseCost(b.element,0))*
-    Math.pow(window.DragonEconomy.buildings.upgradeFactor,b.level-1)*DATA.buildings[b.type].sellRate*window.DragonEconomy.buildings.sellMultiplier);
+    Math.pow(window.DragonConfig.buildings.upgrade.goldFactor,b.level-1)*DATA.buildings[b.type].sellRate*window.DragonConfig.buildings.upgrade.sellMultiplier);
   if(!window.confirm("Sell "+buildingName(b)+" for "+money(refund)+" gold?"))return;
   state.gold+=refund+(b.storedGold||0);
   state.gems+=Math.max(0,Math.floor(Number(b.storedGems)||0));
@@ -141,7 +141,9 @@ function sellDragon(id){
   const dragon=dragonById(id);
   if(!dragon||dragonBusy(id)){toast("A breeding dragon cannot be sold.");return;}
   const species=DATA.species[dragon.species];
-  const price=Math.max(100,Math.round((species.detail.giaBan||100)*window.DragonEconomy.buildings.sellMultiplier*(1+(dragon.level-1)*.05)));
+  const resale=window.DragonConfig.dragons.resale;
+  const price=Math.max(resale.minimumGold,Math.round((species.detail.giaBan||resale.minimumGold)*
+    window.DragonConfig.buildings.upgrade.sellMultiplier*(1+(dragon.level-1)*resale.levelBonus)));
   if(!window.confirm("Sell "+dragon.nickname+" for "+money(price)+" gold?"))return;
   advanceWorld(Date.now());
   state.dragons=state.dragons.filter(d=>d.id!==id);

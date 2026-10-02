@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "size": 1500,
   "tile": 12,
   "tileW": 64,
@@ -213,136 +213,6 @@
       "accent": "#f3e9d4",
       "ornament": "clock"
     }
-  },
-  "testResources": {
-    "gold": 10000000,
-    "food": 100000,
-    "gems": 10000
-  },
-  "gemPerDragonPerHour": 0.5,
-  "progression": {
-    "dragonMaxLevel": 100,
-    "starUpgrades": [
-      {
-        "dragons": 2,
-        "level": 30,
-        "gold": 75000,
-        "food": 7500,
-        "gems": 8
-      },
-      {
-        "dragons": 4,
-        "level": 40,
-        "gold": 200000,
-        "food": 20000,
-        "gems": 20
-      },
-      {
-        "dragons": 6,
-        "level": 50,
-        "gold": 500000,
-        "food": 50000,
-        "gems": 45
-      },
-      {
-        "dragons": 8,
-        "level": 60,
-        "gold": 1200000,
-        "food": 120000,
-        "gems": 90
-      },
-      {
-        "dragons": 10,
-        "level": 70,
-        "gold": 2500000,
-        "food": 250000,
-        "gems": 180
-      }
-    ],
-    "breedLevel": 5,
-    "skillUnlockLevels": [
-      10,
-      15,
-      20,
-      25
-    ],
-    "xpBase": 40,
-    "xpExponent": 1.5,
-    "academyCaps": [
-      40,
-      50,
-      60,
-      70,
-      80,
-      90,
-      100
-    ],
-    "academyUpgrades": [
-      {
-        "playerLevel": 10,
-        "requiredDragons": 2,
-        "requiredDragonLevel": 40
-      },
-      {
-        "playerLevel": 18,
-        "requiredDragons": 3,
-        "requiredDragonLevel": 50
-      },
-      {
-        "playerLevel": 28,
-        "requiredDragons": 4,
-        "requiredDragonLevel": 60
-      },
-      {
-        "playerLevel": 38,
-        "requiredDragons": 5,
-        "requiredDragonLevel": 70
-      },
-      {
-        "playerLevel": 48,
-        "requiredDragons": 6,
-        "requiredDragonLevel": 80
-      },
-      {
-        "playerLevel": 58,
-        "requiredDragons": 8,
-        "requiredDragonLevel": 90
-      }
-    ]
-  },
-  "upgradeTimes": {
-    "habitat": [
-      45,
-      180,
-      600
-    ],
-    "farm": [
-      30,
-      120,
-      480
-    ],
-    "hatchery": [
-      90,
-      300,
-      900,
-      2400
-    ],
-    "academy": [
-      300,
-      900,
-      1800,
-      3600,
-      7200,
-      14400
-    ]
-  },
-  "breedingTimes": {
-    "common": 45,
-    "rare": 180,
-    "epic": 600,
-    "legendary": 1800,
-    "mythic": 3600,
-    "transcendent": 3600
   },
   "nicknames": [
     "Alex",
@@ -656,92 +526,38 @@
   },
   "buildings": {
     "habitat": {
-      "maxLevel": 4,
       "name": "Dragon Habitat",
-      "icon": "⌂",
-      "cost": 1200,
-      "sellRate": 0.5
+      "icon": "⌂"
     },
     "farm": {
-      "maxLevel": 4,
       "name": "Farm",
-      "icon": "✿",
-      "cost": 1000,
-      "sellRate": 0.5
+      "icon": "✿"
     },
     "hatchery": {
-      "maxLevel": 5,
       "name": "Hatchery",
-      "icon": "◉",
-      "cost": 3000,
-      "sellRate": 0.5
+      "icon": "◉"
     },
     "cave": {
-      "maxLevel": 1,
       "name": "Breeding Cave",
-      "icon": "♧",
-      "cost": 5000,
-      "sellRate": 0.5
+      "icon": "♧"
     },
     "premiumCave": {
-      "maxLevel": 1,
       "name": "Celestial Breeding Sanctuary",
-      "icon": "✧",
-      "cost": 250,
-      "sellRate": 0
+      "icon": "✧"
     },
     "arena": {
-      "maxLevel": 1,
       "name": "Arena",
-      "icon": "⚔",
-      "cost": 10000,
-      "sellRate": 0.5
+      "icon": "⚔"
     },
     "decor": {
-      "maxLevel": 1,
       "name": "Flagpole",
-      "icon": "⚑",
-      "cost": 500,
-      "sellRate": 0.5
+      "icon": "⚑"
     },
     "academy": {
-      "maxLevel": 7,
       "name": "Dragon Academy",
-      "icon": "✦",
-      "cost": 12000,
-      "sellRate": 0
+      "icon": "✦"
     }
   },
-  "crops": [
-    {
-      "id": "wheat",
-      "name": "Wheat",
-      "duration": 30,
-      "yield": 20,
-      "cost": 40
-    },
-    {
-      "id": "carrot",
-      "name": "Carrot",
-      "duration": 180,
-      "yield": 140,
-      "cost": 240
-    },
-    {
-      "id": "pumpkin",
-      "name": "Pumpkin",
-      "duration": 900,
-      "yield": 1000,
-      "cost": 1500
-    },
-    {
-      "id": "dragonfruit",
-      "name": "Dragon Fruit",
-      "duration": 7200,
-      "yield": 10000,
-      "cost": 12000
-    }
-  ],
   "skills": {
     "neutral": [
       {
@@ -1017,8 +833,7 @@
       "description": "Warm volcanic stone and glowing embers shelter Fire dragons.",
       "x": 714,
       "y": 590,
-      "size": 72,
-      "playerLevel": 1
+      "size": 72
     },
     {
       "id": "water",
@@ -1027,8 +842,7 @@
       "description": "Cool pools and flowing currents shelter Water dragons.",
       "x": 792,
       "y": 590,
-      "size": 72,
-      "playerLevel": 2
+      "size": 72
     },
     {
       "id": "earth",
@@ -1037,8 +851,7 @@
       "description": "Layered stone and fertile soil shelter Earth dragons.",
       "x": 792,
       "y": 668,
-      "size": 72,
-      "playerLevel": 4
+      "size": 72
     },
     {
       "id": "wind",
@@ -1047,8 +860,7 @@
       "description": "Open ridges and steady updrafts shelter Wind dragons.",
       "x": 792,
       "y": 746,
-      "size": 72,
-      "playerLevel": 6
+      "size": 72
     },
     {
       "id": "ice",
@@ -1057,8 +869,7 @@
       "description": "Frosted rock and bright crystal shelter Ice dragons.",
       "x": 714,
       "y": 746,
-      "size": 72,
-      "playerLevel": 8
+      "size": 72
     },
     {
       "id": "thunder",
@@ -1067,8 +878,7 @@
       "description": "Charged clouds and crackling stone shelter Thunder dragons.",
       "x": 636,
       "y": 746,
-      "size": 72,
-      "playerLevel": 11
+      "size": 72
     },
     {
       "id": "nature",
@@ -1077,8 +887,7 @@
       "description": "Roots, leaves and soft moss shelter Nature dragons.",
       "x": 636,
       "y": 668,
-      "size": 72,
-      "playerLevel": 14
+      "size": 72
     },
     {
       "id": "dark",
@@ -1087,8 +896,7 @@
       "description": "Quiet shadows and violet stone shelter Dark dragons.",
       "x": 636,
       "y": 590,
-      "size": 72,
-      "playerLevel": 18
+      "size": 72
     },
     {
       "id": "light",
@@ -1097,8 +905,7 @@
       "description": "Sunlit rock and warm radiance shelter Light dragons.",
       "x": 714,
       "y": 512,
-      "size": 72,
-      "playerLevel": 22
+      "size": 72
     },
     {
       "id": "metal",
@@ -1107,8 +914,7 @@
       "description": "Veins of iron and polished stone shelter Metal dragons.",
       "x": 870,
       "y": 590,
-      "size": 72,
-      "playerLevel": 27
+      "size": 72
     },
     {
       "id": "war",
@@ -1117,8 +923,7 @@
       "description": "Scarred red cliffs shelter the steadfast War dragons.",
       "x": 870,
       "y": 746,
-      "size": 72,
-      "playerLevel": 32
+      "size": 72
     },
     {
       "id": "pure",
@@ -1127,8 +932,7 @@
       "description": "Pale crystal and clear air shelter Pure dragons.",
       "x": 792,
       "y": 824,
-      "size": 72,
-      "playerLevel": 37
+      "size": 72
     },
     {
       "id": "legend",
@@ -1137,8 +941,7 @@
       "description": "Ancient violet stone shelters rare Legend dragons.",
       "x": 636,
       "y": 824,
-      "size": 72,
-      "playerLevel": 42
+      "size": 72
     },
     {
       "id": "primal",
@@ -1147,8 +950,7 @@
       "description": "Old rock and untamed roots shelter Primal dragons.",
       "x": 558,
       "y": 746,
-      "size": 72,
-      "playerLevel": 48
+      "size": 72
     },
     {
       "id": "time",
@@ -1157,32 +959,12 @@
       "description": "Weathered stone and drifting light shelter Time dragons.",
       "x": 558,
       "y": 590,
-      "size": 72,
-      "playerLevel": 55
+      "size": 72
     }
   ],
   "islandRegionSize": 24,
   "environment": {
-    "cycleSeconds": 480,
-    "particlesPerIsland": 10,
     "maxDevicePixelRatio": 2,
     "maxDesktopPixelRatio": 1.5
-  },
-  "elementUnlocks": {
-    "fire": 1,
-    "water": 2,
-    "earth": 4,
-    "wind": 6,
-    "ice": 8,
-    "thunder": 11,
-    "nature": 14,
-    "dark": 18,
-    "light": 22,
-    "metal": 27,
-    "war": 32,
-    "pure": 37,
-    "legend": 42,
-    "primal": 48,
-    "time": 55
   }
 }

@@ -8,6 +8,7 @@ import {createServer} from 'vite';
 import arenaConfig from '../js/config/arena.js';
 import challengeConfig from '../js/config/challenge.js';
 import combatConfig from '../js/config/combat.js';
+import dragonConfig from '../js/config/dragons.js';
 const skillStyle=inlineStyle('--skill-color:#2F8FE8; --element:#E8452C; border-color:red');
 assert.equal(skillStyle['--skill-color'],'#2F8FE8');
 assert.equal(skillStyle['--element'],'#E8452C');
@@ -20,7 +21,7 @@ try{
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
     ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
-  globalThis.window={DragonConfig:{arena:arenaConfig,challenge:challengeConfig,combat:combatConfig},DragonGame:{skillMatchup:(element,target)=>
+  globalThis.window={DragonConfig:{arena:arenaConfig,challenge:challengeConfig,combat:combatConfig,dragons:dragonConfig},DragonGame:{skillMatchup:(element,target)=>
     element==='fire'&&target==='water'?.5:element==='fire'&&target==='ice'?2:1,
     data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
     water:{mark:'💧',name:'Water',color:'#48e'},earth:{mark:'◆',name:'Earth',color:'#a86'},

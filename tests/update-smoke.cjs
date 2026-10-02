@@ -591,7 +591,7 @@ check('premium cave shares busy rules and has its own breeding turn',()=>{
  const round=snapshot(premium,'buildingById(93).breeding');
  assert(round&&round.result);
  assert.equal(round.readyAt-round.startedAt,premium.run(
-   'breedingSeconds(DATA.species[buildingById(93).breeding.result],1,buildingById(93))*1000'));
+   'breedingSeconds(DATA.species[buildingById(93).breeding.result],1,buildingById(93),[dragonById(2),dragonById(92)])*1000'));
  const restored=snapshot(premium,'(()=>{const old=JSON.parse(JSON.stringify(state));'+
    'delete old.buildings.find(b=>b.id===93).breeding.startedAt;return migrateSave(old).buildings.find(b=>b.id===93).breeding;})()');
  assert.equal(restored.startedAt,round.startedAt,'Saved premium timer uses its shorter duration');

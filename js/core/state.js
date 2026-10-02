@@ -297,6 +297,17 @@ function upgradeCost(building){
     buildingPurchaseCost(building.type,building.element);
   return Math.round(base*Math.pow(window.DragonEconomy.buildings.upgradeFactor,building.level));
 }
+function standardUpgradeCost(building){
+  const rules=window.DragonEconomy.buildings;
+  const gold=upgradeCost(building);
+  const baseGem=rules.upgradeGemBase[building.type]||0;
+  let gems=Math.ceil(baseGem*Math.pow(rules.upgradeGemLevelFactor,Math.max(0,building.level-1)));
+  if(building.type==='habitat'){
+    const unlock=contentRequirementLevel(ELEMENT_UNLOCK[building.element]||1)-1;
+    gems=Math.ceil(gems*(1+rules.habitatGemUnlockLinear*unlock));
+  }
+  return {gold,gems};
+}
 function upgradeSeconds(building){
   const times=DATA.upgradeTimes[building.type];
   if(!times)return 0;

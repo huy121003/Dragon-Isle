@@ -156,8 +156,10 @@ assert(!save.includes('clamp(Number(result.player.level)||1,1,60)'),'Save must p
 assert(!react.includes("'MAX LEVEL'"),'React shell must not show MAX LEVEL at 60');
 assert(progressionLogic.includes('while(state.player.xp>=playerXPNeeded(state.player.level))'),'Player leveling must remain unlimited');
 assert(calculations.includes('contentRequirementLevel'),'Content gates must use the level-60 cap helper');
-assert(arena.includes("require('../data/economy.js')"),'Arena rewards must use shared economy config');
-assert(arena.includes('economy.progression.contentLevelCap'),'Arena reward scaling must stop at content cap');
+assert(arena.includes("require('../js/config/arena.js')"),'Arena rewards must use shared Arena config');
+assert(arena.includes("require('../js/config/progression.js')"),'Arena reward scaling must use shared progression config');
+assert(arena.includes('progressionConfig.contentLevelCap'),'Arena reward scaling must stop at content cap');
+assert(!arena.includes("require('../data/economy.js')"),'Arena service must not depend on the legacy economy facade');
 assert(profile.includes("require('../data/economy.js')"),'Server starter resources must use shared economy config');
 assert(guide.includes('Strong nhân 2')&&guide.includes('Weak nhân 0,5'),'Guide combat multipliers are stale');
 assert(guide.includes('Rồng sở hữu yêu cầu'),'Academy ownership requirements must be documented');

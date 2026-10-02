@@ -30,6 +30,24 @@ describe('shared gameplay rules',()=>{
     expect(buildings.goldToGemCost(10000)).toBe(2);
   });
 
+  it('builds normalized breeding candidates in the pure rule layer',()=>{
+    const speciesById={
+      fire:{id:'fire',elements:['fire']},
+      water:{id:'water',elements:['water']},
+      'fire>water':{id:'fire>water',elements:['fire','water']},
+      'water>fire':{id:'water>fire',elements:['water','fire']}
+    };
+    const options=breeding.offspringOptions({
+      fatherSpecies:speciesById.fire,motherSpecies:speciesById.water,
+      fatherLevel:10,motherLevel:10,speciesById,
+      elementOrder:['fire','water'],fourIds:[],doubleIds:[],quads:{},premium:false
+    });
+    expect(options.map(option=>option.id).sort()).toEqual(
+      ['fire','fire>water','water','water>fire'].sort());
+    expect(options.reduce((sum,option)=>sum+option.chance,0)).toBeCloseTo(1,10);
+    expect(options.find(option=>option.id==='fire>water').chance).toBeCloseTo(.375,10);
+  });
+
   it('preserves incubation and breeding timing',()=>{
     expect(hatching.seconds({rarity:'common',elements:['fire']},{fire:1})).toBe(30);
     const hybrid={rarity:'rare',elements:['fire','water']};

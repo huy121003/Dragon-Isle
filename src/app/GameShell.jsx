@@ -1,9 +1,11 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React,{useEffect,useRef} from 'react';
 import {Button,Card,Modal,Space,Spin} from 'antd';
 import ArenaView from '../ArenaView.jsx';
 import ChallengeView from '../ChallengeView.jsx';
 import { $,game,read,send,text } from './game-bridge.js';
-import {useAccount,useGameRuntime} from './useGameRuntime.js';
+import {useGameRuntime} from './useGameRuntime.js';
+import {useAuth} from '../features/auth/useAuth.js';
+import {useAppStore} from '../store/app-store.js';
 import AuthView from '../features/auth/AuthView.jsx';
 import AdminPanel from '../features/admin/AdminPanel.jsx';
 import ReconnectModal from '../features/connection/ReconnectModal.jsx';
@@ -13,9 +15,10 @@ import GameHud from '../components/GameHud.jsx';
 import GameDock from '../components/GameDock.jsx';
 
 export default function GameShell(){
-  const {account,ready:authReady}=useAccount();
+  const {account,ready:authReady}=useAuth();
   const {state,ui,connection}=useGameRuntime();
-  const [admin,setAdmin]=useState(false);
+  const admin=useAppStore(state=>state.adminOpen);
+  const setAdmin=useAppStore(state=>state.setAdminOpen);
   const hudRef=useRef(null),dockRef=useRef(null);
   const challengeCtl=useChallenge(account,connection);
   const {challenge,open:challengeOpen,setOpen:setChallengeOpen,status:challengeStatus,request:challengeRequest}=challengeCtl;

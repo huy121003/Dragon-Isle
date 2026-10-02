@@ -9,6 +9,7 @@
 const combat=require('../../js/data/combat-rules.js');
 const arenaConfig=require('../../js/config/arena.js');
 const combatConfig=require('../../js/config/combat.js');
+const progressionConfig=require('../../js/config/progression.js');
 
 function createBattleEngine({catalog,game,rng=Math.random}){
   const elements=catalog.elements,rarities=catalog.rarities;
@@ -92,7 +93,7 @@ function createBattleEngine({catalog,game,rng=Math.random}){
   /** Skills that are unlocked and not cooling down for a fighter. */
   function readySkills(fighter){
     return fighter.skills.map((skill,index)=>({skill,index})).filter(({skill,index})=>
-      skill&&fighter.level>=game.progression.skillUnlockLevels[index]&&!(fighter.cooldowns?.[index]>0));
+      skill&&fighter.level>=progressionConfig.skillUnlockLevels[index]&&!(fighter.cooldowns?.[index]>0));
   }
 
   /** Server-side defensive AI. Higher score means more useful in current state. */
@@ -225,7 +226,7 @@ function createBattleEngine({catalog,game,rng=Math.random}){
     }else if(action?.action==='skill'){
       const index=action.skillIndex;
       if(!Number.isInteger(index)||index<0||index>=actor.skills.length||
-        !actor.skills[index]||actor.level<game.progression.skillUnlockLevels[index]||
+        !actor.skills[index]||actor.level<progressionConfig.skillUnlockLevels[index]||
         actor.cooldowns?.[index]>0)
         throw Object.assign(new Error('This skill is unavailable.'),{status:400});
       strike(battle,side,actor.skills[index],index);
@@ -262,8 +263,8 @@ function createBattleEngine({catalog,game,rng=Math.random}){
         index,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
         special:!!skill.special,effect:skill.effect||null,description:skill.description||null,
         cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
-        unlockLevel:game.progression.skillUnlockLevels[index],
-        unlocked:fighter.level>=game.progression.skillUnlockLevels[index]}:null)});
+        unlockLevel:progressionConfig.skillUnlockLevels[index],
+        unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
     return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
       defense:battle.defense.map(view),activeAttack:battle.activeAttack,
       activeDefense:battle.activeDefense,events:battle.events.slice(-arenaConfig.eventHistory)};

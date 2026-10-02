@@ -29,8 +29,8 @@ function guideBreeding(){
   ])+'<h3>Tỷ lệ chia phần còn lại cho 1 / 2 hệ</h3>'+guideTable(['Số hệ bố mẹ','1 hệ / 2 hệ'],tierRows)+
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Hang thường','Hang xịn','Trong Lồng ấp'],durationRows)+
     '<p class="muted">Trứng 1 hệ tăng theo hệ mở khóa, từ '+duration(window.DragonConfig.hatching.pureElementSeconds.fire)+' cho Fire đến '+duration(window.DragonConfig.hatching.pureElementSeconds.time)+' cho Time. Trứng lai 2/3/4 hệ có mốc 3/12/36 giờ; Double có mốc 48 giờ. Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([
-      'Sau khi nhận trứng lai vào Inventory hoặc chuyển trứng vào Lồng ấp, Hang lai có thể bắt đầu lượt mới; trứng không cần phải nở trước.',
-      'Lồng ấp có 1–'+window.DragonConfig.buildings.definitions.hatchery.maxLevel+' ô theo level, mỗi ô ấp một trứng độc lập. Trứng hoàn tất vẫn chiếm ô cho đến khi nở hoặc được bán; trứng dư ở Inventory tự vào ô trống.',
+      'Trứng lai chỉ rời Hang khi Lồng ấp còn ô trống. Nếu Lồng ấp đầy, kết quả ở lại Hang và hai rồng bố mẹ vẫn bận; sau khi chuyển trứng sang Lồng ấp mới có thể lai tiếp, không cần chờ trứng nở.',
+      'Lồng ấp có 1–'+window.DragonConfig.buildings.definitions.hatchery.maxLevel+' ô theo level, mỗi ô ấp một trứng độc lập. Trứng hoàn tất vẫn chiếm ô cho đến khi nở hoặc được bán; trứng mua chờ trong Inventory sẽ tự vào ô trống.',
       'Khi trứng nở, cần Chuồng còn chỗ và cùng ít nhất một hệ của rồng. Giống mới được ghi vào Dragon Book; công thức của cặp bố mẹ được lưu trong Recipes.'
     ])+'<div class="guide-callout">Trong Hang lai, tỷ lệ theo bậc là tổng các giống cùng bậc; mở từng nhóm để xem tỷ lệ chính xác của từng giống.</div>';
 }

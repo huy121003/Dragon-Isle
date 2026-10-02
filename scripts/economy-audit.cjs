@@ -69,10 +69,10 @@ function breedSeconds(species,premium=false){
 
 console.log("\nPlayer XP curve");
 let cumulative=0;
-console.table([1,2,4,6,8,11,14,18,22,27,32,37,42,48,55,60].map(level=>{
+console.table([1,2,4,6,8,11,14,18,22,27,32,37,42,48,55,60,75,100,150,200].map(level=>{
   if(level===1)return {level,xpToNext:xpNeeded(level),cumulativeToReach:0};
   cumulative=0;for(let l=1;l<level;l++)cumulative+=xpNeeded(l);
-  return {level,xpToNext:level<60?xpNeeded(level):0,cumulativeToReach:cumulative};
+  return {level,xpToNext:xpNeeded(level),cumulativeToReach:cumulative};
 }));
 
 console.log("\nXP sources");

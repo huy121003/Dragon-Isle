@@ -3,7 +3,7 @@
 function unlockLand(x,y,currency){
   const region=regionOf(x,y);
   if(!region||region.index>=state.unlockedIslands||unlocked(x,y)||!regionAdjacent(region))return;
-  const tiles=expansionTiles(x,y),cost=expansionCost(x,y),gemCost=Math.max(1,Math.ceil(cost/100));
+  const tiles=expansionTiles(x,y),cost=expansionCost(x,y),gemCost=expansionGemCost(x,y);
   if(!tiles.length)return;
   if(currency==="gem"){
     if(state.gems<gemCost){toast("Not enough gems.");return;}
@@ -118,7 +118,7 @@ function sellBuilding(id){
     toast("Wait for breeding dragons before selling the Habitat.");return;
   }
   const refund=Math.round((b.purchaseCost||habitatPurchaseCost(b.element,0))*
-    Math.pow(window.DragonEconomy.buildings.upgradeFactor,b.level-1)*DATA.buildings[b.type].sellRate);
+    Math.pow(window.DragonEconomy.buildings.upgradeFactor,b.level-1)*DATA.buildings[b.type].sellRate*window.DragonEconomy.buildings.sellMultiplier);
   if(!window.confirm("Sell "+buildingName(b)+" for "+money(refund)+" gold?"))return;
   state.gold+=refund+(b.storedGold||0);
   state.gems+=Math.max(0,Math.floor(Number(b.storedGems)||0));
@@ -130,7 +130,7 @@ function sellDragon(id){
   const dragon=dragonById(id);
   if(!dragon||dragonBusy(id)){toast("A breeding dragon cannot be sold.");return;}
   const species=DATA.species[dragon.species];
-  const price=Math.max(25,Math.round((species.detail.giaBan||100)*(1+(dragon.level-1)*.04)));
+  const price=Math.max(100,Math.round((species.detail.giaBan||100)*window.DragonEconomy.buildings.sellMultiplier*(1+(dragon.level-1)*.05)));
   if(!window.confirm("Sell "+dragon.nickname+" for "+money(price)+" gold?"))return;
   advanceWorld(Date.now());
   state.dragons=state.dragons.filter(d=>d.id!==id);

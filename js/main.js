@@ -6,7 +6,7 @@ const runtime=window.DragonConfig.system.runtime;
 if(!await authenticate())return;
 try{state=await loadGameFromServer();}
 catch(error){showAuthMessage(error.message);return;}
-/* SAVE: Bản localStorage cũ bị xóa và không bao giờ tự ghép into accounts. */
+/* SAVE: Bản localStorage cũ bị xóa và không bao giờ tự ghép vào hồ sơ tài khoản. */
 try{window.localStorage.removeItem(SAVE_KEY);}catch(error){}
 try{ui.fixedDay=window.localStorage.getItem('dragon-isle-fixed-day')==='1';}catch(error){}
 const offline=advanceWorld(Date.now());

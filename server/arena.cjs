@@ -1,11 +1,10 @@
 /* PvP: máy chủ giữ đội hình, thời gian chờ và tung kết quả trận. */
 const path=require('node:path');
 const {readJson,updateJson}=require('./store.cjs');
-const combat=require('../js/data/combat-rules.js');
 const economy=require('../data/economy.js');
 const arenaConfig=require('../js/config/arena.js');
-const combatConfig=require('../js/config/combat.js');
 const {createEligibility}=require('./arena/eligibility.cjs');
+const {createBattleEngine}=require('./arena/battle-engine.cjs');
 /**
  * Create the authoritative Arena service.
  * @param {object} options
@@ -27,45 +26,9 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const eligible=eligibility.eligible;
   const owned=eligibility.ownedTeam;
   const summary=eligibility.summary;
-  const species=id=>{
-    const raw=catalog.species.find(d=>d.id===id);
-    const parts=raw?.elements||id.split('>');
-    const doubled=raw?.doHiem==='transcendent'&&parts.length===4&&
-      parts[0]===parts[1]&&new Set(parts).size===3;
-    if(!parts.length||parts.length>4||parts.some(e=>!elements[e])||
-      (!doubled&&new Set(parts).size!==parts.length))return null;
-    const rarity=raw?.doHiem|| (parts.length===1?'common':parts.length===2?
-      parts.some(e=>['light','dark','metal'].includes(e))?'epic':'rare':parts.length===3?'legendary':'mythic');
-    return {parts,rarity};
-  };
-  function fighter(d){
-    const s=species(d.species);if(!s)return null;
-    const stats=combat.stats(s.parts,s.rarity,d.level,elements,rarities,d.stars);
-    const skills=(catalog.species.find(x=>x.id===d.species)?.skillIds||
-      (s.parts.length===1?['claw','slam',s.parts[0]+'-1',s.parts[0]+'-2']:
-        (s.parts.length===2?['claw','slam']:s.parts.length===3?['claw']:[]).concat(s.parts.map(e=>e+'-1'))));
-    const registry=[...(game.skills.neutral||[]),...Object.entries(game.skills.elemental||{}).flatMap(([element,list])=>
-      list.map(skill=>({...skill,element})))];
-    return {...d,parts:s.parts,rarity:s.rarity,maxHp:stats.hp,
-      hp:stats.hp,attack:stats.attack,defense:stats.defense,
-      statuses:[],cooldowns:[0,0,0,0],skills:skills.map(id=>registry.find(x=>x.id===id))};
-  }
-  function fight(attackers,defenders){
-    const left=attackers.map(fighter).filter(Boolean),right=defenders.map(fighter).filter(Boolean);
-    if(!left.length||!right.length)throw Object.assign(new Error('Invalid team.'),{status:400});
-    const b={attack:left,defense:right,activeAttack:0,activeDefense:0,events:[],turn:1};
-    for(;b.turn<=arenaConfig.maxTurns&&left.some(f=>f.hp>0)&&right.some(f=>f.hp>0);b.turn++){
-      for(const side of ['attack','defense']){
-        if(!left.some(f=>f.hp>0)||!right.some(f=>f.hp>0))break;
-        const f=active(b,side),ready=readySkills(f);
-        if(!ready.length)throw Object.assign(new Error('This dragon has no unlocked skills.'),{status:400});
-        const chosen=side==='defense'?chooseDefenseSkill(b):ready[Math.floor(Math.random()*ready.length)];
-        strike(b,side,chosen.skill,chosen.index);
-      }
-    }
-    const remaining=group=>group.reduce((sum,f)=>sum+f.hp/f.maxHp,0);
-    return {won:left.some(f=>f.hp>0)&&(right.every(f=>f.hp===0)||remaining(left)>remaining(right)),events:b.events};
-  }
+  const battleEngine=createBattleEngine({catalog,game});
+  const {makeFighter:fighter,fight,publicBattle,active,chooseDefenseSkill,strike,
+    liveTurn,finish}=battleEngine;
   async function list(user){
     const own=await readJson(profile(user.id),null),arena=await readJson(file(user.id),{});
     if(!unlocked(own))throw Object.assign(new Error('Build an Arena first.'),{status:403});
@@ -89,183 +52,6 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       throw Object.assign(new Error('Each team needs exactly three dragons at level 10 or above that are not breeding.'),{status:400});
     await updateJson(file(user.id),current=>({...current,attack:body.attack,defense:body.defense}));
     return {ok:true};
-  }
-  function publicBattle(b){
-    const view=f=>({id:f.id,species:f.species,level:f.level,stars:f.stars||0,nickname:f.nickname,
-      hp:f.hp,maxHp:combat.effectiveMaxHp(f),statuses:statusSnapshot(f),
-      skills:f.skills.map((skill,i)=>skill?{
-        index:i,name:skill.name,element:skill.element||null,power:skill.power,
-        bonus:skill.bonus||0,special:!!skill.special,effect:skill.effect||null,
-        description:skill.description||null,cooldown:skill.cooldown||0,
-        remainingCooldown:f.cooldowns?.[i]||0,
-        unlockLevel:game.progression.skillUnlockLevels[i],
-        unlocked:f.level>=game.progression.skillUnlockLevels[i]}:null)});
-    return {opponent:b.opponent,turn:b.turn,attack:b.attack.map(view),defense:b.defense.map(view),
-      activeAttack:b.activeAttack,activeDefense:b.activeDefense,events:b.events.slice(-arenaConfig.eventHistory)};
-  }
-  function active(b,side){return b[side][b[side==='attack'?'activeAttack':'activeDefense']];}
-  const harmful=new Set(['poison','freeze','damage_down','armor_down','accuracy_down']);
-  const statusIcons={poison:'☠',freeze:'❄',damage_up:'⚔',damage_down:'🗡',
-    armor_up:'🛡',armor_down:'⚒',damage_reduction:'✦',regen:'✚',vitality:'♥',accuracy_down:'◌'};
-  function statusSnapshot(f){return (f.statuses||[]).map(s=>({...s,icon:statusIcons[s.kind]||'✦'}));}
-  function record(b,event){
-    b.events.push({...event,turn:b.turn,state:{
-      attack:b.attack.map(f=>({id:f.id,hp:f.hp,maxHp:combat.effectiveMaxHp(f),statuses:statusSnapshot(f),cooldowns:f.cooldowns||[]})),
-      defense:b.defense.map(f=>({id:f.id,hp:f.hp,maxHp:combat.effectiveMaxHp(f),statuses:statusSnapshot(f),cooldowns:f.cooldowns||[]})),
-      activeAttack:b.activeAttack,activeDefense:b.activeDefense}});
-  }
-  function nextFighter(b,side){
-    const next=b[side].findIndex(f=>f.hp>0);
-    if(next>=0){b[side==='attack'?'activeAttack':'activeDefense']=next;
-      record(b,{side,switchTo:b[side][next].nickname,automatic:true});}
-  }
-  function addStatus(f,effect,element){
-    const previous=f.statuses.find(s=>s.kind===effect.kind);
-    if(previous){previous.turns=Math.max(previous.turns,effect.duration);
-      previous.value=Math.max(previous.value||0,effect.value||0);
-      previous.element=element;
-    }else f.statuses.push({kind:effect.kind,turns:effect.duration,
-      value:effect.value||0,element});
-  }
-  function readySkills(f){
-    return f.skills.map((skill,index)=>({skill,index})).filter(({skill,index})=>
-      skill&&f.level>=game.progression.skillUnlockLevels[index]&&!(f.cooldowns?.[index]>0));
-  }
-  function chooseDefenseSkill(b){
-    const actor=active(b,'defense'),target=active(b,'attack'),ready=readySkills(actor);
-    if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
-    const incoming=Math.max(1,...readySkills(target).map(({skill})=>
-      combat.battleDamage(target,actor,skill,catalog.typeChart)));
-    const ai=arenaConfig.ai;
-    const score=({skill})=>{
-      const effect=skill.effect,kind=effect?.kind;
-      const hitDamage=combat.battleDamage(actor,target,skill,catalog.typeChart);
-      const hits=kind==='multi'?effect.hits:1;
-      const accuracy=1-Math.min(combatConfig.maxAccuracyPenalty,(kind==='multi'?effect.missChance:0)+
-        combat.statusValue(actor,'accuracy_down'));
-      let value=Math.min(target.hp,hitDamage*hits*accuracy);
-      const already=kind&&actor.statuses.some(status=>status.kind===kind);
-      const enemyHas=kind&&target.statuses.some(status=>status.kind===kind);
-      const missing=Math.max(0,combat.effectiveMaxHp(actor)-actor.hp);
-      if(kind==='heal'||kind==='cleanse')value+=Math.min(missing,actor.maxHp*effect.value)*ai.healWeight;
-      else if(kind==='regen'&&!already)value+=Math.min(missing,actor.maxHp*effect.value*effect.duration)*ai.regenWeight;
-      else if(kind==='vitality'&&!already)value+=actor.maxHp*effect.value*ai.vitalityWeight;
-      else if(kind==='freeze'&&!enemyHas)value+=incoming*ai.freezeWeight*accuracy;
-      else if(kind==='poison'&&!enemyHas)value+=Math.min(target.hp,target.maxHp*effect.value*effect.duration)*ai.poisonWeight*accuracy;
-      else if(kind==='damage_up'&&!already)value+=hitDamage*ai.damageBuffHitWeight+incoming*effect.value*ai.damageBuffIncomingWeight;
-      else if(['armor_up','damage_reduction'].includes(kind)&&!already)value+=incoming*effect.value*ai.defenseWeight;
-      else if(['armor_down','damage_down','accuracy_down'].includes(kind)&&!enemyHas)
-        value+=incoming*(effect.value||ai.defaultDebuffValue)*ai.debuffWeight*accuracy;
-      return value;
-    };
-    return ready.reduce((best,item)=>score(item)>score(best)?item:best);
-  }
-  function strike(b,side,skill,skillIndex){
-    const actor=active(b,side),other=side==='attack'?'defense':'attack',target=active(b,other);
-    if(!actor||actor.hp<=0||!target||target.hp<=0)return;
-    actor.statuses||=[];actor.cooldowns||=[0,0,0,0];
-    target.statuses||=[];target.cooldowns||=[0,0,0,0];
-    const previous=actor.statuses.slice();
-    for(const status of previous){
-      if(status.kind!=='poison'&&status.kind!=='regen')continue;
-      const max=combat.effectiveMaxHp(actor),amount=Math.max(1,Math.round(max*status.value));
-      const before=actor.hp;
-      actor.hp=status.kind==='poison'?Math.max(0,before-amount):Math.min(max,before+amount);
-      record(b,{side,actor:actor.nickname,actorSpecies:actor.species,target:actor.nickname,
-        targetSide:side,skill:status.kind==='poison'?'Poison':'Regeneration',
-        element:status.element,effect:status.kind,statusTick:true,
-        damage:Math.max(0,before-actor.hp),heal:Math.max(0,actor.hp-before),
-        remaining:actor.hp,knockout:actor.hp===0});
-    }
-    const frozen=previous.some(s=>s.kind==='freeze');
-    if(frozen&&actor.hp>0)record(b,{side,actor:actor.nickname,actorSpecies:actor.species,
-      target:actor.nickname,targetSide:side,skill:'Frozen',element:'ice',effect:'freeze',
-      skipped:true,damage:0,remaining:actor.hp});
-    if(actor.hp>0&&!frozen){
-      const effect=skill.effect;
-      const beneficiary=effect?.target==='self'?actor:target;
-      const before=beneficiary.hp;
-      let damage=0,critical=false,hits=0,misses=0;
-      const attempts=effect?.kind==='multi'?effect.hits:combat.skillPower(actor.attack,skill)>0?1:0;
-      for(let hit=0;hit<attempts&&target.hp>0;hit++){
-        const missChance=Math.min(combatConfig.maxAccuracyPenalty,(effect?.kind==='multi'?effect.missChance:0)+
-          combat.statusValue(actor,'accuracy_down'));
-        if(Math.random()<missChance){misses++;continue;}
-        const crit=Math.random()<combatConfig.critical.chance;
-        const dealt=Math.min(target.hp,combat.battleDamage(actor,target,skill,catalog.typeChart,
-          combatConfig.variance.min+Math.random()*(combatConfig.variance.max-combatConfig.variance.min),crit));
-        target.hp=Math.max(0,target.hp-dealt);
-        damage+=dealt;hits++;critical=critical||crit;
-      }
-      if(effect&&(attempts===0||hits>0)){
-        if(effect.kind==='heal'||effect.kind==='cleanse'){
-          if(effect.kind==='cleanse')beneficiary.statuses=beneficiary.statuses.filter(s=>!harmful.has(s.kind));
-          beneficiary.hp=Math.min(combat.effectiveMaxHp(beneficiary),beneficiary.hp+
-            Math.round(beneficiary.maxHp*effect.value));
-        }else if(effect.kind==='vitality'){
-          const oldMax=combat.effectiveMaxHp(beneficiary);
-          addStatus(beneficiary,effect,skill.element);
-          beneficiary.hp=Math.min(combat.effectiveMaxHp(beneficiary),beneficiary.hp+
-            combat.effectiveMaxHp(beneficiary)-oldMax);
-        }else if(effect.duration>0&&effect.kind!=='multi'&&beneficiary.hp>0)
-          addStatus(beneficiary,effect,skill.element);
-      }
-      if(skill.cooldown)actor.cooldowns[skillIndex]=skill.cooldown;
-      record(b,{side,actor:actor.nickname,actorSpecies:actor.species,
-        target:beneficiary.nickname,targetSide:beneficiary===actor?side:other,
-        skill:skill.name,skillId:skill.id,element:skill.element||null,
-        effect:effect?.kind||null,special:!!skill.special,damage,critical,hits,misses,
-        matchup:attempts?combat.matchup(skill.element,target.parts,catalog.typeChart):null,
-        heal:Math.max(0,beneficiary.hp-before),remaining:beneficiary.hp,
-        knockout:target.hp===0});
-    }
-    for(const status of previous){
-      if(!actor.statuses.includes(status))continue;
-      status.turns--;
-      if(status.turns<=0){actor.statuses.splice(actor.statuses.indexOf(status),1);
-        actor.hp=Math.min(actor.hp,combat.effectiveMaxHp(actor));}
-    }
-    actor.cooldowns=actor.cooldowns.map((n,i)=>i===skillIndex&&actor.hp>0&&!frozen?n:Math.max(0,n-1));
-    if(actor.hp===0)nextFighter(b,side);
-    if(target.hp===0)nextFighter(b,other);
-  }
-  const alive=group=>group.some(f=>f.hp>0);
-  function liveTurn(b,side,action){
-    if(b.nextSide!==side)throw Object.assign(new Error('Wait for the other player.'),{status:409});
-    const actor=active(b,side);
-    if(!actor||actor.hp<=0)throw Object.assign(new Error('No active dragon.'),{status:409});
-    if(action?.action==='switch'){
-      const index=b[side].findIndex(f=>f.id===action.dragonId&&f.hp>0);
-      if(index<0||index===b[side==='attack'?'activeAttack':'activeDefense'])
-        throw Object.assign(new Error('Choose a different living dragon.'),{status:400});
-      b[side==='attack'?'activeAttack':'activeDefense']=index;
-      record(b,{side,switchTo:b[side][index].nickname});
-    }else if(action?.action==='skill'){
-      const index=action.skillIndex;
-      if(!Number.isInteger(index)||index<0||index>=actor.skills.length||
-        !actor.skills[index]||actor.level<game.progression.skillUnlockLevels[index]||
-        actor.cooldowns?.[index]>0)
-        throw Object.assign(new Error('This skill is unavailable.'),{status:400});
-      strike(b,side,actor.skills[index],index);
-    }else if(action?.action==='forfeit'){
-      b[side].forEach(f=>{f.hp=0;});
-      record(b,{side,forfeit:true});
-    }else throw Object.assign(new Error('Invalid action.'),{status:400});
-    if(side==='defense')b.turn++;
-    b.nextSide=side==='attack'?'defense':'attack';
-    if(!alive(b.attack)||!alive(b.defense)||b.turn>80){
-      const ratio=group=>group.reduce((sum,f)=>sum+f.hp/f.maxHp,0);
-      return {winner:alive(b.attack)&&(!alive(b.defense)||ratio(b.attack)>ratio(b.defense))?
-        'attack':'defense'};
-    }
-    return null;
-  }
-  function finish(b){
-    if(alive(b.attack)&&alive(b.defense)&&b.turn<=arenaConfig.maxTurns)return null;
-    const ratio=group=>group.reduce((sum,f)=>sum+f.hp/f.maxHp,0);
-    const won=alive(b.attack)&&(!alive(b.defense)||ratio(b.attack)>ratio(b.defense));
-    return {won,opponent:b.opponent,events:b.events,reward:won?b.reward:
-      {gold:0,food:0,gems:0}};
   }
   async function credit(user,reward){
     await updateJson(profile(user.id),current=>{

@@ -30,9 +30,11 @@ async function createAuth(dataDir){
     users[0].role='admin';await writeJson(usersPath,users);
   }
   let mutation=Promise.resolve();
+  /** Serialize user/session mutations so concurrent requests cannot lose writes. */
   function locked(action){
     const next=mutation.catch(()=>{}).then(action);mutation=next;return next;
   }
+  /** Create, persist and return one new opaque login session for a user. */
   async function issue(user){
     const token=randomBytes(32).toString('base64url');
     sessions=sessions.filter(s=>s.expires>Date.now());

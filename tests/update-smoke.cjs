@@ -220,6 +220,15 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  assert.equal(balance.element('xpText').textContent,'MAX LEVEL');
  assert.equal(balance.element('xpFill').style.width,'100%');
 });
+check('starter eggs and guide use the current progression rules',()=>{
+ assert.equal(balance.run('hatchingSeconds(DATA.species.fire)'),30,'Fire pure egg should hatch in 30 seconds');
+ assert.equal(balance.run('hatchingSeconds(DATA.species.water)'),45,'Water pure egg should hatch in 45 seconds');
+ balance.run('ui.shopTab="eggs";renderShop();openModal("shop-egg-detail","fire")');
+ assert(balance.element('sheetBody').innerHTML.includes('30s'));
+ assert(balance.run('guideArena()').includes('Strong nhân 2'));
+ assert(balance.run('guideArena()').includes('Weak nhân 0,5'));
+ assert.equal(balance.run('window.DragonEconomy.progression.playerMaxLevel'),60);
+});
 check('element unlocks, hatchery gates and crop timers follow the progression curve',()=>{
  assert.deepEqual(snapshot(balance,'DATA.elementUnlocks'),{
    fire:1,water:2,earth:4,wind:6,ice:8,thunder:11,nature:14,dark:18,

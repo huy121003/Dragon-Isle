@@ -35,17 +35,22 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   const ReserveLineup=({side})=>{
     const activeIndex=side==='attack'?battle.activeAttack:battle.activeDefense;
     return <div className={'arena-reserve-side '+side} role="group" aria-label={side==='attack'?'Your reserve dragons':'Rival reserve dragons'}>
-      {battle[side].map((dragon,index)=>index===activeIndex?null:<button type="button" key={dragon.id}
-        aria-label={`${dragon.nickname}, ${dragon.hp>0?'alive':'defeated'}`}
+      {battle[side].map((dragon,index)=>{
+        if(index===activeIndex)return null;
+        const species=speciesOf(dragon.species);
+        const elementNames=(species?.elements||[]).map(element=>game()?.data?.elements?.[element]?.name||element).join(' · ');
+        return <button type="button" key={dragon.id}
+        aria-label={`${dragon.nickname} · ${elementNames||species?.name||'Dragon'} · ${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}
         disabled={dragon.hp<=0||(side==='attack'?disabled:true)}
         onClick={()=>side==='attack'&&act('switch',challenge?{dragonId:dragon.id}:{id:dragon.id})}
         className={['arena-reserve-button',dragon.hp<=0&&'dead',side==='attack'&&'switchable'].filter(Boolean).join(' ')}>
-        <Portrait dragon={dragon}/><span className="arena-element-row">{badges(dragon.species)}</span>
-        <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
-          <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
-        </span>
-        {dragon.hp<=0&&<i aria-hidden="true">×</i>}
-      </button>)}
+        <span className="arena-reserve-avatar-frame"><Portrait dragon={dragon}/></span>
+        <span className="arena-reserve-copy"><b>{elementNames||species?.name||'Dragon'}</b>
+          <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
+            <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
+          </span></span>
+        {dragon.hp<=0&&<i className="arena-reserve-dead-mark" aria-hidden="true">×</i>}
+      </button>})}
     </div>;
   };
   const SkillControls=()=><div className="battle-controls"><div className="battle-controls-heading">

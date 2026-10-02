@@ -175,7 +175,7 @@ function migrateSave(raw){
   const mapElement=function(id){return id==="lightning"?"thunder":id==="plant"?"nature":id;};
   result.version=SAVE_VERSION;
   result.player=Object.assign({level:1,xp:0},raw.player||{});
-  result.player.level=clamp(Number(result.player.level)||1,1,60);
+  result.player.level=Math.max(1,Math.floor(Number(result.player.level)||1));
   result.player.xp=Math.max(0,Number(result.player.xp)||0);
   result.gold=Math.max(0,Number(result.gold)||0);
   result.food=Math.max(0,Number(result.food)||0);

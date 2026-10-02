@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {AuthMeSchema,ChallengeStatusSchema,ResourcePatchSchema} from '../../src/shared/schemas.js';
+import {AuthMeSchema,ChallengeStatusSchema,ResourcePatchSchema} from '../../src/api/schemas.js';
 
 describe('API schemas',()=>{
   it('accepts auth payloads while preserving compatible extra fields',()=>{

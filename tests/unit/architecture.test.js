@@ -53,6 +53,20 @@ describe('architecture boundaries',()=>{
     expect(router).not.toContain('function paintHabitatBiome');
   });
 
+  it('separates world camera geometry from island art',()=>{
+    const index=read('index.html');
+    const geometry=read('js/render/world-geometry.js');
+    const world=read('js/render/world.js');
+    expect(index).toContain('js/render/world-geometry.js');
+    expect(geometry).toContain('function resizeCanvas');
+    expect(geometry).toContain('function screenToGrid');
+    expect(geometry).toContain('function clampCamera');
+    expect(world).toContain('function drawBackground');
+    expect(world).toContain('function drawIslandWeather');
+    expect(world).not.toContain('function resizeCanvas');
+    expect(world).not.toContain('function screenToGrid');
+  });
+
   it('keeps network, persistence and migrations separated',()=>{
     expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');

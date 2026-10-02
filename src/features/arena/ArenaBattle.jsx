@@ -7,7 +7,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {Button} from 'antd';
 import {game,send} from '../../app/game-bridge.js';
 import {badges,fmt,Portrait,RarityGem,SkillHex,speciesOf,Stars} from './ArenaShared.jsx';
-import {battleSnapshot,effectNames,MatchupMark,SkillEffect,StatusIcons} from './ArenaEffects.jsx';
+import {battleSnapshot,MatchupMark,SkillEffect,StatusIcons} from './ArenaEffects.jsx';
 
 export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   const presentation=arena.presentation;
@@ -37,10 +37,13 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
     return <div className={'arena-reserve-side '+side} role="group" aria-label={side==='attack'?'Your reserve dragons':'Rival reserve dragons'}>
       {battle[side].map((dragon,index)=>index===activeIndex?null:<button type="button" key={dragon.id}
         aria-label={`${dragon.nickname}, ${dragon.hp>0?'alive':'defeated'}`}
-        disabled={dragon.hp<=0||(side==='attack'&&disabled)}
+        disabled={dragon.hp<=0||(side==='attack'?disabled:true)}
         onClick={()=>side==='attack'&&act('switch',challenge?{dragonId:dragon.id}:{id:dragon.id})}
-        className={'arena-reserve-button '+(dragon.hp<=0?'dead':'')+(side==='attack'?' switchable':'')}>
+        className={['arena-reserve-button',dragon.hp<=0&&'dead',side==='attack'&&'switchable'].filter(Boolean).join(' ')}>
         <Portrait dragon={dragon}/><span className="arena-element-row">{badges(dragon.species)}</span>
+        <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
+          <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
+        </span>
         {dragon.hp<=0&&<i aria-hidden="true">×</i>}
       </button>)}
     </div>;
@@ -65,15 +68,11 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
           skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
           Math.round(skill.power*100)+'% base attack'}</small></Button>;
     })}</div>
-    {challenge&&<><b>Switch dragon · uses a turn</b><div className="battle-switch-list">{battle.attack.map((dragon,index)=>index===battle.activeAttack||dragon.hp<=0?null:
-      <Button key={dragon.id} disabled={disabled} onClick={()=>act('switch',{dragonId:dragon.id})}>
-        <Portrait dragon={dragon}/><span>{dragon.nickname}<small>{fmt.format(dragon.hp)} HP · {badges(dragon.species)}</small></span></Button>)}</div>
-    </>}
   </div>;
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>
     <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')} disabled={arena.busy||arena.animating}>Forfeit</Button></div>
     {arena.error&&<div className="arena-error">{arena.error}</div>}
-    <div className={'battle-stage '+(!challenge?' has-arena-controls ':'')+(impact?'fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
+    <div className={'battle-stage has-arena-controls'+(impact?' fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
       <div className="battle-crowd"/><div className="battle-sun"/><div className="battle-floor"/>
       <div className="battle-side player"><div className="battle-name"><b>{attacker.nickname} · Lv{attacker.level}</b><Stars count={attacker.stars||0}/>
         <span className="arena-element-row">{badges(attacker.species)}<RarityGem id={speciesOf(attacker.species)?.rarity} element={speciesOf(attacker.species)?.elements?.[0]}/></span></div>
@@ -90,23 +89,14 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         <StatusIcons dragon={defender}/>
       <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='defense'?'lunge':'')+(attacking&&impact.side==='attack'?' struck':'')}>
           <Portrait dragon={defender} large facing={-1}/></div></div>
-      {!challenge&&<div className="arena-battle-reserves"><ReserveLineup side="attack"/><ReserveLineup side="defense"/></div>}
-      {!challenge&&<div className="arena-stage-controls"><SkillControls/></div>}
+      <div className="arena-battle-reserves"><ReserveLineup side="attack"/><ReserveLineup side="defense"/></div>
+      <div className="arena-stage-controls"><SkillControls/></div>
       {impact&&<SkillEffect event={impact} frame={frame}/>}
       {arena.pendingSkill&&<div className="battle-charge" aria-live="polite">
         <span>✦</span><b>{attacker.nickname} is casting {arena.pendingSkill}</b>
       </div>}
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
-    {challenge&&<div className="battle-bench"><b>Attack team</b><div>{battle.attack.map((dragon,index)=><span key={dragon.id}
-      className={'battle-bench-dragon '+(index===battle.activeAttack?'active':'')+(dragon.hp<=0?' fainted':'')}>
-      <Portrait dragon={dragon}/><small>{dragon.nickname}<br/>{Math.round(dragon.hp/dragon.maxHp*100)}% HP</small></span>)}</div></div>}
-    {challenge&&<div className="battle-details-scroll" role="region" aria-label="Skills, dragon switch and recent moves" tabIndex={0}>
-      <SkillControls/>
-      <div className="battle-feed"><b>Recent moves</b>{battle.events.slice(-4).reverse().map((e,i)=><p key={i}>
-        {e.switchTo?'🔄 '+e.switchTo+' enters the arena':e.forfeit?'🏳️ Forfeit':`${e.actor} used ${e.skill} → ${e.target}: `+
-          (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')}</p>)}</div>
-    </div>}
   </div>;
 }
 

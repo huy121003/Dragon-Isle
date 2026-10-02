@@ -46,6 +46,15 @@
     loginRateLimit:Object.freeze({
       /** Per-IP login/register attempts allowed inside one rate-limit window. */
       limit:30,windowMs:15*60*1000,maxEntries:2000
+    }),
+    api:Object.freeze({
+      /** Maximum JSON request sizes in bytes by endpoint class. */
+      authBytes:4096,adminBytes:4096,arenaActionBytes:2048,
+      challengeControlBytes:256,challengeTurnBytes:512
+    }),
+    admin:Object.freeze({
+      /** Upper bounds accepted by the resource editor API. */
+      resourceLimits:Object.freeze({gold:1_000_000_000_000,food:1_000_000_000,gems:1_000_000_000})
     })
   });
 });

@@ -3,6 +3,7 @@
 /**
  * Farm planting and harvesting actions.
  */
+/** Start one crop when the Farm level/cost/state permits it. */
 function plantCrop(buildingId,cropId){
   const b=buildingById(buildingId),crop=cropById(cropId);
   if(!b||b.type!=="farm"||b.stored||!crop)return false;
@@ -15,6 +16,7 @@ function plantCrop(buildingId,cropId){
   AUDIO.play("place");updateUI();saveGame();
   return true;
 }
+/** Harvest a ready crop, grant Food/XP and clear the Farm slot. */
 function harvest(b){
   if(!b.crop||Date.now()<b.crop.readyAt){toast("The crop is not ready.");return;}
   const crop=cropById(b.crop.id);

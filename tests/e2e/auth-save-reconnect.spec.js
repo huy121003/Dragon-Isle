@@ -24,5 +24,5 @@ test('register, keep session, queue save offline and reconnect',async({page,cont
   await context.setOffline(false);
   await page.evaluate(()=>window.dispatchEvent(new Event('online')));
   await expect(page.getByRole('heading',{name:'Connection lost'})).toBeHidden({timeout:15000});
-  await expect(page.getByText(/Level 1 · e2e_trainer/)).toBeVisible();
+  await expect(page.getByText(new RegExp('Level 1 · '+username))).toBeVisible();
 });

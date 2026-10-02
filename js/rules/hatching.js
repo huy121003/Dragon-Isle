@@ -27,8 +27,8 @@
     const tier=tierOf(species);
     if(tier===1)return config.pureElementSeconds[species.elements[0]]||60;
     const pressure=species.elements.reduce((sum,id)=>sum+(elementUnlocks[id]||1),0)/species.elements.length;
-    return Math.round((config.tierSeconds[tier]||config.tierSeconds[4])+
-      Math.min(config.maxElementBonusSeconds,pressure*config.elementLevelSeconds));
+    const pressureBonus=Math.min(config.maxElementBonusPercent,pressure*config.elementLevelPercent);
+    return Math.round((config.tierSeconds[tier]||config.tierSeconds[4])*(1+pressureBonus));
   }
 
   return {tierOf,seconds};

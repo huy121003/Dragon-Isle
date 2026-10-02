@@ -51,8 +51,8 @@ describe('shared gameplay rules',()=>{
   it('preserves incubation and breeding timing',()=>{
     expect(hatching.seconds({rarity:'common',elements:['fire']},{fire:1})).toBe(30);
     const hybrid={rarity:'rare',elements:['fire','water']};
-    expect(hatching.seconds(hybrid,{fire:1,water:2})).toBe(258);
-    expect(breeding.seconds(hybrid,2,{fire:1,water:2},[],false)).toBe(192);
+    expect(hatching.seconds(hybrid,{fire:1,water:2})).toBe(10824);
+    expect(breeding.seconds(hybrid,2,{fire:1,water:2},[],false)).toBe(7222);
   });
 
   it('keeps world care and timer rules deterministic',()=>{

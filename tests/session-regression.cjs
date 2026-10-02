@@ -53,8 +53,8 @@ function hatchingSeconds(parts,rarity='common'){
   if(parts.length===1)return economy.hatching.pureElementSeconds[parts[0]];
   const tier=rarity==='transcendent'?'double':parts.length;
   const pressure=parts.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/parts.length;
-  return Math.round((economy.hatching.tierSeconds[tier]||economy.hatching.tierSeconds[4])+
-    Math.min(economy.hatching.maxElementBonusSeconds,pressure*economy.hatching.elementLevelSeconds));
+  const bonus=Math.min(economy.hatching.maxElementBonusPercent,pressure*economy.hatching.elementLevelPercent);
+  return Math.round((economy.hatching.tierSeconds[tier]||economy.hatching.tierSeconds[4])*(1+bonus));
 }
 
 console.log('SESSION REGRESSION: combat');
@@ -118,8 +118,10 @@ assert.deepEqual(economy.progression.hatcheryUpgradeLevels,[5,12,22,35]);
 
 console.log('SESSION REGRESSION: hatching / breeding');
 assert.equal(economy.hatching.pureElementSeconds.fire,30);
-assert.equal(economy.hatching.pureElementSeconds.water,45);
-assert.equal(economy.hatching.pureElementSeconds.time,1200);
+assert.equal(economy.hatching.pureElementSeconds.water,60);
+assert.equal(economy.hatching.pureElementSeconds.time,21600);
+assert.deepEqual(economy.hatching.tierSeconds,{2:10800,3:43200,4:129600,double:172800});
+assert.deepEqual(economy.breeding.timeByTier,{1:1800,2:7200,3:28800,4:86400,double:129600});
 assert(hatchingSeconds(['fire','water'])>economy.hatching.pureElementSeconds.fire);
 assert(hatchingSeconds(['fire','water','earth'])>hatchingSeconds(['fire','water']));
 assert(hatchingSeconds(['fire','water','earth','wind'])>hatchingSeconds(['fire','water','earth']));

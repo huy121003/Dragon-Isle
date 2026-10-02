@@ -63,24 +63,25 @@ function hatchSeconds(species){
   const r=economy.hatching,t=timeTier(species);
   if(t===1)return r.pureElementSeconds[species.elements[0]]||60;
   const pressure=species.elements.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/species.elements.length;
-  return Math.round((r.tierSeconds[t]||r.tierSeconds[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds));
+  const bonus=Math.min(r.maxElementBonusPercent,pressure*r.elementLevelPercent);
+  return Math.round((r.tierSeconds[t]||r.tierSeconds[4])*(1+bonus));
 }
 function breedCombinationSeconds(species,parents=[],premium=false){
   const r=economy.breeding,t=timeTier(species);
   const pressure=species.elements.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/species.elements.length;
-  let base=(r.timeByTier[t]||r.timeByTier[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds);
+  let scale=1+Math.min(r.maxElementBonusPercent,pressure*r.elementLevelPercent);
   if(parents.length===2){
     const union=new Set(parents.flatMap(parent=>parent.elements));
-    base+=Math.max(0,union.size-2)*r.combinationSecondsPerExtraElement;
-    if(parents[0].elements.length!==parents[1].elements.length)base+=r.mixedTierSeconds;
+    scale+=Math.max(0,union.size-2)*r.parentUnionPercent;
+    if(parents[0].elements.length!==parents[1].elements.length)scale+=r.mixedParentPercent;
   }
-  return Math.round(base*(premium?r.premiumTimeFactor:1));
+  return Math.round((r.timeByTier[t]||r.timeByTier[4])*scale*(premium?r.premiumTimeFactor:1));
 }
 function breedSeconds(species,premium=false){
   const r=economy.breeding,t=timeTier(species);
   const pressure=species.elements.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/species.elements.length;
-  const base=(r.timeByTier[t]||r.timeByTier[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds);
-  return Math.round(base*(premium?r.premiumTimeFactor:1));
+  const scale=1+Math.min(r.maxElementBonusPercent,pressure*r.elementLevelPercent);
+  return Math.round((r.timeByTier[t]||r.timeByTier[4])*scale*(premium?r.premiumTimeFactor:1));
 }
 
 console.log("\nPlayer XP curve");
@@ -102,6 +103,14 @@ console.log("\nElement unlocks and pure-egg hatch times");
 console.table(Object.entries(progressionConfig.elementUnlocks).map(([element,level])=>({
   element,playerLevel:level,hatchSeconds:economy.hatching.pureElementSeconds[element]
 })));
+
+console.log("\nHybrid breeding and incubation times by tier (seconds; before parent modifiers)");
+console.table([1,2,3,4,"double"].map(tier=>{
+  const rows=species.filter(s=>timeTier(s)===tier);
+  const hatch=rows.map(hatchSeconds),breed=rows.map(s=>breedSeconds(s,false));
+  return {tier:String(tier),breedMin:Math.min(...breed),breedMax:Math.max(...breed),
+    hatchMin:Math.min(...hatch),hatchMax:Math.max(...hatch)};
+}));
 
 console.log("\nDragon feed progression");
 console.table([1,10,20,40,60,80,100].map(level=>({

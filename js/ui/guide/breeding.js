@@ -19,7 +19,7 @@ function guideBreeding(){
     duration(breedingSeconds(species,1,{type:'premiumCave'})),duration(hatchingSeconds(species))]);
   return '<h3>Điều kiện và tỷ lệ</h3>'+guideList([
     'Hai cá thể khác nhau từ level '+window.DragonConfig.progression.breedLevel+' có thể lai. Trứng được xác định ngay khi bấm Start breeding; tua thời gian không quay lại kết quả.',
-    'Thời gian lai tăng theo bậc rồng có thể sinh ra, độ muộn của các hệ và độ phức tạp của cặp bố mẹ. Tổ hợp có nhiều hệ khác nhau hoặc bố mẹ khác bậc sẽ cộng thêm thời gian; Hang Premium vẫn nhanh hơn '+Math.round((1-rules.premium.timeFactor)*100)+'%.',
+    'Thời gian lai tăng theo bậc rồng có thể sinh ra, độ muộn của các hệ và độ phức tạp của cặp bố mẹ. Mốc cơ bản: 1 hệ 30 phút, 2 hệ 2 giờ, 3 hệ 8 giờ, 4 hệ 24 giờ và Double 36 giờ; tổ hợp bố mẹ phức tạp có thể làm thời gian dài hơn. Hang Premium vẫn nhanh hơn '+Math.round((1-rules.premium.timeFactor)*100)+'%.',
     'Thông thường con chỉ dùng hệ có trong bố mẹ. Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ; từ 2 hệ trở lên phải có ít nhất một hệ của mỗi bên. Rồng 2 hệ xét cả hai thứ tự hệ chủ đạo; rồng 3 hệ không lặp thứ tự hai hệ phụ. Double Element là ngoại lệ về hệ phụ.',
     'Nếu có kết quả 3 hệ: tỷ lệ gốc '+percent(rules.three.base)+'%, cộng '+percent(rules.three.perTenLevels)+' điểm % mỗi 10 level trung bình, tối đa '+percent(rules.three.cap)+'%.',
     'Rồng 4 hệ cần đúng hai bố mẹ 3 hệ với ít nhất 4 hệ khác nhau khi gộp lại. Cả bốn hệ của con đều lấy từ bố mẹ và tra theo '+FOUR_IDS.length+' tổ hợp được ghi trong danh mục. Nếu bộ hệ của bố mẹ không chứa tổ hợp nào trong danh mục thì xác suất rồng 4 hệ bằng 0. Tỷ lệ '+percent(rules.four.base)+'% ban đầu, tăng theo level trung bình từ '+rules.four.growthStartLevel+' và tối đa '+percent(rules.four.cap)+'%.',
@@ -28,8 +28,8 @@ function guideBreeding(){
     'Hang Lai Tinh Tú mua một lần với '+money(window.DragonConfig.buildings.definitions.premiumCave.cost)+' gem, không bán hay cất kho. Tỷ lệ của mỗi kết quả từ 3 hệ trở lên nhân '+rules.premium.rareFactor+' (ví dụ 2% thành '+(2*rules.premium.rareFactor).toLocaleString('vi-VN')+'%), phần tăng lấy từ nhóm 1–2 hệ để tổng vẫn là 100%. Thời gian lai giảm '+Math.round((1-rules.premium.timeFactor)*100)+'%.'
   ])+'<h3>Tỷ lệ chia phần còn lại cho 1 / 2 hệ</h3>'+guideTable(['Số hệ bố mẹ','1 hệ / 2 hệ'],tierRows)+
     '<h3>Thời gian lai và ấp theo bậc rồng con</h3>'+guideTable(['Bậc','Hang thường','Hang xịn','Trong Lồng ấp'],durationRows)+
-    '<p class="muted">Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([
-      'Hang lai không thể mở lượt mới khi chưa lấy trứng của lượt trước. Trứng lai từ Hang đó phải được ấp xong hoặc bán trước khi dùng Hang cho lượt khác.',
+    '<p class="muted">Trứng 1 hệ tăng theo hệ mở khóa, từ '+duration(window.DragonConfig.hatching.pureElementSeconds.fire)+' cho Fire đến '+duration(window.DragonConfig.hatching.pureElementSeconds.time)+' cho Time. Trứng lai 2/3/4 hệ có mốc 3/12/36 giờ; Double có mốc 48 giờ. Thời gian mới áp dụng khi bắt đầu lượt lai hoặc ấp mới; đồng hồ của lượt đã bắt đầu giữ thời điểm hoàn tất đã lưu.</p><h3>Nhận trứng</h3>'+guideList([
+      'Sau khi nhận trứng lai vào Inventory hoặc chuyển trứng vào Lồng ấp, Hang lai có thể bắt đầu lượt mới; trứng không cần phải nở trước.',
       'Lồng ấp có 1–'+window.DragonConfig.buildings.definitions.hatchery.maxLevel+' ô theo level, mỗi ô ấp một trứng độc lập. Trứng hoàn tất vẫn chiếm ô cho đến khi nở hoặc được bán; trứng dư ở Inventory tự vào ô trống.',
       'Khi trứng nở, cần Chuồng còn chỗ và cùng ít nhất một hệ của rồng. Giống mới được ghi vào Dragon Book; công thức của cặp bố mẹ được lưu trong Recipes.'
     ])+'<div class="guide-callout">Trong Hang lai, tỷ lệ theo bậc là tổng các giống cùng bậc; mở từng nhóm để xem tỷ lệ chính xác của từng giống.</div>';

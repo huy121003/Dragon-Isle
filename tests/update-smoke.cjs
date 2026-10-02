@@ -291,7 +291,7 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
 });
 check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.fire)'),30,'Fire pure egg should hatch in 30 seconds');
- assert.equal(balance.run('hatchingSeconds(DATA.species.water)'),45,'Water pure egg should hatch in 45 seconds');
+ assert.equal(balance.run('hatchingSeconds(DATA.species.water)'),60,'Water pure egg should hatch in one minute');
  balance.run('ui.shopTab="eggs";renderShop();openModal("shop-egg-detail","fire")');
  assert(balance.element('sheetBody').innerHTML.includes('30s'));
  const guide=balance.run('guideArena()');
@@ -415,8 +415,10 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
  assert(economy.run('shopEggPrice(DATA.species.fire).vang')>=700);
  assert(economy.run('shopEggPrice(DATA.species.time).vang')>economy.run('shopEggPrice(DATA.species.fire).vang'));
  assert.equal(economy.run('hatchingSeconds(DATA.species.fire)'),30);
- assert.equal(economy.run('hatchingSeconds(DATA.species.water)'),45);
- assert.equal(economy.run('hatchingSeconds(DATA.species.time)'),1200);
+ assert.equal(economy.run('hatchingSeconds(DATA.species.water)'),60);
+ assert.equal(economy.run('hatchingSeconds(DATA.species.time)'),21600);
+ assert.equal(economy.run('hatchingSeconds(DATA.species[FOUR_IDS[0]])')>=129600,true);
+ assert.equal(economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])')>=172800,true);
  const ids=snapshot(economy,'({two:Object.keys(DATA.species).find(id=>DATA.species[id].elements.length===2),'+
    'three:TRIPLE_IDS[0],four:FOUR_IDS[0],double:DOUBLE_IDS[0]})');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])')>45);
@@ -428,6 +430,8 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
    economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])'));
  assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
    economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>=86400);
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')>=129600);
  economy.run('state=newGame();addEgg(DOUBLE_IDS[0],"shop")');
  assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),
    economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])*1000'));

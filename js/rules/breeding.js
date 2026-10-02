@@ -117,14 +117,15 @@
   /** Breeding duration in seconds for the resulting species and parent mix. */
   function seconds(species,tier,elementUnlocks,parentSpecies,premium){
     const pressure=species.elements.reduce((sum,id)=>sum+(elementUnlocks[id]||1),0)/species.elements.length;
-    let base=(config.timeByTier[tier]||config.timeByTier[4])+
-      Math.min(config.maxElementBonusSeconds,pressure*config.elementLevelSeconds);
+    let durationScale=1+Math.min(config.maxElementBonusPercent,pressure*config.elementLevelPercent);
     if(parentSpecies.length===2){
       const union=new Set(parentSpecies.flatMap(parent=>parent.elements));
-      base+=Math.max(0,union.size-2)*config.combinationSecondsPerExtraElement;
-      if(parentSpecies[0].elements.length!==parentSpecies[1].elements.length)base+=config.mixedTierSeconds;
+      durationScale+=Math.max(0,union.size-2)*config.parentUnionPercent;
+      if(parentSpecies[0].elements.length!==parentSpecies[1].elements.length)
+        durationScale+=config.mixedParentPercent;
     }
-    return Math.round(base*(premium?config.premium.timeFactor:1));
+    const base=config.timeByTier[tier]||config.timeByTier[4];
+    return Math.round(base*durationScale*(premium?config.premium.timeFactor:1));
   }
 
   return {rareTierChances,commonTierChances,candidateBias,offspringOptions,seconds};

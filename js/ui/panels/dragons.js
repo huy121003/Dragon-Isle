@@ -3,13 +3,14 @@
 /* UI PANEL: Owned-dragon, Habitat detail and dragon assignment panels. */
 function renderDragons(){
   dom.title.textContent="🐲 Owned Dragons · "+state.dragons.length;
-  let html='<div class="note">Tap a dragon card for its stats and skills. Feed four times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+'<div class="cards">';
+  const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
+  let html='<div class="note">Tap a dragon card for its stats and skills. Feed '+feedsPerLevel+' times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+'<div class="cards">';
   const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements));
   if(!visible.length)html+='<div class="note">No dragons match all selected elements.</div>';
   visible.forEach(function(d){
     const s=DATA.species[d.species];
     const home=buildingById(d.habitatId),busy=dragonBusy(d.id);
-    const progress=d.level>=dragonLevelCap()?100:dragonFeedProgress(d)*25;
+    const progress=d.level>=dragonLevelCap()?100:dragonFeedProgress(d)*100/feedsPerLevel;
     const feedCost=dragonFeedCost(d.level);
     html+='<div class="dragon-card" data-action="dragon-detail" data-id="'+d.id+'" role="button" tabindex="0">'+
       dragonPortrait(s.id,d.level,'small')+
@@ -18,7 +19,7 @@ function renderDragons(){
       elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span><small>'+esc(s.name)+' · '+stageOf(d)+
       ' · '+(home?(home.stored?"Stored Habitat":buildingName(home)):"No Habitat")+
       (home&&!home.stored?' · '+goldPerMinute(dragonIncomePerMinute(d,home))+' gold/min':'')+
-      (busy?' · 💞 Breeding':'')+' · '+(d.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(d)+'/4 feedings')+'</small><div class="meter"><span style="width:'+progress+'%"></span></div>'+
+      (busy?' · 💞 Breeding':'')+' · '+(d.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(d)+'/'+feedsPerLevel+' feedings')+'</small><div class="meter"><span style="width:'+progress+'%"></span></div>'+
       '<div class="actions"><button class="btn good" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button>'+
       '<button class="btn" data-action="assign-menu" data-id="'+d.id+'"'+(busy?' disabled':'')+'>Change Habitat</button></div></div></div>';
   });
@@ -40,7 +41,7 @@ function renderHabitat(id){
     '<div><span>🏦 Stored gold</span><b>'+goldDecimal(b.storedGold)+' / '+money(habitatGoldCapacity(b))+'</b></div>'+ 
     '<div><span>💎 Gems/hour</span><b>'+habitatGemRate(b)+'</b></div>'+ 
     '<div><span>💎 Stored gems</span><b>'+money(b.storedGems||0)+' / '+money(habitatGemCapacity(b))+'</b></div></div>'+ 
-    '<p class="muted">Each dragon produces '+DATA.gemPerDragonPerHour+' gem per hour; progress persists when moving between Habitats.'+
+    '<p class="muted">Each dragon produces '+window.DragonConfig.world.gemPerDragonPerHour+' gem per hour; progress persists when moving between Habitats.'+
     ((b.storedGems||0)>=habitatGemCapacity(b)?' Gem storage is full.':ds.length?' Next gem in about '+duration(gemNextSeconds(b))+'.':'')+
     ' Gold income is the total from dragons. Production stops at capacity. Hunger and happiness affect income.'+
     (b.level<maxBuildingLevel(b)?' Next upgrade needs '+buildingFootprint(b,b.level+1).w+'×'+

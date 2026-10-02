@@ -3,6 +3,7 @@
 /**
  * Building and dragon resale actions.
  */
+/** Sell an empty Habitat and return configured resale resources. */
 function sellBuilding(id){
   const b=buildingById(id);
   if(!b)return;
@@ -20,6 +21,7 @@ function sellBuilding(id){
   ui.selection=null;toast("Building sold.");
   updateUI();saveGame();
 }
+/** Sell an idle dragon using configured level/resale scaling. */
 function sellDragon(id){
   const dragon=dragonById(id);
   if(!dragon||dragonBusy(id)){toast("A breeding dragon cannot be sold.");return;}

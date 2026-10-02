@@ -95,7 +95,9 @@ async function arenaTurn(action,number){
     ui.arena.animating=true;
     ui.arena.pendingSkill=null;
     clearTimeout(arenaAnimationTimer);
-    arenaAnimationTimer=setTimeout(finishArenaPresentation,Math.max(1900,events.length*1600+400));
+    const timing=window.DragonConfig.system.presentation;
+    arenaAnimationTimer=setTimeout(finishArenaPresentation,
+      Math.max(timing.battleFinishMinMs,events.length*timing.battleEventMs+timing.battleFinishPaddingMs));
     if(response.result){
       const profile=await arenaRequestSave();
       state=migrateSave(profile);

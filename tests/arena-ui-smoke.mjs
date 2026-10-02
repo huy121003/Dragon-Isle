@@ -85,6 +85,9 @@ try{
   assert(fighting.indexOf('battle-stage')<fighting.indexOf('battle-controls')&&
     fighting.indexOf('battle-controls')<fighting.indexOf('battle-bench'),
     'Chọn chiêu và đổi rồng phải nằm ngay dưới sân đấu');
+  const details=fighting.match(/<div class="battle-details-scroll"[^>]*>([\s\S]*)<\/div><\/div>$/)?.[1];
+  assert(details&&details.includes('battle-controls')&&details.includes('battle-bench')&&
+    details.includes('battle-feed'),'Điều khiển phải ở vùng cuộn riêng, dưới sàn đấu');
   assert.doesNotMatch(fighting,/Đánh thường/);
   const charging=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle},busy:true,pendingSkill:'Flame Slash'}}));

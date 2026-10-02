@@ -4,6 +4,15 @@
 .arena-modal .ant-modal-title{color:#fff!important;font-size:19px}
 .arena-modal .ant-modal-close{color:#fff;top:12px;right:17px}
 .arena-modal .ant-modal-body{max-height:min(84dvh,850px)!important;padding:0;overflow:auto}
+.battle-modal{top:3dvh}
+.battle-modal .ant-modal-body{height:min(78dvh,760px);max-height:min(78dvh,760px)!important;overflow:hidden!important}
+.battle-modal .arena-view,.battle-modal .challenge-panel{height:100%;min-height:0}
+.battle-modal .arena-battle{box-sizing:border-box;height:100%;min-height:0;display:flex;flex-direction:column}
+.battle-modal .battle-stage{flex:0 0 auto;height:clamp(160px,43%,360px);min-height:0}
+.battle-modal .battle-dragon{height:min(20dvh,185px);min-height:0}
+.battle-modal .battle-dragon .arena-portrait{width:auto;max-width:100%;max-height:100%;object-fit:contain}
+.battle-details-scroll{min-height:0}
+.battle-modal .battle-details-scroll{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 2px}
 .arena-view{color:#273c4d;font-family:system-ui,sans-serif}
 .arena-view h2,.arena-view h3,.arena-view p{margin-top:0}
 .arena-hub{padding:20px;background:radial-gradient(circle at 20% 0%,#fff3cf,#f2f6ef 46%,#dcece9)}
@@ -211,6 +220,7 @@
 .battle-feed{margin:12px 0;padding:12px;border-radius:14px;background:#f4efe2}.battle-feed p{margin:5px 0;font-size:12px}
 @media(max-width:680px){.arena-hub{padding:9px}.arena-hub-hero{padding:15px;gap:9px}.arena-hub-hero .arena-crest{width:48px;height:48px;font-size:27px}.arena-hub-hero h2{font-size:21px}.arena-hub-hero p{margin:0;font-size:11px}.arena-setup-section{padding:11px}.arena-roster-grid{grid-template-columns:1fr}.arena-roster-card{gap:4px;padding:5px}.roster-art{width:59px;height:63px}.arena-check{width:18px;height:18px}.arena-teams-preview{gap:6px}.arena-team-slot{width:100%;height:60px}.arena-team-slot .arena-portrait{max-width:100%;width:50px;height:49px}.arena-save-bar{align-items:flex-start}.battle-stage{min-height:300px;grid-template-columns:1fr 42px 1fr}.battle-side{padding:4px}.battle-name b{font-size:10px}.battle-hp small{font-size:9px}.battle-dragon{height:180px}.battle-vs{font-size:13px;padding:5px;border-width:2px}.battle-skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.battle-skill-grid .ant-btn{font-size:11px}.battle-skill-label{gap:4px}.battle-skill-label .matchup-mark{font-size:9px;padding:2px 3px}.fx-projectile{width:44px;height:44px}.fx-projectile i{font-size:27px}.battle-skill-fx .fx-projectile i svg{width:28px;height:28px}.fx-impact{width:75px;height:75px}.fx-special-seal{width:85px;height:85px;font-size:20px}.fx-special-seal svg{width:22px;height:22px}.fx-particle{width:8px;height:8px}.fx-damage{padding:4px 6px}.fx-skill-name{bottom:5%;font-size:11px} }
 @media(max-width:420px){.arena-roster-grid{grid-template-columns:1fr}.arena-hub-hero .ant-btn{font-size:10px;padding:0 5px}.battle-stage{min-height:270px}.battle-dragon{height:140px}.battle-name .arena-element{display:none}}
+@media(max-width:690px){.battle-modal .ant-modal-body{height:72dvh;max-height:72dvh!important}.battle-modal .arena-battle{padding:9px}.battle-modal .battle-stage{height:clamp(160px,43%,260px);min-height:0}.battle-modal .battle-dragon{height:min(18dvh,145px)}.battle-modal .battle-side{padding:3px}.battle-modal .battle-name,.battle-modal .battle-hp{padding:3px 5px;margin-bottom:2px}.battle-modal .battle-statuses{min-height:20px}.battle-modal .battle-controls{margin:9px 0 6px;padding:10px}}
 @media(prefers-reduced-motion:reduce){.battle-dragon,.battle-switch-cue,.battle-charge span,.is-charging .battle-side.player .battle-dragon:after{animation:none!important}}
 /* Lai tạo dùng thẻ chân dung thay cho danh sách chữ. */
 .breed-selection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.breed-side{min-width:0;background:#f7f4eb;border:1px solid #e8dec7;border-radius:16px;padding:9px}.breed-side h3{margin:0 0 6px}.breed-side .element-filter{padding:3px 0}.breed-side .flag-filter{min-width:29px;min-height:31px}.breed-search{width:100%;height:36px;border:1px solid #b8d1c8;border-radius:9px;padding:5px 9px;background:white;color:#27485b;font:inherit;font-size:12px;margin-bottom:7px}

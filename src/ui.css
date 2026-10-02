@@ -22,6 +22,9 @@ body.react-ready #inspector,body.react-ready #placementBar,body.react-ready #ove
 .react-content .food-offer .food-offer-copy{min-width:0;flex:1 1 100px}
 .react-content .food-offer strong{margin-left:auto;white-space:nowrap}
 .commerce-modal .react-content .tabs{position:sticky;top:0;z-index:2;background:#fffdf5;padding:4px 0 10px}
+.collection-modal .react-content>.element-filter-wrap,.collection-modal .react-content>.book-toolbar{position:sticky;top:0;z-index:3;background:#fffdf5;padding:5px 0;box-shadow:0 5px 10px #fffdf5}
+.collection-modal .book-toolbar .tabs{margin-bottom:2px}
+.collection-modal .book-toolbar .element-filter{padding-top:3px}
 .react-content .special-shop-cards .shop-item.ant-btn,.react-content .crop-shop-cards .shop-item.ant-btn{min-height:92px}
 .react-content .food-shop-cards .food-offer.ant-btn{min-height:92px}
 .react-content .crop-progress{margin-top:12px}

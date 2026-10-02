@@ -543,12 +543,12 @@ function renderBook(){
       ui.bookTab==="double"?DOUBLE_IDS.length+' Double Element dragons. ':
       'Open a discovered dragon to see its appearance and four skills. ')+
     'Undiscovered entries show basic information; hatch an egg to unlock details.</div>'+ 
-    '<div class="tabs">';
+    '<div class="book-toolbar"><div class="tabs">';
   [["all","All"],["pure","1 element"],["pair","2 elements"],["triple","3 elements"],
     ["quad","4 elements"],["double","Double Element"]].forEach(function(tab){
     html+='<button class="btn '+(ui.bookTab===tab[0]?"active":"")+'" data-action="book-tab" data-tab="'+tab[0]+'">'+tab[1]+'</button>';
   });
-  html+='</div>'+elementFilter('book',ui.bookElements)+pager+'<div class="cards book-grid">';
+  html+='</div>'+elementFilter('book',ui.bookElements)+'</div>'+pager+'<div class="cards book-grid">';
   filtered.slice(ui.bookPage*60,(ui.bookPage+1)*60).forEach(function(id){
     const s=DATA.species[id];
     const summary='<span class="dragon-marks">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span>';

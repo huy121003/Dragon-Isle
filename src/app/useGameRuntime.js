@@ -1,31 +1,40 @@
 import {useEffect} from 'react';
-import {connectionState} from './game-bridge.js';
-import {useAppStore} from '../store/app-store.js';
+import {useQuery} from '@tanstack/react-query';
+import {AuthMeSchema} from '../shared/schemas.js';
+import {useAppStore,runtimeSnapshot} from './store.js';
 
 export function useGameRuntime(){
-  const engineVersion=useAppStore(state=>state.engineVersion);
+  const runtimeVersion=useAppStore(state=>state.runtimeVersion);
   const connection=useAppStore(state=>state.connection);
-  const bumpEngine=useAppStore(state=>state.bumpEngine);
+  const bumpRuntime=useAppStore(state=>state.bumpRuntime);
   const syncConnection=useAppStore(state=>state.syncConnection);
-
   useEffect(()=>{
     document.body.classList.add('react-ready');
-    const refresh=()=>bumpEngine();
-    const refreshConnection=()=>syncConnection();
-    const unsubscribe=window.DragonRuntime?.subscribe?.(refresh);
-    if(!unsubscribe)window.addEventListener('dragon-ui-update',refresh);
-    window.addEventListener('dragon-connection-change',refreshConnection);
-    window.gameBootPromise?.then(refresh);
-    refreshConnection();
-    const timer=setInterval(refresh,1000);
+    const unsubscribe=window.DragonRuntime?.subscribe?.(bumpRuntime);
+    if(!unsubscribe)window.addEventListener('dragon-ui-update',bumpRuntime);
+    window.addEventListener('dragon-connection-change',syncConnection);
+    window.gameBootPromise?.then(bumpRuntime);syncConnection();
+    const timer=setInterval(bumpRuntime,1000);
     return()=>{
       clearInterval(timer);
-      if(unsubscribe)unsubscribe();else window.removeEventListener('dragon-ui-update',refresh);
-      window.removeEventListener('dragon-connection-change',refreshConnection);
+      if(unsubscribe)unsubscribe();else window.removeEventListener('dragon-ui-update',bumpRuntime);
+      window.removeEventListener('dragon-connection-change',syncConnection);
     };
-  },[bumpEngine,syncConnection]);
+  },[bumpRuntime,syncConnection]);
+  void runtimeVersion;
+  return {...runtimeSnapshot(),connection};
+}
 
-  const current=window.DragonRuntime?.game?.()||window.DragonGame;
-  return {engineVersion,game:current,state:current?.state,ui:current?.ui,
-    connection:connection||connectionState()};
+export function useAccount(){
+  const query=useQuery({
+    queryKey:['auth','me'],
+    queryFn:async()=>{
+      const response=await fetch('/api/auth/me',{cache:'no-store'});
+      if(response.status===401)return null;
+      if(!response.ok)throw new Error('Unable to check session.');
+      return AuthMeSchema.parse(await response.json()).user;
+    },
+    retry:false,staleTime:30_000
+  });
+  return {account:query.data??null,ready:query.isFetched,error:query.error};
 }

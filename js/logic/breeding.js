@@ -65,15 +65,25 @@ function breedingOptions(father,mother,cave){
     return ids.map(function(id,i){return {id:id,chance:weights[index]*bias[i]/groupTotal};});
   });
 }
-function breedingSeconds(species,level,cave){
+function breedingSeconds(species,level,cave,parents){
   const s=typeof species==="string"?DATA.species[species]:species;
   if(!s)return 60;
   const rules=window.DragonEconomy.breeding,tier=dragonTimeTier(s);
   const levelPressure=s.elements.reduce(function(sum,element){
     return sum+(ELEMENT_UNLOCK[element]||1);
   },0)/s.elements.length;
-  const base=(rules.timeByTier[tier]||rules.timeByTier[4])+
+  let base=(rules.timeByTier[tier]||rules.timeByTier[4])+
     Math.min(rules.maxElementBonusSeconds,levelPressure*rules.elementLevelSeconds);
+  const parentSpecies=(parents||[]).map(function(parent){
+    if(typeof parent==="string")return DATA.species[parent];
+    if(parent?.species)return DATA.species[parent.species];
+    return parent;
+  }).filter(Boolean);
+  if(parentSpecies.length===2){
+    const union=new Set(parentSpecies.flatMap(parent=>parent.elements));
+    base+=Math.max(0,union.size-2)*rules.combinationSecondsPerExtraElement;
+    if(parentSpecies[0].elements.length!==parentSpecies[1].elements.length)base+=rules.mixedTierSeconds;
+  }
   return Math.round(base*(cave?.type==='premiumCave'?rules.premiumTimeFactor:1));
 }
 function isBreedingCave(building){return building?.type==='cave'||building?.type==='premiumCave';}
@@ -102,7 +112,7 @@ function startBreeding(caveId,fatherId,motherId){
   cave.breeding={fatherId:father.id,motherId:mother.id,
     fatherSpecies:father.species,motherSpecies:mother.species,
     result:result.id,startedAt:Date.now(),readyAt:0};
-  cave.breeding.readyAt=cave.breeding.startedAt+breedingSeconds(species,cave.level,cave)*1000;
+  cave.breeding.readyAt=cave.breeding.startedAt+breedingSeconds(species,cave.level,cave,[father,mother])*1000;
   toast("Breeding has started.");
   AUDIO.play("place");openModal("breeding",cave.id);saveGame();
 }

@@ -30,17 +30,24 @@ export default function ChallengeView({status,request,refresh}){
   }
   const roster=match?.roster?.filter(dragon=>elements.every(element=>
     window.DragonGame?.data?.species?.[dragon.species]?.elements?.includes(element)))||[];
+  const opponentReconnecting=match?.opponentConnection==='reconnecting';
+  const opponentReconnectSeconds=opponentReconnecting?
+    Math.max(0,Math.ceil(((match?.opponentReconnectUntil||0)-Date.now())/1000)):0;
   if(!status)return <div className="challenge-panel">Connecting to online players…</div>;
   return <div className="challenge-panel">
     {status.error&&<p className="challenge-error" role="alert">{status.error}</p>}
+    {opponentReconnecting&&<p className="challenge-reconnecting" role="status">
+      🟠 {match.opponent} is reconnecting · {opponentReconnectSeconds}s remaining. Challenge actions are paused.
+    </p>}
     {match?.phase==='battle'?<Battle challenge onDuelAction={act} myTurn={match.myTurn}
-      arena={{data:{battle:match.battle},presentation,animating,busy:status.busy,error:status.error}}/>:
+      arena={{data:{battle:match.battle},presentation,animating,busy:status.busy||opponentReconnecting,error:status.error}}/>:
     match?.phase==='invited'?<section className="challenge-wait">
       <h3>{match.outgoing?'Waiting for '+match.opponent:'Challenge from '+match.opponent}</h3>
       <p>{match.outgoing?'Waiting for the other player to accept.':'Accept to choose three dragons privately.'}</p>
       <p>Expires in {Math.max(0,Math.ceil((match.until-Date.now())/1000))} seconds.</p>
       {match.outgoing?<Button danger disabled={status.busy} onClick={()=>request('leave')}>Cancel invitation</Button>:<div className="challenge-actions">
-        <Button type="primary" disabled={status.busy} onClick={()=>request('respond',{accept:true})}>Accept</Button>
+        <Button type="primary" disabled={status.busy||opponentReconnecting}
+          onClick={()=>request('respond',{accept:true})}>Accept</Button>
         <Button danger disabled={status.busy} onClick={()=>request('respond',{accept:false})}>Decline</Button></div>}
     </section>:match?.phase==='select'?<section className="challenge-select">
       <h3>Choose three dragons · {selection.length}/3</h3>
@@ -50,7 +57,7 @@ export default function ChallengeView({status,request,refresh}){
         <div className="arena-roster-grid">{roster.map(dragon=><RosterCard key={dragon.id} dragon={dragon}
           selected={selection.includes(dragon.id)} onClick={()=>setSelection(current=>current.includes(dragon.id)?
             current.filter(id=>id!==dragon.id):current.length<3?[...current,dragon.id]:current)}/>)}
-        </div><Button type="primary" disabled={selection.length!==3||status.busy}
+        </div><Button type="primary" disabled={selection.length!==3||status.busy||opponentReconnecting}
           onClick={()=>request('select',{ids:selection})}>Ready with these three</Button></>}
       <Button danger disabled={status.busy} onClick={()=>request('leave')}>Cancel challenge</Button>
     </section>:<section className="challenge-lobby">

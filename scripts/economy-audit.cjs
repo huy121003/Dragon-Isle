@@ -58,9 +58,11 @@ console.table([1,2,4,6,8,11,14,18,22,27,32,37,42,48,55,60].map(level=>{
 }));
 
 console.log("\nXP sources");
-console.table(Object.entries(economy.progression.xpSources).flatMap(([key,value])=>
-  Array.isArray(value)?value.map((xp,index)=>({source:key+"["+(index+1)+"]",xp})):
-  [{source:key,xp:value}]));
+console.table(Object.entries(economy.progression.xpSources).flatMap(([key,value])=>{
+  if(Array.isArray(value))return value.map((xp,index)=>({source:key+"["+(index+1)+"]",xp}));
+  if(value&&typeof value==="object")return Object.entries(value).map(([sub,xp])=>({source:key+"."+sub,xp}));
+  return [{source:key,xp:value}];
+}));
 
 console.log("\nElement unlocks and pure-egg hatch times");
 console.table(Object.entries(game.elementUnlocks).map(([element,level])=>({

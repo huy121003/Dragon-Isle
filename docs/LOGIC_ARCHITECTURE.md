@@ -94,6 +94,21 @@ js/ui/panels/*.js          other domain-specific panels
 Panel domain files chỉ render presentation và gửi action; gameplay formula/state mutation
 phải nằm ở rule/logic layer tương ứng.
 
+## Render module map
+
+### Building art
+
+```text
+js/render/building-primitives.js shared projected-footprint drawing helpers/context
+js/render/habitat-art.js        Habitat biome + Habitat renderer
+js/render/facility-art.js       Farm/Hatchery/Academy/Arena renderers
+js/render/breeding-art.js       standard + premium Breeding Cave renderers
+js/render/building-art.js       building-type router only
+```
+
+Type-specific artwork không được quay lại `building-art.js`; router chỉ chọn renderer
+theo `building.type` và giữ lifecycle save/restore Canvas chung.
+
 ## Module map cho Arena / Challenge
 
 ### Server Arena

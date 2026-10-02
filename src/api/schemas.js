@@ -12,9 +12,14 @@ export const AuthMeSchema=z.object({user:UserSchema});
 export const ChallengePlayerSchema=z.object({
   id:z.string(),username:z.string(),level:z.number().optional(),dragons:z.number().optional()
 }).passthrough();
+export const ChallengeMatchSchema=z.object({
+  id:z.string(),phase:z.enum(['invited','select','battle']),opponent:z.string(),
+  opponentConnection:z.enum(['online','reconnecting']).optional(),
+  opponentReconnectUntil:z.number().optional()
+}).passthrough();
 export const ChallengeStatusSchema=z.object({
   players:z.array(ChallengePlayerSchema).default([]),
-  match:z.any().nullable().optional(),
+  match:ChallengeMatchSchema.nullable().optional(),
   notice:z.string().nullable().optional(),
   error:z.string().nullable().optional()
 }).passthrough();

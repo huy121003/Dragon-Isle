@@ -25,6 +25,9 @@ for(const species of db.species)assert(!('tocDo' in species.chiSo));
 const fire=combat.stats(['fire'],'common',25,db.elements,db.rarities);
 const fireHigher=combat.stats(['fire'],'common',26,db.elements,db.rarities);
 const rare=combat.stats(['fire','water'],'rare',25,db.elements,db.rarities);
+assert.equal(combat.power(fire),Math.round(fire.hp*.1+fire.attack*2+fire.defense*1.5));
+assert(combat.power(fireHigher)>combat.power(fire),'Combat Power should increase with level');
+assert(combat.power(rare)>combat.power(fire),'Combat Power should include element count and rarity');
 assert(fireHigher.hp>fire.hp&&fireHigher.attack>fire.attack&&fireHigher.defense>fire.defense);
 assert(rare.hp>fire.hp&&rare.attack>fire.attack);
 assert.deepEqual(Object.keys(fire),['hp','attack','defense']);
@@ -34,6 +37,7 @@ for(let stars=1;stars<=5;stars++){
   const enhanced=combat.stats(['fire'],'common',25,db.elements,db.rarities,stars);
   for(const stat of ['hp','attack','defense'])
     assert.equal(enhanced[stat],Math.round(fire[stat]*(1+stars*.05)));
+  assert(combat.power(enhanced)>combat.power(fire),'Combat Power should include star bonuses');
 }
 assert.deepEqual(combat.stats(['fire'],'common',25,db.elements,db.rarities,99),
   combat.stats(['fire'],'common',25,db.elements,db.rarities,5));

@@ -30,3 +30,7 @@ export function connectionState(){
   return typeof window!=='undefined'&&window.DragonConnectionState?
     window.DragonConnectionState:{status:'connected',blocked:false,since:0,nextRetryAt:0,attempts:0,message:''};
 }
+
+export function emitRuntime(){
+  if(typeof window!=='undefined')window.DragonRuntime?.emit?.();
+}

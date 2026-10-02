@@ -65,9 +65,16 @@ function breedingOptions(father,mother,cave){
     return ids.map(function(id,i){return {id:id,chance:weights[index]*bias[i]/groupTotal};});
   });
 }
-function breedingSeconds(rarity,level,cave){
-  const base=DATA.breedingTimes[rarity];
-  return cave?.type==='premiumCave'?Math.round(base*window.DragonEconomy.breeding.premiumTimeFactor):base;
+function breedingSeconds(species,level,cave){
+  const s=typeof species==="string"?DATA.species[species]:species;
+  if(!s)return 60;
+  const rules=window.DragonEconomy.breeding,tier=dragonTimeTier(s);
+  const levelPressure=s.elements.reduce(function(sum,element){
+    return sum+(ELEMENT_UNLOCK[element]||1);
+  },0)/s.elements.length;
+  const base=(rules.timeByTier[tier]||rules.timeByTier[4])+
+    Math.min(rules.maxElementBonusSeconds,levelPressure*rules.elementLevelSeconds);
+  return Math.round(base*(cave?.type==='premiumCave'?rules.premiumTimeFactor:1));
 }
 function isBreedingCave(building){return building?.type==='cave'||building?.type==='premiumCave';}
 function dragonBusy(id){
@@ -95,7 +102,7 @@ function startBreeding(caveId,fatherId,motherId){
   cave.breeding={fatherId:father.id,motherId:mother.id,
     fatherSpecies:father.species,motherSpecies:mother.species,
     result:result.id,startedAt:Date.now(),readyAt:0};
-  cave.breeding.readyAt=cave.breeding.startedAt+breedingSeconds(species.rarity,cave.level,cave)*1000;
+  cave.breeding.readyAt=cave.breeding.startedAt+breedingSeconds(species,cave.level,cave)*1000;
   toast("Breeding has started.");
   AUDIO.play("place");openModal("breeding",cave.id);saveGame();
 }
@@ -107,7 +114,7 @@ function collectBreeding(caveId){
   const breeding=cave.breeding;
   const egg=addEgg(breeding.result,"breed",[breeding.fatherSpecies,breeding.motherSpecies],cave.id);
   cave.breeding=null;
-  gainPlayerXP(20);
+  gainPlayerXP(window.DragonEconomy.progression.xpSources.breed);
   toast(egg.hatcheryId?"The bred egg entered the Hatchery.":"The Hatchery is full; the bred egg is waiting in Inventory.");
   const center=buildingCenter(cave);burst(center.x,center.y,"#efbdff",20);
   AUDIO.play("egg");openModal(egg.hatcheryId?"hatchery":"inventory",egg.hatcheryId||null);saveGame();

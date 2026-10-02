@@ -103,6 +103,7 @@ describe('logic architecture boundaries',()=>{
     const arenaRoute=read('server/routes/arena.cjs');
     const challengeRoute=read('server/routes/challenge.cjs');
     const profile=read('server/profile.cjs');
+    const arenaLogic=read('js/logic/arena.js');
     expect(state).toContain('DragonConfig.system.save.version');
     expect(main).toContain('DragonConfig.system.runtime');
     expect(connection).toContain('DragonConfig.system.connection');
@@ -118,6 +119,8 @@ describe('logic architecture boundaries',()=>{
     expect(challengeRoute).toContain('systemConfig.api.challengeControlBytes');
     expect(challengeRoute).toContain('systemConfig.api.challengeTurnBytes');
     expect(profile).toContain('worldConfig.initialDragon');
+    expect(arenaLogic).toContain('DragonConfig.system.presentation');
+    expect(arenaLogic).not.toMatch(/Math\.max\(1900,events\.length\*1600\+400\)/);
     expect(connection).not.toMatch(/RECONNECT_MS|PROLONGED_MS/);
   });
 

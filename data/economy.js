@@ -12,7 +12,7 @@ window.DragonEconomy={
     doubleBase:.009,doublePerTenLevels:.0015,doubleCap:.018,doubleMinParentLevel:40,
     premiumRareFactor:1.40,premiumTimeFactor:.80},
   island:{gemPerIsland:100},
-  land:{homeFirstRegionGold:1200,nextIslandMultiplier:2,expansionMultiplier:1.2,goldPerGem:5000},
+  land:{homeFirstRegionGold:1200,nextIslandMultiplier:1.2,expansionMultiplier:1.2,islandTierLinear:.45,islandTierQuadratic:.06,goldPerGem:5000},
   habitat:{goldBase:5000,goldPerUnlockLevel:450,goldLevelFactor:6},
   shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
     habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,

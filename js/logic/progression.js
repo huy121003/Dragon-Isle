@@ -7,6 +7,7 @@
  * those results to the current save state and emit presentation side effects.
  */
 /** Add player XP and apply every crossed level reward. */
+/** Apply player XP, process every crossed level and grant configured rewards. */
 function gainPlayerXP(value){
   state.player.xp+=value;
   let levels=0,rewardGold=0,rewardFood=0,rewardGems=0;
@@ -24,6 +25,7 @@ function gainPlayerXP(value){
     if(home){const center=buildingCenter(home);burst(center.x,center.y,"#ffe68d",30);}
   }
 }
+/** Advance feed progress and level the dragon after configured feeds-per-level. */
 function recordDragonFeeding(dragon){
   if(dragon.level>=dragonLevelCap())return;
   dragon.feedProgress=dragonFeedProgress(dragon)+1;

@@ -322,7 +322,7 @@ check('Habitat purchase, upgrade cost and time scale by element',()=>{
  assert.equal(economy.run('farmLimit(1000)'),economy.run('window.DragonEconomy.progression.maxFarms'));
 });
 check('Habitat purchase history, resale, old saves and the Arena shortcut',()=>{
- economy.run('state=newGame();state.gold=100000;syncDock()');
+ economy.run('state=newGame();state.player.level=2;state.gold=100000;syncDock()');
  assert.equal(economy.element('arenaDockButton').hidden,true);
  const first=economy.run('habitatPurchaseCost("water")');
  economy.run('beginMode({kind:"buy",type:"habitat",element:"water"})');

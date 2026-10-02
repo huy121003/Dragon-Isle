@@ -49,7 +49,7 @@ function renderShop(){
     html+='<div class="cards">';
     Object.keys(DATA.elements).forEach(function(element){
       const e=DATA.elements[element];
-      const need=ELEMENT_UNLOCK[element]||99,locked=state.player.level<need;
+      const need=contentRequirementLevel(ELEMENT_UNLOCK[element]||99),locked=state.player.level<need;
       html+='<button class="shop-item" data-action="choose-build" data-type="habitat" data-element="'+element+'"'+(locked?' disabled':'')+'>'+
         '<span class="shop-icon" style="color:'+e.color+'">'+elementFlag(element,false,'lg')+'</span><span><b>Habitat '+e.name+
         '</b><small>Houses '+e.name+' · '+(locked?'Unlocks at level '+need:'6×6 tiles · up to level 4')+
@@ -82,7 +82,7 @@ function renderShop(){
       return s.elements.length===1&&s.detail.giaTrung;
     }).forEach(function(s){
       const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
-      const need=ELEMENT_UNLOCK[s.elements[0]]||99;
+      const need=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99);
       const canBuy=state.player.level>=need&&(price.vang?state.gold>=cost:state.gems>=cost);
       html+='<div class="shop-item egg-shop-card"><span class="egg-plinth" aria-hidden="true">'+
         eggShellHtml(s.id,false)+'</span><div class="egg-offer"><b>'+esc(s.name)+'</b>'+ 
@@ -152,7 +152,7 @@ function renderShopEggDetail(id){
   const s=DATA.species[id];
   if(!s||s.elements.length!==1||!s.detail.giaTrung){openModal("shop");return;}
   const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
-  const canBuy=state.player.level>=(ELEMENT_UNLOCK[s.elements[0]]||99)&&
+  const canBuy=state.player.level>=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99)&&
     (price.vang?state.gold>=cost:state.gems>=cost);
   dom.title.textContent="🥚 Eggs "+s.name;
   dom.body.innerHTML='<div class="note">Pure element egg · incubates in '+

@@ -163,7 +163,8 @@ async function launch(port){
     high.dragons.push({...high.dragons[0],id:5,species:'water',nickname:'Backup',level:100});
     high.dragons.push({...high.dragons[0],id:9,nickname:'Guard',level:100});
     high.dragons.push({...high.dragons[0],id:6,nickname:'Breeding',level:20});
-    high.dragons.push({...high.dragons[0],id:8,nickname:'Low level',level:9});
+    high.dragons.push({...high.dragons[0],id:8,nickname:'Low level',level:4});
+    high.dragons.push({...high.dragons[0],id:10,nickname:'Eligible level',level:5});
     high.buildings.push({id:7,type:'cave',level:1,x:204,y:182,stored:false,
       breeding:{fatherId:6,motherId:12,readyAt:Date.now()+3600_000}});
     async function putProfile(id,cookie,value){
@@ -187,6 +188,8 @@ async function launch(port){
       'Reject dragons below the minimum battle level');
     assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[6,5,9]})).status,400,
       'Reject dragons in active breeding');
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[10,5,9]})).status,200,
+      'Allow a level 5 dragon into an Arena team');
     assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:highTeam})).status,200);
     const choices=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert(choices.dragons.every(dragon=>Number.isFinite(dragon.power))&&
@@ -198,7 +201,8 @@ async function launch(port){
     assert(choices.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
       'Rival strength and dragons are hidden until the battle starts');
     assert.equal(choices.attemptsRemaining,3);
-    assert.equal(choices.dragons.find(d=>d.id===8).battleReason,'Requires level 10');
+    assert.equal(choices.dragons.find(d=>d.id===8).battleReason,'Requires level 5');
+    assert.equal(choices.dragons.find(d=>d.id===10).canBattle,true);
     assert.equal(choices.dragons.find(d=>d.id===6).battleReason,'Breeding');
     assert(choices.opponents.every(rival=>Object.keys(rival).length===1),
       'The list exposes only opaque rival IDs');

@@ -216,9 +216,10 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  balance.run('state.player.level=5;state.player.xp=0');
  balance.run('updateHeader()');
  assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(5)')+' XP');
- balance.run('state.player.level=window.DragonEconomy.progression.playerMaxLevel;updateHeader()');
- assert.equal(balance.element('xpText').textContent,'MAX LEVEL');
- assert.equal(balance.element('xpFill').style.width,'100%');
+ balance.run('state.player.level=60;state.player.xp=0;updateHeader()');
+ assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(60)')+' XP');
+ balance.run('gainPlayerXP(playerXPNeeded(60))');
+ assert.equal(balance.run('state.player.level'),61);
 });
 check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.fire)'),30,'Fire pure egg should hatch in 30 seconds');
@@ -227,7 +228,8 @@ check('starter eggs and guide use the current progression rules',()=>{
  assert(balance.element('sheetBody').innerHTML.includes('30s'));
  assert(balance.run('guideArena()').includes('Strong nhân 2'));
  assert(balance.run('guideArena()').includes('Weak nhân 0,5'));
- assert.equal(balance.run('window.DragonEconomy.progression.playerMaxLevel'),60);
+ balance.run('state.player.level=100;state.player.xp=0;gainPlayerXP(playerXPNeeded(100))');
+ assert.equal(balance.run('state.player.level'),101);
 });
 check('element unlocks, hatchery gates and crop timers follow the progression curve',()=>{
  assert.deepEqual(snapshot(balance,'DATA.elementUnlocks'),{

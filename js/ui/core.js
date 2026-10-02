@@ -1,6 +1,6 @@
 "use strict";
 
-/* UI: All nút hiển thị has handler trong bộ điều phối sự kiện ở cuối khối này. */
+/* UI: Mọi nút hiển thị đều được xử lý qua bộ điều phối sự kiện dùng chung. */
 function toast(message){
   dom.toast.textContent=message;dom.toast.classList.add("show");
   clearTimeout(ui.toastTimer);

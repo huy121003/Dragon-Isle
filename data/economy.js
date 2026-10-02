@@ -33,6 +33,6 @@ window.DragonEconomy={
       nature:150,dark:210,light:270,metal:360,war:480,pure:600,legend:750,primal:900,time:1200},
     tierSeconds:{2:240,3:900,4:2700,double:5400},elementLevelSeconds:12,maxElementBonusSeconds:3600},
   rewards:{arenaGoldBase:2500,arenaGoldPerOpponentLevel:250,arenaFoodBase:250,arenaFoodPerOpponentLevel:40,arenaGemBase:1,arenaGemPer20Levels:1},
-  academy:{baseGold:8000,baseFood:800,baseGems:5,costFactor:2.2,baseUpgradeSeconds:300,timeFactor:2.2},
+  academy:{baseGold:8000,baseFood:800,baseGems:5,costFactor:2.2},
   visual:{daySeconds:480,weatherParticles:10}
 };

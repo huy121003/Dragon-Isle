@@ -9,6 +9,16 @@ import arenaConfig from '../js/config/arena.js';
 import challengeConfig from '../js/config/challenge.js';
 import combatConfig from '../js/config/combat.js';
 import dragonConfig from '../js/config/dragons.js';
+import {battleModalDismissalProps} from '../src/app/modal-policy.mjs';
+let dismissalCount=0;
+const lockedDismissal=battleModalDismissalProps(true,()=>dismissalCount++);
+assert.deepEqual({closable:lockedDismissal.closable,maskClosable:lockedDismissal.maskClosable,
+  keyboard:lockedDismissal.keyboard},{closable:false,maskClosable:false,keyboard:false});
+lockedDismissal.onCancel();assert.equal(dismissalCount,0,'An active battle cannot be dismissed through Modal onCancel');
+const openDismissal=battleModalDismissalProps(false,()=>dismissalCount++);
+assert.deepEqual({closable:openDismissal.closable,maskClosable:openDismissal.maskClosable,
+  keyboard:openDismissal.keyboard},{closable:true,maskClosable:true,keyboard:true});
+openDismissal.onCancel();assert.equal(dismissalCount,1,'Non-battle modals keep their normal dismissal behavior');
 const skillStyle=inlineStyle('--skill-color:#2F8FE8; --element:#E8452C; border-color:red');
 assert.equal(skillStyle['--skill-color'],'#2F8FE8');
 assert.equal(skillStyle['--element'],'#E8452C');
@@ -20,7 +30,8 @@ try{
   const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/features/arena/ArenaView.jsx');
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
-    ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
+    ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'},
+    wind:{name:'Wind Dragon',elements:['wind'],rarity:'common'}};
   globalThis.window={DragonConfig:{arena:arenaConfig,challenge:challengeConfig,combat:combatConfig,dragons:dragonConfig},DragonGame:{skillMatchup:(element,target)=>
     element==='fire'&&target==='water'?.5:element==='fire'&&target==='ice'?2:1,
     data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
@@ -112,6 +123,9 @@ try{
     'Only the two reserve dragons per side appear beside the battlefield');
   assert.equal((fighting.match(/arena-reserve-hp/g)||[]).length,4,
     'Every reserve dragon has a visible HP bar');
+  assert.equal((fighting.match(/arena-reserve-avatar-frame/g)||[]).length,4,
+    'Each reserve dragon portrait sits inside a framed tile');
+  assert.match(fighting,/Water<\/b>/,'Reserve tiles identify the dragon element');
   assert.doesNotMatch(fighting,/arena-parties|arena-battle-party/,
     'Large translucent party overlays are removed');
   assert.doesNotMatch(fighting,/4,250 power|roster-power/);
@@ -176,6 +190,12 @@ try{
     'Arena field grows into the modal instead of staying compressed to a short percentage');
   assert.match(styles,/@media\(max-height:700px\)\{\s*\.battle-modal \.battle-stage\{height:auto;min-height:300px\}/,
     'Short-height viewports keep enough battlefield height for fighters and skill controls');
+  assert.match(styles,/\.battle-modal \.battle-stage\.has-arena-controls \.battle-side\{justify-content:flex-start\}/,
+    'Active dragon details start at the top of each side');
+  assert.match(styles,/\.battle-modal \.arena-stage-controls\{[^}]*bottom:7px/,
+    'Skill controls stay anchored at the bottom of the field');
+  assert.match(styles,/\.battle-modal \.battle-skill-fx \.fx-impact,\.battle-modal \.battle-skill-fx \.fx-special-seal\{top:64%\}/,
+    'Skill impact effects land near the dragon body instead of above its head');
   assert(styles.includes('.battle-skill-fx.normal .fx-projectile'));
   assert(styles.includes('.battle-skill-fx.support .fx-trail'));
   for(const element of ['war','pure','legend','primal','time'])

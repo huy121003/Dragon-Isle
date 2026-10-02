@@ -105,7 +105,7 @@ function renderShop(){
       '</div><div class="actions"><button class="btn primary" data-action="export-save">Download save JSON</button>'+ 
       '<label class="btn good" for="saveImport">Import save JSON</label>'+ 
       '<input id="saveImport" type="file" accept=".json,application/json" class="visually-hidden"></div>'+ 
-      '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to '+money(window.DragonEconomy.starting.gold)+' gold, '+money(window.DragonEconomy.starting.food)+' food, 10 gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+
+      '<div class="panel reset-panel"><h3>Start over</h3><p>Reset progress to '+money(window.DragonEconomy.starting.gold)+' gold, '+money(window.DragonEconomy.starting.food)+' food, '+money(window.DragonEconomy.starting.gems)+' gems, a Fire Habitat, a Fire Dragon, and a level 1 Hatchery.</p>'+
       '<button class="btn danger" data-action="factory-reset">Reset game</button></div>'+
       '<details class="panel"><summary>Testing &amp; debug</summary><div class="actions"><button class="btn" data-action="topup-test">Grant test resources</button>'+
       '<button class="btn" data-action="toggle-iso-debug" aria-pressed="'+ui.debugIso+'">'+

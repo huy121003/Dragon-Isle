@@ -9,7 +9,7 @@ describe('logic architecture boundaries',()=>{
   it('keeps editable balance parameters under js/config',()=>{
     const names=readdirSync(path.join(root,'js/config'));
     for(const required of ['progression.js','economy.js','buildings.js','dragons.js','breeding.js',
-      'hatching.js','combat.js','arena.js','challenge.js','world.js','timers.js','farming.js'])
+      'hatching.js','combat.js','arena.js','challenge.js','world.js','timers.js','farming.js','system.js'])
       expect(names).toContain(required);
   });
 
@@ -83,6 +83,27 @@ describe('logic architecture boundaries',()=>{
     expect(combat).not.toMatch(/const\s+DEFENSE_SCALE|critical\?1\.5|target\.defense\*\.8/);
     expect(arena).not.toMatch(/const\s+TEAM_SIZE|const\s+MIN_BATTLE_LEVEL|const\s+COOLDOWN/);
     expect(challenge).not.toMatch(/ONLINE_SAVE_MS|INVITE_MS|MATCH_RECONNECT_MS|MATCH_HEARTBEAT_MS/);
+  });
+
+  it('centralizes platform, persistence and validation parameters',()=>{
+    const state=read('js/core/state.js');
+    const main=read('js/main.js');
+    const connection=read('js/network/connection.js');
+    const saveClient=read('js/persistence/save-client.js');
+    const validation=read('server/validation.cjs');
+    const auth=read('server/auth.cjs');
+    const rateLimit=read('server/rate-limit.cjs');
+    const saveRoute=read('server/routes/save.cjs');
+    expect(state).toContain('DragonConfig.system.save.version');
+    expect(main).toContain('DragonConfig.system.runtime');
+    expect(connection).toContain('DragonConfig.system.connection');
+    expect(saveClient).toContain('DragonConfig.system.save.keepaliveMaxBytes');
+    expect(validation).toContain('systemConfig.save.version');
+    expect(validation).toContain('challengeConfig.teamSize');
+    expect(auth).toContain('systemConfig.auth');
+    expect(rateLimit).toContain('system.js');
+    expect(saveRoute).toContain('systemConfig.save.maxBytes');
+    expect(connection).not.toMatch(/RECONNECT_MS|PROLONGED_MS/);
   });
 
   it('documents the intended config -> rules -> service -> UI flow',()=>{

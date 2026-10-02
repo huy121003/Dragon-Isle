@@ -1,4 +1,6 @@
-function createLoginRateLimit({limit=30,windowMs=15*60_000,maxEntries=2000}={}){
+const rateLimitConfig=require('../js/config/system.js').loginRateLimit;
+function createLoginRateLimit({limit=rateLimitConfig.limit,windowMs=rateLimitConfig.windowMs,
+  maxEntries=rateLimitConfig.maxEntries}={}){
   const attempts=new Map();
   return function limited(req){
     const ip=req.socket.remoteAddress||'local',now=Date.now();

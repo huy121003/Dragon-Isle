@@ -291,12 +291,12 @@ function upgradeCost(building){
   return Math.round(base*Math.pow(window.DragonEconomy.buildings.upgradeFactor,building.level));
 }
 function upgradeSeconds(building){
-  if(building.type==='academy'){
-    const a=window.DragonEconomy.academy;
-    return Math.round(a.baseUpgradeSeconds*Math.pow(a.timeFactor,building.level-1));
-  }
   const times=DATA.upgradeTimes[building.type];
   return times?times[Math.min(building.level-1,times.length-1)]:0;
+}
+function hatcheryUpgradePlayerLevel(level){
+  const gates=window.DragonEconomy.progression.hatcheryUpgradeLevels;
+  return gates[Math.max(0,Math.floor(Number(level)||1)-1)]||1;
 }
 function islandUnlockCost(index){
   if(index<=0)return 0;

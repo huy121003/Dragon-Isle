@@ -104,8 +104,11 @@ function buildLockReason(type,element){
         "Unlock another at player level "+next+".":"Maximum reached.");
   }
   if(type==="habitat"&&!DATA.elements[element])return "Unknown Habitat element.";
-  if(type==="habitat"&&state.player.level<(ELEMENT_UNLOCK[element]||99))
-    return "Habitat "+(DATA.elements[element]?.name||"element")+" unlocks at level "+ELEMENT_UNLOCK[element]+".";
+  if(type==="habitat"){
+    const need=contentRequirementLevel(ELEMENT_UNLOCK[element]||99);
+    if(state.player.level<need)
+      return "Habitat "+(DATA.elements[element]?.name||"element")+" unlocks at level "+need+".";
+  }
   if((type==="cave"||type==="premiumCave"||type==="arena"||type==="academy")&&
     state.buildings.some(b=>b.type===type))
     return "Only one "+DATA.buildings[type].name+" can be owned.";

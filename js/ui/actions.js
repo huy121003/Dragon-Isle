@@ -24,6 +24,9 @@ function handleAction(button){
     case "shop-egg-detail":openModal("shop-egg-detail",button.dataset.species);break;
     case "shop-egg-back":openModal("shop");break;
     case "open-dragons":openModal("dragons");break;
+    case "dragon-sort":
+      if(["power","level","stars"].includes(button.dataset.sort)){ui.dragonSort=button.dataset.sort;renderDragons();}
+      break;
     case "dragon-detail":
       ui.dragonReturn=ui.modal?.name==="habitat"?{name:"habitat",extra:ui.modal.extra}:{name:"dragons"};
       openModal("dragon-detail",id);break;

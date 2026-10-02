@@ -47,7 +47,7 @@ function extendCatalog(db,game){
   // Directed 2-regular graph: every element wins against two and loses to two.
   if(ids.length!==Object.keys(expansion.wins).length)throw Error('Element chart out of sync.');
   db.typeChart=Object.fromEntries(ids.map(a=>[a,Object.fromEntries(ids.map(b=>
-    [b,a===b?1:expansion.wins[a].includes(b)?1.5:
+    [b,a===b?1:expansion.wins[a].includes(b)?2:
       expansion.wins[b].includes(a)?0.75:1]))]));
   for(const id of ids){
     const outgoing=ids.filter(b=>db.typeChart[id][b]>1);

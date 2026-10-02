@@ -8,6 +8,8 @@
 })(typeof window!=="undefined"?window:globalThis,function(){
   "use strict";
   return Object.freeze({
+    /** Maximum number of element slots one dragon species may expose, including duplicate-element tiers. */
+    maxElementsPerDragon:4,
     /** Visual/lifecycle stage thresholds. */
     stages:Object.freeze({adultAt:10,elderAt:30}),
     /** Legacy dragon XP helper retained for catalog/debug callers. */

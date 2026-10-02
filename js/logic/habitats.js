@@ -21,3 +21,16 @@ function collect(building){
   AUDIO.play("coin");
   updateUI();saveGame();
 }
+
+/** Move a dragon to a compatible Habitat that still has free capacity. */
+function assignDragon(dragonId,buildingId){
+  const d=dragonById(dragonId),b=buildingById(buildingId);
+  if(d&&dragonBusy(d.id)){toast("Breeding dragons cannot change Habitats.");return;}
+  if(!d||!b||!habitatHasRoom(b)||!DATA.species[d.species].elements.includes(b.element)){
+    toast("The Habitat is full or its element does not match.");return;
+  }
+  advanceWorld(Date.now());
+  d.habitatId=b.id;
+  toast("Moved "+d.nickname+" into "+buildingName(b)+".");
+  openModal("dragons");saveGame();
+}

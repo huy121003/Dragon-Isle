@@ -12,10 +12,10 @@ const {createSaveRoutes}=require('./routes/save.cjs');
 const {createAdminRoutes}=require('./routes/admin.cjs');
 const {createStaticHandler}=require('./static.cjs');
 
-async function createApp({root,dataDir,secureCookies=false}){
+async function createApp({root,dataDir,contentDir=path.join(root,'data'),secureCookies=false}){
   const profilesDir=path.join(dataDir,'profiles');
   const auth=await createAuth(dataDir);
-  const arena=createArena({profilesDir,dataDir,auth});
+  const arena=createArena({profilesDir,dataDir:contentDir,auth});
   const challenge=createChallenge({auth,profilesDir,arena});
   const limited=createLoginRateLimit();
   const routes=[
@@ -25,7 +25,7 @@ async function createApp({root,dataDir,secureCookies=false}){
     createAdminRoutes({auth,challenge,profilesDir}),
     createSaveRoutes({auth,profilesDir})
   ];
-  const serveStatic=createStaticHandler({root,dataDir});
+  const serveStatic=createStaticHandler({root,dataDir:contentDir});
   const handler=async(req,res)=>{
     try{
       const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);

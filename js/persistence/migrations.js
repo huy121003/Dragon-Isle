@@ -211,16 +211,16 @@ function migrateSave(raw){
         out.x=DATA.legacyGridOffset+out.x*DATA.legacyGridScale;
         out.y=DATA.legacyGridOffset+out.y*DATA.legacyGridScale;
       }
-      out.level=clamp(Number(out.level)||1,1,DATA.buildings[out.type].maxLevel);
+      out.level=clamp(Number(out.level)||1,1,window.DragonConfig.buildings.definitions[out.type].maxLevel);
       if(out.type==='habitat'){
         const unlock=ELEMENT_UNLOCK[out.element]||1;
-        const legacyCost=Math.round(200*(1+.09*(unlock-1))/10)*10;
+        // Historical pre-refactor v1-v11 purchase formula. Keep fixed so old saves migrate deterministically.\n        const legacyCost=Math.round(200*(1+.09*(unlock-1))/10)*10;
         out.purchaseCost=Math.max(1,Math.floor(Number(out.purchaseCost)||legacyCost));
       }
       out.storedGold=Math.max(0,Number(out.storedGold)||0);
       out.storedGems=out.type==="habitat"?Math.max(0,Math.floor(Number(out.storedGems)||0)):0;
       out.upgradeEnds=Number(out.upgradeEnds)||0;
-      if(out.level>=DATA.buildings[out.type].maxLevel)out.upgradeEnds=0;
+      if(out.level>=window.DragonConfig.buildings.definitions[out.type].maxLevel)out.upgradeEnds=0;
       out.upgradeStartedAt=Number(out.upgradeStartedAt)||
         (out.upgradeEnds?out.upgradeEnds-upgradeSeconds(out)*1000:0);
       if(out.crop){
@@ -302,16 +302,16 @@ function migrateSave(raw){
   result.dragons=result.dragons.filter(function(d){
     return d&&Number.isInteger(d.id)&&DATA.species[mapSpecies(d.species)];
   }).map(function(d){
-    const out=Object.assign({level:1,stars:0,xp:0,feedProgress:0,hunger:10,happiness:80,habitatId:null,gemProgress:0},d);
+    const initialCare=window.DragonConfig.world.initialDragon;\n    const out=Object.assign({level:1,stars:0,xp:0,feedProgress:0,hunger:initialCare.hunger,\n      happiness:initialCare.happiness,habitatId:null,gemProgress:0},d);
     out.species=mapSpecies(out.species);
-    out.level=clamp(Number(out.level)||1,1,DATA.progression.dragonMaxLevel);
+    out.level=clamp(Number(out.level)||1,1,window.DragonConfig.progression.dragonMaxLevel);
     out.stars=Number.isFinite(Number(out.stars))?
-      clamp(Math.floor(Number(out.stars)),0,DATA.progression.starUpgrades.length):0;
+      clamp(Math.floor(Number(out.stars)),0,window.DragonConfig.progression.starUpgrades.length):0;
     out.feedProgress=raw.version<6?
-      clamp(Math.floor((Math.max(0,Number(d.xp)||0)/dragonXPNeeded(out.level))*4),0,3):
+      clamp(Math.floor((Math.max(0,Number(d.xp)||0)/dragonXPNeeded(out.level))*\n        window.DragonConfig.world.feeding.feedsPerLevel),0,window.DragonConfig.world.feeding.feedsPerLevel-1):
       dragonFeedProgress(out);
     out.xp=0;
-    out.hunger=clamp(Number(out.hunger)||0,0,100);
+    out.hunger=clamp(Number(out.hunger)||0,0,window.DragonConfig.world.hunger.max);
     out.happiness=clamp(Number(out.happiness)||0,0,100);
     out.gemProgress=clamp(Number(out.gemProgress)||0,0,1-1e-9);
     if(!result.buildings.some(function(b){return b.id===out.habitatId&&b.type==="habitat";}))out.habitatId=null;

@@ -3,13 +3,16 @@ const path=require('node:path');
 const {randomBytes,randomUUID,scrypt,timingSafeEqual,createHash}=require('node:crypto');
 const {promisify}=require('node:util');
 const {readJson,writeJson}=require('./store.cjs');
+const systemConfig=require('../js/config/system.js');
 const derive=promisify(scrypt);
-const SESSION_AGE=7*24*60*60*1000;
+const authConfig=systemConfig.auth;
 function digest(token){return createHash('sha256').update(token).digest('hex');}
-function validUsername(value){return typeof value==='string'&&/^[A-Za-z0-9_]{3,24}$/.test(value);}
-function validPassword(value){return typeof value==='string'&&value.length>=8&&value.length<=128&&Buffer.byteLength(value)<=256;}
+function validUsername(value){return typeof value==='string'&&value.length>=authConfig.usernameMin&&
+  value.length<=authConfig.usernameMax&&/^[A-Za-z0-9_]+$/.test(value);}
+function validPassword(value){return typeof value==='string'&&value.length>=authConfig.passwordMin&&
+  value.length<=authConfig.passwordMax&&Buffer.byteLength(value)<=authConfig.passwordMaxBytes;}
 function cookie(token,secure){return 'dragon_session='+token+'; Path=/; HttpOnly; SameSite=Strict; Max-Age='+
-  Math.floor(SESSION_AGE/1000)+(secure?'; Secure':'');}
+  Math.floor(authConfig.sessionAgeMs/1000)+(secure?'; Secure':'');}
 async function createAuth(dataDir){
   const usersPath=path.join(dataDir,'users.json'),sessionsPath=path.join(dataDir,'sessions.json');
   let users=await readJson(usersPath,[]),sessions=await readJson(sessionsPath,[]);
@@ -25,7 +28,7 @@ async function createAuth(dataDir){
   async function issue(user){
     const token=randomBytes(32).toString('base64url');
     sessions=sessions.filter(s=>s.expires>Date.now());
-    sessions.push({digest:digest(token),userId:user.id,expires:Date.now()+SESSION_AGE});
+    sessions.push({digest:digest(token),userId:user.id,expires:Date.now()+authConfig.sessionAgeMs});
     await writeJson(sessionsPath,sessions);
     return {user:{id:user.id,username:user.username,role:user.role||'player'},token};
   }
@@ -44,7 +47,7 @@ async function createAuth(dataDir){
       });
     },
     async login(username,password){
-      if(!validUsername(username)||typeof password!=='string'||Buffer.byteLength(password)>256)return {error:'Incorrect username or password.',status:401};
+      if(!validUsername(username)||typeof password!=='string'||Buffer.byteLength(password)>authConfig.passwordMaxBytes)return {error:'Incorrect username or password.',status:401};
       const user=users.find(u=>u.username.toLowerCase()===username.toLowerCase());
       if(!user||user.disabled)return {error:'Incorrect username or password.',status:401};
       const candidate=await derive(password,user.salt,64),expected=Buffer.from(user.hash,'hex');

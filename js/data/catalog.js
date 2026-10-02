@@ -4,8 +4,10 @@
 const DRAGON_DATA=window.DragonData;
 const GAME_CONFIG=window.GameDatabase;
 const DRAGON_DB=window.DragonDatabase;
+const CONFIG=window.DragonConfig;
 /** Player-level unlock map for each element; shared by pricing, islands, breeding and hatching rules. */
-const ELEMENT_UNLOCK=window.GameDatabase.elementUnlocks;
+const ELEMENT_UNLOCK=CONFIG.progression.elementUnlocks;
+const BUILDING_BALANCE=CONFIG.buildings.definitions;
 const DATA={
   footprints:GAME_CONFIG.footprints,
   legacyGridOffset:GAME_CONFIG.legacyGridOffset,
@@ -14,15 +16,36 @@ const DATA={
   size:GAME_CONFIG.size,tile:GAME_CONFIG.tile,
   tileW:GAME_CONFIG.tileW||64,tileH:GAME_CONFIG.tileH||32,
   originX:GAME_CONFIG.originX||0,originY:GAME_CONFIG.originY||0,
-  islands:GAME_CONFIG.islands,elementUnlocks:GAME_CONFIG.elementUnlocks,
-  islandRegionSize:GAME_CONFIG.islandRegionSize||24,environment:GAME_CONFIG.environment,
-  testResources:GAME_CONFIG.testResources,nicknames:GAME_CONFIG.nicknames,
-  gemPerDragonPerHour:GAME_CONFIG.gemPerDragonPerHour,
-  progression:GAME_CONFIG.progression,upgradeTimes:GAME_CONFIG.upgradeTimes,
-  breedingTimes:GAME_CONFIG.breedingTimes,
+  islands:GAME_CONFIG.islands.map(function(island){
+    const playerLevel=island.element?ELEMENT_UNLOCK[island.element]||1:1;
+    return {...island,playerLevel};
+  }),
+  elementUnlocks:ELEMENT_UNLOCK,
+  islandRegionSize:GAME_CONFIG.islandRegionSize||24,
+  environment:{...GAME_CONFIG.environment,cycleSeconds:CONFIG.world.visual.daySeconds,
+    particlesPerIsland:CONFIG.world.visual.weatherParticles},
+  testResources:CONFIG.economy.testResources,nicknames:GAME_CONFIG.nicknames,
+  gemPerDragonPerHour:CONFIG.world.gemPerDragonPerHour,
+  progression:{
+    dragonMaxLevel:CONFIG.progression.dragonMaxLevel,
+    starUpgrades:CONFIG.progression.starUpgrades,
+    breedLevel:CONFIG.progression.breedLevel,
+    skillUnlockLevels:CONFIG.progression.skillUnlockLevels,
+    xpBase:CONFIG.dragons.xp.base,xpExponent:CONFIG.dragons.xp.exponent,
+    academyCaps:CONFIG.progression.academyCaps,
+    academyUpgrades:CONFIG.progression.academyUpgrades
+  },
+  upgradeTimes:CONFIG.buildings.upgradeTimes,
+  breedingTimes:{
+    common:CONFIG.breeding.timeByTier[1],rare:CONFIG.breeding.timeByTier[2],
+    epic:CONFIG.breeding.timeByTier[3],legendary:CONFIG.breeding.timeByTier[4],
+    mythic:CONFIG.breeding.timeByTier.double,transcendent:CONFIG.breeding.timeByTier.double
+  },
   dragonForms:GAME_CONFIG.dragonForms,tertiaryForms:GAME_CONFIG.tertiaryForms,
-  buildings:GAME_CONFIG.buildings,
-  crops:GAME_CONFIG.crops,skills:GAME_CONFIG.skills,
+  buildings:Object.fromEntries(Object.entries(GAME_CONFIG.buildings).map(function([id,meta]){
+    return [id,{...meta,...BUILDING_BALANCE[id]}];
+  })),
+  crops:CONFIG.farming.crops,skills:GAME_CONFIG.skills,
   elements:Object.fromEntries(Object.entries(DRAGON_DB.elements).map(function([id,raw]){
     return [id,{name:raw.ten,color:raw.mau.chinh,light:raw.mau.sang,
       dark:raw.mau.toi,mark:raw.icon,art:raw.kieu}];

@@ -22,7 +22,7 @@ function newGame(){
     dragons:[{id:2,species:"fire",nickname:uniqueNickname([]),level:1,stars:0,xp:0,feedProgress:0,
       hunger:care.hunger,happiness:care.happiness,habitatId:1,gemProgress:0}]};
 }
-/* Tên cá thể lấy ngẫu nhiên và không trùng, kể cả khi số dragons vượt danh sách mẫu. */
+/* Tên cá thể được lấy ngẫu nhiên và không trùng, kể cả khi số rồng vượt danh sách tên mẫu. */
 function uniqueNickname(taken){
   const used=new Set(taken);
   const pool=DATA.nicknames.filter(function(name){return !used.has(name);});

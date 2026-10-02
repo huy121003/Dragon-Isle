@@ -152,7 +152,8 @@ const state=read('js/core/state.js');
 const calculations=read('js/core/calculations.js');
 const arena=read('server/arena.cjs');
 const profile=read('server/profile.cjs');
-const guide=read('js/ui/guide.js');
+const guide=['shared','start','dragons','breeding','islands','resources','combat']
+  .map(name=>read('js/ui/guide/'+name+'.js')).concat(read('js/ui/guide.js')).join('\n');
 const validation=read('server/validation.cjs');
 const main=read('js/main.js');
 

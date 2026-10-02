@@ -10,7 +10,7 @@ try{
     elements:{fire:{name:'Fire',color:'#e45'}},
     rarities:{common:{name:'Common',color:'#aaa'}}
   }}};
-  const {default:ChallengeView}=await server.ssrLoadModule('/src/ChallengeView.jsx');
+  const {default:ChallengeView}=await server.ssrLoadModule('/src/features/challenge/ChallengeView.jsx');
   const now=Date.now();
   const reconnecting={opponent:'Bela',opponentConnection:'reconnecting',
     opponentReconnectUntil:now+45000,id:'m1',ready:false,opponentReady:false};

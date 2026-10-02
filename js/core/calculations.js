@@ -49,6 +49,7 @@ function academyUpgradeCost(level){
   return window.DragonRules.buildings.academyUpgradeCost(
     level,window.DragonConfig.progression.academyUpgrades[level-1],dragonLevelCap(),contentRequirementLevel);
 }
+/** Count owned dragons meeting an Academy upgrade's required dragon level. */
 function academyQualifiedDragonCount(cost){
   if(!cost)return 0;
   return state.dragons.filter(function(dragon){
@@ -64,6 +65,7 @@ function stageOf(dragon){
   const stages=window.DragonConfig.dragons.stages;
   return dragon.level<stages.adultAt?"Young":dragon.level<stages.elderAt?"Adult":"Elder";
 }
+/** Return current combat stats for one owned dragon. */
 function dragonStats(dragon){
   const species=DATA.species[dragon.species];
   return window.DragonCombat.stats(species.elements,species.rarity,dragon.level,
@@ -80,10 +82,11 @@ function dragonIncome(dragon,building){
   const growth=1+rates.linear*steps+rates.quadratic*steps*steps;
   return base*growth*rates.multiplier*window.DragonRules.world.incomeMultiplier(dragon,building.level);
 }
-/* LOGIC: Gold gốc trong dữ liệu là gold/hour; hiển thị và tích lũy theo phút. */
+/** Convert one dragon's configured hourly Gold income to per-minute production. */
 function dragonIncomePerMinute(dragon,building){
   return dragonIncome(dragon,building)/60;
 }
+/** Sum per-minute Gold production for all dragons housed in an active Habitat. */
 function habitatIncomePerMinute(building){
   if(!building||building.type!=="habitat"||building.stored)return 0;
   return occupants(building).reduce(function(sum,d){return sum+dragonIncomePerMinute(d,building);},0);
@@ -101,6 +104,7 @@ function habitatPurchaseCost(element,purchased=state?.habitatPurchases?.[element
   return window.DragonRules.buildings.habitatPurchaseCost(
     window.DragonConfig.buildings.definitions.habitat.cost,ELEMENT_UNLOCK[element]||1,purchased);
 }
+/** Return the current purchase cost for a building type; Habitats include element/repeat scaling. */
 function buildingPurchaseCost(type,element){
   return type==='habitat'?habitatPurchaseCost(element):window.DragonConfig.buildings.definitions[type].cost;
 }
@@ -115,9 +119,10 @@ function shopEggPrice(species){
   return window.DragonRules.buildings.eggPrice(
     species.detail.giaTrung,species.rarity,ELEMENT_UNLOCK[species.elements[0]]||1);
 }
-/* GEM: Mỗi cá thể hoàn thành một chu kỳ riêng, không cộng gộp giờ lẻ của nhiều dragons. */
+/** Return passive Gem/hour production for dragons housed in an active Habitat. */
 function habitatGemRate(building){return !building||building.type!=="habitat"||building.stored?0:
   occupants(building).length*window.DragonConfig.world.gemPerDragonPerHour;}
+/** Estimate seconds until the next housed dragon completes one Gem production cycle. */
 function gemNextSeconds(building){
   if(!building||building.type!=="habitat"||building.stored)return 0;
   if((building.storedGems||0)>=habitatGemCapacity(building))return 0;
@@ -176,6 +181,7 @@ function landCost(x,y){
   const region=regionOf(x,y),index=region?.index||0;
   return landRegionCost(index,region?islandRegionCount(index):1)/DATA.islandRegionSize**2;
 }
+/** Return locked tile keys that would be opened by the land region containing x/y. */
 function expansionTiles(x,y){
   const r=regionOf(x,y),tiles=[];
   if(!r||r.index>=state.unlockedIslands)return tiles;
@@ -185,6 +191,7 @@ function expansionTiles(x,y){
   }
   return tiles;
 }
+/** Return Gold cost for the still-locked tiles in the selected expansion region. */
 function expansionCost(x,y){return Math.round(landCost(x,y)*expansionTiles(x,y).length);}
 /** Instant Gem alternative for a land expansion. */
 function expansionGemCost(x,y){

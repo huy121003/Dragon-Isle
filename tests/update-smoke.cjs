@@ -210,10 +210,13 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  balance.run('state.player.level=3;state.player.xp=playerXPNeeded(3)+52;gainPlayerXP(0)');
  assert.equal(balance.run('state.player.level'),4);
  assert.equal(balance.run('state.player.xp'),52);
+ balance.run('state=newGame();state.player.xp=0;state.dragons[0].feedProgress=3;recordDragonFeeding(state.dragons[0])');
+ assert.equal(balance.run('state.dragons[0].level'),2);
+ assert.equal(balance.run('state.player.xp'),balance.run('window.DragonEconomy.progression.xpSources.dragonLevelBase'));
  balance.run('state.player.level=5;state.player.xp=0');
  balance.run('updateHeader()');
  assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(5)')+' XP');
- balance.run('state.player.level=60;updateHeader()');
+ balance.run('state.player.level=window.DragonEconomy.progression.playerMaxLevel;updateHeader()');
  assert.equal(balance.element('xpText').textContent,'MAX LEVEL');
  assert.equal(balance.element('xpFill').style.width,'100%');
 });

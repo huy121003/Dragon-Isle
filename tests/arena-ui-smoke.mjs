@@ -84,7 +84,10 @@ try{
   const full={...arena,draft:{attack:fullIds}};
   const fullSetup=renderToStaticMarkup(React.createElement(ArenaView,{arena:full}));
   assert.doesNotMatch(fullSetup.match(/<div class="arena-save-bar">(.*?)<\/div>/)[1],/disabled=""/);
-  const battle={opponent:'Bela',turn:1,attack:[dragon],defense:[{...dragon,id:3,species:'water',nickname:'Milo'}],
+  const battle={opponent:'Bela',turn:1,attack:[dragon,{...dragon,id:5,nickname:'Sparky',species:'fire'},
+      {...dragon,id:6,nickname:'Breeze',species:'wind'}],
+    defense:[{...dragon,id:3,species:'water',nickname:'Milo'},
+      {...dragon,id:7,nickname:'River',species:'water'},{...dragon,id:8,nickname:'Stone',species:'ice'}],
     activeAttack:0,activeDefense:0,events:[]};
   const fighting=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,data:{...data,battle}}}));
   assert.match(fighting,/battle-stage/);assert.match(fighting,/battle-skill-grid/);
@@ -99,16 +102,20 @@ try{
   const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:supportBattle}}}));
   assert.doesNotMatch(supportMenu,/matchup-mark weak/);
-  assert(fighting.indexOf('battle-stage')<fighting.indexOf('arena-parties')&&
-    fighting.indexOf('arena-parties')<fighting.indexOf('battle-controls'),
-    'Hai đội hình phải nằm sát sân đấu trước điều khiển skill');
-  assert.match(fighting,/Your dragons · tap to switch/);
-  assert.match(fighting,/Rival team/);
+  assert(fighting.indexOf('battle-stage')<fighting.indexOf('arena-battle-reserves')&&
+    fighting.indexOf('arena-battle-reserves')<fighting.indexOf('arena-stage-controls')&&
+    fighting.indexOf('arena-stage-controls')<fighting.indexOf('battle-skill-grid'),
+    'Reserve avatars and skill buttons are contained inside the battle field');
+  assert.match(fighting,/Your reserve dragons/);
+  assert.match(fighting,/Rival reserve dragons/);
+  assert.equal((fighting.match(/arena-reserve-button/g)||[]).length,4,
+    'Only the two reserve dragons per side appear beside the battlefield');
+  assert.doesNotMatch(fighting,/arena-parties|arena-battle-party/,
+    'Large translucent party overlays are removed');
   assert.doesNotMatch(fighting,/4,250 power|roster-power/);
   assert.doesNotMatch(fighting,/battle-feed|Recent moves/);
-  const details=fighting.match(/<div class="battle-details-scroll"[^>]*>([\s\S]*)<\/div><\/div>$/)?.[1];
-  assert(details&&details.includes('battle-controls')&&!details.includes('battle-feed'),
-    'Arena không hiển thị log lượt đánh');
+  assert.doesNotMatch(fighting,/battle-details-scroll|battle-feed|Recent moves/,
+    'Arena skills stay inside the battle and turn logs remain hidden');
   assert.doesNotMatch(fighting,/Đánh thường/);
   const charging=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle},busy:true,pendingSkill:'Flame Slash'}}));

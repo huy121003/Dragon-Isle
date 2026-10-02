@@ -214,7 +214,7 @@ function dragonIncome(dragon,building){
   const steps=Math.max(0,Math.min(DATA.progression.dragonMaxLevel,dragon.level)-1);
   const rates=window.DragonEconomy.progression;
   const growth=1+rates.goldLevelLinear*steps+rates.goldLevelQuadratic*steps*steps;
-  return base*growth*(0.5+dragon.happiness/100)*
+  return base*growth*rates.goldIncomeMultiplier*(0.5+dragon.happiness/100)*
     (1+0.1*building.level)*(dragon.hunger>=100?.5:1);
 }
 /* LOGIC: Gold gốc trong dữ liệu là gold/hour; hiển thị và tích lũy theo phút. */
@@ -271,7 +271,7 @@ function gemNextSeconds(building){
 function upgradeCost(building){
   const base=building.type==='habitat'?Math.max(building.purchaseCost||0,
     habitatPurchaseCost(building.element,0)):buildingPurchaseCost(building.type,building.element);
-  return Math.round(base*Math.pow(1.8,building.level));
+  return Math.round(base*Math.pow(window.DragonEconomy.buildings.upgradeFactor,building.level));
 }
 function upgradeSeconds(building){
   if(building.type==='academy'){

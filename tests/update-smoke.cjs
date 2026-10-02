@@ -1245,6 +1245,7 @@ check('100000 rolls for 3, 4, 5 and 6 parent-union elements',()=>{
 check('hex skill icons, flags in three sizes',()=>{
  const detail=game.run('dragonDetailHtml(DATA.species.fire,{...state.dragons[0],species:"fire",level:30})');
  assert(detail.includes('class="skill-hex'));assert(!detail.includes('skill-icon'));
+ assert(detail.includes('👊 Combat Power'),'Combat Power is shown in dragon details');
  assert(detail.includes('flag-lg'));
  const filter=game.run('elementFilter("dragon","fire")');assert(filter.includes('flag-sm'));
  const css=fs.readFileSync(path.join(root,'css/style.css'),'utf8');

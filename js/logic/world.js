@@ -41,7 +41,8 @@ function advanceWorld(now){
         if(house.storedGold<goldLimit)house.storedGold=Math.min(goldLimit,
           house.storedGold+dragonIncomePerMinute(d,house)*step/60000);
         if((house.storedGems||0)<gemLimit){
-          const progress=(d.gemProgress||0)+step/3600000*DATA.gemPerDragonPerHour;
+          const progress=(d.gemProgress||0)+step/1000/window.DragonConfig.world.gemSecondsPerHour*
+            window.DragonConfig.world.gemPerDragonPerHour;
           const earned=Math.floor(progress+1e-9);
           d.gemProgress=Math.max(0,progress-earned);
           house.storedGems=Math.min(gemLimit,(house.storedGems||0)+earned);

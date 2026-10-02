@@ -57,16 +57,16 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         <div className="battle-hp"><div><span style={{width:(defender.hp/defender.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(defender.hp)} / {fmt.format(defender.maxHp)} HP</small></div>
         <StatusIcons dragon={defender}/>
-        <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='defense'?'lunge':'')+(attacking&&impact.side==='attack'?' struck':'')}>
+      <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='defense'?'lunge':'')+(attacking&&impact.side==='attack'?' struck':'')}>
           <Portrait dragon={defender} large facing={-1}/></div></div>
+      {!challenge&&<div className="arena-parties"><Party side="attack" label="Your dragons · tap to switch" interactive/>
+        <Party side="defense" label="Rival team"/></div>}
       {impact&&<SkillEffect event={impact} frame={frame}/>}
       {arena.pendingSkill&&<div className="battle-charge" aria-live="polite">
         <span>✦</span><b>{attacker.nickname} is casting {arena.pendingSkill}</b>
       </div>}
       {event?.switchTo&&<div className="battle-switch-cue">🔄 {event.switchTo} enters the arena!</div>}
     </div>
-    {!challenge&&<div className="arena-parties"><Party side="attack" label="Your dragons · tap to switch" interactive/>
-      <Party side="defense" label="Rival team"/></div>}
     {challenge&&<div className="battle-bench"><b>Attack team</b><div>{battle.attack.map((dragon,index)=><span key={dragon.id}
       className={'battle-bench-dragon '+(index===battle.activeAttack?'active':'')+(dragon.hp<=0?' fainted':'')}>
       <Portrait dragon={dragon}/><small>{dragon.nickname}<br/>{Math.round(dragon.hp/dragon.maxHp*100)}% HP</small></span>)}</div></div>}

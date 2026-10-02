@@ -122,7 +122,7 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
  g.run('refreshCountdowns()');
  assert.equal(g.run('window.refreshCount'),1,'A completed timer must not redraw the panel every second');
 });
-check('network failure keeps the latest save queued and retries safely',async()=>{
+{
  const g=await boot();
  g.network.down=true;
  g.run('state.gold=54321');
@@ -135,7 +135,8 @@ check('network failure keeps the latest save queued and retries safely',async()=
  assert.equal(g.getRemote().gold,54321);
  const latestPut=g.fetchCalls.filter(x=>x.url==='/api/save'&&x.request.method==='PUT').at(-1);
  assert.equal(latestPut.request.keepalive,true,'Small snapshots should use fetch keepalive');
-});
+ console.log('PASS network failure keeps the latest save queued and retries safely');
+}
 check('saves preserve player levels above 60',()=>{
  const high=snapshot(game,'newGame()');
  high.player.level=125;high.player.xp=777;

@@ -24,7 +24,10 @@ function habitatHasRoom(building){return building.type==="habitat"&&!building.st
 function playerXPNeeded(level){
   return window.DragonRules.progression.playerXPNeeded(level);
 }
-function dragonXPNeeded(level){\n  const xp=window.DragonConfig.dragons.xp;\n  return Math.ceil(xp.base*Math.pow(level,xp.exponent));\n}
+function dragonXPNeeded(level){
+  const xp=window.DragonConfig.dragons.xp;
+  return Math.ceil(xp.base*Math.pow(level,xp.exponent));
+}
 /** Food consumed by one feed action at a dragon level. */
 function dragonFeedCost(level){
   return window.DragonRules.progression.dragonFeedCost(level,window.DragonConfig.progression.dragonMaxLevel);
@@ -37,7 +40,8 @@ function farmCount(){return state.buildings.filter(function(b){return b.type==="
 /** Current dragon level cap derived from the active Dragon Academy. */
 function dragonLevelCap(){
   const academy=state?.buildings.find(b=>b.type==="academy"&&!b.stored);
-  const caps=window.DragonConfig.progression.academyCaps;\n  return academy?caps[Math.min(academy.level-1,caps.length-1)]:
+  const caps=window.DragonConfig.progression.academyCaps;
+  return academy?caps[Math.min(academy.level-1,caps.length-1)]:
     window.DragonConfig.dragons.initialLevelCapWithoutAcademy;
 }
 /** Cost and ownership gates for the next Dragon Academy level. */

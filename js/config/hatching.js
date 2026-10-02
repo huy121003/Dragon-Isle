@@ -2,7 +2,8 @@
  * Egg incubation durations in seconds.
  *
  * Pure-element values are explicit because later elements intentionally take
- * longer. Hybrid durations use a tier base plus element-unlock pressure.
+ * longer. Hybrid durations use a tier base plus a capped percentage based on
+ * the average player-level gate of their elements.
  */
 (function(root,factory){
   const config=factory();
@@ -12,9 +13,12 @@
   "use strict";
   return Object.freeze({
     fallbackSeconds:30,
-    pureElementSeconds:Object.freeze({fire:30,water:45,earth:60,wind:75,ice:90,thunder:120,
-      nature:150,dark:210,light:270,metal:360,war:480,pure:600,legend:750,primal:900,time:1200}),
-    tierSeconds:Object.freeze({2:240,3:900,4:2700,double:5400}),
-    elementLevelSeconds:12,maxElementBonusSeconds:3600
+    /** Fixed incubation time by single element, in seconds; later unlocks take hours. */
+    pureElementSeconds:Object.freeze({fire:30,water:60,earth:120,wind:300,ice:600,thunder:1200,
+      nature:1800,dark:2700,light:3600,metal:5400,war:7200,pure:10800,legend:14400,primal:18000,time:21600}),
+    /** Base incubation time by hybrid tier, in seconds. */
+    tierSeconds:Object.freeze({2:10800,3:43200,4:129600,double:172800}),
+    /** Hybrid pressure adds 0.15% per average element unlock level, capped at 15%. */
+    elementLevelPercent:.0015,maxElementBonusPercent:.15
   });
 });

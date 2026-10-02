@@ -18,9 +18,14 @@
     premium:Object.freeze({rareFactor:1.40,timeFactor:.80}),
     /** Defensive fallback for malformed/unknown species; normal species use timeByTier. */
     fallbackSeconds:60,
-    timeByTier:Object.freeze({1:45,2:180,3:600,4:1800,double:3600}),
-    elementLevelSeconds:8,maxElementBonusSeconds:1800,
-    combinationSecondsPerExtraElement:45,mixedTierSeconds:30,
+    /** Base breeding time in seconds by offspring tier; 4-element and Double are day-scale. */
+    timeByTier:Object.freeze({1:1800,2:7200,3:28800,4:86400,double:129600}),
+    /** Time modifiers are decimal percentages; pressure applies to the base tier time. */
+    elementLevelPercent:.002,maxElementBonusPercent:.15,
+    /** Parent complexity adds 3% for each distinct union element beyond two. */
+    parentUnionPercent:.03,
+    /** Parents with different element-slot counts add a small 2% duration. */
+    mixedParentPercent:.02,
     /** Bias applied when a candidate inherits elements shared by both parents. */
     inheritanceBias:Object.freeze({sharedElement:.3,parentPrimary:.1}),
     tierWeights:Object.freeze({

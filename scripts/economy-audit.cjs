@@ -4,6 +4,9 @@ global.window={};
 require("../data/economy.js");
 const economy=global.window.DragonEconomy;
 const game=require("../data/game.json");
+const progressionConfig=require("../js/config/progression.js");
+const buildingConfig=require("../js/config/buildings.js");
+const farmingConfig=require("../js/config/farming.js");
 const catalog=require("../data/dragons.json");
 globalThis.DragonDatabase=catalog;
 global.window.DragonDatabase=catalog;
@@ -24,13 +27,13 @@ function feedCost(level){
 }
 function standardUpgrade(type,level,element="fire"){
   const base=type==="habitat"
-    ? game.buildings.habitat.cost*(1+economy.shop.habitatUnlockLinear*((game.elementUnlocks[element]||1)-1)+
-      economy.shop.habitatUnlockQuadratic*((game.elementUnlocks[element]||1)-1)**2)
-    : game.buildings[type].cost;
+    ? buildingConfig.definitions.habitat.cost*(1+economy.shop.habitatUnlockLinear*((progressionConfig.elementUnlocks[element]||1)-1)+
+      economy.shop.habitatUnlockQuadratic*((progressionConfig.elementUnlocks[element]||1)-1)**2)
+    : buildingConfig.definitions[type].cost;
   const gold=Math.round(base*Math.pow(economy.buildings.upgradeFactor,level));
   const baseGem=economy.buildings.upgradeGemBase[type]||0;
   let gems=Math.ceil(baseGem*Math.pow(economy.buildings.upgradeGemLevelFactor,Math.max(0,level-1)));
-  if(type==="habitat")gems=Math.ceil(gems*(1+economy.buildings.habitatGemUnlockLinear*((game.elementUnlocks[element]||1)-1)));
+  if(type==="habitat")gems=Math.ceil(gems*(1+economy.buildings.habitatGemUnlockLinear*((progressionConfig.elementUnlocks[element]||1)-1)));
   return {gold,gems};
 }
 function academyCost(level){
@@ -49,7 +52,7 @@ function landCost(islandIndex,opened){
   return Math.round(amount);
 }
 function habitatGold(element,level){
-  const unlock=game.elementUnlocks[element]||1,r=economy.habitat;
+  const unlock=progressionConfig.elementUnlocks[element]||1,r=economy.habitat;
   return Math.round((r.goldBase+r.goldPerUnlockLevel*(unlock-1))*Math.pow(r.goldLevelFactor,level-1));
 }
 function timeTier(species){
@@ -59,12 +62,12 @@ function timeTier(species){
 function hatchSeconds(species){
   const r=economy.hatching,t=timeTier(species);
   if(t===1)return r.pureElementSeconds[species.elements[0]]||60;
-  const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
+  const pressure=species.elements.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/species.elements.length;
   return Math.round((r.tierSeconds[t]||r.tierSeconds[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds));
 }
 function breedCombinationSeconds(species,parents=[],premium=false){
   const r=economy.breeding,t=timeTier(species);
-  const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
+  const pressure=species.elements.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/species.elements.length;
   let base=(r.timeByTier[t]||r.timeByTier[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds);
   if(parents.length===2){
     const union=new Set(parents.flatMap(parent=>parent.elements));
@@ -75,7 +78,7 @@ function breedCombinationSeconds(species,parents=[],premium=false){
 }
 function breedSeconds(species,premium=false){
   const r=economy.breeding,t=timeTier(species);
-  const pressure=species.elements.reduce((sum,e)=>sum+(game.elementUnlocks[e]||1),0)/species.elements.length;
+  const pressure=species.elements.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/species.elements.length;
   const base=(r.timeByTier[t]||r.timeByTier[4])+Math.min(r.maxElementBonusSeconds,pressure*r.elementLevelSeconds);
   return Math.round(base*(premium?r.premiumTimeFactor:1));
 }
@@ -96,7 +99,7 @@ console.table(Object.entries(economy.progression.xpSources).flatMap(([key,value]
 }));
 
 console.log("\nElement unlocks and pure-egg hatch times");
-console.table(Object.entries(game.elementUnlocks).map(([element,level])=>({
+console.table(Object.entries(progressionConfig.elementUnlocks).map(([element,level])=>({
   element,playerLevel:level,hatchSeconds:economy.hatching.pureElementSeconds[element]
 })));
 
@@ -108,10 +111,10 @@ console.table([1,10,20,40,60,80,100].map(level=>({
 console.log("\nAcademy upgrades");
 console.table([1,2,3,4,5,6].map(level=>({
   fromLevel:level,toLevel:level+1,...academyCost(level),
-  playerGate:game.progression.academyUpgrades[level-1]?.playerLevel,
-  requiredDragons:game.progression.academyUpgrades[level-1]?.requiredDragons,
-  requiredDragonLevel:game.progression.academyUpgrades[level-1]?.requiredDragonLevel,
-  seconds:game.upgradeTimes.academy[level-1]
+  playerGate:progressionConfig.academyUpgrades[level-1]?.playerLevel,
+  requiredDragons:progressionConfig.academyUpgrades[level-1]?.requiredDragons,
+  requiredDragonLevel:progressionConfig.academyUpgrades[level-1]?.requiredDragonLevel,
+  seconds:buildingConfig.upgradeTimes.academy[level-1]
 })));
 
 console.log("\nStandard building upgrade resource costs");
@@ -122,11 +125,11 @@ console.table([
 ]);
 
 console.log("\nBuilding upgrade times");
-console.table(Object.entries(game.upgradeTimes).flatMap(([type,times])=>
+console.table(Object.entries(buildingConfig.upgradeTimes).flatMap(([type,times])=>
   times.map((seconds,index)=>({type,toLevel:index+2,seconds}))));
 
 console.log("\nFarm crops");
-console.table(game.crops.map((crop,index)=>({
+console.table(farmingConfig.crops.map((crop,index)=>({
   farmLevel:index+1,id:crop.id,cost:crop.cost,yield:crop.yield,seconds:crop.duration
 })));
 

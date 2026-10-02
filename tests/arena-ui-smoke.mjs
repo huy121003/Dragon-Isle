@@ -37,7 +37,7 @@ try{
   assert.match(invitationHtml,/Challenge from Bela/);
   assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Accept/);
   assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Decline/);
-  const dragon={id:2,nickname:'Alex',species:'fire',level:20,hp:500,maxHp:500,
+  const dragon={id:2,nickname:'Alex',species:'fire',level:20,power:4250,hp:500,maxHp:500,
     canBattle:true,skills:[{index:0,name:'Flame Slash',power:1.3,unlocked:true,element:'fire'}]};
   const unavailable={...dragon,id:4,nickname:'Bé',level:arenaConfig.minBattleLevel-1,canBattle:false,
     battleReason:'Requires level '+arenaConfig.minBattleLevel};
@@ -49,6 +49,7 @@ try{
   assert.match(setup,/arena-roster-card/);assert.match(setup,/Fire Dragon/);
   assert.match(setup,/class="element-flag flag-sm primary"/);assert.match(setup,/class="rarity-gem"/);
   assert.match(setup,/--gem:#e45/);
+  assert.match(setup,/roster-power/);assert.match(setup,/4,250 power/);
   assert.match(setup,/href="#flag-fire"/);
   assert.match(setup,/fill="#e45"/);
   assert.match(setup,/aria-label="Filter: Fire"/);
@@ -71,6 +72,10 @@ try{
   assert.doesNotMatch(opponents,/Water Dragon|Lv20|Rookie Warden/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
+  const defeated=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
+    data:{...data,defeatedOpponentIds:['bot-1']}}}));
+  assert.match(defeated,/Defeated this round/);
+  assert.match(defeated,/<button[^>]*disabled=""[^>]*><span>✓ Defeated<\/span>/);
   const fullIds=Array.from({length:arenaConfig.teamSize},(_,index)=>index===0?2:index+4);
   const full={...arena,draft:{attack:fullIds}};
   const fullSetup=renderToStaticMarkup(React.createElement(ArenaView,{arena:full}));

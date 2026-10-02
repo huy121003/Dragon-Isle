@@ -282,6 +282,22 @@ check('Habitat levels hold 2, 3, 4 and 5 dragons for assignment and hatching',()
  assert.equal(economy.run('occupants(buildingById(1)).length'),3);
  assert.equal(economy.run('state.eggs.length'),0);
 });
+check('Habitat purchase, upgrade cost and time scale by element',()=>{
+ const fire={type:"habitat",element:"fire",level:1};
+ const water={type:"habitat",element:"water",level:1};
+ const legend={type:"habitat",element:"legend",level:1};
+ const time={type:"habitat",element:"time",level:1};
+ assert(economy.run('habitatPurchaseCost("water",0)')>economy.run('habitatPurchaseCost("fire",0)'));
+ assert(economy.run('habitatPurchaseCost("legend",0)')>economy.run('habitatPurchaseCost("water",0)'));
+ assert(economy.run('habitatPurchaseCost("time",0)')>economy.run('habitatPurchaseCost("legend",0)'));
+ assert(economy.run('upgradeCost('+JSON.stringify(time)+')')>economy.run('upgradeCost('+JSON.stringify(fire)+')'));
+ assert(economy.run('upgradeSeconds('+JSON.stringify(time)+')')>economy.run('upgradeSeconds('+JSON.stringify(fire)+')'));
+ const first=economy.run('habitatPurchaseCost("time",0)');
+ const second=economy.run('habitatPurchaseCost("time",1)');
+ assert(second>first,'Repeated purchases of the same element must cost more');
+ assert.equal(economy.run('contentRequirementLevel(999)'),60);
+ assert.equal(economy.run('farmLimit(1000)'),economy.run('window.DragonEconomy.progression.maxFarms'));
+});
 check('Habitat purchase history, resale, old saves and the Arena shortcut',()=>{
  economy.run('state=newGame();state.gold=100000;syncDock()');
  assert.equal(economy.element('arenaDockButton').hidden,true);

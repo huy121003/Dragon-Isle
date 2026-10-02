@@ -14,6 +14,8 @@ function breedingChanceLabel(chance){
 
 function renderBreeding(id){
   const cave=buildingById(id);
+  const breedingConfig=window.DragonConfig.breeding,breedLevel=window.DragonConfig.progression.breedLevel;
+  const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
   if(!isBreedingCave(cave)||cave.stored){closeModal();return;}
   const premium=cave.type==='premiumCave';
   dom.title.textContent=(premium?'✧ ':'💞 ')+buildingName(cave);
@@ -27,7 +29,7 @@ function renderBreeding(id){
         '<b>'+esc(d?.nickname||s.name)+'</b><small>'+esc(s.name)+' · Lv'+(d?.level||1)+'</small>'+
         '<span class="element-list">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span></div>';
     }).join('<strong class="breed-heart">♥</strong>');
-    dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · 20% faster · '+Math.round((window.DragonEconomy.breeding.premiumRareFactor-1)*100)+'% higher relative chance for 3+ elements. ':'')+
+    dom.body.innerHTML='<div class="note">'+(premium?'Celestial Sanctuary · '+Math.round((1-breedingConfig.premium.timeFactor)*100)+'% faster · '+Math.round((breedingConfig.premium.rareFactor-1)*100)+'% higher relative chance for 3+ elements. ':'')+
       'The bred egg enters an available Hatchery nest.</div>'+
       '<div class="panel '+(premium?'premium-breeding':'')+'"><div class="breed-parents">'+parents+'</div>'+
       (ready?'<div class="breed-ready-egg" aria-label="Bred egg ready"><span class="breed-egg-art">'+
@@ -49,19 +51,19 @@ function renderBreeding(id){
     return;
   }
   const available=state.dragons.filter(function(d){
-    return d.level>=DATA.progression.breedLevel&&!dragonBusy(d.id);
+    return d.level>=breedLevel&&!dragonBusy(d.id);
   });
   if(available.length<2){
-    dom.body.innerHTML='<div class="note">Requires two dragons at level '+DATA.progression.breedLevel+
-      ' or above that are not breeding elsewhere. Feed dragons four times per level.</div>';
+    dom.body.innerHTML='<div class="note">Requires two dragons at level '+breedLevel+
+      ' or above that are not breeding elsewhere. Feed dragons '+feedsPerLevel+' times per level.</div>';
     return;
   }
   if(!available.some(function(d){return d.id===ui.breedDraft.father;}))ui.breedDraft.father=available[0].id;
   if(!available.some(function(d){return d.id===ui.breedDraft.mother&&d.id!==ui.breedDraft.father;}))
     ui.breedDraft.mother=available.find(function(d){return d.id!==ui.breedDraft.father;}).id;
   let html=(premium?'<div class="premium-breeding-banner"><span class="premium-seal">✧</span><div><b>Celestial Breeding Sanctuary</b>'+
-    '<small>20% faster · '+window.DragonEconomy.breeding.premiumRareFactor.toFixed(2)+'× chance for dragons with 3 or more elements</small></div></div>':'')+
-    '<div class="note">Choose two dragons at level 5 or above. Each parent has its own element filter and name search.</div>'+
+    '<small>'+Math.round((1-breedingConfig.premium.timeFactor)*100)+'% faster · '+breedingConfig.premium.rareFactor.toFixed(2)+'× chance for dragons with 3 or more elements</small></div></div>':'')+
+    '<div class="note">Choose two dragons at level '+breedLevel+' or above. Each parent has its own element filter and name search.</div>'+
     '<div class="breed-selection">';
   [["father","Father"],["mother","Mother"]].forEach(function(slot){
     const filter=ui['breed'+(slot[0]==='father'?'Father':'Mother')+'Elements'];

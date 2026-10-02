@@ -11,6 +11,12 @@ const arenaConfig=require('../../js/config/arena.js');
 const combatConfig=require('../../js/config/combat.js');
 const progressionConfig=require('../../js/config/progression.js');
 
+/**
+ * Create the authoritative combat engine shared by Arena and live Challenge.
+ * @param {object} options.catalog - Extended dragon/type catalog.
+ * @param {object} options.game - Skill metadata catalog.
+ * @param {Function} options.rng - Injectable RNG for deterministic tests.
+ */
 function createBattleEngine({catalog,game,rng=()=>Math.random()}){
   // Use a wrapper instead of capturing Math.random itself so test/runtime overrides
   // made after service creation still affect the default RNG, matching legacy behavior.

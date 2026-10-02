@@ -126,15 +126,15 @@ function dragonDetailHtml(species,dragon){
         donors.length+'/'+required.dragons+'. Donors are permanently consumed.</p>'+
         (donors.length>=required.dragons?'<details><summary>View dragons that will be consumed</summary><p>'+
           donors.slice(0,required.dragons).map(d=>esc(d.nickname)+' (Lv'+d.level+')').join(', ')+'</p></details>':'')+
-        '<p>Cost: 🪙 '+
-        money(required.gold)+' gold · 🌾 '+money(required.food)+' food · 💎 '+money(required.gems)+
-        ' gems</p><button class="btn primary" data-action="upgrade-star" data-id="'+dragon.id+'"'+
-        (canUpgrade?'':' disabled')+'>Upgrade to '+(stars+1)+' star</button></section>';
+        '<p>Cost: '+resourceAmount('gold',required.gold)+resourceAmount('food',required.food)+
+        resourceAmount('gems',required.gems)+'</p><button class="btn resource-action" data-action="upgrade-star" data-id="'+dragon.id+'"'+
+        (canUpgrade?'':' disabled')+'>Upgrade to '+(stars+1)+' star · '+resourceAmount('gold',required.gold)+
+        resourceAmount('food',required.food)+resourceAmount('gems',required.gems)+'</button></section>';
     }else html+='<div class="star-upgrade"><b>★★★★★ Maximum 5 stars · +25% HP, attack and defense</b></div>';
     html+='<div class="row"><span class="pill">'+(dragon.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(dragon)+'/4 feedings at this level')+'</span>'+
       (dragon.hunger>=80?'<span class="pill">Needs food</span>':'')+
-      '</div><div class="actions"><button class="btn good" data-action="feed" data-id="'+
-      dragon.id+'"'+(busy||dragon.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button><button class="btn" data-action="assign-menu" data-id="'+
+      '</div><div class="actions"><button class="btn resource-action" data-action="feed" data-id="'+
+      dragon.id+'"'+(busy||dragon.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+resourceAmount('food',feedCost)+'</button><button class="btn" data-action="assign-menu" data-id="'+
       dragon.id+'"'+(busy?' disabled':'')+'>Change Habitat</button>'+
       '<button class="btn danger" data-action="sell-dragon" data-id="'+dragon.id+'"'+
       (busy?' disabled':'')+'>Sell dragon</button></div>';

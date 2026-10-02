@@ -111,6 +111,14 @@
       [
         10,
         10
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        10
       ]
     ]
   },
@@ -262,35 +270,43 @@
     "xpExponent": 1.5,
     "academyCaps": [
       40,
-      55,
+      50,
+      60,
       70,
-      85,
+      80,
+      90,
       100
     ],
     "academyUpgrades": [
       {
         "playerLevel": 10,
-        "gold": 3750,
-        "food": 750,
-        "gems": 8
+        "requiredDragons": 2,
+        "requiredDragonLevel": 40
       },
       {
-        "playerLevel": 20,
-        "gold": 9375,
-        "food": 1875,
-        "gems": 20
+        "playerLevel": 18,
+        "requiredDragons": 3,
+        "requiredDragonLevel": 50
       },
       {
-        "playerLevel": 30,
-        "gold": 23438,
-        "food": 4688,
-        "gems": 50
+        "playerLevel": 28,
+        "requiredDragons": 4,
+        "requiredDragonLevel": 60
       },
       {
-        "playerLevel": 40,
-        "gold": 58594,
-        "food": 11719,
-        "gems": 125
+        "playerLevel": 38,
+        "requiredDragons": 5,
+        "requiredDragonLevel": 70
+      },
+      {
+        "playerLevel": 48,
+        "requiredDragons": 6,
+        "requiredDragonLevel": 80
+      },
+      {
+        "playerLevel": 58,
+        "requiredDragons": 8,
+        "requiredDragonLevel": 90
       }
     ]
   },
@@ -314,8 +330,10 @@
     "academy": [
       300,
       900,
-      2700,
-      7200
+      1800,
+      3600,
+      7200,
+      14400
     ]
   },
   "breedingTimes": {
@@ -687,7 +705,7 @@
       "sellRate": 0.5
     },
     "academy": {
-      "maxLevel": 5,
+      "maxLevel": 7,
       "name": "Dragon Academy",
       "icon": "✦",
       "cost": 12000,

@@ -3,6 +3,7 @@
 /* The guide reads balance values from the same catalog and rules as gameplay.
    Add a GUIDE_UPDATES entry and amend the relevant section when rules change. */
 const GUIDE_UPDATES=[
+  {date:"02/10/2026",title:"Cân bằng progression tổng thể",detail:"Rà soát XP Player Level, mốc mở 15 hệ, thời gian lai/ấp theo hệ và bậc, thời gian nâng cấp, cây trồng, sức chứa Habitat/Hatchery và kinh tế Gold/Food/Gem."},
   {date:"01/10/2026",title:"Nâng sao rồng",detail:"Mỗi rồng có 0–5 sao. Mỗi sao tăng 5% HP, tấn công và giáp; nâng sao tiêu hao vàng, thức ăn, gem và rồng cùng giống đạt level yêu cầu."},
   {date:"01/10/2026",title:"Giá Shop, thời gian lai/ấp và cẩm nang",detail:"Chuồng cấp cao chứa nhiều vàng hơn; giá Chuồng tăng theo số lần mua từng hệ, điều chỉnh giá Shop và tăng thời gian lai/ấp bậc cao. Thêm lối tắt Arena khi đã xây Arena, cờ xung khắc và mô tả Special Skill."},
   {date:"01/10/2026",title:"Sức chứa Chuồng và XP người chơi",detail:"Tăng sức chứa vàng theo level Chuồng; giảm XP cần ở các level đầu để mở hệ mới sớm hơn và hiện XP hiện tại / XP cần trên thanh tiến độ."},
@@ -145,7 +146,7 @@ function guideResources(){
       progression.goldLevelQuadratic*steps*steps;
     return [String(level),...rarityEntries.map(([,rarity])=>money(Math.round(rarity.income*scale)))];
   });
-  const xpRows=Array.from({length:59},(_,index)=>index+1).map(level=>[
+  const xpRows=Array.from({length:progression.playerMaxLevel-1},(_,index)=>index+1).map(level=>[
     String(level)+' → '+(level+1),money(playerXPNeeded(level))+' XP',
     money(progression.levelGoldBase+progression.levelGoldStep*(level+1))+' vàng',
     money(progression.levelFoodBase+progression.levelFoodStep*(level+1))+' thức ăn',
@@ -159,7 +160,8 @@ function guideResources(){
     ['Thu hoạch cây',source.crop.join(' / ')+' XP theo bậc cây'],
     ['Ấp rồng đã biết',source.hatchKnown+' XP'],
     ['Khám phá rồng mới',source.hatchNew+' XP'],
-    ['Hoàn tất lai tạo',source.breed+' XP']
+    ['Hoàn tất lai tạo',source.breed+' XP'],
+    ['Rồng tăng level',source.dragonLevelBase+' + '+source.dragonLevelPerTen+' XP mỗi 10 level rồng']
   ];
   return '<h3>Tiền, thức ăn và gem</h3>'+guideList([
     'Chỉ rồng đang ở Chuồng hoạt động trên đảo mới tạo vàng và gem. Chuồng đã cất, rồng chưa có Chuồng hoặc rồng đã bán không tạo thu nhập. Tài nguyên đã tích trong Chuồng vẫn giữ lại sau khi bán hoặc chuyển rồng.',
@@ -173,7 +175,7 @@ function guideResources(){
     ['Level',...rarityEntries.map(([,rarity])=>esc(rarity.name))],goldRows)+
     '<p class="muted">Các giá trị mẫu trước hệ số hạnh phúc, đói, cấp Chuồng và sức chứa; sản lượng thực tế hiện trên Chuồng và thẻ rồng.</p>'+
     '<h3>XP và thưởng khi lên Player Level</h3>'+guideTable(['Từ → đến','XP cần','Vàng thưởng','Thức ăn thưởng','Gem thưởng'],xpRows)+
-    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level tối đa là 60.</p>'+
+    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level tối đa là '+progression.playerMaxLevel+'.</p>'+
     '<h3>Nguồn XP Player Level</h3>'+guideTable(['Hoạt động','XP'],xpSourceRows)+
     '<h3>Cây trồng ở Nông trại</h3>'+guideTable(['Cây','Mở tại','Chi phí','Thời gian','Thu hoạch Lv1'],crops)+
     '<p class="muted">Nông trại cấp cao tăng lượng thu hoạch thêm 20% cho mỗi level trên 1.</p>'+ 
@@ -188,7 +190,7 @@ function guideArena(){
     'Xây Arena để hiện nút Arena trên menu truy cập nhanh; chọn đúng ba rồng từ level 10 cho đội tấn công và ba rồng cho đội phòng thủ. Rồng đang lai không tham gia.',
     'Arena đánh theo lượt. Người chơi chọn skill hoặc đổi rồng (tốn một lượt); đội phòng thủ chọn skill đang mở và không hồi chiêu theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
     'Bốn ô skill mở theo level '+DATA.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
-    'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân 1,5; ▼ Weak nhân 0,75; skill thường không có hệ nên hệ số là 1.',
+    'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân 2; ▼ Weak nhân 0,5; skill thường không có hệ nên hệ số là 1.',
     'Sát thương còn chịu giáp, biến thiên ngẫu nhiên khoảng 90–110%, trạng thái đang có và chí mạng. Xác suất crit 10%, hệ số crit 1,5.',
     'Dưới HP có icon trạng thái và số lượt còn lại: tăng/giảm tấn công, giáp, giảm sát thương, độc, đóng băng, hồi phục, tăng HP và giảm chính xác.',
     'Special Skill có thể hồi máu, tẩy trạng thái xấu, tăng HP tối đa hoặc đánh 2–3 nhịp có tỷ lệ hụt từng nhịp. Hiệu ứng cùng loại không cộng dồn: làm mới thời gian theo giá trị lớn hơn và giữ mức tác dụng mạnh hơn.',

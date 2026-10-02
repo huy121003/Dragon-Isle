@@ -9,7 +9,8 @@ export const useAppStore=create(set=>({
   bumpRuntime:()=>set(state=>({runtimeVersion:state.runtimeVersion+1})),
   syncConnection:()=>set({connection:{...connectionState()}}),
   setAdminOpen:adminOpen=>set({adminOpen}),
-  setChallengeOpen:challengeOpen=>set({challengeOpen})
+  setChallengeOpen:challengeOpen=>set({challengeOpen}),
+  resetUi:()=>set({adminOpen:false,challengeOpen:false})
 }));
 
 export function runtimeSnapshot(){

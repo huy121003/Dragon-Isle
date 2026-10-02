@@ -134,7 +134,7 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
  g.run('ui.modal=null;handleAction({dataset:{action:"open-shop"}})');
  assert.equal(g.run('ui.modal'),null,'Gameplay actions must be blocked while reconnecting');
  g.network.down=false;
- assert.equal(await g.run('retryServerConnection()'),true);
+ assert.equal(await g.run('window.DragonConnectionApi.retry()'),true);
  assert.equal(g.run('pendingServerSave'),null);
  assert.equal(g.run('window.DragonConnectionState.status'),'connected');
  assert.equal(g.run('window.DragonConnectionState.blocked'),false);
@@ -145,9 +145,9 @@ check('finished crop refreshes once and shows Harvest without reopening Farm',()
 }
 {
  const g=await boot();
- g.run('markServerDisconnected("offline")');
+ g.run('window.DragonConnectionApi.fail("offline")');
  g.network.sessionExpired=true;
- assert.equal(await g.run('retryServerConnection()'),false);
+ assert.equal(await g.run('window.DragonConnectionApi.retry()'),false);
  assert.equal(g.run('window.DragonConnectionState.status'),'session-expired');
  assert.equal(g.run('saveReadOnly'),true);
  console.log('PASS reconnect switches to session-expired only after server 401');

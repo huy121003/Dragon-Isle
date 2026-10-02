@@ -3,6 +3,7 @@
 /**
  * Building storage actions.
  */
+/** Move an eligible Habitat to inventory while preserving its record. */
 function storeBuilding(id){
   const b=buildingById(id);
   if(!b||b.stored)return;

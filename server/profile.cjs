@@ -2,6 +2,7 @@
 const game=require('../data/game.json');
 const economyConfig=require('../js/config/economy.js');
 const buildingConfig=require('../js/config/buildings.js');
+const systemConfig=require('../js/config/system.js');
 
 /**
  * Tạo profile tối thiểu khi admin cấp tài nguyên trước lần đăng nhập đầu tiên.
@@ -16,7 +17,7 @@ function newProfile(){
   const origin=game.islands[0],region=game.islandRegionSize;
   const startX=origin.x+region,startY=origin.y+region;
   for(let y=startY;y<startY+region;y++)for(let x=startX;x<startX+region;x++)land.push(x+','+y);
-  return {version:12,lastTick:now,savedAt:now,nextId:4,player:{level:1,xp:0},
+  return {version:systemConfig.save.version,lastTick:now,savedAt:now,nextId:4,player:{level:1,xp:0},
     gold:economyConfig.starting.gold,food:economyConfig.starting.food,gems:economyConfig.starting.gems,
     expansions:0,land,regions:[],unlockedIslands:1,eggs:[],discovered:['fire'],recipes:[],
     habitatPurchases:{fire:1},

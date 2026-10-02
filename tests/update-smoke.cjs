@@ -601,7 +601,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
 });
 const premium=await boot();
 check('Celestial Sanctuary costs gems once and persists through saves',()=>{
- premium.run('state=newGame();state.gems=249;ui.shopTab="special";renderShop()');
+ premium.run('state=newGame();state.player.level=10;state.player.xp=0;state.gems=249;ui.shopTab="special";renderShop()');
  assert(premium.element('sheetBody').innerHTML.includes('data-type="premiumCave"'));
  assert(premium.element('sheetBody').innerHTML.includes('♦ 250'));
  premium.run('beginMode({kind:"buy",type:"premiumCave"})');

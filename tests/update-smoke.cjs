@@ -250,7 +250,8 @@ check('daily mission panel renders the server-provided progress and reset time',
  const html=g.element('sheetBody').innerHTML;
  assert(html.includes('Daily Missions')||g.element('sheetTitle').textContent.includes('Daily Missions'));
  assert(html.includes('1 / 1')&&html.includes('1,000 / 1,000'));
- assert(html.includes('Resets at'));
+ assert(html.includes('Resets at 05:00 Vietnam time (UTC+7)'));
+ assert(html.includes('Feed Dragons 3 Times'));
 });
 check('mission action handlers no longer grant client-side progress',()=>{
  const g=lifecycle;
@@ -849,6 +850,10 @@ check('guide navigation and game-driven help pages',()=>{
  assert(breeding.includes('0,9%')&&breeding.includes('2,8%')&&
    breeding.includes('mỗi ô ấp một trứng độc lập'));
  assert(breeding.includes('Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ'));
+ assert(breeding.includes('Nếu Lồng ấp đầy, kết quả ở lại Hang'));
+ assert(!breeding.includes('nhận trứng lai vào Inventory'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"challenge"}})');
+ assert(game.element('sheetBody').innerHTML.includes('Đổi sang rồng dự bị không mất lượt'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
  const special=game.element('sheetBody').innerHTML;
  assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);

@@ -28,6 +28,7 @@ function guideChallenge(){
     'Gửi lời mời và chờ đối thủ xác nhận trong '+inviteSeconds+' giây. Nếu đối thủ từ chối hoặc hết thời gian, cả hai được thông báo.',
     'Sau khi đồng ý, mỗi bên chọn riêng '+challenge.teamSize+' rồng đủ level và không đang lai. Đối thủ chỉ thấy bạn đã sẵn sàng, không thấy đội hình cho đến lúc cả hai chốt.',
     'Trận đấu dùng skill và luật sát thương Arena, nhưng hai người chơi tự chọn lượt. Không có vàng, thức ăn, gem hoặc thời gian hồi sau trận.',
+    'Đổi sang rồng dự bị không mất lượt; người chơi vẫn có thể chọn skill ngay sau khi đổi.',
     'Mỗi tài khoản chỉ nhận một lời mời hoặc tham gia một trận cùng lúc. Công tắc nhận thách đấu có thể bật/tắt; đăng xuất hoặc ngừng lưu tiến trình sẽ đưa tài khoản về offline.'
   ]);
 }

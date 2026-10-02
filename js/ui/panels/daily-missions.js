@@ -4,7 +4,7 @@
 function renderDailyMissions(){
   dom.title.textContent="📅 Daily Missions";
   const daily=ensureDailyMissions(),objectives=window.DragonConfig.dailyMissions.objectives;
-  const resetAt=Number(daily.nextResetAt)||Date.now(),resetLabel="05:00";
+  const resetAt=Number(daily.nextResetAt)||Date.now(),resetLabel="05:00 Vietnam time (UTC+7)";
   let html='<div class="daily-mission-header"><p>Complete objectives to earn XP, gold and food.</p>'+ 
     '<span>Resets at '+esc(resetLabel)+' · <span data-end="'+resetAt+'">'+duration(Math.ceil((resetAt-Date.now())/1000))+'</span></span></div>'+
     '<div class="daily-mission-list">';

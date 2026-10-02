@@ -134,6 +134,7 @@ console.log('SESSION REGRESSION: source synchronization');
 const save=read('js/save.js');
 const react=read('src/main.jsx');
 const world=read('js/logic/world.js');
+const progressionLogic=read('js/logic/progression.js');
 const state=read('js/core/state.js');
 const arena=read('server/arena.cjs');
 const profile=read('server/profile.cjs');
@@ -141,7 +142,7 @@ const guide=read('js/ui/guide.js');
 
 assert(!save.includes('clamp(Number(result.player.level)||1,1,60)'),'Save must preserve levels above 60');
 assert(!react.includes("'MAX LEVEL'"),'React shell must not show MAX LEVEL at 60');
-assert(world.includes('while(state.player.xp>=playerXPNeeded(state.player.level))'),'Player leveling must remain unlimited');
+assert(progressionLogic.includes('while(state.player.xp>=playerXPNeeded(state.player.level))'),'Player leveling must remain unlimited');
 assert(state.includes('contentRequirementLevel'),'Content gates must use the level-60 cap helper');
 assert(arena.includes("require('../data/economy.js')"),'Arena rewards must use shared economy config');
 assert(arena.includes('economy.progression.contentLevelCap'),'Arena reward scaling must stop at content cap');

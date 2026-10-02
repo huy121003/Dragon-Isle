@@ -17,14 +17,10 @@ function activeTimers(){
   });
   return tasks.sort(function(a,b){return a.end-b.end;});
 }
-function gemSkipCost(end,now){
-  const rules=window.DragonEconomy.timers;
-  return Math.min(rules.maxSkipGems,Math.ceil(Math.max(0,end-now)/(rules.secondsPerGem*1000)));
-}
-function timerProgress(task,now){
-  const span=Math.max(1,task.end-task.startedAt);
-  return clamp((now-task.startedAt)/span*100,0,100);
-}
+/** Gem cost to finish a timer immediately. */
+function gemSkipCost(end,now){return window.DragonRules.timers.skipCost(end,now);}
+/** Percentage [0,100] complete for a timer. */
+function timerProgress(task,now){return window.DragonRules.timers.progress(task.startedAt,task.end,now);}
 function skipTimer(kind,id){
   const task=activeTimers().find(function(t){return t.kind===kind&&t.id===id;});
   if(!task){toast("This activity is no longer pending.");return;}

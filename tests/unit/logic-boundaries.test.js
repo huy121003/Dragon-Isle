@@ -69,7 +69,8 @@ describe('logic architecture boundaries',()=>{
   });
 
   it('keeps presentation layers on shared balance config',()=>{
-    const guide=read('js/ui/guide.js');
+    const guide=['shared','start','dragons','breeding','islands','resources','combat']
+      .map(name=>read('js/ui/guide/'+name+'.js')).concat(read('js/ui/guide.js')).join('\n');
     const core=read('js/ui/core.js');
     const dock=read('src/components/GameDock.jsx');
     const arenaView=read('src/features/arena/ArenaView.jsx');

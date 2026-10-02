@@ -66,7 +66,7 @@ function breedingOptions(father,mother,cave){
  */
 function breedingSeconds(species,level,cave,parents){
   const s=typeof species==="string"?DATA.species[species]:species;
-  if(!s)return 60;
+  if(!s)return window.DragonConfig.breeding.fallbackSeconds;
   const parentSpecies=(parents||[]).map(function(parent){
     if(typeof parent==="string")return DATA.species[parent];
     if(parent?.species)return DATA.species[parent.species];

@@ -214,7 +214,7 @@ function renderHabitat(id){
     '<div><span>🏦 Stored gold</span><b>'+goldDecimal(b.storedGold)+' / '+money(habitatGoldCapacity(b))+'</b></div>'+ 
     '<div><span>💎 Gems/hour</span><b>'+habitatGemRate(b)+'</b></div>'+ 
     '<div><span>💎 Stored gems</span><b>'+money(b.storedGems||0)+' / '+money(habitatGemCapacity(b))+'</b></div></div>'+ 
-    '<p class="muted">Each dragon produces one gem per hour; progress persists when moving between Habitats.'+
+    '<p class="muted">Each dragon produces '+DATA.gemPerDragonPerHour+' gem per hour; progress persists when moving between Habitats.'+
     ((b.storedGems||0)>=habitatGemCapacity(b)?' Gem storage is full.':ds.length?' Next gem in about '+duration(gemNextSeconds(b))+'.':'')+
     ' Gold income is the total from dragons. Production stops at capacity. Hunger and happiness affect income.'+
     (b.level<maxBuildingLevel(b)?' Next upgrade needs '+buildingFootprint(b,b.level+1).w+'×'+

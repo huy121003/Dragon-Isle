@@ -3,11 +3,19 @@
 ui.arena={data:null,draft:{attack:[],defense:[]},phase:"teams",busy:false,result:null,error:null,
   presentation:null,animating:false,pendingSkill:null};
 let arenaAnimationTimer=0;
+/** Clear client-only battle animation state after the authoritative turn events finish rendering. */
 function finishArenaPresentation(){
   clearTimeout(arenaAnimationTimer);
   ui.arena.presentation=null;ui.arena.animating=false;
   window.dispatchEvent(new Event('dragon-ui-update'));
 }
+/**
+ * Call one Arena API endpoint.
+ * @param {string} path - Arena endpoint suffix.
+ * @param {string} [method="GET"] - HTTP method.
+ * @param {object} [body] - Optional JSON payload.
+ * @returns {Promise<object>} Parsed authoritative server response.
+ */
 async function arenaRequest(path,method,body){
   const response=await fetch('/api/arena/'+path,{method:method||'GET',credentials:'same-origin',
     headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store'});
@@ -15,6 +23,7 @@ async function arenaRequest(path,method,body){
   if(!response.ok)throw new Error(value.error||'Cannot connect to the Arena.');
   return value;
 }
+/** Refresh Arena roster, saved teams, opponents and cooldown state from the server. */
 async function loadArena(){
   if(ui.arena.busy)return;
   finishArenaPresentation();
@@ -28,20 +37,25 @@ async function loadArena(){
   ui.arena.busy=false;if(ui.modal?.name==='arena')renderArena();
   window.dispatchEvent(new Event('dragon-ui-update'));
 }
+/** Toggle one eligible dragon in the local attack/defense draft without mutating server state. */
 function arenaToggle(side,id){
   if(!['attack','defense'].includes(side))return;
   const dragon=ui.arena.data?.dragons.find(d=>d.id===id);
   if(!dragon)return;
+  const teamSize=window.DragonConfig.arena.teamSize;
   const team=ui.arena.draft[side],at=team.indexOf(id);
   if(at>=0)team.splice(at,1);
   else if(!dragon.canBattle){toast(dragon.battleReason||'This dragon cannot battle.');return;}
-  else if(team.length<3)team.push(id);
-  else {toast('Each team can have at most three dragons.');return;}
+  else if(team.length<teamSize)team.push(id);
+  else {toast('Each team can have at most '+teamSize+' dragons.');return;}
   renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
 }
+/** Validate and persist both Arena teams through the authoritative server. */
 async function arenaSaveTeam(){
-  const {attack,defense}=ui.arena.draft;
-  if(attack.length!==3||defense.length!==3){toast('Each team must have exactly three dragons.');return;}
+  const {attack,defense}=ui.arena.draft,teamSize=window.DragonConfig.arena.teamSize;
+  if(attack.length!==teamSize||defense.length!==teamSize){
+    toast('Each team must have exactly '+teamSize+' dragons.');return;
+  }
   try{
     ui.arena.busy=true;renderArena();await saveGame();
     await arenaRequest('team','PUT',{attack,defense});
@@ -49,8 +63,10 @@ async function arenaSaveTeam(){
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
 }
+/** Start an Arena match against a selected opponent after forcing a safe save. */
 async function arenaFight(opponentId){
-  if(ui.arena.busy||ui.arena.data?.attack.length!==3)return;
+  const teamSize=window.DragonConfig.arena.teamSize;
+  if(ui.arena.busy||ui.arena.data?.attack.length!==teamSize)return;
   ui.arena.busy=true;ui.arena.error=null;renderArena();
   try{
     if(!await saveGame())throw new Error('Progress could not be saved. Try again.');
@@ -60,6 +76,7 @@ async function arenaFight(opponentId){
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
 }
+/** Submit one player turn and stage returned authoritative events for client animation. */
 async function arenaTurn(action,number){
   const battle=ui.arena.data?.battle;
   if(ui.arena.busy||ui.arena.animating||!battle)return;
@@ -92,6 +109,7 @@ async function arenaTurn(action,number){
   }
   ui.arena.pendingSkill=null;ui.arena.busy=false;renderArena();window.dispatchEvent(new Event('dragon-ui-update'));
 }
+/** Reload the server profile after Arena rewards are committed server-side. */
 async function arenaRequestSave(){
   const response=await fetch('/api/save',{headers:{'X-Dragon-Account':currentAccount.id},cache:'no-store'});
   if(!response.ok)throw new Error('Cannot load the reward. Reload the page.');

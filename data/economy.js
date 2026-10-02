@@ -22,7 +22,7 @@ window.DragonEconomy={
     dragonCapacity:[2,3,4,5],gemCapacityBase:3,
     upgradeTimeUnlockLinear:.018,upgradeTimeUnlockQuadratic:.00035},
   hatchery:{nests:[1,2,3,4,5]},
-  shop:{habitatUnlockLinear:.10,habitatUnlockQuadratic:.01,
+  shop:{habitatUnlockLinear:.08,habitatUnlockQuadratic:.006,
     habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,
     eggBaseMultiplier:2.2,eggUnlockLinear:.18,eggUnlockQuadratic:.012,
     resourcePacks:{

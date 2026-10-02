@@ -1,4 +1,5 @@
 const {json,readBody}=require('../http.cjs');
+const {CredentialsSchema,parse}=require('../validation.cjs');
 function createAuthRoutes({auth,challenge,secureCookies,limited}){
   return async function handle(req,res,pathname){
     if(pathname==='/api/auth/me'&&req.method==='GET'){
@@ -6,8 +7,7 @@ function createAuthRoutes({auth,challenge,secureCookies,limited}){
     }
     if((pathname==='/api/auth/register'||pathname==='/api/auth/login')&&req.method==='POST'){
       if(limited(req)){json(res,429,{error:'Thử quá nhiều lần. Vui lòng chờ 15 phút.'});return true;}
-      const data=await readBody(req,4096);
-      if(!data||typeof data!=='object'){json(res,400,{error:'Dữ liệu đăng nhập không hợp lệ.'});return true;}
+      const data=parse(CredentialsSchema,await readBody(req,4096),'Dữ liệu đăng nhập không hợp lệ.');
       const result=pathname.endsWith('/register')?await auth.register(data.username,data.password):
         await auth.login(data.username,data.password);
       if(result.error)json(res,result.status,{error:result.error});

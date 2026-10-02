@@ -96,11 +96,12 @@ function guideBreeding(){
 }
 function guideIslands(){
   const islands=DATA.islands.map((island,index)=>{
-    const level=island.element?Math.max(island.playerLevel||1,DATA.elementUnlocks[island.element]||1):1;
+    const level=island.element?contentRequirementLevel(Math.max(island.playerLevel||1,DATA.elementUnlocks[island.element]||1)):1;
     return [(index+1)+'. '+esc(island.name),esc(island.element?DATA.elements[island.element].name:'Khởi đầu'),
       index?'Lv'+level:'—',index?money(islandUnlockCost(index))+' 💎':'Có sẵn'];
   });
   const unlocks=Object.entries(DATA.elementUnlocks).map(function([element,level]){
+    level=contentRequirementLevel(level);
     const egg=DATA.species[element],price=egg?.detail.giaTrung?shopEggPrice(egg):null;
     return [esc(DATA.elements[element].name),String(level),price?
       (price.vang?money(price.vang)+' vàng':money(price.gem)+' gem'):'—'];
@@ -115,6 +116,17 @@ function guideIslands(){
       money(habitatGoldCapacity(fire)),money(habitatGoldCapacity(time)),
       money(habitatGemCapacity(fire)),money(habitatGemCapacity(time))];
   });
+  const habitatBalanceRows=Object.keys(DATA.elements).map(element=>{
+    const sample={type:'habitat',element,level:1};
+    const lv2={type:'habitat',element,level:1};
+    const lv3={type:'habitat',element,level:2};
+    const lv4={type:'habitat',element,level:3};
+    return [esc(DATA.elements[element].name),
+      'Lv'+contentRequirementLevel(DATA.elementUnlocks[element]||1),
+      money(habitatPurchaseCost(element,0)),
+      money(upgradeCost(lv2))+' / '+money(upgradeCost(lv3))+' / '+money(upgradeCost(lv4)),
+      duration(upgradeSeconds(lv2))+' / '+duration(upgradeSeconds(lv3))+' / '+duration(upgradeSeconds(lv4))];
+  });
   const hatcheryRows=window.DragonEconomy.hatchery.nests.map((nests,index)=>[
     String(index+1),String(nests),index<window.DragonEconomy.progression.hatcheryUpgradeLevels.length?
       'Player Lv'+window.DragonEconomy.progression.hatcheryUpgradeLevels[index]:'—']);
@@ -125,14 +137,15 @@ function guideIslands(){
   ])+guideTable(['Đảo','Hệ','Level yêu cầu','Giá'],islands)+
     '<h3>Level mở Shop theo hệ</h3>'+guideTable(['Hệ','Player level','Giá trứng 1 hệ'],unlocks)+
     '<h3>Công trình</h3>'+guideTable(['Loại','Giá khởi điểm','Level tối đa','Kho / bán'],buildings)+
+    '<h3>Giá và thời gian Habitat theo hệ</h3>'+guideTable(['Hệ','Mở','Giá mua đầu','Nâng Lv2 / Lv3 / Lv4','Thời gian Lv2 / Lv3 / Lv4'],habitatBalanceRows)+
     '<h3>Sức chứa Habitat theo cấp</h3>'+guideTable(['Cấp','Rồng','Vàng Lửa','Vàng Time','Gem Lửa','Gem Time'],capacityRows)+
     '<h3>Sức chứa Hatchery</h3>'+guideTable(['Cấp','Nest','Level nâng cấp yêu cầu'],hatcheryRows)+
     guideList([
       'Chuồng cấp 1–4 chứa lần lượt '+window.DragonEconomy.habitat.dragonCapacity.join(', ')+' rồng cùng hệ phù hợp. Sức chứa vàng và gem cũng tăng theo cấp Chuồng.',
       'Giá Chuồng phụ thuộc hệ được mở khóa và tổng số Chuồng hệ đó từng mua, kể cả những Chuồng đã bán. Ví dụ Chuồng Lửa tiếp theo giá '+money(habitatPurchaseCost('fire'))+' vàng; Chuồng Time tiếp theo giá '+money(habitatPurchaseCost('time'))+' vàng. Shop hiển thị giá thực tế và số lần mua.',
-      'Giá nâng cấp và tiền hoàn khi bán tính trên giá mua của chính Chuồng đó; mua thêm Chuồng không đổi chi phí nâng cấp hoặc giá bán của Chuồng cũ.',
+      'Giá mua Chuồng tăng theo số lần mua cùng hệ. Giá nâng cấp không phụ thuộc số thứ tự mua mà phụ thuộc hệ và cấp Chuồng; hệ mở càng muộn thì giá và thời gian nâng càng cao. Tiền bán vẫn dựa trên giá mua thực tế của Chuồng đó.',
       'Chỉ Chuồng được bán hoặc cất vào Inventory; phải chuyển hết rồng trước khi bán. Công trình khác chỉ được di chuyển hoặc nâng cấp nếu có hỗ trợ.',
-      'Số Nông trại tối đa ở level hiện tại: '+farmLimit(state.player.level)+'. Mỗi '+window.DragonEconomy.progression.farmEveryLevels+' level người chơi mở thêm một ô, tối đa '+window.DragonEconomy.progression.maxFarms+'.',
+      'Tất cả yêu cầu mở khóa và nâng cấp chỉ xét đến Player Lv'+window.DragonEconomy.progression.contentLevelCap+'. Từ Lv'+window.DragonEconomy.progression.contentLevelCap+' trở lên không mở thêm quyền mới; level tiếp tục tăng và chỉ nhận thưởng Gold/Food/Gem. Số Nông trại tối đa là '+window.DragonEconomy.progression.maxFarms+'.',
       'Nâng cấp công trình cần đủ đất trống cho diện tích mới. Lồng ấp có thể nâng đến level '+DATA.buildings.hatchery.maxLevel+'; mỗi level mở thêm một ô ấp trứng.'
     ]);
 }
@@ -176,7 +189,7 @@ function guideResources(){
     ['Level',...rarityEntries.map(([,rarity])=>esc(rarity.name))],goldRows)+
     '<p class="muted">Các giá trị mẫu trước hệ số hạnh phúc, đói, cấp Chuồng và sức chứa; sản lượng thực tế hiện trên Chuồng và thẻ rồng.</p>'+
     '<h3>XP và thưởng khi lên Player Level</h3>'+guideTable(['Từ → đến','XP cần','Vàng thưởng','Thức ăn thưởng','Gem thưởng'],xpRows)+
-    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level không có giới hạn; bảng trên hiển thị các mốc tiêu biểu và công thức XP tiếp tục tăng sau level 60.</p>'+
+    '<p class="muted">Các mốc mẫu lấy từ công thức hiện tại. Player Level không có giới hạn. Mọi yêu cầu gameplay dừng ở Lv'+progression.contentLevelCap+'; từ đó trở lên level tiếp tục tăng để nhận thưởng Gold/Food/Gem và XP cần vẫn tăng theo công thức.</p>'+
     '<h3>Nguồn XP Player Level</h3>'+guideTable(['Hoạt động','XP'],xpSourceRows)+
     '<h3>Cây trồng ở Nông trại</h3>'+guideTable(['Cây','Mở tại','Chi phí','Thời gian','Thu hoạch Lv1'],crops)+
     '<p class="muted">Nông trại cấp cao tăng lượng thu hoạch thêm 20% cho mỗi level trên 1.</p>'+ 

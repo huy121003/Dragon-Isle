@@ -32,7 +32,7 @@ function flushServerSave(){
       try{
         response=await fetch('/api/save',{method:'PUT',headers:{'Content-Type':'application/json',
           'X-Dragon-Account':currentAccount.id,'X-Dragon-Save-Revision':String(serverSaveRevision)},
-          body:snapshot,cache:'no-store',keepalive:snapshot.length<=50000});
+          body:snapshot,cache:'no-store',keepalive:snapshot.length<=window.DragonConfig.system.save.keepaliveMaxBytes});
       }catch(cause){
         if(!pendingServerSave)pendingServerSave=snapshot;
         const error=new Error('Connection lost. Progress is queued and will retry automatically.');

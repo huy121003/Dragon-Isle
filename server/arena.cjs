@@ -293,8 +293,9 @@ function createArena({profilesDir,dataDir,auth}){
       const defense=summary(defenderProfile,defenderSetup.defense).map(fighter).filter(Boolean);
       if(!attack.length||!defense.length)throw Object.assign(new Error('Invalid team.'),{status:400});
       battle={opponent:defender.username,opponentId:defender.id,turn:1,attack,defense,activeAttack:0,activeDefense:0,
-        events:[],reward:{gold:250+20*(defenderProfile.player?.level||1),
-          food:20+3*(defenderProfile.player?.level||1),gems:1}};
+        events:[],reward:{gold:2500+250*(defenderProfile.player?.level||1),
+          food:250+40*(defenderProfile.player?.level||1),
+          gems:1+Math.floor((defenderProfile.player?.level||1)/20)}};
       return {...setup,cooldownUntil:0,battle};
     });
     return {battle:publicBattle(battle)};

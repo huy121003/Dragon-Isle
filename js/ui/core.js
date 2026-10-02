@@ -169,7 +169,7 @@ function updateInspector(){
   body+='<div class="actions">';
   if(!b.upgradeEnds&&b.level<maxBuildingLevel(b)&&
     (b.type!=="hatchery"||state.player.level>=hatcheryUpgradePlayerLevel(b.level)))
-    body+='<button class="btn" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+(b.type==="academy"?money(academyUpgradeCost(b.level).gold)+' gold · '+money(academyUpgradeCost(b.level).food)+' food · '+money(academyUpgradeCost(b.level).gems)+' gems · Player Lv'+academyUpgradeCost(b.level).playerLevel:money(upgradeCost(b))+' gold')+' · '+
+    body+='<button class="btn" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+(b.type==="academy"?money(academyUpgradeCost(b.level).gold)+' gold · '+money(academyUpgradeCost(b.level).food)+' food · '+money(academyUpgradeCost(b.level).gems)+' gems · Player Lv'+academyUpgradeCost(b.level).playerLevel:money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems')+' · '+
       duration(upgradeSeconds(b))+'</button>';
   if(!b.upgradeEnds){
     body+='<button class="btn" data-action="move" data-id="'+b.id+'">Move</button>';

@@ -102,7 +102,7 @@ function updateInspector(){
       (can?'':' Unlock a neighboring region first.')+'</p>'+
       (can?'<div class="actions"><button class="btn primary" data-action="unlock-land" data-x="'+s.x+'" data-y="'+s.y+
       '">● '+money(price)+' gold</button><button class="btn" data-action="unlock-land-gem" data-x="'+s.x+'" data-y="'+s.y+
-      '">♦ '+money(Math.max(1,Math.ceil(price/100)))+' gem</button></div>':'')+'</div>';
+      '">♦ '+money(expansionGemCost(s.x,s.y))+' gem</button></div>':'')+'</div>';
     return;
   }
   if(s.type==="dragon"){
@@ -124,7 +124,7 @@ function updateInspector(){
   if(b.type==="habitat"){
     const ds=occupants(b);
     body+='<p>'+ds.length+'/'+habitatCapacity(b.level)+' dragons · '+goldPerMinute(habitatIncomePerMinute(b))+' gold/min</p>'+
-      '<p>💎 '+habitatGemRate(b)+' gem/hour · one gem per dragon/hour'+
+      '<p>💎 '+habitatGemRate(b)+' gem/hour · '+DATA.gemPerDragonPerHour+' gem per dragon/hour'+
       ((b.storedGems||0)>=habitatGemCapacity(b)?' · gem storage full':ds.length?' · next gem in '+duration(gemNextSeconds(b)):'')+'</p>'+
       '<div class="row"><span class="pill">🪙 '+goldDecimal(b.storedGold)+' gold</span>'+
       '<span class="pill">💎 '+money(b.storedGems||0)+'/'+habitatGemCapacity(b)+' stored gems</span></div>'+

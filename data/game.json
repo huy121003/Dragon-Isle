@@ -296,26 +296,26 @@
   },
   "upgradeTimes": {
     "habitat": [
-      60,
+      45,
       180,
-      480
-    ],
-    "farm": [
-      90,
-      240,
       600
     ],
-    "hatchery": [
+    "farm": [
+      30,
       120,
-      360,
+      480
+    ],
+    "hatchery": [
+      90,
+      300,
       900,
-      1800
+      2400
     ],
     "academy": [
       300,
-      660,
-      1452,
-      3194
+      900,
+      2700,
+      7200
     ]
   },
   "breedingTimes": {
@@ -697,28 +697,28 @@
     {
       "id": "wheat",
       "name": "Wheat",
-      "duration": 60,
+      "duration": 30,
       "yield": 20,
       "cost": 40
     },
     {
       "id": "carrot",
       "name": "Carrot",
-      "duration": 300,
+      "duration": 180,
       "yield": 140,
       "cost": 240
     },
     {
       "id": "pumpkin",
       "name": "Pumpkin",
-      "duration": 1800,
+      "duration": 900,
       "yield": 1000,
       "cost": 1500
     },
     {
       "id": "dragonfruit",
       "name": "Dragon Fruit",
-      "duration": 14400,
+      "duration": 7200,
       "yield": 10000,
       "cost": 12000
     }
@@ -1141,19 +1141,19 @@
   },
   "elementUnlocks": {
     "fire": 1,
-    "water": 1,
-    "earth": 3,
-    "wind": 5,
-    "ice": 7,
-    "thunder": 9,
-    "nature": 11,
-    "dark": 14,
-    "light": 17,
-    "metal": 20,
-    "war": 24,
-    "pure": 28,
-    "legend": 33,
-    "primal": 39,
-    "time": 45
+    "water": 2,
+    "earth": 4,
+    "wind": 6,
+    "ice": 8,
+    "thunder": 11,
+    "nature": 14,
+    "dark": 18,
+    "light": 22,
+    "metal": 27,
+    "war": 32,
+    "pure": 37,
+    "legend": 42,
+    "primal": 48,
+    "time": 55
   }
 }

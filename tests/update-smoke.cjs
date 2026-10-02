@@ -309,7 +309,7 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
  assert(economy.element('sheetBody').innerHTML.includes('Purchased 1×'));
 });
 check('selling, storing, feeding and moving settle old income before rates change',()=>{
- income.run('state=newGame();state.dragons[0].gemProgress=.99;state.lastTick=Date.now()-60000');
+ income.run('state=newGame();state.dragons[0].gemProgress=.999;state.lastTick=Date.now()-60000');
  const expected=income.run('dragonIncomePerMinute(state.dragons[0],buildingById(1))');
  income.run('sellDragon(state.dragons[0].id)');
  const house=()=>snapshot(income,'{gold:buildingById(1).storedGold,gems:buildingById(1).storedGems}');

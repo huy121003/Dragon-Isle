@@ -22,7 +22,21 @@ input{min-width:220px;flex:1;max-width:330px}.grid{max-width:1280px;margin:auto;
   <button id="pause">Pause</button><button id="quality">Quality: high</button></div>
 <main class="grid" id="gallery"></main><div class="pager"><button id="previous">‹ Previous</button><span id="page"></span><button id="next">Next ›</button></div>
 <canvas id="island" width="1" height="1" hidden></canvas><div id="stage" hidden></div>
-<script src="../js/data/db-cache.js"></script><script src="../data/economy.js"></script><script src="../js/data/dragon-rules.js"></script><script src="../js/data/catalog.js"></script><script src="../js/core/state.js"></script><script src="../js/render/world.js"></script><script src="../js/render/dragon-anatomy.js"></script><script src="../js/render/dragon-motion.js"></script><script src="../js/render/dragon-design.js"></script><script src="../js/render/dragon-art.js"></script>
+<script src="../js/data/db-cache.js"></script>
+<script src="../js/config/progression.js"></script><script src="../js/config/economy.js"></script>
+<script src="../js/config/buildings.js"></script><script src="../js/config/farming.js"></script>
+<script src="../js/config/dragons.js"></script><script src="../js/config/breeding.js"></script>
+<script src="../js/config/hatching.js"></script><script src="../js/config/combat.js"></script>
+<script src="../js/config/arena.js"></script><script src="../js/config/challenge.js"></script>
+<script src="../js/config/world.js"></script><script src="../js/config/timers.js"></script>
+<script src="../js/rules/progression.js"></script><script src="../js/rules/buildings.js"></script>
+<script src="../js/rules/hatching.js"></script><script src="../js/rules/breeding.js"></script>
+<script src="../js/rules/world.js"></script><script src="../js/rules/timers.js"></script>
+<script src="../data/economy.js"></script><script src="../js/data/dragon-rules.js"></script>
+<script src="../js/data/catalog.js"></script><script src="../js/core/state.js"></script>
+<script src="../js/core/utils.js"></script><script src="../js/core/grid.js"></script>
+<script src="../js/core/selectors.js"></script><script src="../js/core/calculations.js"></script>
+<script src="../js/render/world.js"></script><script src="../js/render/dragon-anatomy.js"></script><script src="../js/render/dragon-motion.js"></script><script src="../js/render/dragon-design.js"></script><script src="../js/render/dragon-art.js"></script>
 <script>
 state=newGame();
 const all=BOOK_SPECIES_IDS.map(id=>DATA.species[id]),gallery=document.getElementById('gallery');

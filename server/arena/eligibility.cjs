@@ -6,6 +6,7 @@
  */
 const arenaConfig=require('../../js/config/arena.js');
 
+/** Create reusable Arena eligibility helpers around an injectable clock. */
 function createEligibility({now=()=>Date.now()}={}){
   /** True when a dragon is currently locked in an active breeding task. */
   function breeding(profile,dragonId){

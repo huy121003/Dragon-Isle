@@ -33,6 +33,17 @@ describe('logic architecture boundaries',()=>{
     }
   });
 
+  it('keeps core state/calculations/migrations off DATA balance facades',()=>{
+    const state=read('js/core/state.js');
+    const calculations=read('js/core/calculations.js');
+    const migrations=read('js/persistence/migrations.js');
+    expect(state).not.toContain('DATA.buildings.habitat.cost');
+    expect(calculations).not.toMatch(/DATA\\.(progression|upgradeTimes|gemPerDragonPerHour)/);
+    expect(calculations).not.toMatch(/DATA\\.buildings(?:\\[[^\\]]+\\]|\\.[A-Za-z0-9_]+)\\.cost/);
+    expect(migrations).not.toContain('DATA.progression');
+    expect(migrations).not.toMatch(/DATA\\.buildings\\[out\\.type\\]\\.maxLevel/);
+  });
+
   it('does not reintroduce core combat/arena/challenge balance constants in services',()=>{
     const combat=read('js/data/combat-rules.js');
     const arena=read('server/arena.cjs');

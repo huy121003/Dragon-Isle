@@ -27,7 +27,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const owned=eligibility.ownedTeam;
   const summary=eligibility.summary;
   const battleEngine=createBattleEngine({catalog,game});
-  const {makeFighter:fighter,fight,publicBattle,active,chooseDefenseSkill,strike,
+  const {makeFighter:fighter,fight,publicBattle,active,alive,chooseDefenseSkill,strike,
     liveTurn,finish}=battleEngine;
   /** Load the current player's Arena setup plus valid opponents. */
   async function list(user){

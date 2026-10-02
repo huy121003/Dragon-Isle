@@ -92,6 +92,18 @@ describe('architecture boundaries',()=>{
     expect(actions).toContain('DragonConnectionState?.blocked');
   });
 
+  it('separates selection inspector from UI shell lifecycle',()=>{
+    const index=read('index.html');
+    const core=read('js/ui/core.js');
+    const inspector=read('js/ui/inspector.js');
+    expect(index).toContain('js/ui/inspector.js');
+    expect(core).not.toContain('function updateInspector');
+    expect(core).toContain('function updateUI');
+    expect(core).toContain('function openModal');
+    expect(inspector).toContain('function updateInspector');
+    expect(inspector).toContain('data-action="open-arena"');
+  });
+
   it('keeps network, persistence and migrations separated',()=>{
     expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');

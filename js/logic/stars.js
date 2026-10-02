@@ -2,7 +2,8 @@
 
 /* Five upgrades, each adding 5% to the dragon's HP, attack and defense. */
 function starRequirement(dragon){
-  return DATA.progression.starUpgrades[Math.max(0,Math.floor(Number(dragon.stars)||0))]||null;
+  return window.DragonConfig.progression.starUpgrades[
+    Math.max(0,Math.floor(Number(dragon.stars)||0))]||null;
 }
 function starDonors(dragon,requirement=starRequirement(dragon)){
   if(!dragon||!requirement)return [];

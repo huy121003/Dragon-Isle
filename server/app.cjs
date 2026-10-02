@@ -15,7 +15,7 @@ const {createStaticHandler}=require('./static.cjs');
 async function createApp({root,dataDir,contentDir=path.join(root,'data'),secureCookies=false}){
   const profilesDir=path.join(dataDir,'profiles');
   const auth=await createAuth(dataDir);
-  const arena=createArena({profilesDir,dataDir:contentDir,auth});
+  const arena=createArena({profilesDir,dataDir,catalogDir:contentDir,auth});
   const challenge=createChallenge({auth,profilesDir,arena});
   const limited=createLoginRateLimit();
   const routes=[

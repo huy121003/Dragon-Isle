@@ -6,12 +6,12 @@ const economy=require('../data/economy.js');
 const COOLDOWN=15*60*1000;
 const TEAM_SIZE=3;
 const MIN_BATTLE_LEVEL=10;
-function createArena({profilesDir,dataDir,auth}){
+function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const arenaDir=path.join(dataDir,'arena');
   const file=id=>path.join(arenaDir,id+'.json');
   const profile=id=>path.join(profilesDir,id+'.json');
-  const catalog=require(path.join(dataDir,'dragons.json'));
-  const game=require(path.join(dataDir,'game.json'));
+  const catalog=require(path.join(catalogDir,'dragons.json'));
+  const game=require(path.join(catalogDir,'game.json'));
   require('../scripts/extend-catalog.cjs')(catalog,game);
   const elements=catalog.elements,rarities=catalog.rarities;
   const unlocked=p=>p?.buildings?.some(b=>b.type==='arena'&&!b.stored);

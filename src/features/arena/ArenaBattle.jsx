@@ -44,11 +44,11 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         disabled={dragon.hp<=0||(side==='attack'?disabled:true)}
         onClick={()=>side==='attack'&&act('switch',challenge?{dragonId:dragon.id}:{id:dragon.id})}
         className={['arena-reserve-button',dragon.hp<=0&&'dead',side==='attack'&&'switchable'].filter(Boolean).join(' ')}>
-        <span className="arena-reserve-avatar-frame"><Portrait dragon={dragon}/></span>
-        <span className="arena-reserve-copy"><b>{elementNames||species?.name||'Dragon'}</b>
-          <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
-            <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
-          </span></span>
+        <span className="arena-reserve-top"><span className="arena-reserve-avatar-frame"><Portrait dragon={dragon}/></span>
+          <span className="arena-reserve-flags" aria-hidden="true">{badges(dragon.species)}</span></span>
+        <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
+          <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
+        </span>
         {dragon.hp<=0&&<i className="arena-reserve-dead-mark" aria-hidden="true">×</i>}
       </button>})}
     </div>;
@@ -84,6 +84,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         <div className="battle-hp"><div><span style={{width:(attacker.hp/attacker.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(attacker.hp)} / {fmt.format(attacker.maxHp)} HP</small></div>
         <StatusIcons dragon={attacker}/>
+        <ReserveLineup side="attack"/>
         <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='attack'?'lunge':'')+(attacking&&impact.side==='defense'?' struck':'')}>
           <Portrait dragon={attacker} large/></div></div>
       <span className="battle-vs">VS</span>
@@ -92,9 +93,9 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         <div className="battle-hp"><div><span style={{width:(defender.hp/defender.maxHp*100)+'%'}}/></div>
           <small>{fmt.format(defender.hp)} / {fmt.format(defender.maxHp)} HP</small></div>
         <StatusIcons dragon={defender}/>
+        <ReserveLineup side="defense"/>
       <div key={impact?frame:'idle'} className={'battle-dragon '+(attacking&&impact.side==='defense'?'lunge':'')+(attacking&&impact.side==='attack'?' struck':'')}>
           <Portrait dragon={defender} large facing={-1}/></div></div>
-      <div className="arena-battle-reserves"><ReserveLineup side="attack"/><ReserveLineup side="defense"/></div>
       <div className="arena-stage-controls"><SkillControls/></div>
       {impact&&<SkillEffect event={impact} frame={frame}/>}
       {arena.pendingSkill&&<div className="battle-charge" aria-live="polite">

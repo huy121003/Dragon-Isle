@@ -1,6 +1,4 @@
 import {useEffect} from 'react';
-import {useQuery} from '@tanstack/react-query';
-import {AuthMeSchema} from '../shared/schemas.js';
 import {useAppStore,runtimeSnapshot} from './store.js';
 
 export function useGameRuntime(){
@@ -25,16 +23,3 @@ export function useGameRuntime(){
   return {...runtimeSnapshot(),connection};
 }
 
-export function useAccount(){
-  const query=useQuery({
-    queryKey:['auth','me'],
-    queryFn:async()=>{
-      const response=await fetch('/api/auth/me',{cache:'no-store'});
-      if(response.status===401)return null;
-      if(!response.ok)throw new Error('Unable to check session.');
-      return AuthMeSchema.parse(await response.json()).user;
-    },
-    retry:false,staleTime:30_000
-  });
-  return {account:query.data??null,ready:query.isFetched,error:query.error};
-}

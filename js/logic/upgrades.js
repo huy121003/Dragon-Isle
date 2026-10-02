@@ -4,6 +4,7 @@
  * Building upgrade orchestration.
  * Costs and timing come from shared config/rules; this module applies state changes.
  */
+/** Validate upgrade gates/cost/space, charge resources and start the upgrade timer. */
 function upgradeBuilding(id){
   const b=buildingById(id);
   if(!b||b.stored||b.type==="decor")return;

@@ -11,10 +11,13 @@ js/config  ->  js/rules  ->  js/logic / server services  ->  UI
 
 ### 1. `js/config/` — tham số/source of truth
 
-Chỉ chứa giá trị có thể cần balance hoặc thay đổi theo thiết kế game.
+Chứa source-of-truth cho các tham số có thể thay đổi mà không nên chôn trong logic.
 
-Ví dụ: Strong/Weak multiplier, XP curve, giá nâng cấp, thời gian breeding,
-Arena team size, Challenge reconnect grace.
+- Config domain gameplay: Strong/Weak multiplier, XP curve, giá nâng cấp, thời gian breeding,
+  Arena team size, Challenge reconnect grace.
+- `system.js`: save version/size, autosave, reconnect, session và rate-limit policy.
+
+Không trộn công thức hoặc side effect vào config; logic tiêu thụ các tham số này ở tầng rule/service.
 
 **Không đặt** `toast`, `fetch`, `Date.now()`, `Math.random()` hoặc mutation state trong config.
 
@@ -113,7 +116,7 @@ Tham số mới phải vào `js/config/*`, sau đó chỉ expose qua facade nế
 
 ## Checklist khi thêm gameplay feature
 
-1. Có tham số mới? -> `js/config/<domain>.js`.
+1. Có tham số mới? -> `js/config/<domain>.js`; tham số vận hành/persistence/auth -> `js/config/system.js`.
 2. Có công thức mới? -> `js/rules/<domain>.js`.
 3. Có mutation/state transition? -> `js/logic/<domain>.js` hoặc server service.
 4. Có network/persistence? -> service riêng, không nhét vào rule.

@@ -67,6 +67,19 @@ describe('architecture boundaries',()=>{
     expect(world).not.toContain('function screenToGrid');
   });
 
+  it('keeps guide registry separate from domain content',()=>{
+    const index=read('index.html');
+    const router=read('js/ui/guide.js');
+    expect(router.split('\n').length).toBeLessThan(70);
+    for(const file of ['shared','start','dragons','breeding','islands','resources','combat'])
+      expect(index).toContain('js/ui/guide/'+file+'.js');
+    expect(router).toContain('const GUIDE_SECTIONS');
+    expect(router).toContain('function renderGuide');
+    expect(router).not.toContain('function guideArena');
+    expect(read('js/ui/guide/combat.js')).toContain('function guideArena');
+    expect(read('js/ui/guide/breeding.js')).toContain('function guideBreeding');
+  });
+
   it('keeps network, persistence and migrations separated',()=>{
     expect(read('index.html')).toContain('js/config/system.js');
     expect(read('index.html')).toContain('js/network/connection.js');

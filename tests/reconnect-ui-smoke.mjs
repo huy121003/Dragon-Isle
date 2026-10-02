@@ -7,6 +7,7 @@ import path from 'node:path';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const react=readFileSync(path.join(root,'src/features/connection/ReconnectModal.jsx'),'utf8');
 const connection=readFileSync(path.join(root,'js/network/connection.js'),'utf8');
+const systemConfig=readFileSync(path.join(root,'js/config/system.js'),'utf8');
 const input=readFileSync(path.join(root,'js/ui/input.js'),'utf8');
 const main=readFileSync(path.join(root,'js/main.js'),'utf8');
 
@@ -21,8 +22,11 @@ assert(react.includes('Still trying to reconnect'));
 assert(react.includes('Try again now'));
 assert(react.includes('Session expired'));
 
-assert(connection.includes('RECONNECT_MS=5000'));
-assert(connection.includes('PROLONGED_MS=120000'));
+assert(connection.includes('DragonConfig.system.connection'));
+assert(connection.includes('config.retryMs'));
+assert(connection.includes('config.prolongedMs'));
+assert(systemConfig.includes('retryMs:5_000'));
+assert(systemConfig.includes('prolongedMs:120_000'));
 assert(connection.includes('fetch("/api/auth/me"'));
 assert(connection.includes('response.status===401'));
 assert(connection.includes('expire()'));

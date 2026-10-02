@@ -21,6 +21,7 @@ function cookie(res){return res.headers.get('set-cookie').split(';')[0];}
 async function launch(port){
   const child=spawn(process.execPath,['server.cjs','--port',String(port)],{
     cwd:root,env:{...process.env,DRAGON_ISLE_DATA_DIR:temporary},stdio:'pipe'});
+  child.stderr.on('data',chunk=>process.stderr.write('[server] '+chunk));
   const base='http://127.0.0.1:'+port;
   for(let i=0;i<60;i++){
     try{if((await fetch(base+'/')).ok)return child;}catch(error){}

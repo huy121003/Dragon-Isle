@@ -27,5 +27,6 @@ describe('architecture boundaries',()=>{
     expect(server).not.toContain("pathname==='/api/");
     expect(read('server/app.cjs')).toContain('createSaveRoutes');
     expect(read('server/routes/auth.cjs')).toContain('/api/auth/login');
+    expect(read('server/arena.cjs')).toContain('catalogDir=dataDir');
   });
 });

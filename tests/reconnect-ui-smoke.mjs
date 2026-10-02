@@ -15,7 +15,7 @@ assert.match(react,/open={!!connection\?\.blocked}/);
 assert.match(react,/closable={false}/);
 assert.match(react,/maskClosable={false}/);
 assert.match(react,/keyboard={false}/);
-assert.match(react,/zIndex={5000}/);
+assert.match(react,/zIndex=\{5000\}/);
 assert.match(react,/Retrying automatically in/);
 assert.match(react,/Still trying to reconnect/);
 assert.match(react,/Try again now/);

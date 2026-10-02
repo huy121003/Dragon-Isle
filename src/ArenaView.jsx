@@ -172,7 +172,7 @@ const effectNames={poison:'POISON',regen:'REGEN',heal:'HEAL',cleanse:'CLEANSE',
   freeze:'FROZEN',vitality:'MAX HP ↑',damage_up:'DAMAGE ↑',damage_down:'DAMAGE ↓',
   armor_up:'ARMOR ↑',armor_down:'ARMOR ↓',damage_reduction:'GUARD',accuracy_down:'ACCURACY ↓'};
 function MatchupMark({value}){
-  if(value!==1.5&&value!==.75)return null;
+  if(value!==2&&value!==.75)return null;
   const strong=value>1,label=strong?'Strong':'Weak';
   return <span className={'matchup-mark '+(strong?'strong':'weak')}
     title={`${label} elemental matchup · ×${value}`} aria-label={`${label} · ×${value}`}>
@@ -281,7 +281,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
     </div>
     <div className="battle-details-scroll" role="region" aria-label="Skills, dragon switch and recent moves" tabIndex={0}>
     <div className="battle-controls"><div><small>CHOOSE SKILL · {attacker.nickname}</small><h3>{arena.animating?'Attacking…':challenge&&!myTurn?'Waiting for opponent…':'Turn: '+attacker.nickname}</h3>
-      <p className="battle-matchup-key">▲ Strong ×1.5 · ▼ Weak ×0.75 · based on the opponent's primary element</p></div>
+      <p className="battle-matchup-key">▲ Strong ×2 · ▼ Weak ×0.75 · based on the opponent's primary element</p></div>
       <div className="battle-skill-grid">{skillOptions.map(skill=>{
         const offensive=skill.element&&(!skill.special||skill.power+skill.bonus>0);
         const matchup=offensive?game()?.skillMatchup?.(skill.element,defender.species):1;
@@ -309,7 +309,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
         e.skipped?`${e.actor} missed a turn · Frozen`:
         `${e.actor} used ${e.skill} → ${e.target}: `+
         (e.heal?'+'+fmt.format(e.heal)+' HP':e.damage?'−'+fmt.format(e.damage)+' HP':e.misses?'Missed':effectNames[e.effect]||'Status applied')+
-        (e.damage&&e.matchup===1.5?' · ▲ Strong':e.damage&&e.matchup===.75?' · ▼ Weak':'')+
+        (e.damage&&e.matchup===2?' · ▲ Strong':e.damage&&e.matchup===.75?' · ▼ Weak':'')+
         (e.damage&&e.critical?' · ✦ Crit':'')+
         (e.hits>1?' · '+e.hits+' hits':'')}</p>)}</div></div>
   </div>;

@@ -5,6 +5,7 @@
  * resolution belongs here so Arena and Challenge always build fighters identically.
  */
 const combat=require('../../js/data/combat-rules.js');
+const dragonConfig=require('../../js/config/dragons.js');
 
 /**
  * Create fighter/species helpers for one immutable catalog snapshot.
@@ -25,7 +26,7 @@ function createFighterFactory({catalog,game}){
     const parts=raw?.elements||String(id||'').split('>').filter(Boolean);
     const doubled=raw?.doHiem==='transcendent'&&parts.length===4&&
       parts[0]===parts[1]&&new Set(parts).size===3;
-    if(!parts.length||parts.length>4||parts.some(element=>!elements[element])||
+    if(!parts.length||parts.length>dragonConfig.maxElementsPerDragon||parts.some(element=>!elements[element])||
       (!doubled&&new Set(parts).size!==parts.length))return null;
     const rarity=raw?.doHiem||(parts.length===1?'common':parts.length===2?
       parts.some(element=>['light','dark','metal'].includes(element))?'epic':'rare':

@@ -17,7 +17,10 @@ function activeTimers(){
   });
   return tasks.sort(function(a,b){return a.end-b.end;});
 }
-function gemSkipCost(end,now){return Math.ceil(Math.max(0,end-now)/300000);}
+function gemSkipCost(end,now){
+  const rules=window.DragonEconomy.timers;
+  return Math.min(rules.maxSkipGems,Math.ceil(Math.max(0,end-now)/(rules.secondsPerGem*1000)));
+}
 function timerProgress(task,now){
   const span=Math.max(1,task.end-task.startedAt);
   return clamp((now-task.startedAt)/span*100,0,100);
@@ -27,7 +30,7 @@ function skipTimer(kind,id){
   if(!task){toast("This activity is no longer pending.");return;}
   const now=Date.now(),cost=gemSkipCost(task.end,now);
   if(cost===0){toast("This activity has finished.");updateUI();return;}
-  if(state.gems<cost){toast("Requires "+cost+" gem to finish instantly.");return;}
+  if(state.gems<cost){toast("Requires "+cost+" gems to finish instantly.");return;}
   state.gems-=cost;
   if(kind==="upgrade"){
     const b=buildingById(id);
@@ -36,6 +39,6 @@ function skipTimer(kind,id){
   }else if(kind==="crop")buildingById(id).crop.readyAt=now;
   else if(kind==="breed")buildingById(id).breeding.readyAt=now;
   else if(kind==="egg")eggById(id).readyAt=now;
-  toast("Spent "+cost+" gem to finish instantly.");
+  toast("Spent "+cost+" gems to finish instantly.");
   AUDIO.play("egg");updateUI();saveGame();
 }

@@ -97,7 +97,7 @@ window.DragonGame={
   },
   xpNeeded:playerXPNeeded,
   save:saveGame,
-  action(dataset){handleAction({dataset:{...dataset}});window.dispatchEvent(new Event('dragon-ui-update'));},
+  action(dataset){handleAction({dataset:{...dataset}});window.DragonRuntime?.emit();},
   importSave(file){return importSaveJson(file);},
   paint(canvas,speciesId,level,options={}){
     const context=canvas.getContext('2d');

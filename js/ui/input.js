@@ -1,10 +1,12 @@
 "use strict";
 
 /* UI: Pointer Events used chung cho chuột và cảm ứng; hai ngón zoom, một ngón kéo nền hoặc công trình. */
+/** Convert a pointer/wheel event into canvas-local CSS-pixel coordinates. */
 function localPoint(event){
   const r=dom.canvas.getBoundingClientRect();
   return {x:event.clientX-r.left,y:event.clientY-r.top};
 }
+/** Start placement, drag, pan or multi-pointer gesture state from one pointer press. */
 function pointerDown(event){
   event.preventDefault();AUDIO.init();
   dom.canvas.setPointerCapture(event.pointerId);
@@ -38,6 +40,7 @@ function pointerDown(event){
     dom.bar.classList.add("visible");
   },500);
 }
+/** Update active drag/pan/pinch state without committing gameplay mutations. */
 function pointerMove(event){
   const hover=localPoint(event);ui.pointerWorld=screenToWorld(hover.x,hover.y);
   if(!ui.pointers.has(event.pointerId))return;
@@ -73,6 +76,7 @@ function pointerMove(event){
   }
   g.last=p;
 }
+/** Commit the pending tap/drag action, then release pointer gesture state. */
 function pointerUp(event){
   if(!ui.pointers.has(event.pointerId))return;
   event.preventDefault();
@@ -110,12 +114,14 @@ function pointerUp(event){
   }else ui.selection=null;
   updateInspector();
 }
+/** Abort one pointer from the active gesture without committing a placement/move. */
 function pointerCancel(event){
   if(ui.gesture?.holdTimer)clearTimeout(ui.gesture.holdTimer);
   ui.pointers.delete(event.pointerId);
   if(ui.mode&&ui.gesture&&ui.gesture.kind==="drag-building")stopMode();
   ui.gesture=null;
 }
+/** Zoom the world around the cursor while preserving the pointed world position. */
 function wheelZoom(event){
   event.preventDefault();
   const p=localPoint(event),anchor=screenToWorld(p.x,p.y);

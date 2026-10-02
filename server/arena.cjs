@@ -5,6 +5,7 @@ const combat=require('../js/data/combat-rules.js');
 const economy=require('../data/economy.js');
 const arenaConfig=require('../js/config/arena.js');
 const combatConfig=require('../js/config/combat.js');
+const {createEligibility}=require('./arena/eligibility.cjs');
 /**
  * Create the authoritative Arena service.
  * @param {object} options
@@ -21,17 +22,11 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const game=require(path.join(catalogDir,'game.json'));
   require('../scripts/extend-catalog.cjs')(catalog,game);
   const elements=catalog.elements,rarities=catalog.rarities;
-  const unlocked=p=>p?.buildings?.some(b=>b.type==='arena'&&!b.stored);
-  const breeding=(p,id)=>p.buildings?.some(b=>['cave','premiumCave'].includes(b.type)&&b.breeding&&
-    b.breeding.readyAt>Date.now()&&(b.breeding.fatherId===id||b.breeding.motherId===id));
-  const eligible=(p,d)=>d.level>=arenaConfig.minBattleLevel&&d.level<=arenaConfig.maxBattleLevel&&!breeding(p,d.id);
-  const owned=(p,ids)=>Array.isArray(ids)&&ids.length===arenaConfig.teamSize&&
-    ids.every(Number.isInteger)&&new Set(ids).size===ids.length&&
-    ids.every(id=>p?.dragons?.some(d=>d.id===id&&eligible(p,d)));
-  const summary=(p,ids)=>ids.map(id=>p.dragons.find(d=>d.id===id)).filter(Boolean)
-    .map(d=>({id:d.id,species:d.species,level:d.level,stars:d.stars||0,nickname:d.nickname,
-      canBattle:eligible(p,d),battleReason:d.level<arenaConfig.minBattleLevel?
-        'Requires level '+arenaConfig.minBattleLevel:breeding(p,d.id)?'Breeding':null}));
+  const unlocked=profile=>profile?.buildings?.some(building=>building.type==='arena'&&!building.stored);
+  const eligibility=createEligibility();
+  const eligible=eligibility.eligible;
+  const owned=eligibility.ownedTeam;
+  const summary=eligibility.summary;
   const species=id=>{
     const raw=catalog.species.find(d=>d.id===id);
     const parts=raw?.elements||id.split('>');

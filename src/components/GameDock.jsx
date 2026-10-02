@@ -3,7 +3,8 @@ import {Button} from 'antd';
 import {send,text} from '../app/game-bridge.js';
 
 const BASE_BUTTONS=[
-  ['🗺️','Islands','open-islands'],['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],
+  ['📅','Daily Missions','open-daily-missions'],['🗺️','Islands','open-islands'],
+  ['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],
   ['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']
 ];
 export default function GameDock({state,ui,challengeOpen,openChallenge,refProp}){

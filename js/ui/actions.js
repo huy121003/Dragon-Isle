@@ -6,6 +6,10 @@
  * Converts data-action payloads into domain logic/navigation calls. Canvas
  * pointer/camera/drag behavior remains in js/ui/input.js.
  */
+/**
+ * Route one declarative data-action payload to navigation or domain logic.
+ * Connection-blocked state is checked before any gameplay action is allowed.
+ */
 function handleAction(button){
   if(window.DragonConnectionState?.blocked){
     toast(window.DragonConnectionState.status==="session-expired"?

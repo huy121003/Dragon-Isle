@@ -146,7 +146,7 @@ function guideResources(){
     String(progression.levelGems+((level+1)%5===0?progression.milestoneGemBonus:0))+' gem']);
   const source=progression.xpSources;
   const xpSourceRows=[
-    ['Xây Habitat',source.habitatBuild+' XP'],
+    ['Xây công trình',Object.entries(source.buildingBuild).map(([type,xp])=>type+' '+xp).join(' · ')+' XP'],
     ['Nâng cấp công trình',''+source.buildingUpgradeBase+' + '+source.buildingUpgradePerLevel+' × cấp mới'],
     ['Mở vùng đất',source.land+' XP'],
     ['Mở đảo',source.island+' XP'],

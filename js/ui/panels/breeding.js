@@ -39,8 +39,8 @@ function renderBreeding(id){
       inlineTimer(cave.breeding.startedAt,cave.breeding.readyAt)+
       (ready?'<button class="btn good" data-action="collect-breeding" data-id="'+id+'"'+
         (hatcheryFull?' disabled title="Free a Hatchery nest before collecting"':'')+'>Collect bred egg</button>':
-      '<button class="btn primary" data-action="skip-timer" data-kind="breed" data-id="'+id+'">♦ '+
-        gemSkipCost(cave.breeding.readyAt,Date.now())+' Skip</button>')+'</div>';
+      '<button class="btn resource-action" data-action="skip-timer" data-kind="breed" data-id="'+id+'">Skip · '+
+        resourceAmount('gems',gemSkipCost(cave.breeding.readyAt,Date.now()))+'</button>')+'</div>';
     renderDragonPortraits();
     return;
   }

@@ -56,20 +56,23 @@ function delta(previous,next,now=Date.now()){
     return sum+Math.max(0,levels*worldConfig.feeding.feedsPerLevel+progress);
   },0);
   const oldFarms=new Map((previous.buildings||[]).filter(b=>b.type==='farm').map(b=>[b.id,b]));
-  const planted=next.gold<(Number(previous.gold)||0)?(next.buildings||[]).filter(b=>b.type==='farm'&&
-    !oldFarms.get(b.id)?.crop&&b.crop&&farmConfig.crops.some(c=>c.id===b.crop.id)).length:0;
+  // The saved balance may already include a gold collection after planting.
+  const planted=(next.buildings||[]).filter(b=>b.type==='farm'&&b.crop&&
+    b.crop.startedAt!==oldFarms.get(b.id)?.crop?.startedAt&&
+    farmConfig.crops.some(c=>c.id===b.crop.id)).length;
   const oldHabitats=new Map((previous.buildings||[]).filter(b=>b.type==='habitat').map(b=>[b.id,b]));
   const collectedGold=(next.buildings||[]).filter(b=>b.type==='habitat').reduce((sum,b)=>{
     const old=oldHabitats.get(b.id);if(!old)return sum;
     return sum+(!b.stored?Math.max(0,(Number(old.storedGold)||0)-(Number(b.storedGold)||0)):0);
   },0);
-  const cleared=(previous.buildings||[]).filter(b=>b.type==='farm'&&b.crop&&
-    !(next.buildings||[]).find(n=>n.id===b.id)?.crop).map(b=>{
+  const cleared=(previous.buildings||[]).filter(b=>b.type==='farm'&&b.crop&&b.crop.readyAt<=now&&
+    afterBuildings.get(b.id)?.type==='farm'&&
+    afterBuildings.get(b.id).crop?.startedAt!==b.crop.startedAt).map(b=>{
       const crop=farmConfig.crops.find(c=>c.id===b.crop.id),bonus=require('../js/config/buildings.js').farm.yieldBonusPerExtraLevel;
       return crop?Math.round(crop.yield*(1+((Number(b.level)||1)-1)*bonus)):0;
     });
-  const foodGained=Math.max(0,(Number(next.food)||0)-(Number(previous.food)||0));
-  const collectedFood=cleared.length?Math.min(foodGained,cleared.reduce((a,b)=>a+b,0)):0;
+  // Food may have been spent on feeding before the same queued save reaches the server.
+  const collectedFood=cleared.reduce((a,b)=>a+b,0);
   return {hatch:hatched,breed:bred,feed:fed,plant:planted,collectGold:collectedGold,collectFood:collectedFood};
 }
 function trackSave(saved,previous,next,now=Date.now()){

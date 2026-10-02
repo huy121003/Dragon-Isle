@@ -41,6 +41,12 @@ try{
     legend:{name:'Legend',color:'#8155c5'},primal:{name:'Primal',color:'#8b8e83'},
     time:{name:'Time',color:'#b7aba4'}},
     rarities:{common:{name:'Common',color:'#aaa'}}}}};
+  const {default:GameDock}=await server.ssrLoadModule('/src/components/GameDock.jsx');
+  const dock=renderToStaticMarkup(React.createElement(GameDock,{state:{buildings:[],dragons:[]},
+    ui:{modal:null},challengeOpen:false,openChallenge:()=>{}}));
+  assert.match(dock,/<nav[^>]*aria-label="Main menu"/);
+  assert.match(dock,/<button[^>]*>.*Daily Missions.*<\/button>/,
+    'The React dock must expose Daily Missions to every signed-in player');
   const {default:ChallengeView}=await server.ssrLoadModule('/src/features/challenge/ChallengeView.jsx');
   const invitation={busy:true,match:{phase:'invited',outgoing:false,opponent:'Bela',until:Date.now()+60000}};
   const invitationHtml=renderToStaticMarkup(React.createElement(ChallengeView,

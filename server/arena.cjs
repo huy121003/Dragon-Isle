@@ -29,6 +29,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const battleEngine=createBattleEngine({catalog,game});
   const {makeFighter:fighter,fight,publicBattle,active,chooseDefenseSkill,strike,
     liveTurn,finish}=battleEngine;
+  /** Load the current player's Arena setup plus valid opponents. */
   async function list(user){
     const own=await readJson(profile(user.id),null),arena=await readJson(file(user.id),{});
     if(!unlocked(own))throw Object.assign(new Error('Build an Arena first.'),{status:403});
@@ -46,6 +47,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       cooldownUntil:(arena.cooldownUntil||0)>Date.now()?arena.cooldownUntil:0,
       battle:arena.battle?publicBattle(arena.battle):null};
   }
+  /** Persist validated attack/defense teams for one player. */
   async function team(user,body){
     const p=await readJson(profile(user.id),null);
     if(!unlocked(p)||!body||!owned(p,body.attack)||!owned(p,body.defense))
@@ -54,6 +56,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     await updateJson(file(user.id),current=>({...current,attack:body.attack,defense:body.defense}));
     return {ok:true};
   }
+  /** Credit Arena rewards to profile resources and reconciliation bank. */
   async function credit(user,reward){
     await updateJson(profile(user.id),current=>{
       const bank={...(current.arenaBank||{gold:0,food:0,gems:0})};
@@ -63,6 +66,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
         arenaBank:bank,arenaClaimed:bank};
     });
   }
+  /** Start an Arena battle against another player's saved defense team. */
   async function challenge(user,body){
     const defender=auth.listUsers().find(u=>u.id===body?.opponentId&&!u.disabled);
     if(!defender||defender.id===user.id)throw Object.assign(new Error('Invalid opponent.'),{status:400});
@@ -94,6 +98,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
     });
     return {battle:publicBattle(battle)};
   }
+  /** Resolve one Arena player turn, AI response and optional battle completion. */
   async function turn(user,body){
     let response,award=null,defenderResult=null;
     await updateJson(file(user.id),current=>{

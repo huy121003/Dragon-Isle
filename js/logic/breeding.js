@@ -39,6 +39,11 @@ function breedingSeconds(species,level,cave,parents){
 }
 /** Return whether a building is either standard or premium Breeding Cave. */
 function isBreedingCave(building){return building?.type==='cave'||building?.type==='premiumCave';}
+/** Find this cave's bred egg only while it remains in Inventory without a Hatchery nest. */
+function waitingBredEggForCave(caveId){
+  return state.eggs.find(function(egg){return egg.source==="breed"&&!egg.hatcheryId&&
+    (egg.caveId===caveId||!egg.caveId);});
+}
 /** Return whether a dragon is locked by an unfinished breeding timer. */
 function dragonBusy(id){
   return state.buildings.some(function(b){
@@ -52,8 +57,7 @@ function dragonBusy(id){
  */
 function startBreeding(caveId,fatherId,motherId){
   const cave=buildingById(caveId),father=dragonById(fatherId),mother=dragonById(motherId);
-  if(!isBreedingCave(cave)||cave.stored||cave.breeding||
-    state.eggs.some(function(egg){return egg.source==="breed"&&(egg.caveId===cave.id||!egg.caveId);})||
+  if(!isBreedingCave(cave)||cave.stored||cave.breeding||waitingBredEggForCave(cave.id)||
     !father||!mother||
     father.id===mother.id||dragonBusy(father.id)||dragonBusy(mother.id)){
     toast("Choose two different dragons and an available Breeding Cave.");return;

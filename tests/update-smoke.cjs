@@ -185,9 +185,16 @@ check('only habitats can be sold or stored and ready eggs block the next turn',(
   assert.equal(lifecycle.run('state.eggs[0].hatcheryId'),3);
   lifecycle.run('state.buildings.push({id:92,type:"cave",stored:false,breeding:null});'+
     'state.dragons[0].level=5;state.dragons.push({...state.dragons[0],id:77,species:"water",level:5});'+
-    'state.eggs.push({id:93,species:"fire",source:"breed",caveId:92,hatcheryId:null});'+
+    'state.eggs.push({id:93,species:"fire",source:"breed",caveId:92,hatcheryId:3});'+
     'startBreeding(92,state.dragons[0].id,77);');
-  assert.equal(lifecycle.run('buildingById(92).breeding'),null);
+  assert(lifecycle.run('buildingById(92).breeding'),
+    'A bred egg already assigned to a Hatchery must not keep its cave busy');
+  lifecycle.run('buildingById(92).breeding=null;renderBreeding(92)');
+  assert(lifecycle.element('sheetBody').innerHTML.includes('data-action="start-breeding"'),
+    'A cave can show the new breeding form while its prior egg incubates');
+  lifecycle.run('state.eggs.find(e=>e.id===93).hatcheryId=null;startBreeding(92,state.dragons[0].id,77)');
+  assert.equal(lifecycle.run('buildingById(92).breeding'),null,
+    'A bred egg still waiting in Inventory must keep its cave busy');
   lifecycle.run('renderBreeding(92)');
   assert(lifecycle.element('sheetBody').innerHTML.includes('previous bred egg'));
   assert(!lifecycle.element('sheetBody').innerHTML.includes('data-action="start-breeding"'));
@@ -211,6 +218,15 @@ check('upgraded hatchery fills all nests and keeps ready eggs occupying slots',(
  g.run('renderHatchery(3)');
  assert(g.element('sheetBody').innerHTML.includes('2/3')||
    g.element('sheetBody').innerHTML.includes('3 incubation nests'));
+});
+check('Hatchery upgrade UI shows the same gold and Gem costs as the upgrade logic',()=>{
+ const g=lifecycle;
+ g.run('state=newGame();state.player.level=5;renderHatchery(3)');
+ const cost=snapshot(g,'standardUpgradeCost(buildingById(3))');
+ const html=g.element('sheetBody').innerHTML;
+ const expected='Upgrade · '+g.run('money('+cost.gold+')')+' gold · '+
+   g.run('money('+cost.gems+')')+' gems';
+ assert(html.includes(expected),'Hatchery button should show both resource costs: '+expected);
 });
 check('hatchery eggs scale with nests and do not overlap at level five',()=>{
  const sizes=snapshot(game,'[1,2,3,4,5].map(level=>({level,scale:hatcheryEggScale(level,900,500)}))');
@@ -719,7 +735,12 @@ check('premium cave shares busy rules and has its own breeding turn',()=>{
  assert(premium.element('sheetBody').innerHTML.includes('breed-ready-egg'));
  premium.run('collectBreeding(93)');
  assert.equal(premium.run('state.eggs.at(-1).caveId'),93);
+ assert(premium.run('state.eggs.at(-1).hatcheryId'),'The collected egg should begin incubating in the Hatchery');
  assert.equal(premium.run('buildingById(93).breeding'),null);
+ premium.run('startBreeding(93,2,92)');
+ assert(premium.run('!!buildingById(93).breeding'),
+   'The Premium Cave can start another turn while its prior egg incubates');
+ premium.run('buildingById(93).breeding=null');
  premium.run('startBreeding(94,2,92)');
  assert(premium.run('!!buildingById(94).breeding'),'The other cave runs independently');
 });

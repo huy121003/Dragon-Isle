@@ -35,7 +35,7 @@ function renderHatchery(id){
     html+='<div class="actions">'+(b.upgradeEnds?inlineTimer(b.upgradeStartedAt,b.upgradeEnds):
       state.player.level<required?'<span class="pill">Upgrade Hatchery to level '+(b.level+1)+' at player level '+required+'</span>':
       '<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
-      money(upgradeCost(b))+' gold</button>')+'</div>';
+      money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems</button>')+'</div>';
   }
   dom.body.innerHTML=html;
 }

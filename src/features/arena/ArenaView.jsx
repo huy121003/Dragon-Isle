@@ -4,6 +4,8 @@ import {Button,Tag} from 'antd';
 import '../../arena.css';
 import {emitRuntime,game,send} from '../../app/game-bridge.js';
 const fmt=new Intl.NumberFormat('en-US');
+function arenaConfig(){return window.DragonConfig.arena;}
+function combatConfig(){return window.DragonConfig.combat;}
 function speciesOf(id){return game()?.data?.species?.[id];}
 function ElementFlag({id,primary=false,size='sm'}){
   const e=game()?.data?.elements?.[id];
@@ -39,9 +41,12 @@ function RarityGem({id,element}){
 function badges(id){return (speciesOf(id)?.elements||[]).map((element,index)=>{
   return <ElementFlag key={index} id={element} primary={index===0}/>;
 });}
-function Stars({count=0}){return <span className="arena-stars" aria-label={`${count} of 5 stars`}>
-  {'★'.repeat(Math.max(0,Math.min(5,count)))}{'☆'.repeat(5-Math.max(0,Math.min(5,count)))}
-</span>;}
+function Stars({count=0}){
+  const max=combatConfig().star.max,value=Math.max(0,Math.min(max,count));
+  return <span className="arena-stars" aria-label={`${count} of ${max} stars`}>
+    {'★'.repeat(value)}{'☆'.repeat(max-value)}
+  </span>;
+}
 function Portrait({dragon,large=false,facing=1}){
   const ref=useRef(null);
   useEffect(()=>{
@@ -71,7 +76,8 @@ export function RosterCard({dragon,selected,onClick,disabled}){
   </button>;
 }
 function TeamSlots({title,ids,dragons}){
-  return <div className="arena-team-slots"><b>{title} · {ids.length}/3</b><div>{[0,1,2].map(i=>{
+  const teamSize=arenaConfig().teamSize;
+  return <div className="arena-team-slots"><b>{title} · {ids.length}/{teamSize}</b><div>{Array.from({length:teamSize},(_,i)=>i).map(i=>{
     const dragon=dragons.find(d=>d.id===ids[i]);
     return <span className={'arena-team-slot '+(!dragon?'empty':'')} key={i} title={dragon?.nickname||'Empty'}>
       {dragon?<><Portrait dragon={dragon}/><span className="arena-slot-marks">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span><small>{dragon.nickname}</small><Stars count={dragon.stars||0}/></>:<strong>+</strong>}
@@ -80,6 +86,8 @@ function TeamSlots({title,ids,dragons}){
 }
 function ArenaSetup({arena}){
   const [side,setSide]=useState('attack'),[elements,setElements]=useState([]),data=arena.data;
+  const config=arenaConfig(),teamSize=config.teamSize,minLevel=config.minBattleLevel;
+  const cooldownMinutes=Math.round(config.cooldownMs/60000);
   if(!data)return <div className="arena-loading">⏳ Loading Arena…
     {arena.error&&<p>{arena.error}</p>}<Button onClick={()=>send({action:'arena-refresh'})}>Reload</Button></div>;
   const visibleDragons=data.dragons.filter(dragon=>elements.every(id=>speciesOf(dragon.species)?.elements.includes(id)));
@@ -95,9 +103,9 @@ function ArenaSetup({arena}){
     {arena.error&&<div className="arena-error">{arena.error}</div>}
     {arena.result&&<div className={'arena-finish '+(arena.result.won?'win':'lose')}>
       <span>{arena.result.won?'🏆':'💔'}</span><div><b>{arena.result.won?'Victory!':'Defeat'}</b>
-      <small>{arena.result.won?`+${fmt.format(arena.result.reward.gold)} gold · +${fmt.format(arena.result.reward.food)} food · +1 gem`:'Wait 15 minutes before your next battle.'}</small></div></div>}
+      <small>{arena.result.won?`+${fmt.format(arena.result.reward.gold)} gold · +${fmt.format(arena.result.reward.food)} food · +${fmt.format(arena.result.reward.gems||0)} gem`:`Wait ${cooldownMinutes} minutes before your next battle.`}</small></div></div>}
     {arena.phase!=='opponents'?<section className="arena-setup-section"><div className="arena-section-head"><div><small>01 · PREPARE</small>
-      <h3>Your teams</h3></div><Tag color="gold">Exactly 3 dragons at Lv10+ per team</Tag></div>
+      <h3>Your teams</h3></div><Tag color="gold">Exactly {teamSize} dragons at Lv{minLevel}+ per team</Tag></div>
       <div className="arena-teams-preview"><TeamSlots title="⚔ Attack" ids={arena.draft.attack} dragons={data.dragons}/>
         <TeamSlots title="🛡 Defense" ids={arena.draft.defense} dragons={data.dragons}/></div>
       <div className="arena-team-tabs"><Button type={side==='attack'?'primary':'default'} onClick={()=>setSide('attack')}>⚔ Choose attack</Button>
@@ -108,7 +116,7 @@ function ArenaSetup({arena}){
         onClick={()=>send({action:'arena-toggle',side,id:dragon.id})}/>)}
         {!visibleDragons.length&&<p className="arena-empty">No dragons match all selected elements.</p>}</div>
       <div className="arena-save-bar"><span>Your defense team protects your island while you are away.</span>
-        <Button type="primary" size="large" loading={arena.busy} disabled={arena.draft.attack.length!==3||arena.draft.defense.length!==3}
+        <Button type="primary" size="large" loading={arena.busy} disabled={arena.draft.attack.length!==teamSize||arena.draft.defense.length!==teamSize}
           onClick={()=>send({action:'arena-save'})}>OK · Confirm teams</Button></div>
     </section>:<section className="arena-setup-section"><div className="arena-section-head"><div><small>02 · CHALLENGE</small>
       <h3>Choose opponent</h3></div>{wait>0&&<Tag color="volcano">⏳ Remaining: {waitText}</Tag>}</div>
@@ -120,10 +128,10 @@ function ArenaSetup({arena}){
           <Portrait dragon={dragon} facing={-1}/><b>{dragon.nickname}</b>
           <small>{speciesOf(dragon.species)?.name} · Lv{dragon.level}</small><Stars count={dragon.stars||0}/>
           <span className="arena-element-row">{badges(dragon.species)}<RarityGem id={speciesOf(dragon.species)?.rarity} element={speciesOf(dragon.species)?.elements?.[0]}/></span></div>)}</div>
-        <Button type="primary" size="large" block disabled={arena.busy||wait>0||data.attack.length!==3}
+        <Button type="primary" size="large" block disabled={arena.busy||wait>0||data.attack.length!==teamSize}
           onClick={()=>send({action:'arena-fight',opponent:opponent.id})}>⚔ Start battle</Button>
       </div>)}</div>
-      {data.attack.length!==3&&<p className="arena-tip">Save an attack team of exactly three dragons before challenging.</p>}
+      {data.attack.length!==teamSize&&<p className="arena-tip">Save an attack team of exactly {teamSize} dragons before challenging.</p>}
     </section>}
   </div>;
 }

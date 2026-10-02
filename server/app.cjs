@@ -12,6 +12,10 @@ const {createSaveRoutes}=require('./routes/save.cjs');
 const {createAdminRoutes}=require('./routes/admin.cjs');
 const {createStaticHandler}=require('./static.cjs');
 
+/**
+ * Compose server services and route handlers around explicit data/content roots.
+ * @returns {Promise<object>} HTTP handler plus auth/Arena/Challenge services for tests/bootstrap.
+ */
 async function createApp({root,dataDir,contentDir=path.join(root,'data'),secureCookies=false}){
   const profilesDir=path.join(dataDir,'profiles');
   const auth=await createAuth(dataDir);
@@ -39,5 +43,6 @@ async function createApp({root,dataDir,contentDir=path.join(root,'data'),secureC
   };
   return {handler,auth,arena,challenge,profilesDir};
 }
+/** Wrap a composed app handler in a Node HTTP server without adding route logic. */
 function createHttpServer(app){return http.createServer(app.handler);}
 module.exports={createApp,createHttpServer};

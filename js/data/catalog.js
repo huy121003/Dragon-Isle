@@ -4,6 +4,8 @@
 const DRAGON_DATA=window.DragonData;
 const GAME_CONFIG=window.GameDatabase;
 const DRAGON_DB=window.DragonDatabase;
+/** Player-level unlock map for each element; shared by pricing, islands, breeding and hatching rules. */
+const ELEMENT_UNLOCK=window.GameDatabase.elementUnlocks;
 const DATA={
   footprints:GAME_CONFIG.footprints,
   legacyGridOffset:GAME_CONFIG.legacyGridOffset,

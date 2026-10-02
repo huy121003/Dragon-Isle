@@ -110,6 +110,8 @@ try{
   assert.match(fighting,/Rival reserve dragons/);
   assert.equal((fighting.match(/arena-reserve-button/g)||[]).length,4,
     'Only the two reserve dragons per side appear beside the battlefield');
+  assert.equal((fighting.match(/arena-reserve-hp/g)||[]).length,4,
+    'Every reserve dragon has a visible HP bar');
   assert.doesNotMatch(fighting,/arena-parties|arena-battle-party/,
     'Large translucent party overlays are removed');
   assert.doesNotMatch(fighting,/4,250 power|roster-power/);
@@ -117,6 +119,21 @@ try{
   assert.doesNotMatch(fighting,/battle-details-scroll|battle-feed|Recent moves/,
     'Arena skills stay inside the battle and turn logs remain hidden');
   assert.doesNotMatch(fighting,/Đánh thường/);
+  const duelBattle={...battle,opponent:'Bela'};
+  const duel=renderToStaticMarkup(React.createElement(ChallengeView,{status:{busy:false,match:{id:'duel-1',phase:'battle',opponent:'Bela',myTurn:true,eventSeq:0,battle:duelBattle}},request:()=>{},refresh:()=>{}}));
+  assert.match(duel,/battle-stage has-arena-controls/);
+  assert.match(duel,/Your reserve dragons/);assert.match(duel,/Rival reserve dragons/);
+  assert.equal((duel.match(/arena-reserve-button/g)||[]).length,4,
+    'Challenge also shows both sides’ two reserve dragons in the battlefield');
+  assert.equal((duel.match(/arena-reserve-hp/g)||[]).length,4,
+    'Challenge shows HP bars for every reserve dragon');
+  assert(duel.indexOf('arena-stage-controls')<duel.indexOf('battle-skill-grid'),
+    'Challenge skills are inside the battlefield');
+  assert.doesNotMatch(duel,/battle-bench|battle-switch-list|battle-feed|battle-details-scroll|Recent moves/,
+    'Arena and Challenge share the same compact in-field controls without challenge-only panels');
+  const waitingDuel=renderToStaticMarkup(React.createElement(ChallengeView,{status:{busy:false,match:{id:'duel-2',phase:'battle',opponent:'Bela',myTurn:false,eventSeq:0,battle:duelBattle}},request:()=>{},refresh:()=>{}}));
+  assert.match(waitingDuel,/<button[^>]*disabled=""[^>]*class="arena-reserve-button switchable"/,
+    'Reserve switching is disabled while waiting for the opponent’s turn');
   const charging=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle},busy:true,pendingSkill:'Flame Slash'}}));
   assert.match(charging,/is-charging/);assert.match(charging,/is casting Flame Slash/);
@@ -155,6 +172,10 @@ try{
   assert.match(support,/\+120 HP/);assert.doesNotMatch(support,/matchup-mark/);
   assert.equal(renderToStaticMarkup(React.createElement(SkillEffect,{event:{switchTo:'Alex'}})),'');
   const styles=readFileSync(new URL('../src/arena.css',import.meta.url),'utf8');
+  assert.match(styles,/\.battle-modal \.battle-stage\{flex:1 1 auto;height:auto;min-height:320px\}/,
+    'Arena field grows into the modal instead of staying compressed to a short percentage');
+  assert.match(styles,/@media\(max-height:700px\)\{\s*\.battle-modal \.battle-stage\{height:auto;min-height:300px\}/,
+    'Short-height viewports keep enough battlefield height for fighters and skill controls');
   assert(styles.includes('.battle-skill-fx.normal .fx-projectile'));
   assert(styles.includes('.battle-skill-fx.support .fx-trail'));
   for(const element of ['war','pure','legend','primal','time'])

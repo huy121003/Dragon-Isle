@@ -47,9 +47,10 @@ export default function useChallenge(account,connection){
   useEffect(()=>{
     if(account&&!connection?.blocked)client.invalidateQueries({queryKey:['challenge','status',account.id]});
   },[account?.id,connection?.blocked,client]);
+  const base=query.data||{players:[],match:null};
   return {
-    challenge:query.data?{...query.data,error:query.error?.message||mutation.error?.message||null,
-      busy:mutation.isPending}:null,
+    challenge:{...base,error:query.error?.message||mutation.error?.message||null,
+      busy:mutation.isPending},
     status:()=>query.refetch(),
     request:(route,body,method)=>mutation.mutateAsync({route,body,method})
   };

@@ -224,7 +224,7 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  balance.run('updateHeader()');
  assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(5)')+' XP');
  balance.run('state.player.level=60;state.player.xp=0;updateHeader()');
- assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('playerXPNeeded(60)')+' XP');
+ assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('money(playerXPNeeded(60))')+' XP');
  balance.run('gainPlayerXP(playerXPNeeded(60))');
  assert.equal(balance.run('state.player.level'),61);
 });
@@ -322,7 +322,7 @@ check('Habitat purchase, upgrade cost and time scale by element',()=>{
  assert.equal(economy.run('farmLimit(1000)'),economy.run('window.DragonEconomy.progression.maxFarms'));
 });
 check('Habitat purchase history, resale, old saves and the Arena shortcut',()=>{
- economy.run('state=newGame();state.gold=100000;syncDock()');
+ economy.run('state=newGame();state.player.level=2;state.gold=100000;syncDock()');
  assert.equal(economy.element('arenaDockButton').hidden,true);
  const first=economy.run('habitatPurchaseCost("water")');
  economy.run('beginMode({kind:"buy",type:"habitat",element:"water"})');
@@ -538,11 +538,11 @@ check('Hatchery movement and XP for land and island',()=>{
  g.run('state= newGame();addEgg("fire");beginMode({kind:"move",id:3});completePlacement(750,692)');
  assert.equal(g.run('state.buildings.find(b=>b.type==="hatchery").x'),750);
  assert.equal(g.run('state.eggs[0].hatcheryId'),3);
- g.run('state.gold=500000;unlockLand(739,691)');
- assert(g.run('state.player.level')>=2);
+ g.run('state.gold=500000;state.player.xp=0;unlockLand(739,691)');
+ assert.equal(g.run('state.player.xp'),g.run('window.DragonEconomy.progression.xpSources.land'));
  g.run('state.player.level=10;state.player.xp=0;state.gems=1000;'+
    'state.regions=[...new Set([...state.regions,...Array.from({length:9},(_,i)=>`0:${i%3}:${Math.floor(i/3)}`)])];unlockIsland(1)');
- assert.equal(g.run('state.player.xp'),150);
+ assert.equal(g.run('state.player.xp'),g.run('window.DragonEconomy.progression.xpSources.island'));
 });
 check('two-element breeding is favored and chance labels have two decimals',()=>{
  balance.run('state.dragons.push({id:state.nextId++,species:"water",level:5,habitatId:null});'+
@@ -601,7 +601,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
 });
 const premium=await boot();
 check('Celestial Sanctuary costs gems once and persists through saves',()=>{
- premium.run('state=newGame();state.gems=249;ui.shopTab="special";renderShop()');
+ premium.run('state=newGame();state.player.level=10;state.player.xp=0;state.gems=249;ui.shopTab="special";renderShop()');
  assert(premium.element('sheetBody').innerHTML.includes('data-type="premiumCave"'));
  assert(premium.element('sheetBody').innerHTML.includes('♦ 250'));
  premium.run('beginMode({kind:"buy",type:"premiumCave"})');

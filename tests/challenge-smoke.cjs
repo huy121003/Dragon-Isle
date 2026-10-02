@@ -1,4 +1,5 @@
 const assert=require('node:assert/strict');
+const economy=require('../data/economy.js');
 const fs=require('node:fs');
 const os=require('node:os');
 const path=require('node:path');
@@ -61,7 +62,7 @@ const {createChallenge}=require('../server/challenge.cjs');
     assert.equal(final.finished,true);assert.equal(final.won,false);
     assert.match((await duel.status(a)).notice,/won/);
     assert.equal((await duel.status(b)).match,null);
-    assert.equal(JSON.parse(fs.readFileSync(files[0])).gold,500,'A duel has no prize');
+    assert.equal(JSON.parse(fs.readFileSync(files[0])).gold,economy.starting.gold,'A duel has no prize');
     await duel.invite(a,b.id);
     await duel.leave(a);
     const stale=JSON.parse(fs.readFileSync(files[1]));stale.savedAt=Date.now()-40000;

@@ -5,6 +5,7 @@ const os=require('node:os');
 const path=require('node:path');
 const net=require('node:net');
 const {spawn}=require('node:child_process');
+const economyRules=require('../data/economy.js');
 const root=path.resolve(__dirname,'..');
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dragon-isle-auth-'));
 for(const name of ['dragons.json','game.json'])fs.copyFileSync(path.join(root,'data',name),path.join(temporary,name));
@@ -141,7 +142,7 @@ async function launch(port){
     assert.equal(bulk.status,200);
     assert.equal((await bulk.json()).updated,3);
     assert.equal((await fetch(base+'/api/admin/users',{headers:{Cookie:adminCookie}})).status,401);
-    for(const [id,expectedGold] of [[idA,500],[idB,4321],[idC,500]]){
+    for(const [id,expectedGold] of [[idA,500],[idB,4321],[idC,economyRules.starting.gold]]){
       const profile=JSON.parse(fs.readFileSync(path.join(temporary,'profiles',id+'.json'),'utf8'));
       assert.equal(profile.gold,expectedGold);assert.equal(profile.food,0);assert.equal(profile.gems,42);
       assert.equal(profile.dragons.length,idA===id?0:1);

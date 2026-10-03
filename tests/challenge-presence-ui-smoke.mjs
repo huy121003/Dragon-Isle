@@ -38,6 +38,8 @@ try{
     request:()=>{},refresh:()=>{}
   }));
   assert.match(selecting,/challenge-reconnecting/);
+  assert.match(selecting,/aria-label="Filter by dragon tier"/);
+  assert.match(selecting,/aria-label="Tier: Common"/);
   assert.match(selecting,new RegExp('Ready with these '+challengeConfig.teamSize));
 
   const battleDragon={...dragon,hp:500,maxHp:500};

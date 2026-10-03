@@ -20,7 +20,7 @@
     /** Dragon level required before it can enter breeding. */
     breedLevel:5,
     /** Dragon levels that unlock skill slots 1..4. */
-    skillUnlockLevels:Object.freeze([10,15,20,25]),
+    skillUnlockLevels:Object.freeze([1,5,10,15]),
     /** Element/player-level unlock gates used by islands, shop, breeding and hatching pressure. */
     elementUnlocks:Object.freeze({
       fire:1,water:2,earth:4,wind:6,ice:8,thunder:11,nature:14,dark:18,

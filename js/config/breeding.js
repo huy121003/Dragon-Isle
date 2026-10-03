@@ -16,12 +16,15 @@
     four:Object.freeze({base:.0225,perTenLevels:.003,cap:.045,growthStartLevel:30}),
     double:Object.freeze({base:.009,perTenLevels:.0015,cap:.018,minParentLevel:40}),
     premium:Object.freeze({rareFactor:1.40,timeFactor:.80}),
-    /** Defensive fallback for malformed/unknown species; normal species use timeByTier. */
+    /** Defensive fallback for malformed/unknown species. */
     fallbackSeconds:60,
-    /** Base breeding time in seconds by offspring tier; 4-element and Double are day-scale. */
-    timeByTier:Object.freeze({1:1800,2:7200,3:28800,4:86400,double:129600}),
-    /** Time modifiers are decimal percentages; pressure applies to the base tier time. */
-    elementLevelPercent:.002,maxElementBonusPercent:.15,
+    /** Base breeding time in seconds for offspring carrying each element. */
+    elementSeconds:Object.freeze({fire:60,water:60,earth:90,wind:120,ice:180,thunder:300,
+      nature:420,dark:600,light:900,metal:1200,war:1800,pure:2400,legend:3000,primal:3600,time:4200}),
+    /** Multiply the sum of the offspring's element times by its tier. */
+    tierMultipliers:Object.freeze({2:2,3:4,4:8,double:12}),
+    /** Maximum time for a single breeding action at each tier. */
+    maxTierSeconds:Object.freeze({2:21600,3:43200,4:86400,double:172800}),
     /** Parent complexity adds 3% for each distinct union element beyond two. */
     parentUnionPercent:.03,
     /** Parents with different element-slot counts add a small 2% duration. */

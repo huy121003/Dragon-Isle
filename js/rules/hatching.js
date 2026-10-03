@@ -20,15 +20,16 @@
   /**
    * Calculate incubation duration in seconds.
    * @param {object} species - Catalog species.
-   * @param {object} elementUnlocks - Map element id -> player unlock level.
+   * @param {object} _elementUnlocks - Retained for compatibility with existing callers.
    */
-  function seconds(species,elementUnlocks){
+  function seconds(species,_elementUnlocks){
     if(!species)return config.fallbackSeconds;
     const tier=tierOf(species);
     if(tier===1)return config.pureElementSeconds[species.elements[0]]||60;
-    const pressure=species.elements.reduce((sum,id)=>sum+(elementUnlocks[id]||1),0)/species.elements.length;
-    const pressureBonus=Math.min(config.maxElementBonusPercent,pressure*config.elementLevelPercent);
-    return Math.round((config.tierSeconds[tier]||config.tierSeconds[4])*(1+pressureBonus));
+    const elementTime=species.elements.reduce((sum,id)=>sum+(config.pureElementSeconds[id]||60),0);
+    const multiplier=config.tierMultipliers[tier]||config.tierMultipliers[4];
+    const maximum=config.maxTierSeconds[tier]||config.maxTierSeconds[4];
+    return Math.min(maximum,Math.round(elementTime*multiplier));
   }
 
   return {tierOf,seconds};

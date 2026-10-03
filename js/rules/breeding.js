@@ -115,17 +115,18 @@
   }
 
   /** Breeding duration in seconds for the resulting species and parent mix. */
-  function seconds(species,tier,elementUnlocks,parentSpecies,premium){
-    const pressure=species.elements.reduce((sum,id)=>sum+(elementUnlocks[id]||1),0)/species.elements.length;
-    let durationScale=1+Math.min(config.maxElementBonusPercent,pressure*config.elementLevelPercent);
+  function seconds(species,tier,_elementUnlocks,parentSpecies=[],premium){
+    const elementTime=species.elements.reduce((sum,id)=>sum+(config.elementSeconds[id]||config.fallbackSeconds),0);
+    const multiplier=tier===1?1:(config.tierMultipliers[tier]||config.tierMultipliers[4]);
+    let duration=elementTime*multiplier;
     if(parentSpecies.length===2){
       const union=new Set(parentSpecies.flatMap(parent=>parent.elements));
-      durationScale+=Math.max(0,union.size-2)*config.parentUnionPercent;
-      if(parentSpecies[0].elements.length!==parentSpecies[1].elements.length)
-        durationScale+=config.mixedParentPercent;
+      const parentScale=1+Math.max(0,union.size-2)*config.parentUnionPercent+
+        (parentSpecies[0].elements.length!==parentSpecies[1].elements.length?config.mixedParentPercent:0);
+      duration*=parentScale;
     }
-    const base=config.timeByTier[tier]||config.timeByTier[4];
-    return Math.round(base*durationScale*(premium?config.premium.timeFactor:1));
+    duration=Math.round(duration*(premium?config.premium.timeFactor:1));
+    return tier===1?duration:Math.min(duration,config.maxTierSeconds[tier]||config.maxTierSeconds[4]);
   }
 
   return {rareTierChances,commonTierChances,candidateBias,offspringOptions,seconds};

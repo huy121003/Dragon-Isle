@@ -488,21 +488,33 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
  assert.equal(economy.run('hatchingSeconds(DATA.species.fire)'),30);
  assert.equal(economy.run('hatchingSeconds(DATA.species.water)'),60);
  assert.equal(economy.run('hatchingSeconds(DATA.species.time)'),21600);
- assert.equal(economy.run('hatchingSeconds(DATA.species[FOUR_IDS[0]])')>=129600,true);
- assert.equal(economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])')>=172800,true);
+ assert(economy.run('hatchingSeconds(DATA.species[FOUR_IDS[0]])')<=
+   economy.run('window.DragonConfig.hatching.maxTierSeconds[4]'));
+ assert(economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])')<=
+   economy.run('window.DragonConfig.hatching.maxTierSeconds.double'));
  const ids=snapshot(economy,'({two:Object.keys(DATA.species).find(id=>DATA.species[id].elements.length===2),'+
    'three:TRIPLE_IDS[0],four:FOUR_IDS[0],double:DOUBLE_IDS[0]})');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])')>45);
+ assert.equal(economy.run('hatchingSeconds(DATA.species["fire>water"])'),180,
+   'Fire and Water incubation uses both pure-element timers and the 2-element multiplier');
+ assert.equal(economy.run('breedingSeconds(DATA.species["fire>water"])'),240,
+   'Fire and Water breeding uses both element timers and the offspring tier multiplier');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
    economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>
    economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.three)+'])'));
+ const doubleElements=snapshot(economy,'DATA.species['+JSON.stringify(ids.double)+'].elements');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')>
-   economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])'));
+   economy.run('hatchingSeconds({rarity:"mythic",elements:'+JSON.stringify(doubleElements)+'})'),
+   'Double Element gets its higher tier multiplier for the same component elements');
  assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
    economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
- assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>=86400);
- assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')>=129600);
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>
+   economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.three)+'])'));
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')<=
+   economy.run('window.DragonConfig.breeding.maxTierSeconds[4]'));
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')<=
+   economy.run('window.DragonConfig.breeding.maxTierSeconds.double'));
  economy.run('state=newGame();addEgg(DOUBLE_IDS[0],"shop")');
  assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),
    economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])*1000'));

@@ -22,8 +22,10 @@
     attemptWindowMs:8*60*60*1000,
     /** Gem cost to instantly restore all Arena attempts. */
     attemptRefillGemCost:5,
-    /** Target rival squad Combat Power relative to the player's three strongest dragons. */
-    rivalPowerRatios:Object.freeze([.55,.75,.95,1.1,1.25]),
+    /** Matchmaking bands relative to the player's three strongest owned dragons. */
+    rivalPowerRatios:Object.freeze([.65,.82,1,1.12,1.25]),
+    /** Catalog-backed squad candidates evaluated for each persisted rival. */
+    rivalCandidateTeams:120,
     /** Safety cap that ends battles which cannot naturally reach a knockout. */
     maxTurns:80,
     /** Number of recent authoritative events exposed to clients. */

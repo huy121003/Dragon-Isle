@@ -47,9 +47,13 @@ function renderShop(){
   }else if(ui.shopTab==="eggs"){
     html+='<div class="note">'+(isAdmin?'Admin shop: all dragon eggs are available. Prices depend on rarity and unlock level.':'The shop sells pure element eggs. Prices depend on rarity and unlock level.')+' Purchased eggs enter an available Hatchery nest.</div>'+ 
       '<div class="cards">';
-    DRAGON_DB.species.map(function(raw){return DATA.species[raw.id];}).filter(function(s){
+    const eggSpecies=DRAGON_DB.species.map(function(raw){return DATA.species[raw.id];}).filter(function(s){
       return (isAdmin||s.elements.length===1)&&s.detail.giaTrung;
-    }).forEach(function(s){
+    });
+    const eggPageSize=isAdmin?48:eggSpecies.length;
+    const eggPageCount=Math.max(1,Math.ceil(eggSpecies.length/eggPageSize));
+    ui.shopEggPage=Math.max(0,Math.min(eggPageCount-1,Number(ui.shopEggPage)||0));
+    eggSpecies.slice(ui.shopEggPage*eggPageSize,(ui.shopEggPage+1)*eggPageSize).forEach(function(s){
       const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
       const need=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99);
       const canBuy=state.player.level>=need&&(price.vang?state.gold>=cost:state.gems>=cost);
@@ -64,6 +68,9 @@ function renderShop(){
         (price.vang?resourceAmount('gold',price.vang):resourceAmount('gems',price.gem))+'</button></div></div>';
     });
     html+='</div>';
+    if(isAdmin&&eggPageCount>1)html+='<div class="actions shop-pages"><button class="btn" data-action="shop-eggs-page" data-page="'+(ui.shopEggPage-1)+'"'+
+      (ui.shopEggPage===0?' disabled':'')+'>‹ Previous</button><span>Page '+(ui.shopEggPage+1)+' / '+eggPageCount+' · '+eggSpecies.length+' eggs</span><button class="btn" data-action="shop-eggs-page" data-page="'+(ui.shopEggPage+1)+'"'+
+      (ui.shopEggPage>=eggPageCount-1?' disabled':'')+'>Next ›</button></div>';
   }else if(ui.shopTab==="save"){
     html+='<div class="note">Signed in: <b>'+esc(currentAccount.username)+
       '</b>. Progress is saved separately on the server.'+

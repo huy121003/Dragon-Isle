@@ -1,6 +1,5 @@
 /* Extend the existing JSON catalog with elemental species using its original dragon builder. */
 const expansion=require('../data/elements-expansion.json');
-const doubleElements=require('../data/double-elements.json');
 const specialSkillCatalog=require('../data/special-skills.json');
 const doubleDragonCatalog=require('../data/double-element-dragons.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -59,7 +58,9 @@ function extendCatalog(db,game){
       throw Error('Unbalanced element chart: '+id);
   }
   db.khac=Object.fromEntries(ids.map(id=>[id,ids.filter(target=>expansion.wins[id].includes(target))]));
-  db.rarities[doubleElements.rarity.id]=clone(doubleElements.rarity);
+  if(doubleDragonCatalog.rarityConfig.id!==doubleDragonCatalog.rarity)
+    throw Error('Double Element rarity metadata does not match its recipes.');
+  db.rarities[doubleDragonCatalog.rarity]=clone(doubleDragonCatalog.rarityConfig);
   globalThis.DragonDatabase=db;
   // Use the same factory, rarity, colors, stats, passive and skills as all existing dragons.
   const rulesPath=require.resolve('../js/data/dragon-rules.js');

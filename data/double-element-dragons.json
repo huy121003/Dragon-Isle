@@ -1,6 +1,17 @@
 {
   "version": 1,
   "rarity": "transcendent",
+  "rarityConfig": {
+    "id": "transcendent",
+    "ten": "Transcendent",
+    "vien": "#f064a6",
+    "hao": "#ffe399",
+    "heSoChiSo": 1.64,
+    "vangGio": 3200,
+    "apGiay": 5400,
+    "giaTrung": null,
+    "banGia": 75000
+  },
   "dragons": [
     {
       "speciesId": "fire>fire>water>thunder",

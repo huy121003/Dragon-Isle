@@ -96,4 +96,30 @@ for(const skill of special){
   engine.strike(setup([actor],[target]),'attack',skill,3);
   assert(fx.status(target,'damage_down'),'Dread Shroud reduces target damage');
 }
+{
+  const active=fighter('earth',1),reserve=fighter('water',2);
+  const battle=setup([active,reserve],[fighter('fire',3)]);
+  fx.addStatus(reserve,{kind:'poison',value:.04,duration:3},'nature');
+  fx.addStatus(reserve,{kind:'shield',value:.2,duration:2},'earth');
+  const hp=reserve.hp,shield=fx.status(reserve,'shield').amount;
+  fx.tickSide(battle,'attack');
+  assert.equal(reserve.hp,hp,'reserve shield absorbs poison before HP');
+  assert(fx.status(reserve,'shield').amount<shield);
+  fx.switchFighter(battle,'attack',1);
+  assert.equal(fx.status(reserve,'poison').turns,2,'swap preserves remaining poison');
+}
+{
+  const actor=fighter('legend',1),target=fighter('earth',2);
+  const battle=setup([actor],[target]);
+  battle.lastSkillBySide={defense:'fire-special-1'};
+  const mimic=game.skills.elemental.legend.find(s=>s.effect?.kind==='copy_last');
+  engine.strike(battle,'attack',mimic,3);
+  assert.equal(fx.status(target,'burn')?.value,.04*.65,'Mimic scales copied burn');
+}
+{
+  const actor=fighter('metal',1),target=fighter('fire',2),battle=setup([actor],[target]);
+  fx.addStatus(target,{kind:'reflect',value:.18,cap:.12,duration:2},'metal');
+  const hp=actor.hp;engine.strike(battle,'attack',actor.skills[0],0);
+  assert(actor.hp<hp,'reflect damages the direct attacker');
+}
 console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');

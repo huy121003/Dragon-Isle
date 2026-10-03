@@ -1068,10 +1068,19 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
    html.indexOf('data-action="start-breeding"')<html.indexOf('breed-results'),
    'Start breeding should be available before the long possible-dragon list');
  assert(html.includes('data-breed-search="father"')&&html.includes('data-breed-search="mother"'));
+ assert(html.includes('data-action="rarity-filter" data-target="breed-father"')&&
+   html.includes('data-action="rarity-filter" data-target="breed-mother"'),
+   'Both breeding parent selectors expose rarity filters');
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"fire"}})');
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"water"}})');
  assert.deepEqual(snapshot(game,'ui.breedFatherElements'),['fire','water']);
  assert.deepEqual(snapshot(game,'ui.breedMotherElements'),[]);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-father",rarity:"epic"}})');
+ assert.deepEqual(snapshot(game,'ui.breedFatherRarities'),['epic']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-mother",rarity:"rare"}})');
+ assert.deepEqual(snapshot(game,'ui.breedMotherRarities'),['rare']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-father",rarity:"all"}});'+
+   'handleAction({dataset:{action:"rarity-filter",target:"breed-mother",rarity:"all"}})');
  html=game.element('sheetBody').innerHTML;
  assert(html.includes('aria-label="Filter: Fire" aria-pressed="true"'));
  assert(html.includes('aria-label="Filter: Water" aria-pressed="true"'));
@@ -1089,6 +1098,13 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
 check('four-element AND filters apply in dragon roster and book',()=>{
  assert(game.run('matchesElementFilter(DATA.species["fire>water"],["fire","water"])'));
  assert(!game.run('matchesElementFilter(DATA.species["fire>water"],["fire","earth"])'));
+ assert(game.element('sheetBody').innerHTML.includes('class="tier-glyph"'),
+   'Dragon Book tier tabs use symbols');
+ assert(game.element('sheetBody').innerHTML.includes('data-action="rarity-filter" data-target="book"'),
+   'Dragon Book has rarity icon filters');
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"book",rarity:"mythic"}})');
+ assert.deepEqual(snapshot(game,'ui.bookRarities'),['mythic']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"book",rarity:"all"}})');
  for(const element of ['fire','water','earth','wind','ice'])game.run('handleAction({dataset:{action:"element-filter",target:"book",element:"'+element+'"}})');
  assert.deepEqual(snapshot(game,'ui.bookElements'),['fire','water','earth','wind']);
  assert(game.element('sheetBody').innerHTML.includes('4/4 elements selected'));
@@ -1097,6 +1113,9 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  assert.deepEqual(snapshot(game,'ui.bookElements'),[]);
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
+ assert(game.element('sheetBody').innerHTML.includes('data-action="rarity-filter" data-target="dragon"'));
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"dragon",rarity:"epic"}})');
+ assert.deepEqual(snapshot(game,'ui.dragonRarities'),['epic']);
 });
 check('all single-element dragons are named after their element',()=>{
   const ids=['war','pure','legend','primal','time'];

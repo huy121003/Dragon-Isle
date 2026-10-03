@@ -3,6 +3,31 @@
 /* RENDER: Shared projected-footprint primitives and building animation helpers. */
 let structureBase=null,structureBounds=null;
 let structureUnit=1,structureUnitX=1,structureUnitY=1;
+const elementEmblemImages=Object.create(null);
+
+/** Draw the exact glyph used by the matching element flag from index.html. */
+function drawElementEmblem(id,x,y,size){
+  const key=String(id||"");let image=elementEmblemImages[key];
+  if(!image){
+    const symbol=document.getElementById("flag-"+key);
+    if(!symbol)return;
+    image=document.createElement("img");elementEmblemImages[key]=image;
+    const paths=symbol.innerHTML.replace(/currentColor/g,"#fff");
+    image.onload=function(){elementEmblemImages[key]=image;};
+    image.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'+paths+'</svg>');
+  }
+  if(image.complete&&image.naturalWidth){ctx.drawImage(image,x-size/2,y-size/2,size,size);return true;}
+  return false;
+}
+
+/** Place an element-flag glyph on a softly lit badge in the current drawing space. */
+function structureElementBadge(id,x,y,size){
+  const color=DATA.elements[id]?.color||"#fff";
+  structureEllipse(x,y,size*.62,size*.62,"#172638dd",color,.025);
+  structureGlow(x,y,size*.72,color+"42");
+  return drawElementEmblem(id,x,y,size*.78);
+}
 function trackStructure(points){
   if(!structureBounds)return;
   for(const [x] of points){structureBounds.min=Math.min(structureBounds.min,x);
@@ -84,10 +109,57 @@ function structureBanner(x,y,body,trim,time){
   structureLine([[x+.035,y-.31],[x+.11+flutter,y-.275]],trim,.012);
 }
 
-function structureCrop(x,y,ready,time,color){
-  const sway=Math.sin(time*.0016+x*19)*.02;
-  structureLine([[x,y+.065],[x+sway,y-.08]],'#466e3c',.018);
-  structurePoly([[x,y-.015],[x-.075,y-.085],[x-.08,y-.02]],'#55a951');
-  structurePoly([[x,y-.025],[x+.075,y-.105],[x+.07,y-.035]],'#8cd56a');
-  if(ready)structureEllipse(x+sway,y-.10,.027,.039,color,'#fff1c4',.006);
+function structureCrop(x,y,ready,time,crop){
+  const id=typeof crop==="string"?crop:crop?.id||"wheat";
+  const readyFill={wheat:"#f7ce5f",carrot:"#f18a3d",blueberry:"#6178e8",
+    pumpkin:"#ed9639",corn:"#f6d04d",dragonfruit:"#e95891",
+    starfruit:"#f8df55","crystal-melon":"#a8e6c4"}[id]||"#f7ce5f";
+  const sway=Math.sin(time*.0016+x*19)*.02,growth=ready?1:.82;
+  const top=y-.11*growth;
+  structureLine([[x,y+.065],[x+sway,top]],'#466e3c',.018);
+  structurePoly([[x+sway*.3,y-.015],[x-.075,y-.085],[x-.08,y-.02]],'#55a951');
+  structurePoly([[x+sway*.4,y-.025],[x+.075,y-.105],[x+.07,y-.035]],'#8cd56a');
+  if(id==="wheat"||id==="corn"){
+    const ears=id==="corn"?[-.035,.035]:[-.045,0,.045];
+    for(const offset of ears){
+      const ex=x+sway+offset;
+      structureLine([[ex,top+.05],[ex,top-.045]],id==="corn"?'#688c38':'#ad843c',.012);
+      structureEllipse(ex,top-.05,.018,id==="corn"?.045:.032,
+        ready?readyFill:'#b9a14c','#f3df8a',.006);
+      if(id==="wheat")for(let n=-1;n<=1;n++)structureLine([[ex,top-.025],[ex+n*.018,top-.01]],'#f6dd91',.007);
+    }
+    return;
+  }
+  if(id==="carrot"){
+    structurePoly([[x-.028,top-.005],[x+.028,top-.005],[x+sway,top+.11]],readyFill,'#c96c36',.006);
+    structureLine([[x,top+.03],[x+.014,top+.062]],'#ffca71',.006);return;
+  }
+  if(id==="pumpkin"){
+    structureEllipse(x+sway,top+.01,.045,.035,readyFill,'#b96832',.007);
+    structureLine([[x+sway,top-.028],[x+sway,top-.045]],'#48653d',.009);return;
+  }
+  if(id==="dragonfruit"){
+    structureLine([[x+sway,top+.04],[x+sway,top-.105]],'#438b59',.025);
+    structureLine([[x+sway,top-.01],[x-.035,top-.045],[x-.035,top-.09]],'#438b59',.019);
+    structureLine([[x+sway,top-.035],[x+.04,top-.065],[x+.04,top-.105]],'#438b59',.019);
+    if(ready)structurePoly([[x-.022,top-.12],[x,top-.158],[x+.023,top-.12],[x+.014,top-.087],[x-.014,top-.087]],readyFill,'#fff0ce',.006);
+    return;
+  }
+  if(id==="blueberry"){
+    structureEllipse(x+sway,top+.015,.052,.039,'#5c9d50','#34734c',.007);
+    if(ready)for(const [dx,dy] of [[-.025,0],[.018,-.01],[0,.025]])structureEllipse(x+dx,top+dy,.013,.013,readyFill,'#d2d9ff',.004);
+    return;
+  }
+  if(id==="starfruit"){
+    structureEllipse(x+sway,top+.01,.045,.033,'#70a655','#3a7346',.006);
+    if(ready){structurePoly([[x,top-.06],[x+.014,top-.035],[x+.042,top-.033],[x+.02,top-.014],[x+.028,top+.012],[x,top-.002],[x-.028,top+.012],[x-.02,top-.014],[x-.042,top-.033],[x-.014,top-.035]],readyFill,'#e6b94e',.005);}
+    return;
+  }
+  if(id==="crystal-melon"){
+    structureEllipse(x+sway,top+.014,.05,.037,readyFill,'#659b78',.007);
+    structureLine([[x+sway,top-.02],[x+sway,top+.045]],'#e5fff0',.006);
+    if(ready){structureLine([[x-.027,top-.005],[x-.04,top-.04]],'#4e9955',.009);structureLine([[x+.027,top-.005],[x+.04,top-.04]],'#4e9955',.009);}
+    return;
+  }
+  if(ready)structureEllipse(x+sway,top,.027,.039,readyFill,'#fff1c4',.006);
 }

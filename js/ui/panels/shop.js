@@ -3,11 +3,15 @@
 /* UI PANEL: Shop and egg-product detail presentation. */
 function renderShop(){
   dom.title.textContent="🏪 Shop";
+  const isAdmin=currentAccount?.role==="admin";
+  // The Data tab contains account data and must not be exposed to regular players.
+  if(!isAdmin&&ui.shopTab==="save")ui.shopTab="special";
   const economy=window.DragonConfig.economy,progression=window.DragonConfig.progression;
   const buildings=window.DragonConfig.buildings,breeding=window.DragonConfig.breeding;
   let html='<div class="tabs">'+
     [['special','Special buildings'],['habitats','Habitats'],['decorations','Decorations'],
       ['eggs','Eggs'],['supplies','Resources'],['save','💾 Data']]
+      .filter(([id])=>id!=="save"||isAdmin)
       .map(function([id,label]){return '<button class="btn '+(ui.shopTab===id?'active':'')+
         '" data-action="shop-tab" data-tab="'+id+'">'+label+'</button>';}).join('')+'</div>';
   if(ui.shopTab==="habitats"){

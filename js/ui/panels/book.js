@@ -7,7 +7,7 @@ function renderBook(){
   const filtered=(ui.bookTab==="triple"?TRIPLE_IDS:
     ui.bookTab==="quad"?FOUR_IDS:ui.bookTab==="double"?DOUBLE_IDS:BOOK_SPECIES_IDS).filter(function(id){
     const s=DATA.species[id];
-    if(!matchesElementFilter(s,ui.bookElements))return false;
+    if(!matchesElementFilter(s,ui.bookElements)||!matchesRarityFilter(s,ui.bookRarities))return false;
     if(ui.bookTab==="pure")return s.elements.length===1;
     if(ui.bookTab==="pair")return s.elements.length===2;
     return true;
@@ -27,11 +27,12 @@ function renderBook(){
       'Open a discovered dragon to see its appearance and four skills. ')+
     'Undiscovered entries show basic information; hatch an egg to unlock details.</div>'+ 
     '<div class="book-toolbar"><div class="tabs">';
-  [["all","All"],["pure","1 element"],["pair","2 elements"],["triple","3 elements"],
-    ["quad","4 elements"],["double","Double Element"]].forEach(function(tab){
-    html+='<button class="btn '+(ui.bookTab===tab[0]?"active":"")+'" data-action="book-tab" data-tab="'+tab[0]+'">'+tab[1]+'</button>';
+  [['all','All','All tiers'],['pure','Ⅰ','1 element'],['pair','Ⅱ','2 elements'],['triple','Ⅲ','3 elements'],
+    ['quad','Ⅳ','4 elements'],['double','∞','Double Element']].forEach(function(tab){
+    const label=tab[0]==='all'?tab[1]:'<span class="tier-glyph" aria-hidden="true">'+tab[1]+'</span>';
+    html+='<button class="btn book-tier-filter '+(ui.bookTab===tab[0]?"active":"")+'" data-action="book-tab" data-tab="'+tab[0]+'" title="'+tab[2]+'" aria-label="Filter: '+tab[2]+'">'+label+'</button>';
   });
-  html+='</div>'+elementFilter('book',ui.bookElements)+'</div>'+pager+'<div class="cards book-grid">';
+  html+='</div><div class="book-filters">'+elementFilter('book',ui.bookElements)+rarityFilter('book',ui.bookRarities)+'</div></div>'+pager+'<div class="cards book-grid">';
   filtered.slice(ui.bookPage*60,(ui.bookPage+1)*60).forEach(function(id){
     const s=DATA.species[id];
     const summary='<span class="dragon-marks">'+elementBadges(s)+rarityGem(s.rarity,s.elements[0])+'</span>';

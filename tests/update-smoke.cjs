@@ -1298,6 +1298,21 @@ check('dragon portraits leave room for the tail ring and the head',()=>{
     }
   }
 });
+check('battle dragon portraits mirror both sides and keep tails and heads in frame',()=>{
+  for(const level of [1,15,40]){
+    const stage=level<10?.74:level<30?1:1.2;
+    for(const facing of [1,-1]){
+      const placement=snapshot(balance,'battleDragonPortraitPlacement(290,230,'+level+','+facing+')');
+      const actual=placement.scale*stage*1.05;
+      const leftExtent=facing===1?94:60,rightExtent=facing===1?60:94;
+      assert(placement.x-leftExtent*actual>=10,'Tail stays inside the '+(facing===1?'player':'opponent')+' portrait');
+      assert(placement.x+rightExtent*actual<=280,'Head or tail stays clear of the right frame');
+    }
+  }
+  const player=snapshot(balance,'battleDragonPortraitPlacement(290,230,40,1)');
+  const rival=snapshot(balance,'battleDragonPortraitPlacement(290,230,40,-1)');
+  assert.equal(player.x+rival.x,290,'Opponent placement mirrors player placement');
+});
 check('rare breeding, 100000 roll Monte Carlo',()=>{
  game.run('state.dragons[0].species="fire>water>earth";state.dragons[0].level=35;'+
   'state.dragons[1].species="wind>ice>thunder";state.dragons[1].level=35');

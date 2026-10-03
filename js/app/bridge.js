@@ -19,9 +19,12 @@ function installGameBridge(){
     paint(canvas,speciesId,level,options={}){
       const context=canvas.getContext('2d');
       context.clearRect(0,0,canvas.width,canvas.height);
-      drawDragon(context,{dragon:{id:0,species:speciesId,level},
-        ...dragonPortraitPlacement(canvas.width,canvas.height,level),
-        time:options.time??900,facing:options.facing||1,locomotion:options.locomotion!==false,
+      const facing=options.facing||1;
+      const placement=options.battleFit?
+        battleDragonPortraitPlacement(canvas.width,canvas.height,level,facing):
+        dragonPortraitPlacement(canvas.width,canvas.height,level);
+      drawDragon(context,{dragon:{id:0,species:speciesId,level},...placement,
+        time:options.time??900,facing,locomotion:options.locomotion!==false,
       });
     },
     advanceDay(minutes){ui.dayOffset+=Number(minutes||0)*60000;return daylightAt(Date.now());}

@@ -58,7 +58,7 @@ export function Portrait({dragon,large=false,facing=1}){
     let animation,visible=true;
     const draw=time=>{
       if(!visible)return;
-      game()?.paint(ref.current,dragon.species,dragon.level,{time,facing,locomotion:false});
+      game()?.paint(ref.current,dragon.species,dragon.level,{time,facing,locomotion:false,battleFit:large});
       animation=requestAnimationFrame(draw);
     };
     animation=requestAnimationFrame(draw);

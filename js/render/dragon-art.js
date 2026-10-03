@@ -6,6 +6,12 @@ function dragonPortraitPlacement(width,height,level){
   return {x:width*.60,y:height*.74,
     scale:Math.min(width/168,height/124)/stage};
 }
+/** Frame both combatants symmetrically with enough horizontal padding for wings and tails. */
+function battleDragonPortraitPlacement(width,height,level,facing=1){
+  const stage=level<10?.74:level<30?1:1.2;
+  return {x:width*(facing===-1?.4:.6),y:height*.74,
+    scale:Math.min(width/190,height/124)/stage};
+}
 function drawDragon(context,params){
   const dragon=params.dragon,species=DATA.species[dragon.species];
   if(!species)return;

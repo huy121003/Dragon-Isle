@@ -376,10 +376,10 @@
 .arena-stage-controls .battle-skill-matchup.strong{color:#77efaa}
 .arena-stage-controls .battle-skill-matchup.weak{color:#ff9ab2}
 .arena-stage-controls .battle-skill-grid .battle-skill-summary{display:block;width:100%;font-size:10px;color:#e4f4ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
-.arena-skill-popover .ant-popover-inner{max-width:min(600px,calc(100vw - 24px))}
+.arena-skill-popover .ant-popover-inner{max-width:min(440px,calc(100vw - 24px))}
 .arena-skill-popover-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.arena-skill-popover-content{max-width:min(560px,calc(100vw - 48px));overflow-x:auto;font-size:12px;line-height:1.55}
-.arena-skill-popover-content>div{width:max-content;white-space:nowrap}
+.arena-skill-popover-content{max-width:min(400px,calc(100vw - 48px));font-size:12px;line-height:1.55}
+.arena-skill-popover-content>div{white-space:normal;overflow-wrap:anywhere;margin-bottom:4px}
 .arena-skill-unavailable{color:#c44747}
 /* Damage and crit labels float as text, including critical and missed variants. */
 .battle-skill-fx .fx-damage,.battle-skill-fx.critical .fx-damage,

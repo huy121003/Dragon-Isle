@@ -149,3 +149,41 @@ console.log(`PASS ${checked} individual special effect cases, full/mixed HP, rev
   assert(f.ally.hp>0,'Challenge action revives a casualty');
 }
 console.log('PASS chance branches, miss branches, active-opponent copy, dead ally, curse target, Challenge revive');
+const special=id=>skills.find(s=>s.id===id);
+const damageCase=(id,prepare=()=>{})=>{
+  const s=special(id),f=fixture(s);
+  f.enemy.maxHp*=100;f.enemy.hp=f.enemy.maxHp;
+  prepare(f);cast(f,s);
+  return f.battle.events.filter(e=>e.target===f.enemy.nickname).reduce((sum,e)=>sum+(e.damage||0),0);
+};
+for(const [id,prepare,label] of [
+  ['wind-special-3',f=>{f.battle.lastSwitchSide='defense';},'switch punishment'],
+  ['dark-special-2',f=>mark(f,'enemy','curse'),'cursed target bonus'],
+  ['legend-special-3',f=>{f.enemy.lastSkill='claw';f.enemy.skillUses={claw:2};},'repeated skill punishment'],
+  ['war-special-3',f=>{f.actor.hp=Math.round(f.actor.maxHp*.25);},'last stand'],
+  ['primal-special-1',f=>{f.actor.hp=Math.round(f.actor.maxHp*.35);},'low HP multihit'],
+  ['primal-special-3',f=>{f.enemy.hp=Math.round(f.enemy.maxHp*.25);},'execute']
+]){
+  assert(damageCase(id,prepare)>damageCase(id),id+' '+label+' raises real damage');
+}
+{
+  const s=special('fire-special-3'),plain=damageCase(s.id),burning=damageCase(s.id,f=>mark(f,'enemy','burn'));
+  assert(burning>plain,'detonation consumes burn and adds damage');
+}
+{
+  const f=fixture(special('nature-special-2'));
+  f.actor.hp-=1000;f.ally.hp-=1000;
+  const before=f.actor.hp;cast(f,f.actor.skills[3]);
+  assert(f.actor.hp>before,'regeneration ticks after casting');
+  assert.equal(fx.status(f.actor,'regen')?.turns,1,'one remaining tick after casting turn');
+  const first=f.actor.hp;fx.tickSide(f.battle,'attack');
+  assert(f.actor.hp>first&&!fx.status(f.actor,'regen'),'second tick expires regeneration');
+}
+{
+  const f=fixture(special('earth-special-1'));
+  cast(f,f.actor.skills[3]);
+  const shield=fx.status(f.actor,'shield'),before=f.actor.hp;
+  fx.absorb(f.actor,Math.min(shield.amount,100));
+  assert.equal(f.actor.hp,before,'shield absorbs damage before HP');
+}
+console.log('PASS conditional power branches, burn detonation, regeneration duration, shield absorption');

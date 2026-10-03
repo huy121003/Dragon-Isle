@@ -81,6 +81,18 @@ async function arenaFight(opponentId){
   }catch(error){ui.arena.error=error.message;}
   ui.arena.busy=false;renderArena();notifyArenaRuntime();
 }
+/** Restore all Arena attempts by spending gems through the server. */
+async function arenaRefill(){
+  if(ui.arena.busy)return;
+  ui.arena.busy=true;ui.arena.error=null;renderArena();
+  try{
+    const response=await arenaRequest('refill','POST',{});
+    const profile=await arenaRequestSave();state=profile;saveGame();
+    ui.arena.data=await arenaRequest('list');
+    toast(`All Arena attempts restored for ${window.DragonConfig.arena.attemptRefillGemCost} gems.`);
+  }catch(error){ui.arena.error=error.message;}
+  ui.arena.busy=false;renderArena();notifyArenaRuntime();
+}
 /** Submit one player turn and stage returned authoritative events for client animation. */
 async function arenaTurn(action,number){
   const battle=ui.arena.data?.battle;
@@ -89,12 +101,14 @@ async function arenaTurn(action,number){
   ui.arena.pendingSkill=action==='skill'?battle.attack[battle.activeAttack]?.skills[number]?.name:null;
   renderArena();notifyArenaRuntime();
   try{
-    const payload={action,expectedTurn:battle.turn};
+    const payload={action,expectedTurn:battle.turn,expectedEvents:battle.eventSeq};
     if(action==='skill')payload.skillIndex=number;
     if(action==='switch')payload.dragonId=number;
     const response=await arenaRequest('turn','POST',payload);
-    const events=(response.result?response.result.events:response.battle.events)
-      .filter(function(event){return event.turn===battle.turn;});
+    const incoming=response.result?response.result.events:response.battle.events;
+    const eventSeq=response.result?incoming.length:response.battle.eventSeq;
+    const newEventCount=Math.max(0,eventSeq-battle.eventSeq);
+    const events=newEventCount?incoming.slice(-newEventCount):[];
     ui.arena.presentation={id:Date.now()+Math.random(),before:battle,events:events,
       result:response.result||null};
     ui.arena.animating=true;

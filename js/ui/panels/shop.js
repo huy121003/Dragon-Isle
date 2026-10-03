@@ -45,10 +45,10 @@ function renderShop(){
       '<span class="shop-icon">🚩</span><span><b>Flagpole</b><small>Island decoration · 3×3 tiles</small></span>'+
       '<strong>'+resourceAmount('gold',buildings.definitions.decor.cost)+'</strong></button></div>';
   }else if(ui.shopTab==="eggs"){
-    html+='<div class="note">The shop sells pure element eggs. Prices depend on rarity and unlock level. Purchased eggs enter an available Hatchery nest.</div>'+ 
+    html+='<div class="note">'+(isAdmin?'Admin shop: all dragon eggs are available. Prices depend on rarity and unlock level.':'The shop sells pure element eggs. Prices depend on rarity and unlock level.')+' Purchased eggs enter an available Hatchery nest.</div>'+ 
       '<div class="cards">';
     DRAGON_DB.species.map(function(raw){return DATA.species[raw.id];}).filter(function(s){
-      return s.elements.length===1&&s.detail.giaTrung;
+      return (isAdmin||s.elements.length===1)&&s.detail.giaTrung;
     }).forEach(function(s){
       const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
       const need=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99);
@@ -117,11 +117,11 @@ function renderShop(){
   dom.body.innerHTML=html;
   if(ui.shopTab==="eggs")renderDragonPortraits();
 }
-/* UI: Details eggs thuần elements tại cửa hàng không phụ thuộc Dragon Book. */
+/* UI: Egg detail availability follows the signed-in account role. */
 
 function renderShopEggDetail(id){
   const s=DATA.species[id];
-  if(!s||s.elements.length!==1||!s.detail.giaTrung){openModal("shop");return;}
+  if(!s||(!currentAccount||currentAccount.role!=="admin")&&s.elements.length!==1||!s.detail.giaTrung){openModal("shop");return;}
   const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
   const canBuy=state.player.level>=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99)&&
     (price.vang?state.gold>=cost:state.gems>=cost);

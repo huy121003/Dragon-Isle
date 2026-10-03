@@ -138,7 +138,9 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
 
   /** Resolve one player-vs-player Challenge action. */
   function liveTurn(battle,side,action){
-    if(battle.nextSide!==side)throw Object.assign(new Error('Wait for the other player.'),{status:409});
+    const forfeiting=action?.action==='forfeit';
+    if(!forfeiting&&battle.nextSide!==side)
+      throw Object.assign(new Error('Wait for the other player.'),{status:409});
     const actor=active(battle,side);
     if(!actor||actor.hp<=0)throw Object.assign(new Error('No active dragon.'),{status:409});
     if(action?.action==='switch'){
@@ -161,7 +163,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       record(battle,{side,forfeit:true});
     }else throw Object.assign(new Error('Invalid action.'),{status:400});
 
-    if(side==='defense')battle.turn++;
+    if(side==='defense'&&!forfeiting)battle.turn++;
     battle.nextSide=side==='attack'?'defense':'attack';
     if(!alive(battle.attack)||!alive(battle.defense)||battle.turn>arenaConfig.maxTurns){
       const ratio=group=>group.reduce((sum,fighter)=>sum+fighter.hp/fighter.maxHp,0);

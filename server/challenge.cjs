@@ -3,6 +3,7 @@ const path=require('node:path');
 const {randomUUID}=require('node:crypto');
 const {readJson}=require('./store.cjs');
 const challengeConfig=require('../js/config/challenge.js');
+const arenaConfig=require('../js/config/arena.js');
 const {createPresence}=require('./challenge/presence.cjs');
 const {createChallengeStore}=require('./challenge/store.cjs');
 const {createChallengeView}=require('./challenge/view.cjs');
@@ -26,7 +27,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
   const users=()=>auth.listUsers();
   const store=createChallengeStore({stateFile,users,now});
   const {matches,byUser,notices,persist,release}=store;
-  const presencePolicy=createPresence({auth,users,profile,now,heartbeatMs,reconnectMs});
+  const presencePolicy=createPresence({auth,users,now,heartbeatMs,reconnectMs});
   const {view}=createChallengeView({users,presencePolicy,arena});
   /** Serialize state transitions so two requests cannot mutate one match concurrently. */
   function locked(fn){
@@ -47,10 +48,12 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     }
     if(changed)await persist();
   }
-  /** True when a player currently owns enough Arena-eligible dragons. */
-  async function qualified(id){
-    const p=await profile(id);
-    return p?.dragons?.filter(d=>arena.eligible(p,d)).length>=challengeConfig.teamSize;
+  /** Read a lobby profile once for both presence freshness and battle eligibility. */
+  async function lobbyCandidate(id,userSnapshot){
+    if(!presencePolicy.sessionAvailable(id,userSnapshot))return {online:false,eligible:false};
+    const savedProfile=await profile(id),savedAt=Number(savedProfile?.savedAt)||0;
+    return {online:savedAt<=now()&&savedAt>now()-challengeConfig.lobbySaveFreshMs,
+      eligible:(savedProfile?.dragons||[]).filter(dragon=>arena.eligible(savedProfile,dragon)).length>=challengeConfig.teamSize};
   }
   /** Refresh heartbeat and return lobby/match status for one player. */
   async function status(user){
@@ -60,12 +63,13 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
       const heartbeatDirty=match?presencePolicy.touch(match,user.id):false;
       const notice=notices.get(user.id)||null;if(notice)notices.delete(user.id);
       if(heartbeatDirty||notice)await persist();
-      const online=await presencePolicy.lobbyActive(user.id),eligible=await qualified(user.id),players=[];
+      const ownLobby=match?null:await lobbyCandidate(user.id);
+      const online=match?true:ownLobby.online,eligible=match?true:ownLobby.eligible,players=[];
       if(online&&eligible&&!match){
-        for(const other of users()){
-          if(other.id!==user.id&&await presencePolicy.lobbyActive(other.id)&&!byUser.has(other.id)&&await qualified(other.id))
-            players.push({id:other.id,username:other.username});
-        }
+        const candidates=await Promise.all(users().filter(other=>other.id!==user.id&&!byUser.has(other.id))
+          .map(async other=>({other,...await lobbyCandidate(other.id,other)})));
+        players.push(...candidates.filter(candidate=>candidate.online&&candidate.eligible)
+          .map(({other})=>({id:other.id,username:other.username})));
       }
       return {online,enabled:user.challengeEnabled!==false,eligible,
         players,match:match?view(match,user.id):null,notice};
@@ -76,8 +80,10 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
     return locked(async()=>{
       await sweep();
       const other=users().find(u=>u.id===otherId);
-      if(!other||other.id===user.id||!await presencePolicy.lobbyActive(user.id)||!await presencePolicy.lobbyActive(other.id)||
-        byUser.has(user.id)||byUser.has(other.id)||!await qualified(user.id)||!await qualified(other.id))
+      if(!other||other.id===user.id||byUser.has(user.id)||byUser.has(other.id))
+        throw error('This player is unavailable or not eligible.');
+      const candidates=await Promise.all([lobbyCandidate(user.id,user),lobbyCandidate(other.id,other)]);
+      if(candidates.some(candidate=>!candidate.online||!candidate.eligible))
         throw error('This player is unavailable or not eligible.');
       const started=now();
       const match={id:randomUUID(),players:[user.id,other.id],phase:challengeConfig.phases.INVITED,
@@ -139,7 +145,7 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
         const fighters=profiles.map((profile,i)=>match.selection[i].map(id=>
           arena.makeFighter(profile.dragons.find(d=>d.id===id))));
         match.battle={opponent:users().find(u=>u.id===match.players[1])?.username,
-          turn:1,nextSide:'attack',attack:fighters[0],defense:fighters[1],
+          turn:1,nextSide:'attack',eventSeq:0,attack:fighters[0],defense:fighters[1],
           activeAttack:0,activeDefense:0,events:[],reward:{gold:0,food:0,gems:0}};
         match.phase=challengeConfig.phases.BATTLE;
       }
@@ -153,14 +159,19 @@ function createChallenge({auth,profilesDir,arena,now=()=>Date.now(),
       if(!match||match.phase!==challengeConfig.phases.BATTLE)throw error('The duel has ended.');
       const heartbeatDirty=presencePolicy.touch(match,user.id);
       const sideIndex=match.players.indexOf(user.id),opponent=presencePolicy.state(match,1-sideIndex);
-      if(opponent.state!=='online'){
+      if(opponent.state!=='online'&&body?.action!=='forfeit'){
         if(heartbeatDirty)await persist();
         throw error('Opponent is reconnecting. The duel is paused.');
       }
       const side=match.players[0]===user.id?'attack':'defense';
-      if(!Number.isInteger(body?.expectedTurn)||body.expectedTurn!==match.battle.turn||
-        body.expectedEvents!==match.battle.events.length)throw error('The turn changed. Refresh the duel.');
+      const eventSeq=Number.isSafeInteger(match.battle.eventSeq)?match.battle.eventSeq:match.battle.events.length;
+      if(body?.action!=='forfeit'&&(!Number.isInteger(body?.expectedTurn)||body.expectedTurn!==match.battle.turn||
+        body.expectedEvents!==eventSeq))throw error('The turn changed. Refresh the duel.');
       const finished=arena.liveTurn(match.battle,side,body);
+      // The client only exposes the latest eventHistory snapshots; older ones need
+      // not be serialized to disk again on every skill, switch or status heartbeat.
+      if(match.battle.events.length>arenaConfig.eventHistory)
+        match.battle.events.splice(0,match.battle.events.length-arenaConfig.eventHistory);
       match.updatedAt=now();
       if(finished){
         const winner=match.players[finished.winner==='attack'?0:1];

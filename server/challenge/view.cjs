@@ -37,7 +37,7 @@ function createChallengeView({users,presencePolicy,arena}){
         activeAttack:raw.activeDefense,activeDefense:raw.activeAttack,
         events:raw.events.map(swapEvent)}:raw;
       result.battle.opponent=result.opponent;
-      result.eventSeq=match.battle.events.length;
+      result.eventSeq=Number.isSafeInteger(match.battle.eventSeq)?match.battle.eventSeq:match.battle.events.length;
       result.myTurn=match.battle.nextSide===(reverse?'defense':'attack');
     }
     return result;

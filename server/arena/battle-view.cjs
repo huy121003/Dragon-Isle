@@ -18,7 +18,9 @@ function statusSnapshot(fighter){
 
 /** Add one battle event with a state snapshot used for animation/replay. */
 function record(battle,event){
-  battle.events.push({...event,turn:battle.turn,state:{
+  const eventSeq=(Number.isSafeInteger(battle.eventSeq)?battle.eventSeq:battle.events.length)+1;
+  battle.eventSeq=eventSeq;
+  battle.events.push({...event,eventSeq,turn:battle.turn,state:{
     attack:battle.attack.map(fighter=>({id:fighter.id,hp:fighter.hp,
       maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),cooldowns:fighter.cooldowns||[]})),
     defense:battle.defense.map(fighter=>({id:fighter.id,hp:fighter.hp,
@@ -39,7 +41,7 @@ function publicBattle(battle){
       unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
   return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
     defense:battle.defense.map(view),activeAttack:battle.activeAttack,
-    activeDefense:battle.activeDefense,eventSeq:battle.events.length,
+    activeDefense:battle.activeDefense,eventSeq:Number.isSafeInteger(battle.eventSeq)?battle.eventSeq:battle.events.length,
     events:battle.events.slice(-arenaConfig.eventHistory)};
 }
 

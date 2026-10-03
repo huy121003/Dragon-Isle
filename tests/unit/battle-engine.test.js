@@ -67,4 +67,14 @@ describe('authoritative battle engine',()=>{
     expect(()=>engine.liveTurn(battle,'attack',{action:'skill',skillIndex:0})).not.toThrow();
     expect(battle.nextSide).toBe('defense');
   });
+
+  it('allows surrender outside the active player turn',()=>{
+    const engine=createBattleEngine({catalog,game,rng:()=>.5});
+    const battle={turn:1,nextSide:'attack',events:[],eventSeq:0,activeAttack:0,activeDefense:0,
+      attack:[engine.makeFighter(dragon(1,'fire'))],
+      defense:[engine.makeFighter(dragon(2,'water'))]};
+
+    expect(engine.liveTurn(battle,'defense',{action:'forfeit'})).toEqual({winner:'attack'});
+    expect(battle.eventSeq).toBe(1);
+  });
 });

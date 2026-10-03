@@ -83,7 +83,8 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
     })}</div>
   </div>;
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>
-    <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')} disabled={arena.busy||arena.animating}>Forfeit</Button></div>
+    <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')}
+      disabled={challenge?(arena.challengeBusy??arena.busy):arena.busy||arena.animating}>Forfeit</Button></div>
     {arena.error&&<div className="arena-error">{arena.error}</div>}
     <div ref={stageRef} className={'battle-stage has-arena-controls'+(impact?' fx-'+(impact.element||'neutral'):'')+(arena.pendingSkill?' is-charging':'')}>
       <div className="battle-crowd"/><div className="battle-sun"/><div className="battle-floor"/>

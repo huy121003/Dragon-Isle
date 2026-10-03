@@ -51,13 +51,22 @@ const {createChallenge}=require('../server/challenge.cjs');
     assert.equal(started.match.myTurn,false);
     const first=(await duel.status(a)).match;
     assert.equal(first.myTurn,true);
+    let current=first;
+    for(let i=0;i<44;i++){
+      const dragonId=i%2===0?5:2;
+      current=(await duel.turn(a,{action:'switch',dragonId,expectedTurn:1,
+        expectedEvents:current.eventSeq})).match;
+    }
+    assert.equal(current.eventSeq,44,'Event sequence stays monotonic after old snapshots are pruned');
+    assert.equal(current.battle.events.length,40,'Persisted battle replay is bounded to the visible event window');
+    assert.equal(current.battle.events.at(-1).eventSeq,44);
     await assert.rejects(duel.turn(b,{action:'skill',skillIndex:0,expectedTurn:1,expectedEvents:0}),{status:409});
     const swappedA=(await duel.turn(a,{action:'switch',dragonId:5,
-      expectedTurn:1,expectedEvents:0})).match;
+      expectedTurn:1,expectedEvents:current.eventSeq})).match;
     assert.equal(swappedA.myTurn,true,'Challenger keeps their action after swapping');
     assert.equal(swappedA.battle.turn,1);
     assert.equal(swappedA.battle.attack[swappedA.battle.activeAttack].id,5);
-    assert.equal(swappedA.eventSeq,1,'The swap is recorded for concurrency checks');
+    assert.equal(swappedA.eventSeq,45,'The swap advances the monotonic event sequence after pruning');
     await duel.turn(a,{action:'skill',skillIndex:0,expectedTurn:1,expectedEvents:swappedA.eventSeq});
     const after=(await duel.status(b)).match;
     assert.equal(after.myTurn,true);
@@ -74,6 +83,15 @@ const {createChallenge}=require('../server/challenge.cjs');
     assert.match((await duel.status(a)).notice,/won/);
     assert.equal((await duel.status(b)).match,null);
     assert.equal(JSON.parse(fs.readFileSync(files[0])).gold,economy.starting.gold,'A duel has no prize');
+    await duel.invite(a,b.id);
+    await duel.respond(b,true);
+    await duel.select(a,[2,5,9]);
+    await duel.select(b,[2,5,9]);
+    const surrendered=await duel.turn(b,{action:'forfeit',expectedTurn:-1,expectedEvents:-1});
+    assert.equal(surrendered.finished,true,'A player may surrender immediately, even outside their turn with stale state');
+    assert.equal(surrendered.won,false);
+    assert.match((await duel.status(a)).notice,/won/);
+    assert.match((await duel.status(b)).notice,/lost/);
     await duel.invite(a,b.id);
     await duel.leave(a);
     const stale=JSON.parse(fs.readFileSync(files[1]));stale.savedAt=Date.now()-40000;

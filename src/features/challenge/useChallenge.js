@@ -3,6 +3,7 @@ import {message} from 'antd';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
 import {ChallengeStatusSchema} from '../../api/schemas.js';
 import {connectionApi,connectionState,game} from '../../app/game-bridge.js';
+import {applyChallengeMutationResult} from './challenge-cache.js';
 
 async function readStatus(){
   const response=await fetch('/api/challenge/status',{credentials:'same-origin',cache:'no-store'});
@@ -36,7 +37,13 @@ export default function useChallenge(account,connection){
       }
       return result;
     },
-    onSuccess:()=>client.invalidateQueries({queryKey:['challenge','status',account?.id]}),
+    onSuccess:(result,variables)=>{
+      const key=['challenge','status',account?.id];
+      // The turn response already contains the authoritative view. Applying it
+      // directly avoids a second status request queued behind the turn.
+      if(applyChallengeMutationResult(client,key,variables.route,result))return;
+      return client.invalidateQueries({queryKey:key});
+    },
     onError:error=>{
       if(error instanceof TypeError)connectionApi()?.fail('Connection to the challenge server was lost.');
     }

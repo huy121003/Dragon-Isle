@@ -10,7 +10,7 @@ export default function ChallengeView({status,request,refresh}){
   const match=status?.match,[selection,setSelection]=useState([]),[elements,setElements]=useState([]),[rarities,setRarities]=useState([]);
   const challengeConfig=window.DragonConfig.challenge,arenaConfig=window.DragonConfig.arena;
   const teamSize=challengeConfig.teamSize,minLevel=arenaConfig.minBattleLevel;
-  const [presentation,setPresentation]=useState(null),[animating,setAnimating]=useState(false);
+  const [presentation,setPresentation]=useState(null),[animating,setAnimating]=useState(false),[pendingSkill,setPendingSkill]=useState(null);
   const last=useRef(null);
   useEffect(()=>{
     if(match?.phase!=='select')setSelection([]);
@@ -33,7 +33,10 @@ export default function ChallengeView({status,request,refresh}){
   },[match?.id,match?.phase,match?.eventSeq]);
   async function act(body){
     if(body.action==='forfeit'&&!window.confirm('Forfeit this duel? No rewards or cooldown apply.'))return;
-    await request('turn',{...body,expectedTurn:match.battle.turn,expectedEvents:match.eventSeq});
+    setPendingSkill(body.action==='skill'?
+      match.battle.attack[match.battle.activeAttack]?.skills?.[body.skillIndex]?.name||'skill':null);
+    try{await request('turn',{...body,expectedTurn:match.battle.turn,expectedEvents:match.eventSeq});}
+    finally{setPendingSkill(null);}
   }
   const roster=match?.roster?.filter(dragon=>elements.every(element=>
     game()?.data?.species?.[dragon.species]?.elements?.includes(element))&&
@@ -48,7 +51,8 @@ export default function ChallengeView({status,request,refresh}){
       🟠 {match.opponent} is reconnecting · {opponentReconnectSeconds}s remaining. Challenge actions are paused.
     </p>}
     {match?.phase==='battle'?<Battle challenge onDuelAction={act} myTurn={match.myTurn}
-      arena={{data:{battle:match.battle},presentation,animating,busy:status.busy||opponentReconnecting,error:status.error}}/>:
+      arena={{data:{battle:match.battle},presentation,animating,pendingSkill,
+        busy:status.busy||opponentReconnecting,challengeBusy:status.busy,error:status.error}}/>:
     match?.phase==='invited'?<section className="challenge-wait">
       <h3>{match.outgoing?'Waiting for '+match.opponent:'Challenge from '+match.opponent}</h3>
       <p>{match.outgoing?'Waiting for the other player to accept.':`Accept to choose ${teamSize} dragons privately.`}</p>

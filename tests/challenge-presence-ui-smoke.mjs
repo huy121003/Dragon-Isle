@@ -44,13 +44,19 @@ try{
 
   const battleDragon={...dragon,hp:500,maxHp:500};
   const battle=renderToStaticMarkup(React.createElement(ChallengeView,{
-    status:{busy:false,match:{...reconnecting,phase:'battle',myTurn:true,eventSeq:0,
+    status:{busy:false,match:{...reconnecting,phase:'battle',myTurn:false,eventSeq:0,
       battle:{turn:1,nextSide:'attack',attack:[battleDragon],defense:[{...battleDragon,id:3,nickname:'B'}],
         activeAttack:0,activeDefense:0,events:[]}}},
     request:()=>{},refresh:()=>{}
   }));
   assert.match(battle,/Bela is reconnecting/);
   assert.match(battle,/disabled=""/,'Battle controls must be disabled while opponent reconnects');
+  const forfeitIndex=battle.indexOf('Forfeit');
+  const forfeitStart=battle.lastIndexOf('<button',forfeitIndex);
+  const forfeitEnd=battle.indexOf('</button>',forfeitIndex)+9;
+  const forfeit=forfeitStart>=0&&forfeitEnd>8?battle.slice(forfeitStart,forfeitEnd):'';
+  assert(forfeit&&!/disabled=""/.test(forfeit),
+    'A player must be able to surrender even when it is the opponent turn or they are reconnecting');
 
   console.log('PASS challenge reconnect UI pause and countdown');
 }finally{await server.close();}

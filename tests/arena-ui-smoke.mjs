@@ -133,16 +133,18 @@ try{
   const fighting=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,data:{...data,battle}}}));
   assert.match(fighting,/battle-stage/);assert.match(fighting,/battle-skill-grid/);
   assert.match(fighting,/Flame Slash/);assert.match(fighting,/Milo/);
-  assert.match(fighting,/matchup-mark weak/);assert.match(fighting,/▼.*WEAK/);
+  assert.match(fighting,/▼ ×0.5/);
+  assert.match(fighting,/battle-skill-matchup weak/);
   const strongBattle={...battle,defense:[{...battle.defense[0],species:'ice'}]};
   const strongMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:strongBattle}}}));
-  assert.match(strongMenu,/matchup-mark strong/);assert.match(strongMenu,/▲.*STRONG/);
+  assert.match(strongMenu,/▲ ×2/);
+  assert.match(strongMenu,/battle-skill-matchup strong/);
   const supportBattle={...battle,attack:[{...dragon,skills:[{...dragon.skills[0],
     special:true,power:0,bonus:0,description:'Heal',effect:{kind:'heal',target:'self'}}]}]};
   const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:supportBattle}}}));
-  assert.doesNotMatch(supportMenu,/matchup-mark weak/);
+  assert.doesNotMatch(supportMenu,/battle-skill-matchup weak/);
   const assertReservePlacement=(html,side)=>{
     const start=html.indexOf('battle-side '+side),status=html.indexOf('battle-statuses',start),
       reserves=html.indexOf('arena-reserve-side '+(side==='player'?'attack':'defense'),start),

@@ -1,6 +1,7 @@
 /* Extend the existing JSON catalog with elemental species using its original dragon builder. */
 const expansion=require('../data/elements-expansion.json');
-const doubleElements=require('../data/double-elements.json');
+const specialSkillCatalog=require('../data/special-skills.json');
+const doubleDragonCatalog=require('../data/double-element-dragons.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const physical={
   fire:{adjective:'Volcanic',noun:'Flare'},
@@ -57,7 +58,9 @@ function extendCatalog(db,game){
       throw Error('Unbalanced element chart: '+id);
   }
   db.khac=Object.fromEntries(ids.map(id=>[id,ids.filter(target=>expansion.wins[id].includes(target))]));
-  db.rarities[doubleElements.rarity.id]=clone(doubleElements.rarity);
+  if(doubleDragonCatalog.rarityConfig.id!==doubleDragonCatalog.rarity)
+    throw Error('Double Element rarity metadata does not match its recipes.');
+  db.rarities[doubleDragonCatalog.rarity]=clone(doubleDragonCatalog.rarityConfig);
   globalThis.DragonDatabase=db;
   // Use the same factory, rarity, colors, stats, passive and skills as all existing dragons.
   const rulesPath=require.resolve('../js/data/dragon-rules.js');
@@ -166,34 +169,48 @@ function extendCatalog(db,game){
     Object.entries(db.quads).some(([elements,id])=>quads[elements]!==id)))
     throw Error('The canonical quads map does not match the dragon catalog.');
   db.quads=quads;
-  if(ids.some(id=>doubleElements.elements[id]?.length!==2)||
-    Object.keys(doubleElements.elements).length!==ids.length)
-    throw Error('Each element needs two Double Element designs.');
-  for(const [index,primary] of ids.entries()){
-    doubleElements.elements[primary].forEach((design,variant)=>{
-      const partners=doubleElements.partnerOffsets[variant].map(offset=>ids[(index+offset)%ids.length]);
-      if(new Set([primary,...partners]).size!==3)throw Error('Invalid Double Element partners.');
-      const parts=[primary,primary,...partners],id=parts.join('>');
-      const skillId=primary+'-double-'+(variant+1);
-      const skill={id:skillId,name:design.skill.name,icon:db.elements[primary].icon,
-        power:design.skill.power,bonus:design.skill.bonus,cooldown:design.skill.cooldown,
-        effect:clone(design.skill.effect),description:design.skill.description,special:true};
-      game.skills.elemental[primary].push(skill);
-      const dragon=rules.buildDragon(parts);
-      dragon.ten='Resonant '+phenomenonName([primary,...partners]);
-      dragon.doubleElement=primary;
-      dragon.doubleForm=design.form;
-      dragon.skillIds=[primary+'-1',partners[0]+'-1',partners[1]+'-1',skillId];
-      dragon.hienTuong=dragon.ten+' channels '+db.elements[primary].ten+
-        ' twice, with '+partners.map(e=>db.elements[e].ten).join(' and ')+'.';
-      dragon.moTa=dragon.hienTuong;
-      dragon.sachGhi='Double Element: '+db.elements[primary].ten+
-        '; additional: '+partners.map(e=>db.elements[e].ten).join(', ')+
-        '. Special Skill: '+skill.name+' — '+skill.description;
-      if(seen.has(id))throw Error('Duplicate Double Element species: '+id);
-      db.species.push(dragon);seen.add(id);
-    });
+  if(specialSkillCatalog.skills.length!==45||
+    doubleDragonCatalog.dragons.length!==45)
+    throw Error('The Double Element release requires 45 skills and 45 dragon recipes.');
+  const skillById=new Map(specialSkillCatalog.skills.map(skill=>[skill.id,skill]));
+  if(skillById.size!==specialSkillCatalog.skills.length)
+    throw Error('Duplicate special skill IDs.');
+  for(const skill of specialSkillCatalog.skills){
+    if(!ids.includes(skill.element)||!game.skills.elemental[skill.element])
+      throw Error('Unknown special skill element: '+skill.element);
+    game.skills.elemental[skill.element].push({...clone(skill),
+      icon:db.elements[skill.element].icon,special:true});
   }
+  const dragonRecipeIds=new Set();
+  for(const recipe of doubleDragonCatalog.dragons){
+    const {primary,partners,specialSkillId}=recipe;
+    const parts=[primary,primary,...partners];
+    if(parts.length!==4||new Set([primary,...partners]).size!==3||
+      parts.join('>')!==recipe.speciesId||!ids.includes(primary)||
+      partners.some(element=>!ids.includes(element)))
+      throw Error('Invalid Double Element dragon recipe: '+recipe.speciesId);
+    if(dragonRecipeIds.has(recipe.speciesId)||seen.has(recipe.speciesId))
+      throw Error('Duplicate Double Element species: '+recipe.speciesId);
+    dragonRecipeIds.add(recipe.speciesId);
+    const skill=skillById.get(specialSkillId);
+    if(!skill||skill.element!==primary)
+      throw Error('Missing or mismatched special skill: '+specialSkillId);
+    const dragon=rules.buildDragon(parts);
+    dragon.ten='Resonant '+phenomenonName([primary,...partners]);
+    dragon.doubleElement=primary;
+    dragon.doubleForm=recipe.form;
+    dragon.specialSkillIds=[specialSkillId];
+    dragon.skillIds=[primary+'-1',partners[0]+'-1',partners[1]+'-1',specialSkillId];
+    dragon.hienTuong=dragon.ten+' channels '+db.elements[primary].ten+
+      ' twice, with '+partners.map(e=>db.elements[e].ten).join(' and ')+'.';
+    dragon.moTa=dragon.hienTuong;
+    dragon.sachGhi='Double Element: '+db.elements[primary].ten+
+      '; additional: '+partners.map(e=>db.elements[e].ten).join(', ')+
+      '. Special Skill: '+skill.name+' — '+(skill.descriptionVi||skill.description);
+    db.species.push(dragon);seen.add(recipe.speciesId);
+  }
+  if(ids.some(id=>specialSkillCatalog.skills.filter(skill=>skill.element===id).length!==3))
+    throw Error('Each primary element must have exactly three special skills.');
   // Species metadata follows the rarity's current incubation clock, including legacy catalog entries.
   for(const dragon of db.species)dragon.apGiay=db.rarities[dragon.doHiem].apGiay;
   return {db,game};

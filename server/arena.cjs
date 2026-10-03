@@ -36,7 +36,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const summary=eligibility.summary;
   const battleEngine=createBattleEngine({catalog,game});
   const {makeFighter:fighter,fight,publicBattle,active,alive,chooseDefenseSkill,strike,
-    liveTurn,finish}=battleEngine;
+    liveTurn,finish,switchFighter}=battleEngine;
   /** Build catalog-backed Arena rivals from account level and the top-20 profile. */
   function rivalsFor(profile,roundKey){
     return createVirtualRivals({profile,playerLevel:Math.floor(profile?.player?.level||1),
@@ -158,8 +158,7 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
       if(body.action==='switch'){
         const index=b.attack.findIndex(f=>f.id===body.dragonId&&f.hp>0);
         if(index<0||index===b.activeAttack)throw Object.assign(new Error('The replacement must be alive and different from the active dragon.'),{status:400});
-        b.activeAttack=index;
-        b.events.push({turn:b.turn,side:'attack',switchTo:b.attack[index].nickname});
+        switchFighter(b,'attack',index);
         // Manual swaps are free: keep the same turn and do not trigger the AI.
         response={battle:publicBattle(b)};
         return {...setup,battle:b};

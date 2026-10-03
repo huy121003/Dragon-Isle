@@ -51,8 +51,10 @@ function elementBadges(species,size='sm'){
 function skillHex(skill,locked=false){
   const e=skill.element?DATA.elements[skill.element]:null;
   const glyph=e?'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#flag-'+skill.element+'"/></svg>':'⚔';
-  return '<span class="skill-hex '+(e?'elemental':'neutral')+(locked?' locked':'')+'" style="--skill-color:'+(e?e.color:'#bd7520')+'"'+
-    ' title="'+esc(e?e.name+' element skill':'Normal skill')+'">'+glyph+(locked?'<i aria-label="Locked">🔒</i>':'')+'</span>';
+  return '<span class="skill-hex '+(e?'elemental':'neutral')+(locked?' locked':'')+(skill.special?' special':'')+'" style="--skill-color:'+(e?e.color:'#bd7520')+'"'+
+    ' title="'+esc(skill.special?skill.name:(e?e.name+' element skill':'Normal skill'))+'">'+glyph+
+    (skill.special?'<i class="skill-special-glyph" aria-hidden="true">'+esc(skill.glyph||'✦')+'</i>':'')+
+    (locked?'<i aria-label="Locked">🔒</i>':'')+'</span>';
 }
 function matchupBadges(ids){
   return ids.length?ids.map(function(id){return elementFlag(id,false);}).join(''):
@@ -91,7 +93,7 @@ function dragonDetailHtml(species,dragon){
     }
     const element=skill.element?DATA.elements[skill.element]:null;
     const extra=elementalBonus(skill,level,species,stars);
-    const description=skill.special?esc(skill.description)+' · Cooldown '+skill.cooldown+' turns':
+    const description=skill.special?esc(skill.descriptionVi||skill.description)+' · Hồi chiêu '+skill.cooldown+' lượt':
       element?'100% base attack + '+Math.round(skill.bonus*100)+'% elemental attack ('+extra+')':
         Math.round(skill.power*100)+'% base attack';
     html+='<div class="skill-card" style="--element:'+(element?element.color:'#8194a1')+'">'+

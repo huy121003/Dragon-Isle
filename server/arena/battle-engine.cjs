@@ -14,6 +14,7 @@ const progressionConfig=require('../../js/config/progression.js');
 const {createFighterFactory}=require('./fighter.cjs');
 const {record,publicBattle}=require('./battle-view.cjs');
 const {createBattleAi}=require('./battle-ai.cjs');
+const fx=require('./battle-effects.cjs');
 
 /**
  * Create the authoritative combat engine shared by Arena and live Challenge.
@@ -31,108 +32,207 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     return battle[side][battle[side==='attack'?'activeAttack':'activeDefense']];
   }
 
-  const harmful=new Set(['poison','freeze','damage_down','armor_down','accuracy_down']);
-
-  /** Automatically select the first living fighter after a knockout. */
-  function nextFighter(battle,side){
-    const next=battle[side].findIndex(fighter=>fighter.hp>0);
-    if(next>=0){
-      battle[side==='attack'?'activeAttack':'activeDefense']=next;
-      record(battle,{side,switchTo:battle[side][next].nickname,automatic:true});
-    }
-  }
-
-  /** Add or refresh a timed status effect. */
-  function addStatus(fighter,effect,element){
-    const previous=fighter.statuses.find(status=>status.kind===effect.kind);
-    if(previous){
-      previous.turns=Math.max(previous.turns,effect.duration);
-      previous.value=Math.max(previous.value||0,effect.value||0);
-      previous.element=element;
-    }else fighter.statuses.push({kind:effect.kind,turns:effect.duration,value:effect.value||0,element});
-  }
-
   const {readySkills,chooseDefenseSkill}=createBattleAi({typeChart:catalog.typeChart});
+  const skillRegistry=new Map([...game.skills.neutral,
+    ...Object.values(game.skills.elemental).flat()].map(item=>[item.id,item]));
 
-  /**
-   * Resolve one skill, including status ticks, misses, crits, cooldowns and knockout switching.
-   */
+  /** Resolve a skill and record each target separately for battle replay. */
   function strike(battle,side,skill,skillIndex){
-    const actor=active(battle,side),other=side==='attack'?'defense':'attack',target=active(battle,other);
+    const actor=active(battle,side),other=side==='attack'?'defense':'attack';
+    const target=active(battle,other);
     if(!actor||actor.hp<=0||!target||target.hp<=0)return;
     actor.statuses||=[];actor.cooldowns||=[0,0,0,0];
-    target.statuses||=[];target.cooldowns||=[0,0,0,0];
-    const previous=actor.statuses.slice();
-
-    for(const status of previous){
-      if(status.kind!=='poison'&&status.kind!=='regen')continue;
-      const max=combat.effectiveMaxHp(actor),amount=Math.max(1,Math.round(max*status.value)),before=actor.hp;
-      actor.hp=status.kind==='poison'?Math.max(0,before-amount):Math.min(max,before+amount);
-      record(battle,{side,actor:actor.nickname,actorSpecies:actor.species,target:actor.nickname,
-        targetSide:side,skill:status.kind==='poison'?'Poison':'Regeneration',
-        element:status.element,effect:status.kind,statusTick:true,
-        damage:Math.max(0,before-actor.hp),heal:Math.max(0,actor.hp-before),
-        remaining:actor.hp,knockout:actor.hp===0});
+    let cast=skill;
+    if(skill.effect?.kind==='echo_last'&&!actor.lastDirectDamage)
+      throw Object.assign(new Error('Temporal Echo needs a previous direct attack.'),{status:400});
+    if(skill.effect?.kind==='copy_last'){
+      const last=skillRegistry.get(target.lastSkill);
+      if(last&&!['copy_last','revive_first'].includes(last.effect?.kind))
+        cast={...last,power:last.power*.65,bonus:(last.bonus||0)*.65,
+          special:true,effect:last.effect?{...last.effect,
+            value:(last.effect.value||0)*.65}:null};
+      else cast={...skill,power:1,effect:null};
     }
-
-    const frozen=previous.some(status=>status.kind==='freeze');
-    if(frozen&&actor.hp>0)record(battle,{side,actor:actor.nickname,actorSpecies:actor.species,
-      target:actor.nickname,targetSide:side,skill:'Frozen',element:'ice',effect:'freeze',
-      skipped:true,damage:0,remaining:actor.hp});
-
-    if(actor.hp>0&&!frozen){
-      const effect=skill.effect,beneficiary=effect?.target==='self'?actor:target,before=beneficiary.hp;
-      let damage=0,critical=false,hits=0,misses=0;
-      const attempts=effect?.kind==='multi'?effect.hits:combat.skillPower(actor.attack,skill)>0?1:0;
-      for(let hit=0;hit<attempts&&target.hp>0;hit++){
-        const missChance=Math.min(combatConfig.maxAccuracyPenalty,
-          (effect?.kind==='multi'?effect.missChance:0)+combat.statusValue(actor,'accuracy_down'));
-        if(rng()<missChance){misses++;continue;}
-        const crit=rng()<combatConfig.critical.chance;
-        const variance=combatConfig.variance.min+rng()*
-          (combatConfig.variance.max-combatConfig.variance.min);
-        const dealt=Math.min(target.hp,
-          combat.battleDamage(actor,target,skill,catalog.typeChart,variance,crit));
-        target.hp=Math.max(0,target.hp-dealt);damage+=dealt;hits++;critical=critical||crit;
+    const effect=cast.effect||{},kind=effect.kind;
+    if(kind==='revive_first'&&(battle.revives?.[side]||!battle[side].some(f=>f.hp<=0)))
+      throw Object.assign(new Error('No eligible dragon to revive.'),{status:400});
+    const frozen=!!fx.status(actor,'freeze');
+    if(frozen){
+      actor.statuses=actor.statuses.filter(s=>s.kind!=='freeze');
+      actor.freezeImmunity=3;
+      record(battle,{side,targetSide:side,actor:actor.nickname,target:actor.nickname,
+        skill:'Frozen',effect:'freeze',skipped:true,damage:0,remaining:actor.hp});
+    }else{
+      const recordHit=(victim,damage,extra={})=>record(battle,{side,actor:actor.nickname,
+        actorSpecies:actor.species,target:victim.nickname,
+        targetSide:battle[side].includes(victim)?side:other,
+        skill:skill.name,skillId:skill.id,element:skill.element||null,effect:kind||null,
+        special:!!skill.special,damage,remaining:victim.hp,knockout:victim.hp===0,...extra});
+      const cost=kind==='blood_crit'?effect.value:kind==='lifesteal_cost'?effect.cost:
+        kind==='last_stand'?effect.cost:0;
+      if(cost)actor.hp=Math.max(1,actor.hp-Math.max(1,Math.round(actor.hp*
+        (kind==='blood_crit'||kind==='lifesteal_cost'?cost:0)+
+        actor.maxHp*(kind==='last_stand'?cost:0))));
+      const offensive=combat.skillPower(actor.attack,cast)>0||kind==='echo_last';
+      const aoe=['area','spore_bloom'].includes(kind);
+      const poisonedBefore=!!fx.status(target,'poison');
+      const repeated=['multi','low_hp_power'].includes(kind);
+      const victims=aoe?fx.living(battle[other]):offensive&&!repeated?[target]:[];
+      let totalDamage=0;
+      if(repeated){
+        // Resolve each hit against the current living target. A knockout sends
+        // the next hit to the next living reserve instead of discarding it.
+        let current=target;
+        for(let i=0;i<effect.hits&&actor.hp>0;i++){
+          if(current.hp<=0)current=battle[other].find(f=>f.hp>0);
+          if(!current)break;
+          const miss=Math.min(combatConfig.maxAccuracyPenalty,
+            (effect.missChance||0)+combat.statusValue(actor,'accuracy_down'));
+          if(rng()<miss){recordHit(current,0,{hits:0,misses:1});continue;}
+          const crit=rng()<combatConfig.critical.chance;
+          const variance=combatConfig.variance.min+rng()*
+            (combatConfig.variance.max-combatConfig.variance.min);
+          const power=kind==='low_hp_power'&&actor.hp/actor.maxHp<effect.threshold?
+            effect.lowPower:cast.power;
+          const dealt=combat.battleDamage(actor,current,{...cast,power},
+            catalog.typeChart,variance,crit);
+          const actual=fx.absorb(current,dealt);
+          totalDamage+=actual;
+          recordHit(current,actual,{hits:1,critical:crit,
+            matchup:combat.matchup(skill.element,current.parts,catalog.typeChart)});
+          const reflect=fx.status(current,'reflect');
+          if(reflect)fx.absorb(actor,Math.min(Math.round(actual*reflect.value),
+            Math.round(current.maxHp*(reflect.cap||.12))));
+        }
       }
-
-      if(effect&&(attempts===0||hits>0)){
-        if(effect.kind==='heal'||effect.kind==='cleanse'){
-          if(effect.kind==='cleanse')beneficiary.statuses=beneficiary.statuses.filter(status=>!harmful.has(status.kind));
-          beneficiary.hp=Math.min(combat.effectiveMaxHp(beneficiary),
-            beneficiary.hp+Math.round(beneficiary.maxHp*effect.value));
-        }else if(effect.kind==='vitality'){
-          const oldMax=combat.effectiveMaxHp(beneficiary);
-          addStatus(beneficiary,effect,skill.element);
-          beneficiary.hp=Math.min(combat.effectiveMaxHp(beneficiary),
-            beneficiary.hp+combat.effectiveMaxHp(beneficiary)-oldMax);
-        }else if(effect.duration>0&&effect.kind!=='multi'&&beneficiary.hp>0)
-          addStatus(beneficiary,effect,skill.element);
+      for(const victim of victims){
+        if(victim.hp<=0)continue;
+        let hits=0,misses=0,critical=false,damage=0;
+        const attempts=kind==='multi'||kind==='low_hp_power'?effect.hits:1;
+        for(let i=0;i<attempts&&victim.hp>0&&actor.hp>0;i++){
+          const miss=Math.min(combatConfig.maxAccuracyPenalty,
+            (kind==='multi'?effect.missChance:0)+combat.statusValue(actor,'accuracy_down'));
+          if(rng()<miss){misses++;continue;}
+          const crit=kind==='blood_crit'||rng()<combatConfig.critical.chance;
+          const variance=combatConfig.variance.min+rng()*
+            (combatConfig.variance.max-combatConfig.variance.min);
+          let power=cast.power;
+          if(kind==='switch_punish'&&battle.lastSwitchSide===other)power+=effect.value;
+          if(kind==='curse_strike'&&fx.status(victim,'curse'))power+=effect.bonusDamage;
+          if(kind==='repeat_punish'&&((victim.skillUses||{})[victim.lastSkill]||0)>=2)
+            power+=effect.value;
+          if(kind==='execute'&&victim.hp/victim.maxHp<effect.value)power=effect.lowPower;
+          if(kind==='last_stand'&&actor.hp/actor.maxHp<effect.lowHp)power=effect.lowPower;
+          if(kind==='low_hp_power'&&actor.hp/actor.maxHp<effect.threshold)power=effect.lowPower;
+          const attackSkill={...cast,power,bonus:cast.bonus||0,special:!!cast.special};
+          let dealt=combat.battleDamage(actor,victim,attackSkill,catalog.typeChart,variance,crit);
+          if(kind==='echo_last'){
+            const replay=Math.min(actor.attack*effect.cap,
+              (actor.lastDirectDamage||actor.attack)*effect.value);
+            dealt=combat.battleDamage(actor,victim,{...skill,power:replay/actor.attack,
+              bonus:0,special:true},catalog.typeChart,variance,false);
+          }
+          const buff=fx.status(actor,'next_attack_up')||fx.status(actor,'carapace_strike');
+          if(buff){dealt=Math.round(dealt*(1+buff.value));
+            actor.statuses.splice(actor.statuses.indexOf(buff),1);}
+          const actual=fx.absorb(victim,dealt);
+          damage+=actual;totalDamage+=actual;hits++;critical=critical||crit;
+          const reflect=fx.status(victim,'reflect');
+          if(reflect&&actor.hp>0){
+            const reflected=Math.min(Math.round(actual*reflect.value),
+              Math.round(victim.maxHp*(reflect.cap||.12)));
+            fx.absorb(actor,reflected);
+          }
+          const carapace=fx.status(victim,'carapace');
+          if(carapace&&victim.hp>0)
+            fx.addStatus(victim,{kind:'carapace_strike',
+              value:carapace.counterBonus||.15,duration:2},skill.element);
+        }
+        if(hits&&victim.hp>0){
+          if(['poison','burn','curse','armor_down','damage_down'].includes(kind))
+            fx.addStatus(victim,effect,skill.element);
+          if(kind==='curse_strike')
+            fx.addStatus(victim,{kind:'damage_down',value:effect.value,
+              duration:effect.duration},skill.element);
+          if(kind==='freeze_chance'&&!victim.freezeImmunity&&rng()<effect.value)
+            fx.addStatus(victim,{kind:'freeze',duration:1,value:0},skill.element);
+          if(kind==='lock_switch'&&!victim.switchImmunity)
+            fx.addStatus(victim,effect,skill.element);
+          if(kind==='detonate_burn'&&fx.status(victim,'burn')){
+            const burn=fx.status(victim,'burn');
+            victim.statuses.splice(victim.statuses.indexOf(burn),1);
+            const burst=fx.absorb(victim,Math.round(victim.maxHp*effect.value));
+            damage+=burst;totalDamage+=burst;
+          }
+          if(kind==='spore_bloom'&&poisonedBefore&&victim!==target)
+            fx.addStatus(victim,{kind:'poison',value:effect.value,duration:effect.duration},skill.element);
+          if(kind==='dispel_strike'){
+            const buff=victim.statuses.find(s=>['armor_up','damage_reduction'].includes(s.kind));
+            if(buff)victim.statuses.splice(victim.statuses.indexOf(buff),1);
+          }
+        }
+        recordHit(victim,damage,{hits,misses,critical,
+          matchup:combat.matchup(skill.element,victim.parts,catalog.typeChart)});
       }
-
+      const support=(victim,amount=0)=>recordHit(victim,0,{heal:amount});
+      const allies=battle[side];
+      const healOne=(victim,value)=>{if(victim)support(victim,fx.heal(victim,victim.maxHp*value));};
+      if(kind==='heal_lowest')healOne(fx.lowest(allies),effect.value);
+      else if(kind==='heal_team')for(const f of fx.living(allies))healOne(f,effect.value);
+      else if(kind==='cleanse_heal_lowest'){
+        const f=fx.living(allies).sort((a,b)=>
+          fx.harmful.size&&b.statuses.filter(s=>fx.harmful.has(s.kind)).length-
+          a.statuses.filter(s=>fx.harmful.has(s.kind)).length)[0];
+        if(f){fx.removeHarmful(f,effect.remove);healOne(f,effect.value);}
+      }else if(kind==='cleanse_team_heal'){
+        for(const f of fx.living(allies)){fx.removeHarmful(f,effect.remove);healOne(f,effect.value);}
+      }else if(kind==='cleanse_heal_self'){
+        fx.removeHarmful(actor,effect.remove);healOne(actor,effect.value);
+      }else if(kind==='revive_first'){
+        const f=allies.find(item=>item.hp<=0);
+        f.hp=Math.max(1,Math.round(f.maxHp*effect.value));f.statuses=[];
+        battle.revives={...battle.revives,[side]:true};support(f,0);
+      }else if(kind==='rewind_ally'){
+        const f=fx.lowest(allies);
+        if(f)support(f,fx.heal(f,Math.min(f.maxHp*effect.cap,(f.damageLastTurn||0)*effect.value)));
+      }else if(kind==='regen_team'){
+        for(const f of fx.living(allies)){fx.addStatus(f,{kind:'regen',value:effect.value,
+          duration:effect.duration},skill.element);support(f);}
+      }else if(kind==='vitality'){
+        const old=combat.effectiveMaxHp(actor);fx.addStatus(actor,{...effect,
+          duration:effect.duration+1},skill.element);
+        actor.hp+=combat.effectiveMaxHp(actor)-old;support(actor,actor.hp-old);
+      }else if(['shield','damage_up','damage_reduction','armor_up','reflect','next_attack_up',
+        'carapace'].includes(kind)){fx.addStatus(actor,{...effect,
+          duration:effect.duration+1},skill.element);support(actor);}
+      else if(kind==='switch_trap'){
+        battle.traps??={};
+        const trap=battle.traps[other];
+        if(!trap)battle.traps[other]={turns:effect.duration,value:effect.value};
+        else trap.value=Math.max(trap.value,effect.value);
+        support(actor);
+      }else if(kind==='lifesteal_cost'){
+        support(actor,fx.heal(actor,Math.min(totalDamage*effect.value,actor.maxHp*effect.healCap)));
+      }else if(kind==='curse'&&!offensive){fx.addStatus(target,effect,skill.element);support(target);}
+      else if(!offensive)support(actor);
+      if(totalDamage>0&&kind!=='echo_last'&&!aoe)actor.lastDirectDamage=totalDamage;
+      actor.skillUses??={};actor.skillUses[skill.id]=(actor.skillUses[skill.id]||0)+1;
+      actor.lastSkill=skill.id;
+      battle.lastSkillBySide??={};battle.lastSkillBySide[side]=skill.id;
       if(skill.cooldown)actor.cooldowns[skillIndex]=skill.cooldown;
-      record(battle,{side,actor:actor.nickname,actorSpecies:actor.species,
-        target:beneficiary.nickname,targetSide:beneficiary===actor?side:other,
-        skill:skill.name,skillId:skill.id,element:skill.element||null,effect:effect?.kind||null,
-        special:!!skill.special,damage,critical,hits,misses,
-        matchup:attempts?combat.matchup(skill.element,target.parts,catalog.typeChart):null,
-        heal:Math.max(0,beneficiary.hp-before),remaining:beneficiary.hp,knockout:target.hp===0});
     }
-
-    for(const status of previous){
-      if(!actor.statuses.includes(status))continue;
-      status.turns--;
-      if(status.turns<=0){
-        actor.statuses.splice(actor.statuses.indexOf(status),1);
-        actor.hp=Math.min(actor.hp,combat.effectiveMaxHp(actor));
-      }
+    // Cooldowns count only the fighter's own turns, including a frozen turn.
+    actor.cooldowns=actor.cooldowns.map((n,i)=>i===skillIndex&&!frozen?n:Math.max(0,n-1));
+    fx.tickSide(battle,side);
+    for(const f of battle[side])f.damageLastTurn=0;
+    for(const f of battle[side]){
+      if(f.freezeImmunity>0)f.freezeImmunity--;
+      if(f.switchImmunity>0)f.switchImmunity--;
     }
-    actor.cooldowns=actor.cooldowns.map((value,index)=>
-      index===skillIndex&&actor.hp>0&&!frozen?value:Math.max(0,value-1));
-    if(actor.hp===0)nextFighter(battle,side);
-    if(target.hp===0)nextFighter(battle,other);
+    if(battle.traps?.[side]?.turns>0&&--battle.traps[side].turns<=0)battle.traps[side]=null;
+    if(battle.lastSwitchSide===other)battle.lastSwitchSide=null;
+    fx.nextFighter(battle,side);fx.nextFighter(battle,other);
   }
-
   /** True when a battle side still has at least one living fighter. */
   const alive=group=>group.some(fighter=>fighter.hp>0);
 
@@ -147,8 +247,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       const index=battle[side].findIndex(fighter=>fighter.id===action.dragonId&&fighter.hp>0);
       if(index<0||index===battle[side==='attack'?'activeAttack':'activeDefense'])
         throw Object.assign(new Error('Choose a different living dragon.'),{status:400});
-      battle[side==='attack'?'activeAttack':'activeDefense']=index;
-      record(battle,{side,switchTo:battle[side][index].nickname});
+      fx.switchFighter(battle,side,index);
       // The same player may choose a skill after switching; event sequence still advances.
       return null;
     }else if(action?.action==='skill'){
@@ -190,7 +289,10 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     for(;battle.turn<=arenaConfig.maxTurns&&alive(left)&&alive(right);battle.turn++){
       for(const side of ['attack','defense']){
         if(!alive(left)||!alive(right))break;
-        const fighter=active(battle,side),ready=readySkills(fighter);
+        const fighter=active(battle,side),ready=readySkills(fighter).filter(({skill})=>
+          (skill.effect?.kind!=='revive_first'||battle[side].some(f=>f.hp<=0)&&
+          !battle.revives?.[side])&&
+          (skill.effect?.kind!=='echo_last'||fighter.lastDirectDamage>0));
         if(!ready.length)throw Object.assign(new Error('This dragon has no unlocked skills.'),{status:400});
         const chosen=side==='defense'?chooseDefenseSkill(battle):
           ready[Math.floor(rng()*ready.length)];
@@ -201,7 +303,8 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     return {won:alive(left)&&(!alive(right)||remaining(left)>remaining(right)),events:battle.events};
   }
 
-  return {makeFighter,fight,publicBattle,active,alive,chooseDefenseSkill,strike,liveTurn,finish,readySkills};
+  return {makeFighter,fight,publicBattle,active,alive,chooseDefenseSkill,strike,
+    liveTurn,finish,readySkills,switchFighter:fx.switchFighter};
 }
 
 module.exports={createBattleEngine};

@@ -48,14 +48,15 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 
 | File / thư mục | Nội dung |
 | --- | --- |
-| `data/dragons.json`, `data/elements-expansion.json`, `data/double-elements.json` | Loài gốc, 5 hệ mở rộng và 30 thiết kế Double Element; bộ sinh danh mục dùng lại công thức rồng hiện tại |
+| `data/dragons.json`, `data/elements-expansion.json` | Loài gốc và 5 hệ mở rộng; vẫn cần cho build, máy chủ và dữ liệu rồng đã lưu |
+| `data/double-element-dragons.json`, `data/special-skills.json` | 45 công thức rồng Double Element cùng cấu hình độ hiếm; 45 skill đặc biệt nằm riêng để có thể dùng lại ở bậc khác |
 | `data/game.json`, `js/config/`, `data/economy.js` | Bản đồ 16 đảo và vùng đất 24×24; cấu hình cân bằng nằm trong `js/config/`, còn `data/economy.js` là lớp tương thích |
 | `data/users.json`, `data/sessions.json` | Máy chủ tự tạo tài khoản và phiên; không lưu trong repository và không cho tải trực tiếp qua web |
 | `data/profiles/` | Một file JSON tiến trình riêng cho từng tài khoản |
 | `server/auth.cjs`, `server/store.cjs`, `server/profile.cjs` | Xác thực, ghi JSON nguyên tử và tạo hồ sơ đầu tiên khi admin cấp tài nguyên |
 | `js/data/dragon-rules.js` | Quy tắc sinh rồng lai, tính chỉ số và pha màu từ JSON |
 | `js/data/catalog.js` | Nạp dữ liệu JSON vào cấu trúc game |
-| `js/data/db-cache.js` | Bản cache tạo từ JSON để `file://` vẫn chạy |
+| `js/data/db-cache.js` | Bản cache do bước build tạo từ catalog JSON; không lưu trong repository |
 | `js/core/`, `js/logic/` | Trạng thái, tiền vàng, trứng, lai, công trình, chiêu và đồng hồ |
 | `js/render/`, `js/ui/` | Canvas đảo/rồng và giao diện thông tin, Sổ tay, chuồng; `dragon-anatomy.js` chứa nét vẽ dùng chung, `dragon-design.js` dựng bộ khung và chi tiết hệ ở điểm neo |
 | `js/ui/guide.js` | Tab Hướng dẫn: các mục đọc luật và cân bằng từ dữ liệu đang chạy; `GUIDE_UPDATES` lưu lịch sử thay đổi cho người chơi |
@@ -76,7 +77,7 @@ Khi đổi cơ chế game, cập nhật nội dung mục liên quan trong `js/ui
 - Chu kỳ ngày đêm chạy trong 8 phút và đổi màu trời, nước, đảo, công trình. `/debug/gallery.html` cho phép tìm kiếm, lọc hệ chủ đạo và bậc, phân trang toàn bộ danh mục và so sánh Baby / Young / Adult; nút Pause và Quality hỗ trợ kiểm tra hoạt ảnh.
 - Dragon Academy có thể kéo hoặc dùng nút Move như công trình khác. Công trình giới hạn cấp rồng ở 30 khi chưa nâng cấp; mỗi cấp Academy tăng chi phí vàng, thức ăn, gem và thời gian theo `data/economy.js`, đồng thời yêu cầu cấp người chơi.
 - Hang lai có **hai cột Father/Mother**, mỗi cột có lọc tối đa bốn hệ và tìm tên riêng. Hệ được chọn có viền và dấu ✓; rồng phải có đủ tất cả hệ được chọn. Bộ lọc kho rồng, Sổ tay và chọn đội đấu trường cũng theo quy tắc này. Danh sách đối thủ không có bộ lọc hệ. Rồng đã chọn ở một cột bị khóa ở cột kia. Danh sách hiển thị chân dung, tên tiếng Anh, cờ hệ nhỏ và độ hiếm.
-- Danh mục sau khi mở rộng có **1.770 loài**: 15 rồng một hệ, 210 rồng hai hệ (mỗi cặp có đủ hai hệ chủ đạo), 1.365 rồng ba hệ (mỗi hệ chủ đạo đi với một cặp hệ phụ không thứ tự), 150 rồng bốn hệ (mỗi hệ chủ đạo có 10 con) và 30 rồng Double Element. Mỗi hệ xuất hiện đúng 30 lần với vai trò hệ phụ của rồng bốn hệ; trong từng nhóm chủ đạo, mỗi hệ phụ khác xuất hiện 2–3 lần. Giữ nguyên ID của 50 rồng bốn hệ gốc để bảo toàn bản lưu. Bộ lọc Double Element tách khỏi 4 hệ thông thường.
+- Danh mục sau khi mở rộng có **1.785 loài**: 15 rồng một hệ, 210 rồng hai hệ (mỗi cặp có đủ hai hệ chủ đạo), 1.365 rồng ba hệ (mỗi hệ chủ đạo đi với một cặp hệ phụ không thứ tự), 150 rồng bốn hệ (mỗi hệ chủ đạo có 10 con) và 45 rồng Double Element. Mỗi hệ xuất hiện đúng 30 lần với vai trò hệ phụ của rồng bốn hệ; trong từng nhóm chủ đạo, mỗi hệ phụ khác xuất hiện 2–3 lần. Giữ nguyên ID của 50 rồng bốn hệ gốc để bảo toàn bản lưu. Bộ lọc Double Element tách khỏi 4 hệ thông thường.
 - Rồng ba hệ cần tổ hợp bố mẹ có ít nhất ba hệ và có xác suất gốc **15–27%** tùy cấp. Rồng bốn hệ cần hai bố mẹ đều ba hệ, tập hệ gộp có ít nhất bốn hệ và có giống phù hợp trong danh mục; xác suất gốc **2,25–4,5%**. Hệ chung của bố mẹ tăng trọng số của từng giống. Double Element có ngoại lệ về hệ phụ và điều kiện riêng. Hang Lai Tinh Tú tăng tương đối 40% xác suất bậc từ ba hệ trở lên và giảm 20% thời gian; các tham số nằm trong `js/config/breeding.js`.
 - Kỹ năng dùng icon lục giác với màu và hình hệ tương ứng; chiêu thường có icon riêng. Cờ hệ trong bộ lọc, thẻ rồng, Sổ tay và bảng thông tin có các kích cỡ thống nhất.
 - Rồng có chuyển động đuôi lò xo, nhịp thở, cánh và phần đầu theo trạng thái. Bậc 2/3/4 có phần cánh, áo giáp, vây hoặc trường năng lượng của các hệ phụ. Công trình được vẽ lại từ đầu bằng hình khối nhìn nghiêng. Mười chuồng có địa hình và hình dáng riêng: Lửa có núi dung nham, Nước có hồ san hô, Đất có cột đá, Gió có cối gió trên mây, Băng có tinh thể và nhũ băng, Sét có mây điện, Thiên nhiên có tán cây, Bóng tối có trăng và tháp mộ, Ánh sáng có đền mặt trời, Kim loại có lò rèn và bánh răng. Nông trại có ruộng bậc và kho gỗ, lò ấp là vỏ trứng bao lấy buồng kính và ổ ấp, Dragon Academy là tháp chính với hai cánh, Đấu trường có khán đài và hai cờ, Hang Lai là cổng đá cùng tinh thể. Rồng, trứng, cây trồng, quá trình lai và ánh sáng đêm vẫn đổi theo trạng thái thực tế.
@@ -94,7 +95,7 @@ Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng
 - EXP cần để lên cấp là `round(60 + 25 × cấp + 8 × cấp^1,5)`. Khi lên cấp nhận vàng, thức ăn và gem; cấp chia hết cho 5 nhận thêm 3 gem.
 - Mở một vùng đất nhận 60 EXP; mua một đảo nhận 250 EXP. Số Farm tối đa là 1 ở cấp 1–4, thêm 1 ở các mốc cấp 5, 10, 15… và tối đa 12 Farm. Farm đã cất kho vẫn tính vào giới hạn.
 - Tỷ lệ gốc của rồng 3 hệ là 15–27%, rồng 4 hệ là 2,25–4,5%; phần còn lại phân bổ cho rồng 1 và 2 hệ. Giao diện hiển thị xác suất từng giống theo hai chữ số thập phân.
-- Rồng **Double Element** có bốn slot nhưng chỉ ba hệ: hai slot đầu là hệ chủ đạo trùng nhau. Có hai loài riêng cho mỗi hệ, thuộc bậc Transcendent với chỉ số nằm giữa rồng 3 hệ và 4 hệ. Bố mẹ đều phải có bốn slot, ít nhất ba hệ riêng, cùng hệ chủ đạo và đạt cấp 40; xác suất gốc 0,9–1,8%, thấp hơn rồng 4 hệ. Trứng và hình thể theo hai dạng riêng; Sổ tay có tab riêng. Danh sách 30 thiết kế và kỹ năng nằm tại `data/double-elements.json`.
+- Rồng **Double Element** có bốn slot nhưng chỉ ba hệ: hai slot đầu là hệ chủ đạo trùng nhau. Có ba loài riêng cho mỗi hệ, thuộc bậc Transcendent với chỉ số nằm giữa rồng 3 hệ và 4 hệ. Bố mẹ đều phải có bốn slot, ít nhất ba hệ riêng, cùng hệ chủ đạo và đạt cấp 40; xác suất gốc 0,9–1,8%, thấp hơn rồng 4 hệ. Trứng và hình thể theo dạng vương miện hoặc áo choàng; Sổ tay có tab riêng. Danh sách 45 thiết kế nằm trong `data/double-element-dragons.json`, còn kỹ năng nằm trong `data/special-skills.json`.
 - Shop Food bán gói 100, 500 hoặc 2.000 thức ăn với giá 15 vàng mỗi thức ăn. Các tham số cân bằng nằm trong `js/config/`.
 - Nhiệm vụ hằng ngày do máy chủ tính tiến độ và thưởng, làm mới lúc 05:00 giờ Việt Nam. Nhiệm vụ cho ăn yêu cầu ba lần cho ăn, có thể cùng một rồng.
 

@@ -583,7 +583,7 @@
       "ten": "Rare",
       "vien": "#3D8BFF",
       "hao": "#4DA3FF",
-      "heSoChiSo": 1.15,
+      "heSoChiSo": 1.3,
       "vangGio": 150,
       "apGiay": 480,
       "giaTrung": {
@@ -596,7 +596,7 @@
       "ten": "Epic",
       "vien": "#A64DFF",
       "hao": "#B26BFF",
-      "heSoChiSo": 1.3,
+      "heSoChiSo": 1.95,
       "vangGio": 400,
       "apGiay": 3600,
       "giaTrung": {
@@ -609,7 +609,7 @@
       "ten": "Legendary",
       "vien": "#FFC21A",
       "hao": "#FFD24D",
-      "heSoChiSo": 1.5,
+      "heSoChiSo": 2.4,
       "vangGio": 1000,
       "apGiay": 10800,
       "giaTrung": {
@@ -622,7 +622,7 @@
       "ten": "Mythic",
       "vien": "rainbow",
       "hao": "rainbow",
-      "heSoChiSo": 1.8,
+      "heSoChiSo": 3.75,
       "vangGio": 2500,
       "apGiay": 32400,
       "giaTrung": null,

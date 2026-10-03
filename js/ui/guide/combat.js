@@ -13,8 +13,8 @@ function guideArena(){
     'Bốn ô skill mở theo level '+window.DragonConfig.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
     'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân '+strong+'; ▼ Weak nhân '+weak+'; skill thường không có hệ nên hệ số là 1.',
     'Sát thương còn chịu giáp, biến thiên ngẫu nhiên khoảng '+Math.round(combat.variance.min*100)+'–'+Math.round(combat.variance.max*100)+'%, trạng thái đang có và chí mạng. Xác suất crit '+critChance+'%, hệ số crit '+combat.critical.multiplier+'.',
-    'Dưới HP có icon trạng thái và số lượt còn lại: tăng/giảm tấn công, giáp, giảm sát thương, độc, đóng băng, hồi phục, tăng HP và giảm chính xác.',
-    'Special Skill có thể hồi máu, tẩy trạng thái xấu, tăng HP tối đa hoặc đánh 2–3 nhịp có tỷ lệ hụt từng nhịp. Hiệu ứng cùng loại không cộng dồn: làm mới thời gian theo giá trị lớn hơn và giữ mức tác dụng mạnh hơn.',
+    'Dưới HP của cả rồng trên sân và dự bị có biểu tượng trạng thái cùng số lượt còn lại. Độc, thiêu đốt và nguyền vẫn tác dụng lên rồng dự bị; tổng sát thương này tối đa 10% HP tối đa mỗi lượt.',
+    'Hiệu ứng cùng loại không cộng dồn và không kéo dài thời gian đang có. Đổi rồng không chuyển trạng thái sang rồng mới. Hồi sinh chỉ dùng một lần cho cả đội mỗi trận.',
     'Thắng nhận vàng, thức ăn và gem; thua hoặc bỏ trận đều tiêu hao một lượt.'
   ])+'<div class="guide-callout">Chỉ báo Strong/Weak ở ô skill theo đối thủ đang đứng sân; khi đổi rồng, chúng được tính lại.</div>';
 }
@@ -34,27 +34,7 @@ function guideChallenge(){
 }
 
 function guideSpecialSkills(){
-  const detail=function(skill){
-    const e=skill.effect,percent=value=>+(value*100).toFixed(2)+'%',turns=e.duration+' lượt',
-      attack=skill.power>0?'Đòn đánh gây sát thương hệ theo '+percent(skill.power)+' tấn công gốc + '+
-        percent(skill.bonus||0)+' bổ sung, sau đó áp dụng khắc hệ, giáp và chí mạng. ':'Chiêu hỗ trợ thuần, không gây sát thương. ';
-    const effect={
-      poison:()=>`Gây độc lên mục tiêu, mất ${percent(e.value)} HP tối đa mỗi lượt trong ${turns}.`,
-      regen:()=>`Hồi ${percent(e.value)} HP tối đa mỗi lượt trong ${turns}.`,
-      heal:()=>`Hồi ngay ${percent(e.value)} HP tối đa.`,
-      cleanse:()=>`Gỡ các trạng thái bất lợi và hồi ngay ${percent(e.value)} HP tối đa.`,
-      vitality:()=>`Tăng HP tối đa ${percent(e.value)} trong ${turns} và hồi lượng HP tương ứng.`,
-      freeze:()=>`Đóng băng mục tiêu trong ${turns}, khiến mục tiêu mất lượt hành động.`,
-      multi:()=>`Tấn công ${e.hits} nhịp; mỗi nhịp có ${percent(e.missChance)} xác suất hụt và tính sát thương riêng.`,
-      damage_up:()=>`Tăng sát thương gây ra ${percent(e.value)} trong ${turns}.`,
-      damage_down:()=>`Giảm sát thương mục tiêu gây ra ${percent(e.value)} trong ${turns}.`,
-      armor_up:()=>`Tăng giáp của bản thân ${percent(e.value)} trong ${turns}.`,
-      armor_down:()=>`Giảm giáp mục tiêu ${percent(e.value)} trong ${turns}.`,
-      damage_reduction:()=>`Giảm sát thương bản thân nhận vào ${percent(e.value)} trong ${turns}.`,
-      accuracy_down:()=>`Giảm độ chính xác mục tiêu ${percent(e.value)} trong ${turns}.`
-    };
-    return attack+(effect[e.kind]?.()||esc(skill.description))+' Hồi chiêu '+skill.cooldown+' lượt.';
-  };
+  const detail=skill=>esc(skill.descriptionVi||skill.description||'')+' Hồi chiêu '+skill.cooldown+' lượt.';
   const groups=Object.keys(DATA.elements).map(function(element){
     const cards=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
       const skill=skillsForSpecies(DATA.species[id])[3];
@@ -63,8 +43,8 @@ function guideSpecialSkills(){
     return '<details class="guide-special-group"><summary>'+elementFlag(element,false,'sm')+' '+
       esc(DATA.elements[element].name)+' · '+cards.length+' chiêu</summary><div class="guide-special-cards">'+cards.join('')+'</div></details>';
   });
-  return '<p>Mỗi hệ Double Element có hai Special Skill ở ô thứ tư. Biểu tượng, tên và tác dụng lấy từ danh mục skill đang dùng trong Arena.</p>'+
-    '<div class="guide-callout">Skill hỗ trợ thuần gây 0 sát thương. Skill có đòn đánh chịu giáp, hệ số khắc hệ và tỉ lệ chí mạng; đòn nhiều nhịp kiểm tra hụt riêng từng nhịp. Cùng một loại trạng thái không cộng dồn.</div>'+groups.join('');
+  return '<p>Mỗi hệ có ba Double Element Special Skill ở ô thứ tư. Mỗi rồng Double Element đang mang một trong ba chiêu của hệ chủ đạo. Biểu tượng, tên và tác dụng lấy từ danh mục skill đang dùng trong Arena.</p>'+
+    '<div class="guide-callout">Skill hỗ trợ thuần gây 0 sát thương. Đòn trực tiếp chịu giáp và khắc hệ; sát thương theo thời gian tối đa 10% HP mục tiêu mỗi lượt. Khiên hấp thụ trước HP. Trạng thái cùng loại không cộng dồn hoặc kéo dài thời gian.</div>'+groups.join('');
 }
 
 function guideElements(){

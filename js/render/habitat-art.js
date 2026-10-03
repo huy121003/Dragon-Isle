@@ -151,72 +151,88 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
     case 'war':{
-      structurePlinth('#864347','#6a303e','#462c37','#f4a36e');
-      structurePoly([[-.35,.1],[-.35,-.42],[0,-.58],[.35,-.42],[.35,.1]],
-        '#773642','#f9b66a',.02);
-      structurePoly([[-.2,-.19],[0,-.46],[.2,-.19],[.16,-.03],[0,-.1],[-.16,-.03]],
-        '#c65b42','#f8d599',.018);
-      for(const x of [-.35,.35]){
-        structureLine([[x,.06],[x,-.68]],'#fbd494',.024);
-        structurePoly([[x,-.7],[x-.06,-.58],[x+.06,-.58]],'#f6bb70');
+      // Roman legion barracks: stone castra, arched gate, tiled roof and standards.
+      structurePlinth('#a77955','#76513f','#563b35','#e4b477');
+      structurePoly([[-.39,.08],[-.39,-.39],[-.26,-.47],[.26,-.47],[.39,-.39],[.39,.08]],
+        '#9a5945','#edbc7c',.02);
+      structurePoly([[-.43,-.39],[-.29,-.56],[.29,-.56],[.43,-.39],[.32,-.32],[0,-.4],[-.32,-.32]],
+        '#c77a50','#f4d19a',.02);
+      structureLine([[-.27,-.53],[-.27,-.43],[-.18,-.39]],'#f6d59a',.014);
+      structureLine([[.27,-.53],[.27,-.43],[.18,-.39]],'#f6d59a',.014);
+      structurePoly([[-.13,.08],[-.13,-.12],[-.1,-.25],[0,-.33],[.1,-.25],[.13,-.12],[.13,.08]],
+        '#493834','#e8bc7a',.018);
+      structureEllipse(0,-.255,.085,.08,'#d4a46b','#f5d99f',.012);
+      structureLine([[0,-.2],[0,-.3]],'#725341',.012);
+      for(const x of [-.34,.34]){
+        structureLine([[x,.04],[x,-.68]],'#d9bd89',.022);
+        structurePoly([[x,-.69],[x-.1,-.63],[x-.08,-.47],[x+.08,-.47],[x+.1,-.63]],'#a8423d','#f0c17c',.012);
+        structureLine([[x,-.61],[x,-.49]],'#f1d093',.01);
       }
-      structureGlow(0,-.23,.25,'#f5944566');break;
+      structureElementBadge('war',0,-.18,.22);
+      structureGlow(0,-.23,.24,'#f5944544');break;
     }
     case 'pure':{
-      structurePlinth('#a87faa','#785482','#553c70','#fff0fa');
-      structureEllipse(0,.08,.4,.14,'#bc8cbb','#f7d6ed',.02);
-      for(const x of [-.3,.3]){
-        structurePoly([[x-.06,.03],[x-.07,-.43],[x,-.56],[x+.07,-.43],[x+.06,.03]],
-          '#f5d9f0','#ffffff',.016);
-        structureGlow(x,-.43,.13,'#ffb8f174');
+      // Three petal towers meet around a small central light, matching the Pure triskelion.
+      structurePlinth('#b18fbd','#7c608f','#594669','#f8e6f5');
+      structureEllipse(0,.07,.4,.14,'#af88b5','#f6dff1',.02);
+      for(let i=0;i<3;i++){
+        const a=-Math.PI/2+i*Math.PI*2/3,x=Math.cos(a)*.22,y=-.27+Math.sin(a)*.17;
+        ctx.save();ctx.translate(x,y);ctx.rotate(a+Math.PI/2);
+        structurePoly([[-.105,.14],[-.11,-.05],[0,-.29],[.11,-.05],[.105,.14]],
+          '#eed8ef','#fff8ff',.016);
+        structureLine([[-.05,.08],[0,-.19],[.05,.08]],'#bf91c7',.012);
+        ctx.restore();structureGlow(x,y-.07,.15,'#fbdcff55');
       }
-      structurePoly([[-.19,-.1],[0,-.63],[.19,-.1]],'#e9bee4','#fff4ff',.022);
-      structurePoly([[-.13,-.15],[0,-.53],[.13,-.15]],'#f9e9f8');
-      structureGlow(0,-.29,.31,'#fbd4ff66');break;
+      structureEllipse(0,-.27,.075,.075,'#fff8ff','#d5b2dc',.014);
+      structureElementBadge('pure',0,.01,.2);
+      structureGlow(0,-.25,.3,'#fbd4ff44');break;
     }
     case 'legend':{
-      structurePlinth('#60458e','#3b315f','#2b284c','#bfa2ed');
-      structureEllipse(0,.06,.4,.16,'#402c64','#d3b7ff',.02);
-      for(const x of [-.23,.23]){
-        structurePoly([[x-.11,.04],[x-.065,-.43],[x,-.62],[x+.065,-.43],[x+.11,.04]],
-          '#7457a2','#d8c2fb',.018);
-        structureGlow(x,-.44,.2,'#b597ff70');
+      // Paired loop arches echo the Legend flag's interlocking, mirrored strokes.
+      structurePlinth('#68518c','#433867','#302846','#c8b2eb');
+      structureEllipse(0,.07,.4,.14,'#4d3c70','#c5a8ee',.02);
+      for(const s of [-1,1]){
+        structurePoly([[s*.34,.06],[s*.32,-.38],[s*.23,-.52],[s*.14,-.39],[s*.15,.02]],
+          '#7960a7','#decaff',.018);
+        structurePoly([[s*.15,.02],[s*.14,-.2],[s*.06,-.31],[0,-.25],[s*.07,-.1],[s*.08,.05]],
+          '#b29ad9','#f1dcff',.014);
       }
-      ctx.beginPath();
-      for(let i=0;i<65;i++){
-        const t=i/64*Math.PI*2,x=.2*Math.sin(t),y=-.35+.11*Math.sin(t)*Math.cos(t);
-        if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-      }
-      ctx.strokeStyle='#f3d8ff';ctx.lineWidth=.03;ctx.stroke();break;
+      ctx.beginPath();ctx.moveTo(-.2,-.23);
+      ctx.bezierCurveTo(-.36,-.51,-.08,-.59,0,-.28);
+      ctx.bezierCurveTo(.08,-.59,.36,-.51,.2,-.23);
+      ctx.strokeStyle='#f1dcff';ctx.lineWidth=.04;ctx.stroke();
+      structureElementBadge('legend',0,.005,.2);break;
     }
     case 'primal':{
+      // Primitive rock shelter with three deep claw grooves spiralling around a core.
       structurePlinth('#777458','#595944','#424339','#d6d1aa');
-      structurePoly([[-.38,.1],[-.31,-.24],[-.16,-.44],[.16,-.44],[.34,-.21],[.38,.1]],
-        '#62614b','#d8d0a5',.021);
-      for(const x of [-.27,0,.27]){
-        structurePoly([[x-.085,-.21],[x,-.58-(x===0?.09:0)],[x+.085,-.21]],
-          '#b4a87f','#e8ddac',.015);
+      structurePoly([[-.42,.1],[-.38,-.25],[-.3,-.48],[-.16,-.53],[0,-.43],[.16,-.53],[.3,-.48],[.39,-.22],[.42,.1]],
+        '#66664e','#dfd6a7',.022);
+      structurePoly([[-.3,-.27],[-.24,-.45],[-.12,-.51],[0,-.42],[.12,-.51],[.24,-.45],[.3,-.27],[.22,-.09],[-.22,-.09]],
+        '#403f39','#c8be91',.016);
+      structureEllipse(0,-.31,.12,.12,'#d3c996','#6c654a',.02);
+      for(let i=0;i<3;i++){
+        const a=-Math.PI/2+i*Math.PI*2/3;
+        const x=Math.cos(a)*.15,y=-.31+Math.sin(a)*.15;
+        structureLine([[x-.045,y-.1],[x-.02,y-.035],[x+.04,y+.005],[x+.075,y+.085]],'#eee4b8',.027);
+        structureLine([[x-.02,y-.065],[x+.015,y-.015],[x+.055,y+.035]],'#a19870',.012);
       }
-      structureEllipse(0,-.2,.15,.16,'#d0c496','#625c48',.018);
-      structureLine([[-.09,-.2],[0,-.34],[.09,-.2],[0,-.07],[-.09,-.2]],
-        '#eee2b9',.016);break;
+      structureElementBadge('primal',0,.035,.2);break;
     }
     case 'time':{
-      structurePlinth('#908085','#625c6d','#494456','#f0e4d2');
-      structureEllipse(0,.05,.39,.16,'#61576c','#e4c7a8',.025);
-      for(const x of [-.3,.3]){
-        structurePoly([[x-.04,.05],[x-.04,-.48],[x+.04,-.48],[x+.04,.05]],
-          '#b5a6a0','#f3e0bf',.012);
-      }
-      structureEllipse(0,-.4,.2,.2,'#d7c9b8','#f9eaca',.03);
-      structureEllipse(0,-.4,.14,.14,'#766d79','#f9eaca',.014);
-      for(let i=0;i<12;i++){
-        const a=i*Math.PI/6;
-        structureLine([[Math.sin(a)*.14,-.4-Math.cos(a)*.14],
-          [Math.sin(a)*.18,-.4-Math.cos(a)*.18]],'#fff1d9',.014);
-      }
-      structureLine([[0,-.4],[0,-.51],[.085,-.34]],'#fff1d9',.019);
-      structureGlow(0,-.4,.3,'#e8d5b563');break;
+      // Ancient observatory with orbiting ring and a visible hourglass inside its arch.
+      structurePlinth('#89808a','#635b6e','#484453','#f0dfc8');
+      structurePoly([[-.36,.07],[-.36,-.37],[-.24,-.47],[.24,-.47],[.36,-.37],[.36,.07]],
+        '#746b78','#ead7bb',.018);
+      structurePoly([[-.25,-.37],[-.18,-.58],[0,-.71],[.18,-.58],[.25,-.37],[.15,-.31],[0,-.5],[-.15,-.31]],
+        '#b5a29e','#f5e8cb',.018);
+      structureEllipse(0,-.28,.21,.21,'#504b5c','#e8d5b4',.025);
+      structureEllipse(0,-.28,.15,.15,'#b5a29e','#f8e9c8',.014);
+      structureLine([[-.09,-.37],[.09,-.37],[0,-.29],[-.09,-.2],[.09,-.2]],'#514b5c',.022);
+      ctx.beginPath();ctx.ellipse(0,-.28,.31,.1,-.48,0,Math.PI*2);
+      ctx.strokeStyle='#f5e0b9';ctx.lineWidth=.026;ctx.stroke();
+      structureElementBadge('time',0,.04,.2);
+      structureGlow(0,-.28,.3,'#e8d5b544');break;
     }
     case 'metal':{
       structurePlinth('#9baeb1','#627884','#455a68','#e0ece9');
@@ -262,8 +278,7 @@ function paintHabitat(b,time,night){
       time,facing:Math.cos(phase)<0?-1:1,stepPhase:dragonTravelPhase(phase),
       scale:n>2?.86:n===2?1.08:1.35});ctx.restore();
   });
-  if(!n){ctx.fillStyle=theme.accent;ctx.textAlign='center';ctx.font='bold .28px system-ui';
-    ctx.fillText(DATA.elements[e]?.mark||'✦',0,.11);}
+  if(!n)structureElementBadge(e,0,.11,.31);
   if(b.storedGold>=1)structureEllipse(.38,-.19,.085,.085,'#ffe298','#a86733',.015);
   if(b.storedGems>=1)structurePoly([[-.48,-.19],[-.39,-.28],[-.3,-.19],[-.39,-.1]],'#a6edff','#5c9dc0',.012);
   if(b.level>=3)for(const x of [-.35,.35])structureLantern(x,.08,theme.accent,time,night);

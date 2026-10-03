@@ -77,7 +77,7 @@ assert.equal(economy.progression.goldIncomeMultiplier,2.5);
 assert.equal(worldConfig.gemPerDragonPerHour,0.5);
 assert.deepEqual(economy.habitat.dragonCapacity,[2,3,4,5]);
 assert.deepEqual(economy.hatchery.nests,[1,2,3,4,5]);
-assert.deepEqual(farmingConfig.crops.map(x=>x.duration),[30,180,900,7200]);
+assert.deepEqual(farmingConfig.crops.map(x=>x.duration),[30,180,420,900,1800,7200,14400,28800]);
 assert.deepEqual(buildingConfig.upgradeTimes.habitat,[45,180,600]);
 assert.deepEqual(buildingConfig.upgradeTimes.farm,[30,120,480]);
 assert.deepEqual(buildingConfig.upgradeTimes.hatchery,[90,300,900,2400]);

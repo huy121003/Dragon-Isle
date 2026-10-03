@@ -63,8 +63,9 @@
       challengeControlBytes:256,challengeTurnBytes:512
     }),
     admin:Object.freeze({
-      /** Upper bounds accepted by the resource editor API. */
-      resourceLimits:Object.freeze({gold:1_000_000_000_000,food:1_000_000_000,gems:1_000_000_000})
+      /** Upper bounds accepted by admin profile editing. */
+      resourceLimits:Object.freeze({gold:1_000_000_000_000,food:1_000_000_000,gems:1_000_000_000,
+        playerLevel:1_000_000})
     })
   });
 });

@@ -92,10 +92,8 @@ function dragonDetailHtml(species,dragon){
       return;
     }
     const element=skill.element?DATA.elements[skill.element]:null;
-    const extra=elementalBonus(skill,level,species,stars);
     const description=skill.special?esc(skill.descriptionVi||skill.description)+' · Hồi chiêu '+skill.cooldown+' lượt':
-      element?'100% base attack + '+Math.round(skill.bonus*100)+'% elemental attack ('+extra+')':
-        Math.round(skill.power*100)+'% base attack';
+      Math.round(skill.power*100)+'% tấn công gốc';
     html+='<div class="skill-card" style="--element:'+(element?element.color:'#8194a1')+'">'+
       skillHex(skill)+'<div><b>'+esc(skill.name)+'</b><small>'+
       (element?esc(element.name):'Neutral')+' · '+description+

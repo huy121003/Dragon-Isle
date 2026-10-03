@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');
 const path=require('node:path');
-const db=require('../data/dragons.json');
-const game=require('../data/game.json');
+const db=require('../data/catalog-loader.cjs').loadDragonCatalog();
+const game=require('../data/catalog-loader.cjs').loadGameCatalog();
 const combat=require('../js/data/combat-rules.js');
 require('../scripts/extend-catalog.cjs')(db,game);
 const {createArena}=require('../server/arena.cjs');
@@ -44,7 +44,7 @@ assert.deepEqual(combat.stats(['fire'],'common',25,db.elements,db.rarities,99),
 const normal=game.skills.neutral[0];
 const flame={...game.skills.elemental.fire[0],element:'fire'};
 assert.equal(combat.skillPower(fire.attack,normal),fire.attack*normal.power);
-assert.equal(combat.skillPower(fire.attack,flame),fire.attack*(1+flame.bonus));
+assert.equal(combat.skillPower(fire.attack,flame),fire.attack*flame.power);
 const target=(parts)=>({...combat.stats(parts,'common',25,db.elements,db.rarities),parts});
 const strong=combat.damage(fire,target(['ice']),flame,db.typeChart);
 const resistant=combat.damage(fire,target(['water']),flame,db.typeChart);

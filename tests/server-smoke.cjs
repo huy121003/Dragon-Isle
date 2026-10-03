@@ -9,7 +9,8 @@ const economyRules=require('../data/economy.js');
 const dailyMissions=require('../server/daily-missions.cjs');
 const root=path.resolve(__dirname,'..');
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dragon-isle-auth-'));
-for(const name of ['dragons.json','game.json'])fs.copyFileSync(path.join(root,'data',name),path.join(temporary,name));
+for(const name of ['dragon-core.json','game.json'])fs.copyFileSync(path.join(root,'data',name),path.join(temporary,name));
+for(const folder of ['dragons','skills'])fs.cpSync(path.join(root,'data',folder),path.join(temporary,folder),{recursive:true});
 function freePort(){return new Promise(resolve=>{
   const probe=net.createServer();probe.listen(0,'127.0.0.1',()=>{
     const port=probe.address().port;probe.close(()=>resolve(port));

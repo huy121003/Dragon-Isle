@@ -3,11 +3,11 @@
 global.window={};
 require("../data/economy.js");
 const economy=global.window.DragonEconomy;
-const game=require("../data/game.json");
+const game=require("../data/catalog-loader.cjs").loadGameCatalog();
 const progressionConfig=require("../js/config/progression.js");
 const buildingConfig=require("../js/config/buildings.js");
 const farmingConfig=require("../js/config/farming.js");
-const catalog=require("../data/dragons.json");
+const catalog=require("../data/catalog-loader.cjs").loadDragonCatalog();
 globalThis.DragonDatabase=catalog;
 global.window.DragonDatabase=catalog;
 require("./extend-catalog.cjs")(catalog,game);

@@ -1,0 +1,4202 @@
+[
+  {
+    "id": "fire>water",
+    "ten": "Geyser Dragon",
+    "elements": [
+      "fire",
+      "water"
+    ],
+    "soHe": 2,
+    "icon": "🔥",
+    "iconPhu": [
+      "💧"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by geyser. Affinities: Fire, Water.",
+    "moTa": "A dragon inspired by geyser.",
+    "sachGhi": "A dragon inspired by geyser.",
+    "chiSo": {
+      "hp": 116.2,
+      "tanCong": 126.5,
+      "phongThu": 101.2
+    },
+    "mau": {
+      "than": "#d24e43",
+      "thanSang": "#FF8A4C",
+      "thanToi": "#9E1F12",
+      "bung": "#FFC46B",
+      "sung": "#3B1A10",
+      "mat": "#FFE14D",
+      "vien": "#7A150B",
+      "canh": "#1F6FC7",
+      "canhMang": "#7FD0FF",
+      "duoi": "#79719d",
+      "hoaTiet": "#A8E6FF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FF8A4C",
+      "cham": "#2F8FE8",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1,
+        "tuHe": "fire"
+      },
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.04,
+        "tuHe": "water"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "fire-1",
+      "water-1"
+    ]
+  },
+  {
+    "id": "fire>earth",
+    "ten": "Lava Flow Dragon",
+    "elements": [
+      "fire",
+      "earth"
+    ],
+    "soHe": 2,
+    "icon": "🔥",
+    "iconPhu": [
+      "⛰️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by lava flow. Affinities: Fire, Earth.",
+    "moTa": "A dragon inspired by lava flow.",
+    "sachGhi": "A dragon inspired by lava flow.",
+    "chiSo": {
+      "hp": 120.7,
+      "tanCong": 124.2,
+      "phongThu": 110.4
+    },
+    "mau": {
+      "than": "#e04a2e",
+      "thanSang": "#FF8A4C",
+      "thanToi": "#9E1F12",
+      "bung": "#FFC46B",
+      "sung": "#3B1A10",
+      "mat": "#FFE14D",
+      "vien": "#7A150B",
+      "canh": "#7A4A26",
+      "canhMang": "#B98552",
+      "duoi": "#c25c36",
+      "hoaTiet": "#6E4B2A",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FF8A4C",
+      "cham": "#A86B3C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1,
+        "tuHe": "fire"
+      },
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.06,
+        "tuHe": "earth"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "fire-1",
+      "earth-1"
+    ]
+  },
+  {
+    "id": "fire>wind",
+    "ten": "Fire Whirl Dragon",
+    "elements": [
+      "fire",
+      "wind"
+    ],
+    "soHe": 2,
+    "icon": "🔥",
+    "iconPhu": [
+      "🌪️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by fire whirl. Affinities: Fire, Wind.",
+    "moTa": "A dragon inspired by fire whirl.",
+    "sachGhi": "A dragon inspired by fire whirl.",
+    "chiSo": {
+      "hp": 107,
+      "tanCong": 126.5,
+      "phongThu": 92
+    },
+    "mau": {
+      "than": "#d8563c",
+      "thanSang": "#FF8A4C",
+      "thanToi": "#9E1F12",
+      "bung": "#FFC46B",
+      "sung": "#3B1A10",
+      "mat": "#FFE14D",
+      "vien": "#7A150B",
+      "canh": "#3FB894",
+      "canhMang": "#C9F7EA",
+      "duoi": "#969a7b",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FF8A4C",
+      "cham": "#5FD3B0",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1,
+        "tuHe": "fire"
+      },
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.05,
+        "tuHe": "wind"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "fire-1",
+      "wind-1"
+    ]
+  },
+  {
+    "id": "fire>ice",
+    "ten": "Thermal Fracture Dragon",
+    "elements": [
+      "fire",
+      "ice"
+    ],
+    "soHe": 2,
+    "icon": "🔥",
+    "iconPhu": [
+      "❄️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by thermal fracture. Affinities: Fire, Ice.",
+    "moTa": "A dragon inspired by thermal fracture.",
+    "sachGhi": "A dragon inspired by thermal fracture.",
+    "chiSo": {
+      "hp": 111.6,
+      "tanCong": 131.1,
+      "phongThu": 98.9
+    },
+    "mau": {
+      "than": "#dd5744",
+      "thanSang": "#FF8A4C",
+      "thanToi": "#9E1F12",
+      "bung": "#FFC46B",
+      "sung": "#3B1A10",
+      "mat": "#FFE14D",
+      "vien": "#7A150B",
+      "canh": "#6CBBE0",
+      "canhMang": "#E3F8FF",
+      "duoi": "#b39ea5",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FF8A4C",
+      "cham": "#8FD9F5",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1,
+        "tuHe": "fire"
+      },
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.04,
+        "tuHe": "ice"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "fire-1",
+      "ice-1"
+    ]
+  },
+  {
+    "id": "fire>thunder",
+    "ten": "Volcanic Lightning Dragon",
+    "elements": [
+      "fire",
+      "thunder"
+    ],
+    "soHe": 2,
+    "icon": "🔥",
+    "iconPhu": [
+      "⚡"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by volcanic lightning. Affinities: Fire, Thunder.",
+    "moTa": "A dragon inspired by volcanic lightning.",
+    "sachGhi": "A dragon inspired by volcanic lightning.",
+    "chiSo": {
+      "hp": 107,
+      "tanCong": 135.7,
+      "phongThu": 92
+    },
+    "mau": {
+      "than": "#ea542a",
+      "thanSang": "#FF8A4C",
+      "thanToi": "#9E1F12",
+      "bung": "#FFC46B",
+      "sung": "#3B1A10",
+      "mat": "#FFE14D",
+      "vien": "#7A150B",
+      "canh": "#D9A800",
+      "canhMang": "#FFE34D",
+      "duoi": "#f09220",
+      "hoaTiet": "#7A4DFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FF8A4C",
+      "cham": "#F5C518",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1,
+        "tuHe": "fire"
+      },
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.04,
+        "tuHe": "thunder"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "fire-1",
+      "thunder-1"
+    ]
+  },
+  {
+    "id": "fire>nature",
+    "ten": "Crown Fire Dragon",
+    "elements": [
+      "fire",
+      "nature"
+    ],
+    "soHe": 2,
+    "icon": "🔥",
+    "iconPhu": [
+      "🌿"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by crown fire. Affinities: Fire, Nature.",
+    "moTa": "A dragon inspired by crown fire.",
+    "sachGhi": "A dragon inspired by crown fire.",
+    "chiSo": {
+      "hp": 118.5,
+      "tanCong": 124.2,
+      "phongThu": 103.5
+    },
+    "mau": {
+      "than": "#d55230",
+      "thanSang": "#FF8A4C",
+      "thanToi": "#9E1F12",
+      "bung": "#FFC46B",
+      "sung": "#3B1A10",
+      "mat": "#FFE14D",
+      "vien": "#7A150B",
+      "canh": "#2E8B3A",
+      "canhMang": "#7ED957",
+      "duoi": "#8a8542",
+      "hoaTiet": "#FF7EB6",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "la",
+      "duoi": "quat",
+      "hoaTiet": "dom"
+    },
+    "hat": [
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FF8A4C",
+      "cham": "#4CAF50",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1,
+        "tuHe": "fire"
+      },
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.015,
+        "tuHe": "nature"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "fire-1",
+      "nature-1"
+    ]
+  },
+  {
+    "id": "water>fire",
+    "ten": "Steam Eruption Dragon",
+    "elements": [
+      "water",
+      "fire"
+    ],
+    "soHe": 2,
+    "icon": "💧",
+    "iconPhu": [
+      "🔥"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by steam eruption. Affinities: Water, Fire.",
+    "moTa": "A dragon inspired by steam eruption.",
+    "sachGhi": "A dragon inspired by steam eruption.",
+    "chiSo": {
+      "hp": 119.6,
+      "tanCong": 120.7,
+      "phongThu": 105.8
+    },
+    "mau": {
+      "than": "#4586d1",
+      "thanSang": "#6FC7FF",
+      "thanToi": "#1A4E9E",
+      "bung": "#BFE8FF",
+      "sung": "#123A6B",
+      "mat": "#FFFFFF",
+      "vien": "#0F3670",
+      "canh": "#C7321C",
+      "canhMang": "#FF8A2E",
+      "duoi": "#9e6377",
+      "hoaTiet": "#FFD24D",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#6FC7FF",
+      "cham": "#E8452C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08,
+        "tuHe": "water"
+      },
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.05,
+        "tuHe": "fire"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "water-1",
+      "fire-1"
+    ]
+  },
+  {
+    "id": "water>earth",
+    "ten": "Mudslide Dragon",
+    "elements": [
+      "water",
+      "earth"
+    ],
+    "soHe": 2,
+    "icon": "💧",
+    "iconPhu": [
+      "⛰️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by mudslide. Affinities: Water, Earth.",
+    "moTa": "A dragon inspired by mudslide.",
+    "sachGhi": "A dragon inspired by mudslide.",
+    "chiSo": {
+      "hp": 131.1,
+      "tanCong": 107,
+      "phongThu": 124.2
+    },
+    "mau": {
+      "than": "#3e8bd3",
+      "thanSang": "#6FC7FF",
+      "thanToi": "#1A4E9E",
+      "bung": "#BFE8FF",
+      "sung": "#123A6B",
+      "mat": "#FFFFFF",
+      "vien": "#0F3670",
+      "canh": "#7A4A26",
+      "canhMang": "#B98552",
+      "duoi": "#787981",
+      "hoaTiet": "#6E4B2A",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#6FC7FF",
+      "cham": "#A86B3C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08,
+        "tuHe": "water"
+      },
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.06,
+        "tuHe": "earth"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "water-1",
+      "earth-1"
+    ]
+  },
+  {
+    "id": "water>wind",
+    "ten": "Monsoon Dragon",
+    "elements": [
+      "water",
+      "wind"
+    ],
+    "soHe": 2,
+    "icon": "💧",
+    "iconPhu": [
+      "🌪️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by monsoon. Affinities: Water, Wind.",
+    "moTa": "A dragon inspired by monsoon.",
+    "sachGhi": "A dragon inspired by monsoon.",
+    "chiSo": {
+      "hp": 117.3,
+      "tanCong": 109.2,
+      "phongThu": 105.8
+    },
+    "mau": {
+      "than": "#3597e1",
+      "thanSang": "#6FC7FF",
+      "thanToi": "#1A4E9E",
+      "bung": "#BFE8FF",
+      "sung": "#123A6B",
+      "mat": "#FFFFFF",
+      "vien": "#0F3670",
+      "canh": "#3FB894",
+      "canhMang": "#C9F7EA",
+      "duoi": "#4cb8c6",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#6FC7FF",
+      "cham": "#5FD3B0",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08,
+        "tuHe": "water"
+      },
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.05,
+        "tuHe": "wind"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "water-1",
+      "wind-1"
+    ]
+  },
+  {
+    "id": "water>ice",
+    "ten": "Sea Ice Dragon",
+    "elements": [
+      "water",
+      "ice"
+    ],
+    "soHe": 2,
+    "icon": "💧",
+    "iconPhu": [
+      "❄️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by sea ice. Affinities: Water, Ice.",
+    "moTa": "A dragon inspired by sea ice.",
+    "sachGhi": "A dragon inspired by sea ice.",
+    "chiSo": {
+      "hp": 121.9,
+      "tanCong": 113.9,
+      "phongThu": 112.7
+    },
+    "mau": {
+      "than": "#3b98ea",
+      "thanSang": "#6FC7FF",
+      "thanToi": "#1A4E9E",
+      "bung": "#BFE8FF",
+      "sung": "#123A6B",
+      "mat": "#FFFFFF",
+      "vien": "#0F3670",
+      "canh": "#6CBBE0",
+      "canhMang": "#E3F8FF",
+      "duoi": "#69bbf0",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#6FC7FF",
+      "cham": "#8FD9F5",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08,
+        "tuHe": "water"
+      },
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.04,
+        "tuHe": "ice"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "water-1",
+      "ice-1"
+    ]
+  },
+  {
+    "id": "water>thunder",
+    "ten": "Thundersquall Dragon",
+    "elements": [
+      "water",
+      "thunder"
+    ],
+    "soHe": 2,
+    "icon": "💧",
+    "iconPhu": [
+      "⚡"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by thundersquall. Affinities: Water, Thunder.",
+    "moTa": "A dragon inspired by thundersquall.",
+    "sachGhi": "A dragon inspired by thundersquall.",
+    "chiSo": {
+      "hp": 117.3,
+      "tanCong": 118.5,
+      "phongThu": 105.8
+    },
+    "mau": {
+      "than": "#4795cf",
+      "thanSang": "#6FC7FF",
+      "thanToi": "#1A4E9E",
+      "bung": "#BFE8FF",
+      "sung": "#123A6B",
+      "mat": "#FFFFFF",
+      "vien": "#0F3670",
+      "canh": "#D9A800",
+      "canhMang": "#FFE34D",
+      "duoi": "#a6af6b",
+      "hoaTiet": "#7A4DFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#6FC7FF",
+      "cham": "#F5C518",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08,
+        "tuHe": "water"
+      },
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.04,
+        "tuHe": "thunder"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "water-1",
+      "thunder-1"
+    ]
+  },
+  {
+    "id": "water>nature",
+    "ten": "Tidal Marsh Dragon",
+    "elements": [
+      "water",
+      "nature"
+    ],
+    "soHe": 2,
+    "icon": "💧",
+    "iconPhu": [
+      "🌿"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by tidal marsh. Affinities: Water, Nature.",
+    "moTa": "A dragon inspired by tidal marsh.",
+    "sachGhi": "A dragon inspired by tidal marsh.",
+    "chiSo": {
+      "hp": 128.8,
+      "tanCong": 107,
+      "phongThu": 117.3
+    },
+    "mau": {
+      "than": "#3293d6",
+      "thanSang": "#6FC7FF",
+      "thanToi": "#1A4E9E",
+      "bung": "#BFE8FF",
+      "sung": "#123A6B",
+      "mat": "#FFFFFF",
+      "vien": "#0F3670",
+      "canh": "#2E8B3A",
+      "canhMang": "#7ED957",
+      "duoi": "#40a28d",
+      "hoaTiet": "#FF7EB6",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "cong",
+      "canh": "la",
+      "duoi": "quat",
+      "hoaTiet": "dom"
+    },
+    "hat": [
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#6FC7FF",
+      "cham": "#4CAF50",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08,
+        "tuHe": "water"
+      },
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.015,
+        "tuHe": "nature"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "water-1",
+      "nature-1"
+    ]
+  },
+  {
+    "id": "earth>fire",
+    "ten": "Volcanic Eruption Dragon",
+    "elements": [
+      "earth",
+      "fire"
+    ],
+    "soHe": 2,
+    "icon": "⛰️",
+    "iconPhu": [
+      "🔥"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by volcanic eruption. Affinities: Earth, Fire.",
+    "moTa": "A dragon inspired by volcanic eruption.",
+    "sachGhi": "A dragon inspired by volcanic eruption.",
+    "chiSo": {
+      "hp": 126.5,
+      "tanCong": 117.3,
+      "phongThu": 119.6
+    },
+    "mau": {
+      "than": "#b0663a",
+      "thanSang": "#D69A5E",
+      "thanToi": "#5E3A1E",
+      "bung": "#E8C99A",
+      "sung": "#3F2A18",
+      "mat": "#9BE15D",
+      "vien": "#4A2C14",
+      "canh": "#C7321C",
+      "canhMang": "#FF8A2E",
+      "duoi": "#ce5432",
+      "hoaTiet": "#FFD24D",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "thang",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D69A5E",
+      "cham": "#E8452C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12,
+        "tuHe": "earth"
+      },
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.05,
+        "tuHe": "fire"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "earth-1",
+      "fire-1"
+    ]
+  },
+  {
+    "id": "earth>water",
+    "ten": "Sediment Plume Dragon",
+    "elements": [
+      "earth",
+      "water"
+    ],
+    "soHe": 2,
+    "icon": "⛰️",
+    "iconPhu": [
+      "💧"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by sediment plume. Affinities: Earth, Water.",
+    "moTa": "A dragon inspired by sediment plume.",
+    "sachGhi": "A dragon inspired by sediment plume.",
+    "chiSo": {
+      "hp": 133.4,
+      "tanCong": 105.8,
+      "phongThu": 128.8
+    },
+    "mau": {
+      "than": "#996f51",
+      "thanSang": "#D69A5E",
+      "thanToi": "#5E3A1E",
+      "bung": "#E8C99A",
+      "sung": "#3F2A18",
+      "mat": "#9BE15D",
+      "vien": "#4A2C14",
+      "canh": "#1F6FC7",
+      "canhMang": "#7FD0FF",
+      "duoi": "#5f81a3",
+      "hoaTiet": "#A8E6FF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "thang",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D69A5E",
+      "cham": "#2F8FE8",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12,
+        "tuHe": "earth"
+      },
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.04,
+        "tuHe": "water"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "earth-1",
+      "water-1"
+    ]
+  },
+  {
+    "id": "earth>wind",
+    "ten": "Dust Storm Dragon",
+    "elements": [
+      "earth",
+      "wind"
+    ],
+    "soHe": 2,
+    "icon": "⛰️",
+    "iconPhu": [
+      "🌪️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by dust storm. Affinities: Earth, Wind.",
+    "moTa": "A dragon inspired by dust storm.",
+    "sachGhi": "A dragon inspired by dust storm.",
+    "chiSo": {
+      "hp": 124.2,
+      "tanCong": 105.8,
+      "phongThu": 119.6
+    },
+    "mau": {
+      "than": "#9f774a",
+      "thanSang": "#D69A5E",
+      "thanToi": "#5E3A1E",
+      "bung": "#E8C99A",
+      "sung": "#3F2A18",
+      "mat": "#9BE15D",
+      "vien": "#4A2C14",
+      "canh": "#3FB894",
+      "canhMang": "#C9F7EA",
+      "duoi": "#7ca982",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "thang",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D69A5E",
+      "cham": "#5FD3B0",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12,
+        "tuHe": "earth"
+      },
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.05,
+        "tuHe": "wind"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "earth-1",
+      "wind-1"
+    ]
+  },
+  {
+    "id": "earth>ice",
+    "ten": "Permafrost Creep Dragon",
+    "elements": [
+      "earth",
+      "ice"
+    ],
+    "soHe": 2,
+    "icon": "⛰️",
+    "iconPhu": [
+      "❄️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by permafrost creep. Affinities: Earth, Ice.",
+    "moTa": "A dragon inspired by permafrost creep.",
+    "sachGhi": "A dragon inspired by permafrost creep.",
+    "chiSo": {
+      "hp": 128.8,
+      "tanCong": 110.4,
+      "phongThu": 126.5
+    },
+    "mau": {
+      "than": "#a57852",
+      "thanSang": "#D69A5E",
+      "thanToi": "#5E3A1E",
+      "bung": "#E8C99A",
+      "sung": "#3F2A18",
+      "mat": "#9BE15D",
+      "vien": "#4A2C14",
+      "canh": "#6CBBE0",
+      "canhMang": "#E3F8FF",
+      "duoi": "#99adab",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "thang",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D69A5E",
+      "cham": "#8FD9F5",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12,
+        "tuHe": "earth"
+      },
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.04,
+        "tuHe": "ice"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "earth-1",
+      "ice-1"
+    ]
+  },
+  {
+    "id": "earth>thunder",
+    "ten": "Fulgurite Dragon",
+    "elements": [
+      "earth",
+      "thunder"
+    ],
+    "soHe": 2,
+    "icon": "⛰️",
+    "iconPhu": [
+      "⚡"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by fulgurite. Affinities: Earth, Thunder.",
+    "moTa": "A dragon inspired by fulgurite.",
+    "sachGhi": "A dragon inspired by fulgurite.",
+    "chiSo": {
+      "hp": 124.2,
+      "tanCong": 115,
+      "phongThu": 119.6
+    },
+    "mau": {
+      "than": "#b17638",
+      "thanSang": "#D69A5E",
+      "thanToi": "#5E3A1E",
+      "bung": "#E8C99A",
+      "sung": "#3F2A18",
+      "mat": "#9BE15D",
+      "vien": "#4A2C14",
+      "canh": "#D9A800",
+      "canhMang": "#FFE34D",
+      "duoi": "#d6a126",
+      "hoaTiet": "#7A4DFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "thang",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D69A5E",
+      "cham": "#F5C518",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12,
+        "tuHe": "earth"
+      },
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.04,
+        "tuHe": "thunder"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "earth-1",
+      "thunder-1"
+    ]
+  },
+  {
+    "id": "earth>nature",
+    "ten": "Soil Respiration Dragon",
+    "elements": [
+      "earth",
+      "nature"
+    ],
+    "soHe": 2,
+    "icon": "⛰️",
+    "iconPhu": [
+      "🌿"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by soil respiration. Affinities: Earth, Nature.",
+    "moTa": "A dragon inspired by soil respiration.",
+    "sachGhi": "A dragon inspired by soil respiration.",
+    "chiSo": {
+      "hp": 135.7,
+      "tanCong": 103.5,
+      "phongThu": 131.1
+    },
+    "mau": {
+      "than": "#9d733e",
+      "thanSang": "#D69A5E",
+      "thanToi": "#5E3A1E",
+      "bung": "#E8C99A",
+      "sung": "#3F2A18",
+      "mat": "#9BE15D",
+      "vien": "#4A2C14",
+      "canh": "#2E8B3A",
+      "canhMang": "#7ED957",
+      "duoi": "#719448",
+      "hoaTiet": "#FF7EB6",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "thang",
+      "canh": "la",
+      "duoi": "quat",
+      "hoaTiet": "dom"
+    },
+    "hat": [
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D69A5E",
+      "cham": "#4CAF50",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12,
+        "tuHe": "earth"
+      },
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.015,
+        "tuHe": "nature"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "earth-1",
+      "nature-1"
+    ]
+  },
+  {
+    "id": "wind>fire",
+    "ten": "Sirocco Dragon",
+    "elements": [
+      "wind",
+      "fire"
+    ],
+    "soHe": 2,
+    "icon": "🌪️",
+    "iconPhu": [
+      "🔥"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by sirocco. Affinities: Wind, Fire.",
+    "moTa": "A dragon inspired by sirocco.",
+    "sachGhi": "A dragon inspired by sirocco.",
+    "chiSo": {
+      "hp": 105.8,
+      "tanCong": 120.7,
+      "phongThu": 92
+    },
+    "mau": {
+      "than": "#6fc2a0",
+      "thanSang": "#A8F0DA",
+      "thanToi": "#2A8F76",
+      "bung": "#EFFFF8",
+      "sung": "#1E6B58",
+      "mat": "#FFF27A",
+      "vien": "#186050",
+      "canh": "#C7321C",
+      "canhMang": "#FF8A2E",
+      "duoi": "#b17e61",
+      "hoaTiet": "#FFD24D",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#A8F0DA",
+      "cham": "#E8452C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1,
+        "tuHe": "wind"
+      },
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.05,
+        "tuHe": "fire"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "wind-1",
+      "fire-1"
+    ]
+  },
+  {
+    "id": "wind>water",
+    "ten": "Waterspout Dragon",
+    "elements": [
+      "wind",
+      "water"
+    ],
+    "soHe": 2,
+    "icon": "🌪️",
+    "iconPhu": [
+      "💧"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by waterspout. Affinities: Wind, Water.",
+    "moTa": "A dragon inspired by waterspout.",
+    "sachGhi": "A dragon inspired by waterspout.",
+    "chiSo": {
+      "hp": 112.7,
+      "tanCong": 109.2,
+      "phongThu": 101.2
+    },
+    "mau": {
+      "than": "#59cbb7",
+      "thanSang": "#A8F0DA",
+      "thanToi": "#2A8F76",
+      "bung": "#EFFFF8",
+      "sung": "#1E6B58",
+      "mat": "#FFF27A",
+      "vien": "#186050",
+      "canh": "#1F6FC7",
+      "canhMang": "#7FD0FF",
+      "duoi": "#42aad2",
+      "hoaTiet": "#A8E6FF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#A8F0DA",
+      "cham": "#2F8FE8",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1,
+        "tuHe": "wind"
+      },
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.04,
+        "tuHe": "water"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "wind-1",
+      "water-1"
+    ]
+  },
+  {
+    "id": "wind>earth",
+    "ten": "Sandstorm Dragon",
+    "elements": [
+      "wind",
+      "earth"
+    ],
+    "soHe": 2,
+    "icon": "🌪️",
+    "iconPhu": [
+      "⛰️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by sandstorm. Affinities: Wind, Earth.",
+    "moTa": "A dragon inspired by sandstorm.",
+    "sachGhi": "A dragon inspired by sandstorm.",
+    "chiSo": {
+      "hp": 117.3,
+      "tanCong": 107,
+      "phongThu": 110.4
+    },
+    "mau": {
+      "than": "#68c7a2",
+      "thanSang": "#A8F0DA",
+      "thanToi": "#2A8F76",
+      "bung": "#EFFFF8",
+      "sung": "#1E6B58",
+      "mat": "#FFF27A",
+      "vien": "#186050",
+      "canh": "#7A4A26",
+      "canhMang": "#B98552",
+      "duoi": "#8b956a",
+      "hoaTiet": "#6E4B2A",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#A8F0DA",
+      "cham": "#A86B3C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1,
+        "tuHe": "wind"
+      },
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.06,
+        "tuHe": "earth"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "wind-1",
+      "earth-1"
+    ]
+  },
+  {
+    "id": "wind>ice",
+    "ten": "Blizzard Dragon",
+    "elements": [
+      "wind",
+      "ice"
+    ],
+    "soHe": 2,
+    "icon": "🌪️",
+    "iconPhu": [
+      "❄️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by blizzard. Affinities: Wind, Ice.",
+    "moTa": "A dragon inspired by blizzard.",
+    "sachGhi": "A dragon inspired by blizzard.",
+    "chiSo": {
+      "hp": 108.1,
+      "tanCong": 113.9,
+      "phongThu": 98.9
+    },
+    "mau": {
+      "than": "#65d4b8",
+      "thanSang": "#A8F0DA",
+      "thanToi": "#2A8F76",
+      "bung": "#EFFFF8",
+      "sung": "#1E6B58",
+      "mat": "#FFF27A",
+      "vien": "#186050",
+      "canh": "#6CBBE0",
+      "canhMang": "#E3F8FF",
+      "duoi": "#7cd7d9",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#A8F0DA",
+      "cham": "#8FD9F5",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1,
+        "tuHe": "wind"
+      },
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.04,
+        "tuHe": "ice"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "wind-1",
+      "ice-1"
+    ]
+  },
+  {
+    "id": "wind>thunder",
+    "ten": "Supercell Dragon",
+    "elements": [
+      "wind",
+      "thunder"
+    ],
+    "soHe": 2,
+    "icon": "🌪️",
+    "iconPhu": [
+      "⚡"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by supercell. Affinities: Wind, Thunder.",
+    "moTa": "A dragon inspired by supercell.",
+    "sachGhi": "A dragon inspired by supercell.",
+    "chiSo": {
+      "hp": 103.5,
+      "tanCong": 118.5,
+      "phongThu": 92
+    },
+    "mau": {
+      "than": "#71d19e",
+      "thanSang": "#A8F0DA",
+      "thanToi": "#2A8F76",
+      "bung": "#EFFFF8",
+      "sung": "#1E6B58",
+      "mat": "#FFF27A",
+      "vien": "#186050",
+      "canh": "#D9A800",
+      "canhMang": "#FFE34D",
+      "duoi": "#b9cb55",
+      "hoaTiet": "#7A4DFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#A8F0DA",
+      "cham": "#F5C518",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1,
+        "tuHe": "wind"
+      },
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.04,
+        "tuHe": "thunder"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "wind-1",
+      "thunder-1"
+    ]
+  },
+  {
+    "id": "wind>nature",
+    "ten": "Pollen Drift Dragon",
+    "elements": [
+      "wind",
+      "nature"
+    ],
+    "soHe": 2,
+    "icon": "🌪️",
+    "iconPhu": [
+      "🌿"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by pollen drift. Affinities: Wind, Nature.",
+    "moTa": "A dragon inspired by pollen drift.",
+    "sachGhi": "A dragon inspired by pollen drift.",
+    "chiSo": {
+      "hp": 115,
+      "tanCong": 107,
+      "phongThu": 103.5
+    },
+    "mau": {
+      "than": "#5dcfa4",
+      "thanSang": "#A8F0DA",
+      "thanToi": "#2A8F76",
+      "bung": "#EFFFF8",
+      "sung": "#1E6B58",
+      "mat": "#FFF27A",
+      "vien": "#186050",
+      "canh": "#2E8B3A",
+      "canhMang": "#7ED957",
+      "duoi": "#54bd76",
+      "hoaTiet": "#FF7EB6",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "la",
+      "duoi": "quat",
+      "hoaTiet": "dom"
+    },
+    "hat": [
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#A8F0DA",
+      "cham": "#4CAF50",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1,
+        "tuHe": "wind"
+      },
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.015,
+        "tuHe": "nature"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "wind-1",
+      "nature-1"
+    ]
+  },
+  {
+    "id": "ice>fire",
+    "ten": "Thermal Shock Dragon",
+    "elements": [
+      "ice",
+      "fire"
+    ],
+    "soHe": 2,
+    "icon": "❄️",
+    "iconPhu": [
+      "🔥"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by thermal shock. Affinities: Ice, Fire.",
+    "moTa": "A dragon inspired by thermal shock.",
+    "sachGhi": "A dragon inspired by thermal shock.",
+    "chiSo": {
+      "hp": 112.7,
+      "tanCong": 127.7,
+      "phongThu": 102.4
+    },
+    "mau": {
+      "than": "#9ac7dd",
+      "thanSang": "#D6F4FF",
+      "thanToi": "#4A98C2",
+      "bung": "#F2FCFF",
+      "sung": "#BFEFFF",
+      "mat": "#3A6BFF",
+      "vien": "#2E6E94",
+      "canh": "#C7321C",
+      "canhMang": "#FF8A2E",
+      "duoi": "#c4807c",
+      "hoaTiet": "#FFD24D",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "tinhThe",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D6F4FF",
+      "cham": "#E8452C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08,
+        "tuHe": "ice"
+      },
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.05,
+        "tuHe": "fire"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "ice-1",
+      "fire-1"
+    ]
+  },
+  {
+    "id": "ice>water",
+    "ten": "Iceberg Calving Dragon",
+    "elements": [
+      "ice",
+      "water"
+    ],
+    "soHe": 2,
+    "icon": "❄️",
+    "iconPhu": [
+      "💧"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by iceberg calving. Affinities: Ice, Water.",
+    "moTa": "A dragon inspired by iceberg calving.",
+    "sachGhi": "A dragon inspired by iceberg calving.",
+    "chiSo": {
+      "hp": 119.6,
+      "tanCong": 116.2,
+      "phongThu": 111.6
+    },
+    "mau": {
+      "than": "#83d0f3",
+      "thanSang": "#D6F4FF",
+      "thanToi": "#4A98C2",
+      "bung": "#F2FCFF",
+      "sung": "#BFEFFF",
+      "mat": "#3A6BFF",
+      "vien": "#2E6E94",
+      "canh": "#1F6FC7",
+      "canhMang": "#7FD0FF",
+      "duoi": "#55aded",
+      "hoaTiet": "#A8E6FF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "tinhThe",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D6F4FF",
+      "cham": "#2F8FE8",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08,
+        "tuHe": "ice"
+      },
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.04,
+        "tuHe": "water"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "ice-1",
+      "water-1"
+    ]
+  },
+  {
+    "id": "ice>earth",
+    "ten": "Glacial Erosion Dragon",
+    "elements": [
+      "ice",
+      "earth"
+    ],
+    "soHe": 2,
+    "icon": "❄️",
+    "iconPhu": [
+      "⛰️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by glacial erosion. Affinities: Ice, Earth.",
+    "moTa": "A dragon inspired by glacial erosion.",
+    "sachGhi": "A dragon inspired by glacial erosion.",
+    "chiSo": {
+      "hp": 124.2,
+      "tanCong": 113.9,
+      "phongThu": 120.7
+    },
+    "mau": {
+      "than": "#92ccdf",
+      "thanSang": "#D6F4FF",
+      "thanToi": "#4A98C2",
+      "bung": "#F2FCFF",
+      "sung": "#BFEFFF",
+      "mat": "#3A6BFF",
+      "vien": "#2E6E94",
+      "canh": "#7A4A26",
+      "canhMang": "#B98552",
+      "duoi": "#9e9786",
+      "hoaTiet": "#6E4B2A",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "tinhThe",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D6F4FF",
+      "cham": "#A86B3C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08,
+        "tuHe": "ice"
+      },
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.06,
+        "tuHe": "earth"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "ice-1",
+      "earth-1"
+    ]
+  },
+  {
+    "id": "ice>wind",
+    "ten": "Diamond Dust Dragon",
+    "elements": [
+      "ice",
+      "wind"
+    ],
+    "soHe": 2,
+    "icon": "❄️",
+    "iconPhu": [
+      "🌪️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by diamond dust. Affinities: Ice, Wind.",
+    "moTa": "A dragon inspired by diamond dust.",
+    "sachGhi": "A dragon inspired by diamond dust.",
+    "chiSo": {
+      "hp": 110.4,
+      "tanCong": 116.2,
+      "phongThu": 102.4
+    },
+    "mau": {
+      "than": "#89d8ed",
+      "thanSang": "#D6F4FF",
+      "thanToi": "#4A98C2",
+      "bung": "#F2FCFF",
+      "sung": "#BFEFFF",
+      "mat": "#3A6BFF",
+      "vien": "#2E6E94",
+      "canh": "#3FB894",
+      "canhMang": "#C9F7EA",
+      "duoi": "#72d5cc",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "tinhThe",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D6F4FF",
+      "cham": "#5FD3B0",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08,
+        "tuHe": "ice"
+      },
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.05,
+        "tuHe": "wind"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "ice-1",
+      "wind-1"
+    ]
+  },
+  {
+    "id": "ice>thunder",
+    "ten": "Thundersnow Dragon",
+    "elements": [
+      "ice",
+      "thunder"
+    ],
+    "soHe": 2,
+    "icon": "❄️",
+    "iconPhu": [
+      "⚡"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by thundersnow. Affinities: Ice, Thunder.",
+    "moTa": "A dragon inspired by thundersnow.",
+    "sachGhi": "A dragon inspired by thundersnow.",
+    "chiSo": {
+      "hp": 110.4,
+      "tanCong": 125.4,
+      "phongThu": 102.4
+    },
+    "mau": {
+      "than": "#9bd7da",
+      "thanSang": "#D6F4FF",
+      "thanToi": "#4A98C2",
+      "bung": "#F2FCFF",
+      "sung": "#BFEFFF",
+      "mat": "#3A6BFF",
+      "vien": "#2E6E94",
+      "canh": "#D9A800",
+      "canhMang": "#FFE34D",
+      "duoi": "#cccd70",
+      "hoaTiet": "#7A4DFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "tinhThe",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D6F4FF",
+      "cham": "#F5C518",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08,
+        "tuHe": "ice"
+      },
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.04,
+        "tuHe": "thunder"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "ice-1",
+      "thunder-1"
+    ]
+  },
+  {
+    "id": "ice>nature",
+    "ten": "Frost Flower Dragon",
+    "elements": [
+      "ice",
+      "nature"
+    ],
+    "soHe": 2,
+    "icon": "❄️",
+    "iconPhu": [
+      "🌿"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by frost flower. Affinities: Ice, Nature.",
+    "moTa": "A dragon inspired by frost flower.",
+    "sachGhi": "A dragon inspired by frost flower.",
+    "chiSo": {
+      "hp": 121.9,
+      "tanCong": 113.9,
+      "phongThu": 113.9
+    },
+    "mau": {
+      "than": "#87d4e1",
+      "thanSang": "#D6F4FF",
+      "thanToi": "#4A98C2",
+      "bung": "#F2FCFF",
+      "sung": "#BFEFFF",
+      "mat": "#3A6BFF",
+      "vien": "#2E6E94",
+      "canh": "#2E8B3A",
+      "canhMang": "#7ED957",
+      "duoi": "#67c092",
+      "hoaTiet": "#FF7EB6",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "tinhThe",
+      "canh": "la",
+      "duoi": "quat",
+      "hoaTiet": "dom"
+    },
+    "hat": [
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#D6F4FF",
+      "cham": "#4CAF50",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08,
+        "tuHe": "ice"
+      },
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.015,
+        "tuHe": "nature"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "ice-1",
+      "nature-1"
+    ]
+  },
+  {
+    "id": "thunder>fire",
+    "ten": "Ball Lightning Dragon",
+    "elements": [
+      "thunder",
+      "fire"
+    ],
+    "soHe": 2,
+    "icon": "⚡",
+    "iconPhu": [
+      "🔥"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by ball lightning. Affinities: Thunder, Fire.",
+    "moTa": "A dragon inspired by ball lightning.",
+    "sachGhi": "A dragon inspired by ball lightning.",
+    "chiSo": {
+      "hp": 105.8,
+      "tanCong": 134.5,
+      "phongThu": 92
+    },
+    "mau": {
+      "than": "#f3b61a",
+      "thanSang": "#FFE873",
+      "thanToi": "#B08A00",
+      "bung": "#FFF6B8",
+      "sung": "#4A3A00",
+      "mat": "#5CE1FF",
+      "vien": "#7A5C00",
+      "canh": "#C7321C",
+      "canhMang": "#FF8A2E",
+      "duoi": "#ed7824",
+      "hoaTiet": "#FFD24D",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FFE873",
+      "cham": "#E8452C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08,
+        "tuHe": "thunder"
+      },
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.05,
+        "tuHe": "fire"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "thunder-1",
+      "fire-1"
+    ]
+  },
+  {
+    "id": "thunder>water",
+    "ten": "Lightning Storm Dragon",
+    "elements": [
+      "thunder",
+      "water"
+    ],
+    "soHe": 2,
+    "icon": "⚡",
+    "iconPhu": [
+      "💧"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by lightning storm. Affinities: Thunder, Water.",
+    "moTa": "A dragon inspired by lightning storm.",
+    "sachGhi": "A dragon inspired by lightning storm.",
+    "chiSo": {
+      "hp": 112.7,
+      "tanCong": 123.1,
+      "phongThu": 101.2
+    },
+    "mau": {
+      "than": "#ddbf31",
+      "thanSang": "#FFE873",
+      "thanToi": "#B08A00",
+      "bung": "#FFF6B8",
+      "sung": "#4A3A00",
+      "mat": "#5CE1FF",
+      "vien": "#7A5C00",
+      "canh": "#1F6FC7",
+      "canhMang": "#7FD0FF",
+      "duoi": "#7ea595",
+      "hoaTiet": "#A8E6FF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FFE873",
+      "cham": "#2F8FE8",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08,
+        "tuHe": "thunder"
+      },
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.04,
+        "tuHe": "water"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "thunder-1",
+      "water-1"
+    ]
+  },
+  {
+    "id": "thunder>earth",
+    "ten": "Ground Current Dragon",
+    "elements": [
+      "thunder",
+      "earth"
+    ],
+    "soHe": 2,
+    "icon": "⚡",
+    "iconPhu": [
+      "⛰️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by ground current. Affinities: Thunder, Earth.",
+    "moTa": "A dragon inspired by ground current.",
+    "sachGhi": "A dragon inspired by ground current.",
+    "chiSo": {
+      "hp": 117.3,
+      "tanCong": 120.7,
+      "phongThu": 110.4
+    },
+    "mau": {
+      "than": "#ecba1c",
+      "thanSang": "#FFE873",
+      "thanToi": "#B08A00",
+      "bung": "#FFF6B8",
+      "sung": "#4A3A00",
+      "mat": "#5CE1FF",
+      "vien": "#7A5C00",
+      "canh": "#7A4A26",
+      "canhMang": "#B98552",
+      "duoi": "#c78f2e",
+      "hoaTiet": "#6E4B2A",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FFE873",
+      "cham": "#A86B3C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08,
+        "tuHe": "thunder"
+      },
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.06,
+        "tuHe": "earth"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "thunder-1",
+      "earth-1"
+    ]
+  },
+  {
+    "id": "thunder>wind",
+    "ten": "Derecho Dragon",
+    "elements": [
+      "thunder",
+      "wind"
+    ],
+    "soHe": 2,
+    "icon": "⚡",
+    "iconPhu": [
+      "🌪️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by derecho. Affinities: Thunder, Wind.",
+    "moTa": "A dragon inspired by derecho.",
+    "sachGhi": "A dragon inspired by derecho.",
+    "chiSo": {
+      "hp": 103.5,
+      "tanCong": 123.1,
+      "phongThu": 92
+    },
+    "mau": {
+      "than": "#e3c72a",
+      "thanSang": "#FFE873",
+      "thanToi": "#B08A00",
+      "bung": "#FFF6B8",
+      "sung": "#4A3A00",
+      "mat": "#5CE1FF",
+      "vien": "#7A5C00",
+      "canh": "#3FB894",
+      "canhMang": "#C9F7EA",
+      "duoi": "#9bcd73",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FFE873",
+      "cham": "#5FD3B0",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08,
+        "tuHe": "thunder"
+      },
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.05,
+        "tuHe": "wind"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "thunder-1",
+      "wind-1"
+    ]
+  },
+  {
+    "id": "thunder>ice",
+    "ten": "Ice Storm Dragon",
+    "elements": [
+      "thunder",
+      "ice"
+    ],
+    "soHe": 2,
+    "icon": "⚡",
+    "iconPhu": [
+      "❄️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by ice storm. Affinities: Thunder, Ice.",
+    "moTa": "A dragon inspired by ice storm.",
+    "sachGhi": "A dragon inspired by ice storm.",
+    "chiSo": {
+      "hp": 108.1,
+      "tanCong": 127.7,
+      "phongThu": 98.9
+    },
+    "mau": {
+      "than": "#e9c733",
+      "thanSang": "#FFE873",
+      "thanToi": "#B08A00",
+      "bung": "#FFF6B8",
+      "sung": "#4A3A00",
+      "mat": "#5CE1FF",
+      "vien": "#7A5C00",
+      "canh": "#6CBBE0",
+      "canhMang": "#E3F8FF",
+      "duoi": "#b8d19d",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FFE873",
+      "cham": "#8FD9F5",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08,
+        "tuHe": "thunder"
+      },
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.04,
+        "tuHe": "ice"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "thunder-1",
+      "ice-1"
+    ]
+  },
+  {
+    "id": "thunder>nature",
+    "ten": "Bioelectric Pulse Dragon",
+    "elements": [
+      "thunder",
+      "nature"
+    ],
+    "soHe": 2,
+    "icon": "⚡",
+    "iconPhu": [
+      "🌿"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by bioelectric pulse. Affinities: Thunder, Nature.",
+    "moTa": "A dragon inspired by bioelectric pulse.",
+    "sachGhi": "A dragon inspired by bioelectric pulse.",
+    "chiSo": {
+      "hp": 115,
+      "tanCong": 120.7,
+      "phongThu": 103.5
+    },
+    "mau": {
+      "than": "#e1c21f",
+      "thanSang": "#FFE873",
+      "thanToi": "#B08A00",
+      "bung": "#FFF6B8",
+      "sung": "#4A3A00",
+      "mat": "#5CE1FF",
+      "vien": "#7A5C00",
+      "canh": "#2E8B3A",
+      "canhMang": "#7ED957",
+      "duoi": "#90b83a",
+      "hoaTiet": "#FF7EB6",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "la",
+      "duoi": "quat",
+      "hoaTiet": "dom"
+    },
+    "hat": [
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#FFE873",
+      "cham": "#4CAF50",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08,
+        "tuHe": "thunder"
+      },
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.015,
+        "tuHe": "nature"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "thunder-1",
+      "nature-1"
+    ]
+  },
+  {
+    "id": "nature>fire",
+    "ten": "Fire Ecology Dragon",
+    "elements": [
+      "nature",
+      "fire"
+    ],
+    "soHe": 2,
+    "icon": "🌿",
+    "iconPhu": [
+      "🔥"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by fire ecology. Affinities: Nature, Fire.",
+    "moTa": "A dragon inspired by fire ecology.",
+    "sachGhi": "A dragon inspired by fire ecology.",
+    "chiSo": {
+      "hp": 123.1,
+      "tanCong": 117.3,
+      "phongThu": 109.2
+    },
+    "mau": {
+      "than": "#5fa24c",
+      "thanSang": "#8BE07A",
+      "thanToi": "#22692B",
+      "bung": "#D8F5A2",
+      "sung": "#6B4A2B",
+      "mat": "#FF9AD5",
+      "vien": "#1B5A22",
+      "canh": "#C7321C",
+      "canhMang": "#FF8A2E",
+      "duoi": "#aa6f3a",
+      "hoaTiet": "#FFD24D",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "fire",
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#8BE07A",
+      "cham": "#E8452C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03,
+        "tuHe": "nature"
+      },
+      {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.05,
+        "tuHe": "fire"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "nature-1",
+      "fire-1"
+    ]
+  },
+  {
+    "id": "nature>water",
+    "ten": "Algal Bloom Dragon",
+    "elements": [
+      "nature",
+      "water"
+    ],
+    "soHe": 2,
+    "icon": "🌿",
+    "iconPhu": [
+      "💧"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by algal bloom. Affinities: Nature, Water.",
+    "moTa": "A dragon inspired by algal bloom.",
+    "sachGhi": "A dragon inspired by algal bloom.",
+    "chiSo": {
+      "hp": 130,
+      "tanCong": 105.8,
+      "phongThu": 118.5
+    },
+    "mau": {
+      "than": "#49ab62",
+      "thanSang": "#8BE07A",
+      "thanToi": "#22692B",
+      "bung": "#D8F5A2",
+      "sung": "#6B4A2B",
+      "mat": "#FF9AD5",
+      "vien": "#1B5A22",
+      "canh": "#1F6FC7",
+      "canhMang": "#7FD0FF",
+      "duoi": "#3b9cab",
+      "hoaTiet": "#A8E6FF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "water",
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#8BE07A",
+      "cham": "#2F8FE8",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03,
+        "tuHe": "nature"
+      },
+      {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.04,
+        "tuHe": "water"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "nature-1",
+      "water-1"
+    ]
+  },
+  {
+    "id": "nature>earth",
+    "ten": "Mycorrhizal Network Dragon",
+    "elements": [
+      "nature",
+      "earth"
+    ],
+    "soHe": 2,
+    "icon": "🌿",
+    "iconPhu": [
+      "⛰️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by mycorrhizal network. Affinities: Nature, Earth.",
+    "moTa": "A dragon inspired by mycorrhizal network.",
+    "sachGhi": "A dragon inspired by mycorrhizal network.",
+    "chiSo": {
+      "hp": 134.5,
+      "tanCong": 103.5,
+      "phongThu": 127.7
+    },
+    "mau": {
+      "than": "#57a74e",
+      "thanSang": "#8BE07A",
+      "thanToi": "#22692B",
+      "bung": "#D8F5A2",
+      "sung": "#6B4A2B",
+      "mat": "#FF9AD5",
+      "vien": "#1B5A22",
+      "canh": "#7A4A26",
+      "canhMang": "#B98552",
+      "duoi": "#838644",
+      "hoaTiet": "#6E4B2A",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "earth",
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#8BE07A",
+      "cham": "#A86B3C",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03,
+        "tuHe": "nature"
+      },
+      {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.06,
+        "tuHe": "earth"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "nature-1",
+      "earth-1"
+    ]
+  },
+  {
+    "id": "nature>wind",
+    "ten": "Seed Dispersal Dragon",
+    "elements": [
+      "nature",
+      "wind"
+    ],
+    "soHe": 2,
+    "icon": "🌿",
+    "iconPhu": [
+      "🌪️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by seed dispersal. Affinities: Nature, Wind.",
+    "moTa": "A dragon inspired by seed dispersal.",
+    "sachGhi": "A dragon inspired by seed dispersal.",
+    "chiSo": {
+      "hp": 120.7,
+      "tanCong": 105.8,
+      "phongThu": 109.2
+    },
+    "mau": {
+      "than": "#4eb35c",
+      "thanSang": "#8BE07A",
+      "thanToi": "#22692B",
+      "bung": "#D8F5A2",
+      "sung": "#6B4A2B",
+      "mat": "#FF9AD5",
+      "vien": "#1B5A22",
+      "canh": "#3FB894",
+      "canhMang": "#C9F7EA",
+      "duoi": "#57c58a",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "lon",
+      "duoi": "quat",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "wind",
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#8BE07A",
+      "cham": "#5FD3B0",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03,
+        "tuHe": "nature"
+      },
+      {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.05,
+        "tuHe": "wind"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "nature-1",
+      "wind-1"
+    ]
+  },
+  {
+    "id": "nature>ice",
+    "ten": "Winter Dormancy Dragon",
+    "elements": [
+      "nature",
+      "ice"
+    ],
+    "soHe": 2,
+    "icon": "🌿",
+    "iconPhu": [
+      "❄️"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by winter dormancy. Affinities: Nature, Ice.",
+    "moTa": "A dragon inspired by winter dormancy.",
+    "sachGhi": "A dragon inspired by winter dormancy.",
+    "chiSo": {
+      "hp": 125.4,
+      "tanCong": 110.4,
+      "phongThu": 116.2
+    },
+    "mau": {
+      "than": "#54b464",
+      "thanSang": "#8BE07A",
+      "thanToi": "#22692B",
+      "bung": "#D8F5A2",
+      "sung": "#6B4A2B",
+      "mat": "#FF9AD5",
+      "vien": "#1B5A22",
+      "canh": "#6CBBE0",
+      "canhMang": "#E3F8FF",
+      "duoi": "#74c8b3",
+      "hoaTiet": "#FFFFFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "gai",
+      "hoaTiet": "vay"
+    },
+    "hat": [
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "ice",
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#8BE07A",
+      "cham": "#8FD9F5",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03,
+        "tuHe": "nature"
+      },
+      {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.04,
+        "tuHe": "ice"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "nature-1",
+      "ice-1"
+    ]
+  },
+  {
+    "id": "nature>thunder",
+    "ten": "Electrotropism Dragon",
+    "elements": [
+      "nature",
+      "thunder"
+    ],
+    "soHe": 2,
+    "icon": "🌿",
+    "iconPhu": [
+      "⚡"
+    ],
+    "doHiem": "rare",
+    "doHiemTen": "Rare",
+    "vienMau": "#3D8BFF",
+    "hienTuong": "Inspired by electrotropism. Affinities: Nature, Thunder.",
+    "moTa": "A dragon inspired by electrotropism.",
+    "sachGhi": "A dragon inspired by electrotropism.",
+    "chiSo": {
+      "hp": 120.7,
+      "tanCong": 115,
+      "phongThu": 109.2
+    },
+    "mau": {
+      "than": "#60b249",
+      "thanSang": "#8BE07A",
+      "thanToi": "#22692B",
+      "bung": "#D8F5A2",
+      "sung": "#6B4A2B",
+      "mat": "#FF9AD5",
+      "vien": "#1B5A22",
+      "canh": "#D9A800",
+      "canhMang": "#FFE34D",
+      "duoi": "#b1bc2e",
+      "hoaTiet": "#7A4DFF",
+      "haoQuang": "#4DA3FF"
+    },
+    "kieu": {
+      "sung": "nhanh",
+      "canh": "doi",
+      "duoi": "nhon",
+      "hoaTiet": "soc"
+    },
+    "hat": [
+      {
+        "he": "nature",
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ],
+        "tanSuat": 1
+      },
+      {
+        "he": "thunder",
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ],
+        "tanSuat": 0.4
+      }
+    ],
+    "trung": {
+      "nen": "#8BE07A",
+      "cham": "#F5C518",
+      "vien": "#3D8BFF"
+    },
+    "noiTai": [
+      {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03,
+        "tuHe": "nature"
+      },
+      {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.04,
+        "tuHe": "thunder"
+      }
+    ],
+    "vangGioGoc": 150,
+    "apGiay": 480,
+    "giaTrung": {
+      "vang": 3000
+    },
+    "giaBan": 1200,
+    "dieuKienDacBiet": null,
+    "skillIds": [
+      "claw",
+      "slam",
+      "nature-1",
+      "thunder-1"
+    ]
+  }
+]

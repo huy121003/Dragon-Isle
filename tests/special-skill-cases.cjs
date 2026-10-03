@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const catalog=require('../data/dragons.json'),game=require('../data/game.json');
+const catalog=require('../data/catalog-loader.cjs').loadDragonCatalog(),game=require('../data/catalog-loader.cjs').loadGameCatalog();
 require('../scripts/extend-catalog.cjs')(catalog,game);
 const {createBattleEngine}=require('../server/arena/battle-engine.cjs');
 const {publicBattle}=require('../server/arena/battle-view.cjs');

@@ -1,0 +1,2044 @@
+{
+  "version": 2,
+  "elements": {
+    "fire": {
+      "id": "fire",
+      "ten": "Fire",
+      "icon": "🔥",
+      "mau": {
+        "chinh": "#E8452C",
+        "sang": "#FF8A4C",
+        "toi": "#9E1F12",
+        "bung": "#FFC46B",
+        "canh": "#C7321C",
+        "canhMang": "#FF8A2E",
+        "sung": "#3B1A10",
+        "mat": "#FFE14D",
+        "hoaTiet": "#FFD24D",
+        "hao": "#FF7A30",
+        "vien": "#7A150B"
+      },
+      "hat": {
+        "loai": "lua",
+        "mau": [
+          "#FF4D2E",
+          "#FF9A3C",
+          "#FFD94D"
+        ]
+      },
+      "kieu": {
+        "canh": "doi",
+        "sung": "cong",
+        "duoi": "nhon",
+        "hoaTiet": "vay"
+      },
+      "chiSo": {
+        "hp": 95,
+        "tanCong": 120,
+        "phongThu": 80
+      },
+      "moTa": "A fire dragon with the power of fire.",
+      "noiTai": {
+        "ten": "Blazing Spirit",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.1
+      }
+    },
+    "water": {
+      "id": "water",
+      "ten": "Water",
+      "icon": "💧",
+      "mau": {
+        "chinh": "#2F8FE8",
+        "sang": "#6FC7FF",
+        "toi": "#1A4E9E",
+        "bung": "#BFE8FF",
+        "canh": "#1F6FC7",
+        "canhMang": "#7FD0FF",
+        "sung": "#123A6B",
+        "mat": "#FFFFFF",
+        "hoaTiet": "#A8E6FF",
+        "hao": "#4DB8FF",
+        "vien": "#0F3670"
+      },
+      "hat": {
+        "loai": "bongBong",
+        "mau": [
+          "#8FD8FF",
+          "#CFF1FF",
+          "#FFFFFF"
+        ]
+      },
+      "kieu": {
+        "canh": "lon",
+        "sung": "cong",
+        "duoi": "quat",
+        "hoaTiet": "soc"
+      },
+      "chiSo": {
+        "hp": 110,
+        "tanCong": 95,
+        "phongThu": 100
+      },
+      "moTa": "A water dragon with the power of water.",
+      "noiTai": {
+        "ten": "Tidal Flow",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.08
+      }
+    },
+    "earth": {
+      "id": "earth",
+      "ten": "Earth",
+      "icon": "⛰️",
+      "mau": {
+        "chinh": "#A86B3C",
+        "sang": "#D69A5E",
+        "toi": "#5E3A1E",
+        "bung": "#E8C99A",
+        "canh": "#7A4A26",
+        "canhMang": "#B98552",
+        "sung": "#3F2A18",
+        "mat": "#9BE15D",
+        "hoaTiet": "#6E4B2A",
+        "hao": "#C48A4E",
+        "vien": "#4A2C14"
+      },
+      "hat": {
+        "loai": "da",
+        "mau": [
+          "#8A5A32",
+          "#B98552",
+          "#E0BE8A"
+        ]
+      },
+      "kieu": {
+        "canh": "doi",
+        "sung": "thang",
+        "duoi": "gai",
+        "hoaTiet": "vay"
+      },
+      "chiSo": {
+        "hp": 120,
+        "tanCong": 90,
+        "phongThu": 120
+      },
+      "moTa": "A earth dragon with the power of earth.",
+      "noiTai": {
+        "ten": "Stone Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.12
+      }
+    },
+    "wind": {
+      "id": "wind",
+      "ten": "Wind",
+      "icon": "🌪️",
+      "mau": {
+        "chinh": "#5FD3B0",
+        "sang": "#A8F0DA",
+        "toi": "#2A8F76",
+        "bung": "#EFFFF8",
+        "canh": "#3FB894",
+        "canhMang": "#C9F7EA",
+        "sung": "#1E6B58",
+        "mat": "#FFF27A",
+        "hoaTiet": "#FFFFFF",
+        "hao": "#8FF0D2",
+        "vien": "#186050"
+      },
+      "hat": {
+        "loai": "gio",
+        "mau": [
+          "#DFFFF5",
+          "#B5F5E0",
+          "#FFFFFF"
+        ]
+      },
+      "kieu": {
+        "canh": "lon",
+        "sung": "nhanh",
+        "duoi": "quat",
+        "hoaTiet": "soc"
+      },
+      "chiSo": {
+        "hp": 90,
+        "tanCong": 95,
+        "phongThu": 80
+      },
+      "moTa": "A wind dragon with the power of wind.",
+      "noiTai": {
+        "ten": "Gale Guard",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1
+      }
+    },
+    "ice": {
+      "id": "ice",
+      "ten": "Ice",
+      "icon": "❄️",
+      "mau": {
+        "chinh": "#8FD9F5",
+        "sang": "#D6F4FF",
+        "toi": "#4A98C2",
+        "bung": "#F2FCFF",
+        "canh": "#6CBBE0",
+        "canhMang": "#E3F8FF",
+        "sung": "#BFEFFF",
+        "mat": "#3A6BFF",
+        "hoaTiet": "#FFFFFF",
+        "hao": "#A8E8FF",
+        "vien": "#2E6E94"
+      },
+      "hat": {
+        "loai": "tuyet",
+        "mau": [
+          "#FFFFFF",
+          "#DFF6FF",
+          "#B5E8FF"
+        ]
+      },
+      "kieu": {
+        "canh": "doi",
+        "sung": "tinhThe",
+        "duoi": "gai",
+        "hoaTiet": "vay"
+      },
+      "chiSo": {
+        "hp": 100,
+        "tanCong": 105,
+        "phongThu": 95
+      },
+      "moTa": "A ice dragon with the power of ice.",
+      "noiTai": {
+        "ten": "Frozen Armor",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.08
+      }
+    },
+    "thunder": {
+      "id": "thunder",
+      "ten": "Thunder",
+      "icon": "⚡",
+      "mau": {
+        "chinh": "#F5C518",
+        "sang": "#FFE873",
+        "toi": "#B08A00",
+        "bung": "#FFF6B8",
+        "canh": "#D9A800",
+        "canhMang": "#FFE34D",
+        "sung": "#4A3A00",
+        "mat": "#5CE1FF",
+        "hoaTiet": "#7A4DFF",
+        "hao": "#FFEA4D",
+        "vien": "#7A5C00"
+      },
+      "hat": {
+        "loai": "tiaSet",
+        "mau": [
+          "#FFF27A",
+          "#7AE7FF",
+          "#FFFFFF"
+        ]
+      },
+      "kieu": {
+        "canh": "doi",
+        "sung": "nhanh",
+        "duoi": "nhon",
+        "hoaTiet": "soc"
+      },
+      "chiSo": {
+        "hp": 90,
+        "tanCong": 115,
+        "phongThu": 80
+      },
+      "moTa": "A thunder dragon with the power of thunder.",
+      "noiTai": {
+        "ten": "Charged Strike",
+        "moTa": "Increases attack.",
+        "chiSo": "tanCong",
+        "giaTri": 0.08
+      }
+    },
+    "nature": {
+      "id": "nature",
+      "ten": "Nature",
+      "icon": "🌿",
+      "mau": {
+        "chinh": "#4CAF50",
+        "sang": "#8BE07A",
+        "toi": "#22692B",
+        "bung": "#D8F5A2",
+        "canh": "#2E8B3A",
+        "canhMang": "#7ED957",
+        "sung": "#6B4A2B",
+        "mat": "#FF9AD5",
+        "hoaTiet": "#FF7EB6",
+        "hao": "#7CE070",
+        "vien": "#1B5A22"
+      },
+      "hat": {
+        "loai": "la",
+        "mau": [
+          "#7CE070",
+          "#B5F08A",
+          "#FFB6D9"
+        ]
+      },
+      "kieu": {
+        "canh": "la",
+        "sung": "nhanh",
+        "duoi": "quat",
+        "hoaTiet": "dom"
+      },
+      "chiSo": {
+        "hp": 115,
+        "tanCong": 90,
+        "phongThu": 105
+      },
+      "moTa": "A nature dragon with the power of nature.",
+      "noiTai": {
+        "ten": "Vital Bloom",
+        "moTa": "Increases health.",
+        "chiSo": "hoiMau",
+        "giaTri": 0.03
+      }
+    },
+    "dark": {
+      "id": "dark",
+      "ten": "Dark",
+      "icon": "🌑",
+      "mau": {
+        "chinh": "#4B3570",
+        "sang": "#8A6BC7",
+        "toi": "#1E1233",
+        "bung": "#7A5FA8",
+        "canh": "#2F1F4D",
+        "canhMang": "#6A4C9C",
+        "sung": "#120A22",
+        "mat": "#FF3D6E",
+        "hoaTiet": "#B36BFF",
+        "hao": "#8A4DFF",
+        "vien": "#0F0820"
+      },
+      "hat": {
+        "loai": "khoi",
+        "mau": [
+          "#5A3F8F",
+          "#2B1A4A",
+          "#B36BFF"
+        ]
+      },
+      "kieu": {
+        "canh": "doi",
+        "sung": "cong",
+        "duoi": "nhon",
+        "hoaTiet": "dom"
+      },
+      "chiSo": {
+        "hp": 100,
+        "tanCong": 115,
+        "phongThu": 90
+      },
+      "moTa": "A dark dragon with the power of dark.",
+      "noiTai": {
+        "ten": "Shadow Veil",
+        "moTa": "Increases health.",
+        "chiSo": "chiMang",
+        "giaTri": 0.06
+      }
+    },
+    "light": {
+      "id": "light",
+      "ten": "Light",
+      "icon": "✨",
+      "mau": {
+        "chinh": "#FFF1A8",
+        "sang": "#FFFFFF",
+        "toi": "#E0B84A",
+        "bung": "#FFFFFF",
+        "canh": "#F5D76E",
+        "canhMang": "#FFFBE0",
+        "sung": "#FFD24D",
+        "mat": "#FF9F1C",
+        "hoaTiet": "#FFE066",
+        "hao": "#FFF5B0",
+        "vien": "#B08A1E"
+      },
+      "hat": {
+        "loai": "saoLapLanh",
+        "mau": [
+          "#FFFFFF",
+          "#FFF1A8",
+          "#FFE066"
+        ]
+      },
+      "kieu": {
+        "canh": "lon",
+        "sung": "thang",
+        "duoi": "quat",
+        "hoaTiet": "vay"
+      },
+      "chiSo": {
+        "hp": 105,
+        "tanCong": 100,
+        "phongThu": 100
+      },
+      "moTa": "A light dragon with the power of light.",
+      "noiTai": {
+        "ten": "Radiant Aura",
+        "moTa": "Increases health.",
+        "chiSo": "hp",
+        "giaTri": 0.06
+      }
+    },
+    "metal": {
+      "id": "metal",
+      "ten": "Metal",
+      "icon": "⚙️",
+      "mau": {
+        "chinh": "#8C97A6",
+        "sang": "#C9D3DF",
+        "toi": "#4A5361",
+        "bung": "#DDE4EC",
+        "canh": "#66707E",
+        "canhMang": "#AEB8C6",
+        "sung": "#2E3540",
+        "mat": "#FF5A36",
+        "hoaTiet": "#E8EEF5",
+        "hao": "#C9D3DF",
+        "vien": "#2A303A"
+      },
+      "hat": {
+        "loai": "tiaLuaKim",
+        "mau": [
+          "#E8EEF5",
+          "#AEB8C6",
+          "#FFB347"
+        ]
+      },
+      "kieu": {
+        "canh": "doi",
+        "sung": "thang",
+        "duoi": "gai",
+        "hoaTiet": "vay"
+      },
+      "chiSo": {
+        "hp": 105,
+        "tanCong": 105,
+        "phongThu": 130
+      },
+      "moTa": "A metal dragon with the power of metal.",
+      "noiTai": {
+        "ten": "Iron Will",
+        "moTa": "Increases defense.",
+        "chiSo": "phongThu",
+        "giaTri": 0.1
+      }
+    }
+  },
+  "typeChart": {
+    "fire": {
+      "fire": 1,
+      "water": 0.75,
+      "earth": 0.75,
+      "wind": 1,
+      "ice": 1.5,
+      "thunder": 1,
+      "nature": 1.5,
+      "dark": 1,
+      "light": 1,
+      "metal": 1
+    },
+    "water": {
+      "fire": 1.5,
+      "water": 1,
+      "earth": 1,
+      "wind": 1,
+      "ice": 0.75,
+      "thunder": 0.75,
+      "nature": 1,
+      "dark": 1,
+      "light": 1,
+      "metal": 1.5
+    },
+    "earth": {
+      "fire": 1.5,
+      "water": 1,
+      "earth": 1,
+      "wind": 0.75,
+      "ice": 1,
+      "thunder": 1,
+      "nature": 0.75,
+      "dark": 1.5,
+      "light": 1,
+      "metal": 1
+    },
+    "wind": {
+      "fire": 1,
+      "water": 1,
+      "earth": 1.5,
+      "wind": 1,
+      "ice": 1,
+      "thunder": 0.75,
+      "nature": 1,
+      "dark": 1.5,
+      "light": 0.75,
+      "metal": 1
+    },
+    "ice": {
+      "fire": 0.75,
+      "water": 1.5,
+      "earth": 1,
+      "wind": 1,
+      "ice": 1,
+      "thunder": 1,
+      "nature": 1.5,
+      "dark": 1,
+      "light": 1,
+      "metal": 0.75
+    },
+    "thunder": {
+      "fire": 1,
+      "water": 1.5,
+      "earth": 1,
+      "wind": 1.5,
+      "ice": 1,
+      "thunder": 1,
+      "nature": 0.75,
+      "dark": 1,
+      "light": 0.75,
+      "metal": 1
+    },
+    "nature": {
+      "fire": 0.75,
+      "water": 1,
+      "earth": 1.5,
+      "wind": 1,
+      "ice": 0.75,
+      "thunder": 1.5,
+      "nature": 1,
+      "dark": 1,
+      "light": 1,
+      "metal": 1
+    },
+    "dark": {
+      "fire": 1,
+      "water": 1,
+      "earth": 0.75,
+      "wind": 0.75,
+      "ice": 1,
+      "thunder": 1,
+      "nature": 1,
+      "dark": 1,
+      "light": 1.5,
+      "metal": 1.5
+    },
+    "light": {
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "wind": 1.5,
+      "ice": 1,
+      "thunder": 1.5,
+      "nature": 1,
+      "dark": 0.75,
+      "light": 1,
+      "metal": 0.75
+    },
+    "metal": {
+      "fire": 1,
+      "water": 0.75,
+      "earth": 1,
+      "wind": 1,
+      "ice": 1.5,
+      "thunder": 1,
+      "nature": 1,
+      "dark": 0.75,
+      "light": 1.5,
+      "metal": 1
+    }
+  },
+  "rarities": {
+    "common": {
+      "id": "common",
+      "ten": "Common",
+      "vien": "#9AA3AD",
+      "hao": null,
+      "heSoChiSo": 1,
+      "vangGio": 60,
+      "apGiay": 90,
+      "giaTrung": {
+        "vang": 500
+      },
+      "banGia": 200
+    },
+    "rare": {
+      "id": "rare",
+      "ten": "Rare",
+      "vien": "#3D8BFF",
+      "hao": "#4DA3FF",
+      "heSoChiSo": 1.3,
+      "vangGio": 150,
+      "apGiay": 480,
+      "giaTrung": {
+        "vang": 3000
+      },
+      "banGia": 1200
+    },
+    "epic": {
+      "id": "epic",
+      "ten": "Epic",
+      "vien": "#A64DFF",
+      "hao": "#B26BFF",
+      "heSoChiSo": 1.95,
+      "vangGio": 400,
+      "apGiay": 3600,
+      "giaTrung": {
+        "gem": 15
+      },
+      "banGia": 4000
+    },
+    "legendary": {
+      "id": "legendary",
+      "ten": "Legendary",
+      "vien": "#FFC21A",
+      "hao": "#FFD24D",
+      "heSoChiSo": 2.4,
+      "vangGio": 1000,
+      "apGiay": 10800,
+      "giaTrung": {
+        "gem": 80
+      },
+      "banGia": 15000
+    },
+    "mythic": {
+      "id": "mythic",
+      "ten": "Mythic",
+      "vien": "rainbow",
+      "hao": "rainbow",
+      "heSoChiSo": 3.75,
+      "vangGio": 2500,
+      "apGiay": 32400,
+      "giaTrung": null,
+      "banGia": 60000,
+      "cauVong": [
+        "#FF4D4D",
+        "#FFA64D",
+        "#FFE14D",
+        "#5CE65C",
+        "#4DB8FF",
+        "#A64DFF"
+      ]
+    }
+  },
+  "pairs": {
+    "fire>water": {
+      "ten": "Geyser Dragon",
+      "ten_ngan": "Geyser Dragon",
+      "hienTuong": "A fusion of Fire and Water."
+    },
+    "fire>earth": {
+      "ten": "Lava Flow Dragon",
+      "ten_ngan": "Lava Flow Dragon",
+      "hienTuong": "A fusion of Fire and Earth."
+    },
+    "fire>wind": {
+      "ten": "Fire Whirl Dragon",
+      "ten_ngan": "Fire Whirl Dragon",
+      "hienTuong": "A fusion of Fire and Wind."
+    },
+    "fire>ice": {
+      "ten": "Thermal Fracture Dragon",
+      "ten_ngan": "Thermal Fracture Dragon",
+      "hienTuong": "A fusion of Fire and Ice."
+    },
+    "fire>thunder": {
+      "ten": "Volcanic Lightning Dragon",
+      "ten_ngan": "Volcanic Lightning Dragon",
+      "hienTuong": "A fusion of Fire and Thunder."
+    },
+    "fire>nature": {
+      "ten": "Crown Fire Dragon",
+      "ten_ngan": "Crown Fire Dragon",
+      "hienTuong": "A fusion of Fire and Nature."
+    },
+    "fire>dark": {
+      "ten": "Soot Plume Dragon",
+      "ten_ngan": "Soot Plume Dragon",
+      "hienTuong": "A fusion of Fire and Dark."
+    },
+    "fire>light": {
+      "ten": "Solar Flare Dragon",
+      "ten_ngan": "Solar Flare Dragon",
+      "hienTuong": "A fusion of Fire and Light."
+    },
+    "fire>metal": {
+      "ten": "Molten Spray Dragon",
+      "ten_ngan": "Molten Spray Dragon",
+      "hienTuong": "A fusion of Fire and Metal."
+    },
+    "water>fire": {
+      "ten": "Steam Eruption Dragon",
+      "ten_ngan": "Steam Eruption Dragon",
+      "hienTuong": "A fusion of Water and Fire."
+    },
+    "water>earth": {
+      "ten": "Mudslide Dragon",
+      "ten_ngan": "Mudslide Dragon",
+      "hienTuong": "A fusion of Water and Earth."
+    },
+    "water>wind": {
+      "ten": "Monsoon Dragon",
+      "ten_ngan": "Monsoon Dragon",
+      "hienTuong": "A fusion of Water and Wind."
+    },
+    "water>ice": {
+      "ten": "Sea Ice Dragon",
+      "ten_ngan": "Sea Ice Dragon",
+      "hienTuong": "A fusion of Water and Ice."
+    },
+    "water>thunder": {
+      "ten": "Thundersquall Dragon",
+      "ten_ngan": "Thundersquall Dragon",
+      "hienTuong": "A fusion of Water and Thunder."
+    },
+    "water>nature": {
+      "ten": "Tidal Marsh Dragon",
+      "ten_ngan": "Tidal Marsh Dragon",
+      "hienTuong": "A fusion of Water and Nature."
+    },
+    "water>dark": {
+      "ten": "Deepwater Current Dragon",
+      "ten_ngan": "Deepwater Current Dragon",
+      "hienTuong": "A fusion of Water and Dark."
+    },
+    "water>light": {
+      "ten": "Sun Glitter Dragon",
+      "ten_ngan": "Sun Glitter Dragon",
+      "hienTuong": "A fusion of Water and Light."
+    },
+    "water>metal": {
+      "ten": "Galvanic Corrosion Dragon",
+      "ten_ngan": "Galvanic Corrosion Dragon",
+      "hienTuong": "A fusion of Water and Metal."
+    },
+    "earth>fire": {
+      "ten": "Volcanic Eruption Dragon",
+      "ten_ngan": "Volcanic Eruption Dragon",
+      "hienTuong": "A fusion of Earth and Fire."
+    },
+    "earth>water": {
+      "ten": "Sediment Plume Dragon",
+      "ten_ngan": "Sediment Plume Dragon",
+      "hienTuong": "A fusion of Earth and Water."
+    },
+    "earth>wind": {
+      "ten": "Dust Storm Dragon",
+      "ten_ngan": "Dust Storm Dragon",
+      "hienTuong": "A fusion of Earth and Wind."
+    },
+    "earth>ice": {
+      "ten": "Permafrost Creep Dragon",
+      "ten_ngan": "Permafrost Creep Dragon",
+      "hienTuong": "A fusion of Earth and Ice."
+    },
+    "earth>thunder": {
+      "ten": "Fulgurite Dragon",
+      "ten_ngan": "Fulgurite Dragon",
+      "hienTuong": "A fusion of Earth and Thunder."
+    },
+    "earth>nature": {
+      "ten": "Soil Respiration Dragon",
+      "ten_ngan": "Soil Respiration Dragon",
+      "hienTuong": "A fusion of Earth and Nature."
+    },
+    "earth>dark": {
+      "ten": "Lunar Umbra Dragon",
+      "ten_ngan": "Lunar Umbra Dragon",
+      "hienTuong": "A fusion of Earth and Dark."
+    },
+    "earth>light": {
+      "ten": "Alpenglow Dragon",
+      "ten_ngan": "Alpenglow Dragon",
+      "hienTuong": "A fusion of Earth and Light."
+    },
+    "earth>metal": {
+      "ten": "Ore Vein Dragon",
+      "ten_ngan": "Ore Vein Dragon",
+      "hienTuong": "A fusion of Earth and Metal."
+    },
+    "wind>fire": {
+      "ten": "Sirocco Dragon",
+      "ten_ngan": "Sirocco Dragon",
+      "hienTuong": "A fusion of Wind and Fire."
+    },
+    "wind>water": {
+      "ten": "Waterspout Dragon",
+      "ten_ngan": "Waterspout Dragon",
+      "hienTuong": "A fusion of Wind and Water."
+    },
+    "wind>earth": {
+      "ten": "Sandstorm Dragon",
+      "ten_ngan": "Sandstorm Dragon",
+      "hienTuong": "A fusion of Wind and Earth."
+    },
+    "wind>ice": {
+      "ten": "Blizzard Dragon",
+      "ten_ngan": "Blizzard Dragon",
+      "hienTuong": "A fusion of Wind and Ice."
+    },
+    "wind>thunder": {
+      "ten": "Supercell Dragon",
+      "ten_ngan": "Supercell Dragon",
+      "hienTuong": "A fusion of Wind and Thunder."
+    },
+    "wind>nature": {
+      "ten": "Pollen Drift Dragon",
+      "ten_ngan": "Pollen Drift Dragon",
+      "hienTuong": "A fusion of Wind and Nature."
+    },
+    "wind>dark": {
+      "ten": "Nocturnal Jet Dragon",
+      "ten_ngan": "Nocturnal Jet Dragon",
+      "hienTuong": "A fusion of Wind and Dark."
+    },
+    "wind>light": {
+      "ten": "Crepuscular Rays Dragon",
+      "ten_ngan": "Crepuscular Rays Dragon",
+      "hienTuong": "A fusion of Wind and Light."
+    },
+    "wind>metal": {
+      "ten": "Aeolian Erosion Dragon",
+      "ten_ngan": "Aeolian Erosion Dragon",
+      "hienTuong": "A fusion of Wind and Metal."
+    },
+    "ice>fire": {
+      "ten": "Thermal Shock Dragon",
+      "ten_ngan": "Thermal Shock Dragon",
+      "hienTuong": "A fusion of Ice and Fire."
+    },
+    "ice>water": {
+      "ten": "Iceberg Calving Dragon",
+      "ten_ngan": "Iceberg Calving Dragon",
+      "hienTuong": "A fusion of Ice and Water."
+    },
+    "ice>earth": {
+      "ten": "Glacial Erosion Dragon",
+      "ten_ngan": "Glacial Erosion Dragon",
+      "hienTuong": "A fusion of Ice and Earth."
+    },
+    "ice>wind": {
+      "ten": "Diamond Dust Dragon",
+      "ten_ngan": "Diamond Dust Dragon",
+      "hienTuong": "A fusion of Ice and Wind."
+    },
+    "ice>thunder": {
+      "ten": "Thundersnow Dragon",
+      "ten_ngan": "Thundersnow Dragon",
+      "hienTuong": "A fusion of Ice and Thunder."
+    },
+    "ice>nature": {
+      "ten": "Frost Flower Dragon",
+      "ten_ngan": "Frost Flower Dragon",
+      "hienTuong": "A fusion of Ice and Nature."
+    },
+    "ice>dark": {
+      "ten": "Polar Night Dragon",
+      "ten_ngan": "Polar Night Dragon",
+      "hienTuong": "A fusion of Ice and Dark."
+    },
+    "ice>light": {
+      "ten": "Sundog Dragon",
+      "ten_ngan": "Sundog Dragon",
+      "hienTuong": "A fusion of Ice and Light."
+    },
+    "ice>metal": {
+      "ten": "Cryogenic Embrittlement Dragon",
+      "ten_ngan": "Cryogenic Embrittlement Dragon",
+      "hienTuong": "A fusion of Ice and Metal."
+    },
+    "thunder>fire": {
+      "ten": "Ball Lightning Dragon",
+      "ten_ngan": "Ball Lightning Dragon",
+      "hienTuong": "A fusion of Thunder and Fire."
+    },
+    "thunder>water": {
+      "ten": "Lightning Storm Dragon",
+      "ten_ngan": "Lightning Storm Dragon",
+      "hienTuong": "A fusion of Thunder and Water."
+    },
+    "thunder>earth": {
+      "ten": "Ground Current Dragon",
+      "ten_ngan": "Ground Current Dragon",
+      "hienTuong": "A fusion of Thunder and Earth."
+    },
+    "thunder>wind": {
+      "ten": "Derecho Dragon",
+      "ten_ngan": "Derecho Dragon",
+      "hienTuong": "A fusion of Thunder and Wind."
+    },
+    "thunder>ice": {
+      "ten": "Ice Storm Dragon",
+      "ten_ngan": "Ice Storm Dragon",
+      "hienTuong": "A fusion of Thunder and Ice."
+    },
+    "thunder>nature": {
+      "ten": "Bioelectric Pulse Dragon",
+      "ten_ngan": "Bioelectric Pulse Dragon",
+      "hienTuong": "A fusion of Thunder and Nature."
+    },
+    "thunder>dark": {
+      "ten": "Dark Lightning Dragon",
+      "ten_ngan": "Dark Lightning Dragon",
+      "hienTuong": "A fusion of Thunder and Dark."
+    },
+    "thunder>light": {
+      "ten": "Blue Jet Dragon",
+      "ten_ngan": "Blue Jet Dragon",
+      "hienTuong": "A fusion of Thunder and Light."
+    },
+    "thunder>metal": {
+      "ten": "Eddy Current Dragon",
+      "ten_ngan": "Eddy Current Dragon",
+      "hienTuong": "A fusion of Thunder and Metal."
+    },
+    "nature>fire": {
+      "ten": "Fire Ecology Dragon",
+      "ten_ngan": "Fire Ecology Dragon",
+      "hienTuong": "A fusion of Nature and Fire."
+    },
+    "nature>water": {
+      "ten": "Algal Bloom Dragon",
+      "ten_ngan": "Algal Bloom Dragon",
+      "hienTuong": "A fusion of Nature and Water."
+    },
+    "nature>earth": {
+      "ten": "Mycorrhizal Network Dragon",
+      "ten_ngan": "Mycorrhizal Network Dragon",
+      "hienTuong": "A fusion of Nature and Earth."
+    },
+    "nature>wind": {
+      "ten": "Seed Dispersal Dragon",
+      "ten_ngan": "Seed Dispersal Dragon",
+      "hienTuong": "A fusion of Nature and Wind."
+    },
+    "nature>ice": {
+      "ten": "Winter Dormancy Dragon",
+      "ten_ngan": "Winter Dormancy Dragon",
+      "hienTuong": "A fusion of Nature and Ice."
+    },
+    "nature>thunder": {
+      "ten": "Electrotropism Dragon",
+      "ten_ngan": "Electrotropism Dragon",
+      "hienTuong": "A fusion of Nature and Thunder."
+    },
+    "nature>dark": {
+      "ten": "Nocturnal Bloom Dragon",
+      "ten_ngan": "Nocturnal Bloom Dragon",
+      "hienTuong": "A fusion of Nature and Dark."
+    },
+    "nature>light": {
+      "ten": "Photosynthesis Dragon",
+      "ten_ngan": "Photosynthesis Dragon",
+      "hienTuong": "A fusion of Nature and Light."
+    },
+    "nature>metal": {
+      "ten": "Iron Bacteria Dragon",
+      "ten_ngan": "Iron Bacteria Dragon",
+      "hienTuong": "A fusion of Nature and Metal."
+    },
+    "dark>fire": {
+      "ten": "Blackbody Radiation Dragon",
+      "ten_ngan": "Blackbody Radiation Dragon",
+      "hienTuong": "A fusion of Dark and Fire."
+    },
+    "dark>water": {
+      "ten": "Abyssal Upwelling Dragon",
+      "ten_ngan": "Abyssal Upwelling Dragon",
+      "hienTuong": "A fusion of Dark and Water."
+    },
+    "dark>earth": {
+      "ten": "Cave Shadow Dragon",
+      "ten_ngan": "Cave Shadow Dragon",
+      "hienTuong": "A fusion of Dark and Earth."
+    },
+    "dark>wind": {
+      "ten": "Night Breeze Dragon",
+      "ten_ngan": "Night Breeze Dragon",
+      "hienTuong": "A fusion of Dark and Wind."
+    },
+    "dark>ice": {
+      "ten": "Black Ice Dragon",
+      "ten_ngan": "Black Ice Dragon",
+      "hienTuong": "A fusion of Dark and Ice."
+    },
+    "dark>thunder": {
+      "ten": "Terrestrial Gamma Flash Dragon",
+      "ten_ngan": "Terrestrial Gamma Flash Dragon",
+      "hienTuong": "A fusion of Dark and Thunder."
+    },
+    "dark>nature": {
+      "ten": "Nocturnal Migration Dragon",
+      "ten_ngan": "Nocturnal Migration Dragon",
+      "hienTuong": "A fusion of Dark and Nature."
+    },
+    "dark>light": {
+      "ten": "Total Eclipse Dragon",
+      "ten_ngan": "Total Eclipse Dragon",
+      "hienTuong": "A fusion of Dark and Light."
+    },
+    "dark>metal": {
+      "ten": "Magnetic Blackout Dragon",
+      "ten_ngan": "Magnetic Blackout Dragon",
+      "hienTuong": "A fusion of Dark and Metal."
+    },
+    "light>fire": {
+      "ten": "Incandescence Dragon",
+      "ten_ngan": "Incandescence Dragon",
+      "hienTuong": "A fusion of Light and Fire."
+    },
+    "light>water": {
+      "ten": "Rainbow Dragon",
+      "ten_ngan": "Rainbow Dragon",
+      "hienTuong": "A fusion of Light and Water."
+    },
+    "light>earth": {
+      "ten": "Earthshine Dragon",
+      "ten_ngan": "Earthshine Dragon",
+      "hienTuong": "A fusion of Light and Earth."
+    },
+    "light>wind": {
+      "ten": "Atmospheric Halo Dragon",
+      "ten_ngan": "Atmospheric Halo Dragon",
+      "hienTuong": "A fusion of Light and Wind."
+    },
+    "light>ice": {
+      "ten": "Ice Halo Dragon",
+      "ten_ngan": "Ice Halo Dragon",
+      "hienTuong": "A fusion of Light and Ice."
+    },
+    "light>thunder": {
+      "ten": "St. Elmo's Fire Dragon",
+      "ten_ngan": "St. Elmo's Fire Dragon",
+      "hienTuong": "A fusion of Light and Thunder."
+    },
+    "light>nature": {
+      "ten": "Phototropism Dragon",
+      "ten_ngan": "Phototropism Dragon",
+      "hienTuong": "A fusion of Light and Nature."
+    },
+    "light>dark": {
+      "ten": "Penumbral Eclipse Dragon",
+      "ten_ngan": "Penumbral Eclipse Dragon",
+      "hienTuong": "A fusion of Light and Dark."
+    },
+    "light>metal": {
+      "ten": "Specular Reflection Dragon",
+      "ten_ngan": "Specular Reflection Dragon",
+      "hienTuong": "A fusion of Light and Metal."
+    },
+    "metal>fire": {
+      "ten": "Thermite Reaction Dragon",
+      "ten_ngan": "Thermite Reaction Dragon",
+      "hienTuong": "A fusion of Metal and Fire."
+    },
+    "metal>water": {
+      "ten": "Electrolysis Dragon",
+      "ten_ngan": "Electrolysis Dragon",
+      "hienTuong": "A fusion of Metal and Water."
+    },
+    "metal>earth": {
+      "ten": "Magnetite Formation Dragon",
+      "ten_ngan": "Magnetite Formation Dragon",
+      "hienTuong": "A fusion of Metal and Earth."
+    },
+    "metal>wind": {
+      "ten": "Wind Abrasion Dragon",
+      "ten_ngan": "Wind Abrasion Dragon",
+      "hienTuong": "A fusion of Metal and Wind."
+    },
+    "metal>ice": {
+      "ten": "Frost Corrosion Dragon",
+      "ten_ngan": "Frost Corrosion Dragon",
+      "hienTuong": "A fusion of Metal and Ice."
+    },
+    "metal>thunder": {
+      "ten": "Electromagnetic Induction Dragon",
+      "ten_ngan": "Electromagnetic Induction Dragon",
+      "hienTuong": "A fusion of Metal and Thunder."
+    },
+    "metal>nature": {
+      "ten": "Phytoremediation Dragon",
+      "ten_ngan": "Phytoremediation Dragon",
+      "hienTuong": "A fusion of Metal and Nature."
+    },
+    "metal>dark": {
+      "ten": "Magnetic Anomaly Dragon",
+      "ten_ngan": "Magnetic Anomaly Dragon",
+      "hienTuong": "A fusion of Metal and Dark."
+    },
+    "metal>light": {
+      "ten": "Metallic Iridescence Dragon",
+      "ten_ngan": "Metallic Iridescence Dragon",
+      "hienTuong": "A fusion of Metal and Light."
+    }
+  },
+  "triples": {
+    "fire>water>wind": {
+      "ten": "Pyrocumulus Storm Dragon",
+      "hienTuong": "A fusion of Fire, Water, Wind."
+    },
+    "water>wind>thunder": {
+      "ten": "Tropical Cyclone Dragon",
+      "hienTuong": "A fusion of Water, Wind, Thunder."
+    },
+    "earth>fire>wind": {
+      "ten": "Volcanic Ash Cloud Dragon",
+      "hienTuong": "A fusion of Earth, Fire, Wind."
+    },
+    "fire>earth>metal": {
+      "ten": "Iron-Rich Lava Flow Dragon",
+      "hienTuong": "A fusion of Fire, Earth, Metal."
+    },
+    "fire>nature>wind": {
+      "ten": "Fire-Nature-Wind Dragon",
+      "hienTuong": "A fusion of Fire, Nature, Wind."
+    },
+    "water>ice>wind": {
+      "ten": "Water-Ice-Wind Dragon",
+      "hienTuong": "A fusion of Water, Ice, Wind."
+    },
+    "ice>wind>dark": {
+      "ten": "Polar Night Diamond Dust Dragon",
+      "hienTuong": "A fusion of Ice, Wind, Dark."
+    },
+    "light>water>wind": {
+      "ten": "Spray Rainbow Dragon",
+      "hienTuong": "A fusion of Light, Water, Wind."
+    },
+    "nature>water>light": {
+      "ten": "Photosynthetic Algal Bloom Dragon",
+      "hienTuong": "A fusion of Nature, Water, Light."
+    },
+    "nature>earth>water": {
+      "ten": "Nature-Earth-Water Dragon",
+      "hienTuong": "A fusion of Nature, Earth, Water."
+    },
+    "earth>water>nature": {
+      "ten": "Floodplain Germination Dragon",
+      "hienTuong": "A fusion of Earth, Water, Nature."
+    },
+    "water>earth>nature": {
+      "ten": "Riparian Wetland Dragon",
+      "hienTuong": "A fusion of Water, Earth, Nature."
+    },
+    "wind>water>thunder": {
+      "ten": "Convective Squall Dragon",
+      "hienTuong": "A fusion of Wind, Water, Thunder."
+    },
+    "thunder>wind>ice": {
+      "ten": "Thundersnow Derecho Dragon",
+      "hienTuong": "A fusion of Thunder, Wind, Ice."
+    },
+    "fire>thunder>earth": {
+      "ten": "Fire-Thunder-Earth Dragon",
+      "hienTuong": "A fusion of Fire, Thunder, Earth."
+    },
+    "light>fire>wind": {
+      "ten": "Solar Fire Whirl Dragon",
+      "hienTuong": "A fusion of Light, Fire, Wind."
+    },
+    "dark>ice>wind": {
+      "ten": "Dark-Ice-Wind Dragon",
+      "hienTuong": "A fusion of Dark, Ice, Wind."
+    },
+    "dark>water>earth": {
+      "ten": "Subterranean Groundwater Dragon",
+      "hienTuong": "A fusion of Dark, Water, Earth."
+    },
+    "dark>fire>metal": {
+      "ten": "Infrared Metal Glow Dragon",
+      "hienTuong": "A fusion of Dark, Fire, Metal."
+    },
+    "metal>fire>thunder": {
+      "ten": "Electrified Metal Eruption Dragon",
+      "hienTuong": "A fusion of Metal, Fire, Thunder."
+    },
+    "metal>thunder>light": {
+      "ten": "Solar Magnetic Induction Dragon",
+      "hienTuong": "A fusion of Metal, Thunder, Light."
+    },
+    "nature>light>earth": {
+      "ten": "Nature-Light-Earth Dragon",
+      "hienTuong": "A fusion of Nature, Light, Earth."
+    },
+    "earth>ice>water": {
+      "ten": "Earth-Ice-Water Dragon",
+      "hienTuong": "A fusion of Earth, Ice, Water."
+    },
+    "fire>light>earth": {
+      "ten": "Fire-Light-Earth Dragon",
+      "hienTuong": "A fusion of Fire, Light, Earth."
+    },
+    "light>dark>fire": {
+      "ten": "Light-Dark-Fire Dragon",
+      "hienTuong": "A fusion of Light, Dark, Fire."
+    },
+    "dark>light>water": {
+      "ten": "Dark-Light-Water Dragon",
+      "hienTuong": "A fusion of Dark, Light, Water."
+    },
+    "wind>earth>metal": {
+      "ten": "Iron-Rich Sandstorm Dragon",
+      "hienTuong": "A fusion of Wind, Earth, Metal."
+    },
+    "ice>light>thunder": {
+      "ten": "Ice-Light-Thunder Dragon",
+      "hienTuong": "A fusion of Ice, Light, Thunder."
+    }
+  },
+  "adjectives": {
+    "fire": "Fire",
+    "water": "Water",
+    "wind": "Wind",
+    "thunder": "Thunder",
+    "ice": "Ice",
+    "nature": "Nature",
+    "earth": "Earth",
+    "dark": "Dark",
+    "light": "Light",
+    "metal": "Metal"
+  },
+  "khac": {
+    "fire": [
+      "ice",
+      "nature"
+    ],
+    "water": [
+      "fire",
+      "metal"
+    ],
+    "earth": [
+      "fire",
+      "dark"
+    ],
+    "wind": [
+      "earth",
+      "dark"
+    ],
+    "ice": [
+      "water",
+      "nature"
+    ],
+    "thunder": [
+      "water",
+      "wind"
+    ],
+    "nature": [
+      "earth",
+      "thunder"
+    ],
+    "dark": [
+      "light",
+      "metal"
+    ],
+    "light": [
+      "wind",
+      "thunder"
+    ],
+    "metal": [
+      "ice",
+      "light"
+    ]
+  },
+  "stageInfo": {
+    "non": {
+      "ten": "Young",
+      "lvTu": 1,
+      "lvDen": 9,
+      "tiLe": 0.6
+    },
+    "truongThanh": {
+      "ten": "Adult",
+      "lvTu": 10,
+      "lvDen": 29,
+      "tiLe": 0.85
+    },
+    "toiThuong": {
+      "ten": "Elder",
+      "lvTu": 30,
+      "lvDen": 50,
+      "tiLe": 1.1
+    }
+  },
+  "quads": {
+    "dark|earth|fire|ice": "fire>earth>ice>dark",
+    "fire|light|metal|nature": "fire>nature>light>metal",
+    "fire|thunder|water|wind": "fire>water>wind>thunder",
+    "dark|fire|light|thunder": "fire>thunder>dark>light",
+    "earth|fire|metal|water": "fire>water>earth>metal",
+    "ice|nature|water|wind": "water>wind>ice>nature",
+    "dark|earth|ice|water": "water>earth>ice>dark",
+    "light|metal|nature|water": "water>nature>light>metal",
+    "dark|thunder|water|wind": "water>wind>thunder>dark",
+    "earth|light|thunder|water": "water>earth>thunder>light",
+    "earth|ice|metal|nature": "earth>ice>nature>metal",
+    "dark|earth|ice|wind": "earth>wind>ice>dark",
+    "earth|light|metal|thunder": "earth>thunder>light>metal",
+    "earth|fire|nature|wind": "earth>fire>wind>nature",
+    "dark|earth|light|nature": "earth>nature>dark>light",
+    "ice|metal|thunder|wind": "wind>ice>thunder>metal",
+    "dark|fire|ice|wind": "wind>fire>ice>dark",
+    "light|metal|nature|wind": "wind>nature>light>metal",
+    "dark|light|thunder|wind": "wind>thunder>dark>light",
+    "fire|metal|water|wind": "wind>fire>water>metal",
+    "dark|ice|nature|thunder": "ice>thunder>nature>dark",
+    "fire|ice|light|metal": "ice>fire>light>metal",
+    "earth|ice|nature|water": "ice>water>earth>nature",
+    "fire|ice|thunder|water": "ice>fire>water>thunder",
+    "dark|earth|ice|light": "ice>earth>dark>light",
+    "dark|metal|nature|thunder": "thunder>nature>dark>metal",
+    "fire|light|metal|thunder": "thunder>fire>light>metal",
+    "nature|thunder|water|wind": "thunder>water>wind>nature",
+    "dark|earth|fire|thunder": "thunder>fire>earth>dark",
+    "dark|light|thunder|water": "thunder>water>dark>light",
+    "earth|metal|nature|wind": "nature>earth>wind>metal",
+    "fire|ice|light|nature": "nature>fire>ice>light",
+    "dark|metal|nature|water": "nature>water>dark>metal",
+    "fire|nature|water|wind": "nature>fire>water>wind",
+    "dark|earth|ice|nature": "nature>earth>ice>dark",
+    "dark|light|metal|wind": "dark>wind>light>metal",
+    "dark|earth|fire|light": "dark>fire>earth>light",
+    "dark|ice|metal|thunder": "dark>ice>thunder>metal",
+    "dark|earth|water|wind": "dark>water>earth>wind",
+    "dark|fire|ice|water": "dark>fire>water>ice",
+    "light|metal|thunder|wind": "light>wind>thunder>metal",
+    "earth|fire|ice|light": "light>fire>earth>ice",
+    "light|nature|thunder|water": "light>water>thunder>nature",
+    "earth|light|metal|nature": "light>earth>nature>metal",
+    "fire|light|water|wind": "light>fire>water>wind",
+    "earth|ice|metal|thunder": "metal>earth>ice>thunder",
+    "fire|ice|metal|wind": "metal>fire>wind>ice",
+    "metal|nature|thunder|water": "metal>water>thunder>nature",
+    "earth|metal|water|wind": "metal>water>earth>wind",
+    "dark|fire|metal|nature": "metal>fire>nature>dark",
+    "fire|legend|time|war": "fire>war>legend>time",
+    "fire|primal|pure|time": "fire>pure>time>primal",
+    "fire|legend|primal|war": "fire>legend>primal>war",
+    "fire|pure|time|war": "fire>time>war>pure",
+    "fire|ice|nature|wind": "fire>ice>nature>wind",
+    "legend|primal|pure|water": "water>primal>pure>legend",
+    "legend|time|war|water": "water>war>legend>time",
+    "primal|pure|war|water": "water>pure>war>primal",
+    "fire|pure|time|water": "water>time>fire>pure",
+    "fire|legend|metal|water": "water>legend>metal>fire",
+    "earth|legend|primal|pure": "earth>primal>pure>legend",
+    "earth|primal|time|war": "earth>primal>time>war",
+    "earth|legend|pure|war": "earth>war>pure>legend",
+    "earth|primal|time|water": "earth>time>primal>water",
+    "earth|fire|thunder|water": "earth>thunder>fire>water",
+    "legend|pure|time|wind": "wind>pure>legend>time",
+    "primal|pure|war|wind": "wind>war>primal>pure",
+    "legend|time|war|wind": "wind>legend>time>war",
+    "earth|primal|war|wind": "wind>primal>war>earth",
+    "earth|nature|water|wind": "wind>nature>water>earth",
+    "ice|legend|pure|time": "ice>pure>legend>time",
+    "ice|primal|pure|war": "ice>war>pure>primal",
+    "ice|legend|primal|time": "ice>legend>time>primal",
+    "ice|time|war|wind": "ice>time>wind>war",
+    "ice|metal|primal|wind": "ice>metal>primal>wind",
+    "legend|primal|pure|thunder": "thunder>pure>primal>legend",
+    "pure|thunder|time|war": "thunder>time>war>pure",
+    "legend|primal|thunder|time": "thunder>legend>time>primal",
+    "earth|ice|thunder|war": "thunder>ice>war>earth",
+    "ice|pure|thunder|wind": "thunder>wind>pure>ice",
+    "legend|nature|primal|pure": "nature>primal>legend>pure",
+    "legend|nature|time|war": "nature>war>legend>time",
+    "nature|primal|thunder|war": "nature>primal>war>thunder",
+    "light|nature|pure|time": "nature>light>pure>time",
+    "legend|light|nature|thunder": "nature>light>legend>thunder",
+    "dark|pure|time|war": "dark>pure>time>war",
+    "dark|legend|nature|primal": "dark>nature>primal>legend",
+    "dark|primal|pure|time": "dark>time>pure>primal",
+    "dark|legend|thunder|war": "dark>thunder>war>legend",
+    "dark|ice|light|nature": "dark>light>nature>ice",
+    "dark|legend|light|pure": "light>dark>legend>pure",
+    "dark|light|primal|time": "light>dark>primal>time",
+    "ice|light|pure|war": "light>ice>pure>war",
+    "light|primal|time|war": "light>war>time>primal",
+    "earth|legend|light|water": "light>legend>water>earth",
+    "dark|light|metal|time": "metal>dark>light>time",
+    "light|metal|primal|war": "metal>light>primal>war",
+    "legend|metal|pure|war": "metal>pure>war>legend",
+    "metal|primal|pure|time": "metal>primal>time>pure",
+    "fire|legend|metal|wind": "metal>legend>wind>fire",
+    "dark|earth|thunder|war": "war>dark>thunder>earth",
+    "metal|war|water|wind": "war>wind>metal>water",
+    "fire|ice|nature|war": "war>ice>fire>nature",
+    "earth|light|thunder|war": "war>light>earth>thunder",
+    "dark|fire|war|wind": "war>dark>fire>wind",
+    "metal|nature|war|water": "war>metal>nature>water",
+    "ice|legend|light|war": "war>light>legend>ice",
+    "primal|pure|time|war": "war>time>pure>primal",
+    "legend|primal|pure|war": "war>pure>primal>legend",
+    "dark|thunder|time|war": "war>dark>time>thunder",
+    "earth|fire|nature|pure": "pure>nature>fire>earth",
+    "ice|metal|pure|thunder": "pure>thunder>metal>ice",
+    "dark|pure|water|wind": "pure>dark>wind>water",
+    "light|nature|pure|war": "pure>light>nature>war",
+    "fire|ice|metal|pure": "pure>ice>metal>fire",
+    "earth|pure|thunder|water": "pure>thunder>water>earth",
+    "light|pure|war|wind": "pure>light>war>wind",
+    "dark|legend|pure|time": "pure>legend>dark>time",
+    "legend|primal|pure|time": "pure>primal>time>legend",
+    "fire|primal|pure|thunder": "pure>primal>thunder>fire",
+    "earth|ice|legend|nature": "legend>earth>ice>nature",
+    "legend|metal|water|wind": "legend>metal>wind>water",
+    "dark|legend|pure|war": "legend>war>dark>pure",
+    "fire|legend|light|thunder": "legend>thunder>light>fire",
+    "earth|legend|water|wind": "legend>wind>earth>water",
+    "ice|legend|metal|nature": "legend>metal>nature>ice",
+    "legend|light|pure|war": "legend>light>war>pure",
+    "dark|fire|legend|thunder": "legend>dark>fire>thunder",
+    "legend|nature|primal|time": "legend>time>nature>primal",
+    "legend|primal|time|water": "legend>time>primal>water",
+    "earth|metal|primal|wind": "primal>wind>metal>earth",
+    "ice|light|primal|water": "primal>ice>water>light",
+    "dark|fire|primal|war": "primal>dark>fire>war",
+    "nature|primal|pure|thunder": "primal>nature>pure>thunder",
+    "earth|legend|metal|primal": "primal>metal>legend>earth",
+    "ice|primal|thunder|wind": "primal>wind>thunder>ice",
+    "nature|primal|pure|water": "primal>pure>water>nature",
+    "dark|legend|light|primal": "primal>legend>dark>light",
+    "fire|primal|time|war": "primal>war>time>fire",
+    "metal|primal|time|wind": "primal>time>metal>wind",
+    "dark|earth|ice|time": "time>earth>ice>dark",
+    "light|metal|primal|time": "time>metal>light>primal",
+    "legend|nature|time|water": "time>nature>legend>water",
+    "fire|thunder|time|wind": "time>thunder>wind>fire",
+    "ice|pure|time|war": "time>ice>war>pure",
+    "earth|legend|nature|time": "time>legend>earth>nature",
+    "fire|pure|time|wind": "time>pure>fire>wind",
+    "dark|metal|time|war": "time>dark>metal>war",
+    "light|primal|time|water": "time>light>primal>water",
+    "earth|ice|thunder|time": "time>earth>ice>thunder"
+  },
+  "speciesOrder": [
+    "fire",
+    "water",
+    "earth",
+    "wind",
+    "ice",
+    "thunder",
+    "nature",
+    "dark",
+    "light",
+    "metal",
+    "fire>water",
+    "fire>earth",
+    "fire>wind",
+    "fire>ice",
+    "fire>thunder",
+    "fire>nature",
+    "fire>dark",
+    "fire>light",
+    "fire>metal",
+    "water>fire",
+    "water>earth",
+    "water>wind",
+    "water>ice",
+    "water>thunder",
+    "water>nature",
+    "water>dark",
+    "water>light",
+    "water>metal",
+    "earth>fire",
+    "earth>water",
+    "earth>wind",
+    "earth>ice",
+    "earth>thunder",
+    "earth>nature",
+    "earth>dark",
+    "earth>light",
+    "earth>metal",
+    "wind>fire",
+    "wind>water",
+    "wind>earth",
+    "wind>ice",
+    "wind>thunder",
+    "wind>nature",
+    "wind>dark",
+    "wind>light",
+    "wind>metal",
+    "ice>fire",
+    "ice>water",
+    "ice>earth",
+    "ice>wind",
+    "ice>thunder",
+    "ice>nature",
+    "ice>dark",
+    "ice>light",
+    "ice>metal",
+    "thunder>fire",
+    "thunder>water",
+    "thunder>earth",
+    "thunder>wind",
+    "thunder>ice",
+    "thunder>nature",
+    "thunder>dark",
+    "thunder>light",
+    "thunder>metal",
+    "nature>fire",
+    "nature>water",
+    "nature>earth",
+    "nature>wind",
+    "nature>ice",
+    "nature>thunder",
+    "nature>dark",
+    "nature>light",
+    "nature>metal",
+    "dark>fire",
+    "dark>water",
+    "dark>earth",
+    "dark>wind",
+    "dark>ice",
+    "dark>thunder",
+    "dark>nature",
+    "dark>light",
+    "dark>metal",
+    "light>fire",
+    "light>water",
+    "light>earth",
+    "light>wind",
+    "light>ice",
+    "light>thunder",
+    "light>nature",
+    "light>dark",
+    "light>metal",
+    "metal>fire",
+    "metal>water",
+    "metal>earth",
+    "metal>wind",
+    "metal>ice",
+    "metal>thunder",
+    "metal>nature",
+    "metal>dark",
+    "metal>light",
+    "fire>water>earth",
+    "fire>water>wind",
+    "fire>water>ice",
+    "fire>water>thunder",
+    "fire>water>nature",
+    "fire>water>dark",
+    "fire>water>light",
+    "fire>water>metal",
+    "fire>earth>wind",
+    "fire>earth>ice",
+    "fire>earth>thunder",
+    "fire>earth>nature",
+    "fire>earth>dark",
+    "fire>earth>light",
+    "fire>earth>metal",
+    "fire>wind>ice",
+    "fire>wind>thunder",
+    "fire>wind>nature",
+    "fire>wind>dark",
+    "fire>wind>light",
+    "fire>wind>metal",
+    "fire>ice>thunder",
+    "fire>ice>nature",
+    "fire>ice>dark",
+    "fire>ice>light",
+    "fire>ice>metal",
+    "fire>thunder>nature",
+    "fire>thunder>dark",
+    "fire>thunder>light",
+    "fire>thunder>metal",
+    "fire>nature>dark",
+    "fire>nature>light",
+    "fire>nature>metal",
+    "fire>dark>light",
+    "fire>dark>metal",
+    "fire>light>metal",
+    "water>fire>earth",
+    "water>fire>wind",
+    "water>fire>ice",
+    "water>fire>thunder",
+    "water>fire>nature",
+    "water>fire>dark",
+    "water>fire>light",
+    "water>fire>metal",
+    "water>earth>wind",
+    "water>earth>ice",
+    "water>earth>thunder",
+    "water>earth>nature",
+    "water>earth>dark",
+    "water>earth>light",
+    "water>earth>metal",
+    "water>wind>ice",
+    "water>wind>thunder",
+    "water>wind>nature",
+    "water>wind>dark",
+    "water>wind>light",
+    "water>wind>metal",
+    "water>ice>thunder",
+    "water>ice>nature",
+    "water>ice>dark",
+    "water>ice>light",
+    "water>ice>metal",
+    "water>thunder>nature",
+    "water>thunder>dark",
+    "water>thunder>light",
+    "water>thunder>metal",
+    "water>nature>dark",
+    "water>nature>light",
+    "water>nature>metal",
+    "water>dark>light",
+    "water>dark>metal",
+    "water>light>metal",
+    "earth>fire>water",
+    "earth>fire>wind",
+    "earth>fire>ice",
+    "earth>fire>thunder",
+    "earth>fire>nature",
+    "earth>fire>dark",
+    "earth>fire>light",
+    "earth>fire>metal",
+    "earth>water>wind",
+    "earth>water>ice",
+    "earth>water>thunder",
+    "earth>water>nature",
+    "earth>water>dark",
+    "earth>water>light",
+    "earth>water>metal",
+    "earth>wind>ice",
+    "earth>wind>thunder",
+    "earth>wind>nature",
+    "earth>wind>dark",
+    "earth>wind>light",
+    "earth>wind>metal",
+    "earth>ice>thunder",
+    "earth>ice>nature",
+    "earth>ice>dark",
+    "earth>ice>light",
+    "earth>ice>metal",
+    "earth>thunder>nature",
+    "earth>thunder>dark",
+    "earth>thunder>light",
+    "earth>thunder>metal",
+    "earth>nature>dark",
+    "earth>nature>light",
+    "earth>nature>metal",
+    "earth>dark>light",
+    "earth>dark>metal",
+    "earth>light>metal",
+    "wind>fire>water",
+    "wind>fire>earth",
+    "wind>fire>ice",
+    "wind>fire>thunder",
+    "wind>fire>nature",
+    "wind>fire>dark",
+    "wind>fire>light",
+    "wind>fire>metal",
+    "wind>water>earth",
+    "wind>water>ice",
+    "wind>water>thunder",
+    "wind>water>nature",
+    "wind>water>dark",
+    "wind>water>light",
+    "wind>water>metal",
+    "wind>earth>ice",
+    "wind>earth>thunder",
+    "wind>earth>nature",
+    "wind>earth>dark",
+    "wind>earth>light",
+    "wind>earth>metal",
+    "wind>ice>thunder",
+    "wind>ice>nature",
+    "wind>ice>dark",
+    "wind>ice>light",
+    "wind>ice>metal",
+    "wind>thunder>nature",
+    "wind>thunder>dark",
+    "wind>thunder>light",
+    "wind>thunder>metal",
+    "wind>nature>dark",
+    "wind>nature>light",
+    "wind>nature>metal",
+    "wind>dark>light",
+    "wind>dark>metal",
+    "wind>light>metal",
+    "ice>fire>water",
+    "ice>fire>earth",
+    "ice>fire>wind",
+    "ice>fire>thunder",
+    "ice>fire>nature",
+    "ice>fire>dark",
+    "ice>fire>light",
+    "ice>fire>metal",
+    "ice>water>earth",
+    "ice>water>wind",
+    "ice>water>thunder",
+    "ice>water>nature",
+    "ice>water>dark",
+    "ice>water>light",
+    "ice>water>metal",
+    "ice>earth>wind",
+    "ice>earth>thunder",
+    "ice>earth>nature",
+    "ice>earth>dark",
+    "ice>earth>light",
+    "ice>earth>metal",
+    "ice>wind>thunder",
+    "ice>wind>nature",
+    "ice>wind>dark",
+    "ice>wind>light",
+    "ice>wind>metal",
+    "ice>thunder>nature",
+    "ice>thunder>dark",
+    "ice>thunder>light",
+    "ice>thunder>metal",
+    "ice>nature>dark",
+    "ice>nature>light",
+    "ice>nature>metal",
+    "ice>dark>light",
+    "ice>dark>metal",
+    "ice>light>metal",
+    "thunder>fire>water",
+    "thunder>fire>earth",
+    "thunder>fire>wind",
+    "thunder>fire>ice",
+    "thunder>fire>nature",
+    "thunder>fire>dark",
+    "thunder>fire>light",
+    "thunder>fire>metal",
+    "thunder>water>earth",
+    "thunder>water>wind",
+    "thunder>water>ice",
+    "thunder>water>nature",
+    "thunder>water>dark",
+    "thunder>water>light",
+    "thunder>water>metal",
+    "thunder>earth>wind",
+    "thunder>earth>ice",
+    "thunder>earth>nature",
+    "thunder>earth>dark",
+    "thunder>earth>light",
+    "thunder>earth>metal",
+    "thunder>wind>ice",
+    "thunder>wind>nature",
+    "thunder>wind>dark",
+    "thunder>wind>light",
+    "thunder>wind>metal",
+    "thunder>ice>nature",
+    "thunder>ice>dark",
+    "thunder>ice>light",
+    "thunder>ice>metal",
+    "thunder>nature>dark",
+    "thunder>nature>light",
+    "thunder>nature>metal",
+    "thunder>dark>light",
+    "thunder>dark>metal",
+    "thunder>light>metal",
+    "nature>fire>water",
+    "nature>fire>earth",
+    "nature>fire>wind",
+    "nature>fire>ice",
+    "nature>fire>thunder",
+    "nature>fire>dark",
+    "nature>fire>light",
+    "nature>fire>metal",
+    "nature>water>earth",
+    "nature>water>wind",
+    "nature>water>ice",
+    "nature>water>thunder",
+    "nature>water>dark",
+    "nature>water>light",
+    "nature>water>metal",
+    "nature>earth>wind",
+    "nature>earth>ice",
+    "nature>earth>thunder",
+    "nature>earth>dark",
+    "nature>earth>light",
+    "nature>earth>metal",
+    "nature>wind>ice",
+    "nature>wind>thunder",
+    "nature>wind>dark",
+    "nature>wind>light",
+    "nature>wind>metal",
+    "nature>ice>thunder",
+    "nature>ice>dark",
+    "nature>ice>light",
+    "nature>ice>metal",
+    "nature>thunder>dark",
+    "nature>thunder>light",
+    "nature>thunder>metal",
+    "nature>dark>light",
+    "nature>dark>metal",
+    "nature>light>metal",
+    "dark>fire>water",
+    "dark>fire>earth",
+    "dark>fire>wind",
+    "dark>fire>ice",
+    "dark>fire>thunder",
+    "dark>fire>nature",
+    "dark>fire>light",
+    "dark>fire>metal",
+    "dark>water>earth",
+    "dark>water>wind",
+    "dark>water>ice",
+    "dark>water>thunder",
+    "dark>water>nature",
+    "dark>water>light",
+    "dark>water>metal",
+    "dark>earth>wind",
+    "dark>earth>ice",
+    "dark>earth>thunder",
+    "dark>earth>nature",
+    "dark>earth>light",
+    "dark>earth>metal",
+    "dark>wind>ice",
+    "dark>wind>thunder",
+    "dark>wind>nature",
+    "dark>wind>light",
+    "dark>wind>metal",
+    "dark>ice>thunder",
+    "dark>ice>nature",
+    "dark>ice>light",
+    "dark>ice>metal",
+    "dark>thunder>nature",
+    "dark>thunder>light",
+    "dark>thunder>metal",
+    "dark>nature>light",
+    "dark>nature>metal",
+    "dark>light>metal",
+    "light>fire>water",
+    "light>fire>earth",
+    "light>fire>wind",
+    "light>fire>ice",
+    "light>fire>thunder",
+    "light>fire>nature",
+    "light>fire>dark",
+    "light>fire>metal",
+    "light>water>earth",
+    "light>water>wind",
+    "light>water>ice",
+    "light>water>thunder",
+    "light>water>nature",
+    "light>water>dark",
+    "light>water>metal",
+    "light>earth>wind",
+    "light>earth>ice",
+    "light>earth>thunder",
+    "light>earth>nature",
+    "light>earth>dark",
+    "light>earth>metal",
+    "light>wind>ice",
+    "light>wind>thunder",
+    "light>wind>nature",
+    "light>wind>dark",
+    "light>wind>metal",
+    "light>ice>thunder",
+    "light>ice>nature",
+    "light>ice>dark",
+    "light>ice>metal",
+    "light>thunder>nature",
+    "light>thunder>dark",
+    "light>thunder>metal",
+    "light>nature>dark",
+    "light>nature>metal",
+    "light>dark>metal",
+    "metal>fire>water",
+    "metal>fire>earth",
+    "metal>fire>wind",
+    "metal>fire>ice",
+    "metal>fire>thunder",
+    "metal>fire>nature",
+    "metal>fire>dark",
+    "metal>fire>light",
+    "metal>water>earth",
+    "metal>water>wind",
+    "metal>water>ice",
+    "metal>water>thunder",
+    "metal>water>nature",
+    "metal>water>dark",
+    "metal>water>light",
+    "metal>earth>wind",
+    "metal>earth>ice",
+    "metal>earth>thunder",
+    "metal>earth>nature",
+    "metal>earth>dark",
+    "metal>earth>light",
+    "metal>wind>ice",
+    "metal>wind>thunder",
+    "metal>wind>nature",
+    "metal>wind>dark",
+    "metal>wind>light",
+    "metal>ice>thunder",
+    "metal>ice>nature",
+    "metal>ice>dark",
+    "metal>ice>light",
+    "metal>thunder>nature",
+    "metal>thunder>dark",
+    "metal>thunder>light",
+    "metal>nature>dark",
+    "metal>nature>light",
+    "metal>dark>light",
+    "fire>earth>ice>dark",
+    "fire>nature>light>metal",
+    "fire>water>wind>thunder",
+    "fire>thunder>dark>light",
+    "fire>water>earth>metal",
+    "water>wind>ice>nature",
+    "water>earth>ice>dark",
+    "water>nature>light>metal",
+    "water>wind>thunder>dark",
+    "water>earth>thunder>light",
+    "earth>ice>nature>metal",
+    "earth>wind>ice>dark",
+    "earth>thunder>light>metal",
+    "earth>fire>wind>nature",
+    "earth>nature>dark>light",
+    "wind>ice>thunder>metal",
+    "wind>fire>ice>dark",
+    "wind>nature>light>metal",
+    "wind>thunder>dark>light",
+    "wind>fire>water>metal",
+    "ice>thunder>nature>dark",
+    "ice>fire>light>metal",
+    "ice>water>earth>nature",
+    "ice>fire>water>thunder",
+    "ice>earth>dark>light",
+    "thunder>nature>dark>metal",
+    "thunder>fire>light>metal",
+    "thunder>water>wind>nature",
+    "thunder>fire>earth>dark",
+    "thunder>water>dark>light",
+    "nature>earth>wind>metal",
+    "nature>fire>ice>light",
+    "nature>water>dark>metal",
+    "nature>fire>water>wind",
+    "nature>earth>ice>dark",
+    "dark>wind>light>metal",
+    "dark>fire>earth>light",
+    "dark>ice>thunder>metal",
+    "dark>water>earth>wind",
+    "dark>fire>water>ice",
+    "light>wind>thunder>metal",
+    "light>fire>earth>ice",
+    "light>water>thunder>nature",
+    "light>earth>nature>metal",
+    "light>fire>water>wind",
+    "metal>earth>ice>thunder",
+    "metal>fire>wind>ice",
+    "metal>water>thunder>nature",
+    "metal>water>earth>wind",
+    "metal>fire>nature>dark",
+    "fire>war>legend>time",
+    "fire>pure>time>primal",
+    "fire>legend>primal>war",
+    "fire>time>war>pure",
+    "fire>ice>nature>wind",
+    "water>primal>pure>legend",
+    "water>war>legend>time",
+    "water>pure>war>primal",
+    "water>time>fire>pure",
+    "water>legend>metal>fire",
+    "earth>primal>pure>legend",
+    "earth>primal>time>war",
+    "earth>war>pure>legend",
+    "earth>time>primal>water",
+    "earth>thunder>fire>water",
+    "wind>pure>legend>time",
+    "wind>war>primal>pure",
+    "wind>legend>time>war",
+    "wind>primal>war>earth",
+    "wind>nature>water>earth",
+    "ice>pure>legend>time",
+    "ice>war>pure>primal",
+    "ice>legend>time>primal",
+    "ice>time>wind>war",
+    "ice>metal>primal>wind",
+    "thunder>pure>primal>legend",
+    "thunder>time>war>pure",
+    "thunder>legend>time>primal",
+    "thunder>ice>war>earth",
+    "thunder>wind>pure>ice",
+    "nature>primal>legend>pure",
+    "nature>war>legend>time",
+    "nature>primal>war>thunder",
+    "nature>light>pure>time",
+    "nature>light>legend>thunder",
+    "dark>pure>time>war",
+    "dark>nature>primal>legend",
+    "dark>time>pure>primal",
+    "dark>thunder>war>legend",
+    "dark>light>nature>ice",
+    "light>dark>legend>pure",
+    "light>dark>primal>time",
+    "light>ice>pure>war",
+    "light>war>time>primal",
+    "light>legend>water>earth",
+    "metal>dark>light>time",
+    "metal>light>primal>war",
+    "metal>pure>war>legend",
+    "metal>primal>time>pure",
+    "metal>legend>wind>fire",
+    "war>dark>thunder>earth",
+    "war>wind>metal>water",
+    "war>ice>fire>nature",
+    "war>light>earth>thunder",
+    "war>dark>fire>wind",
+    "war>metal>nature>water",
+    "war>light>legend>ice",
+    "war>time>pure>primal",
+    "war>pure>primal>legend",
+    "war>dark>time>thunder",
+    "pure>nature>fire>earth",
+    "pure>thunder>metal>ice",
+    "pure>dark>wind>water",
+    "pure>light>nature>war",
+    "pure>ice>metal>fire",
+    "pure>thunder>water>earth",
+    "pure>light>war>wind",
+    "pure>legend>dark>time",
+    "pure>primal>time>legend",
+    "pure>primal>thunder>fire",
+    "legend>earth>ice>nature",
+    "legend>metal>wind>water",
+    "legend>war>dark>pure",
+    "legend>thunder>light>fire",
+    "legend>wind>earth>water",
+    "legend>metal>nature>ice",
+    "legend>light>war>pure",
+    "legend>dark>fire>thunder",
+    "legend>time>nature>primal",
+    "legend>time>primal>water",
+    "primal>wind>metal>earth",
+    "primal>ice>water>light",
+    "primal>dark>fire>war",
+    "primal>nature>pure>thunder",
+    "primal>metal>legend>earth",
+    "primal>wind>thunder>ice",
+    "primal>pure>water>nature",
+    "primal>legend>dark>light",
+    "primal>war>time>fire",
+    "primal>time>metal>wind",
+    "time>earth>ice>dark",
+    "time>metal>light>primal",
+    "time>nature>legend>water",
+    "time>thunder>wind>fire",
+    "time>ice>war>pure",
+    "time>legend>earth>nature",
+    "time>pure>fire>wind",
+    "time>dark>metal>war",
+    "time>light>primal>water",
+    "time>earth>ice>thunder"
+  ]
+}

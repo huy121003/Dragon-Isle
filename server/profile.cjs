@@ -1,5 +1,5 @@
 /* PROFILE: Hồ sơ khởi đầu dùng cùng source-of-truth balance với client. */
-const game=require('../data/game.json');
+const game=require('../data/catalog-loader.cjs').loadGameCatalog();
 const economyConfig=require('../js/config/economy.js');
 const buildingConfig=require('../js/config/buildings.js');
 const systemConfig=require('../js/config/system.js');

@@ -6,7 +6,7 @@ const path=require('node:path');
 
 const root=path.join(__dirname,'..');
 const economy=require('../data/economy.js');
-const game=require('../data/game.json');
+const game=require('../data/catalog-loader.cjs').loadGameCatalog();
 const progressionConfig=require('../js/config/progression.js');
 const buildingConfig=require('../js/config/buildings.js');
 const farmingConfig=require('../js/config/farming.js');
@@ -15,7 +15,7 @@ const systemConfig=require('../js/config/system.js');
 const challengeConfig=require('../js/config/challenge.js');
 const combat=require('../js/data/combat-rules.js');
 const combatConfig=require('../js/config/combat.js');
-const catalog=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'),'utf8'));
+const catalog=require('../data/catalog-loader.cjs').loadDragonCatalog();
 require('../scripts/extend-catalog.cjs')(catalog,game);
 
 function read(file){return fs.readFileSync(path.join(root,file),'utf8');}

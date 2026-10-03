@@ -28,7 +28,7 @@ export function BattleSkillControls({attacker,defender,disabled,animating,challe
     <h3>{animating?'Đang tấn công…':challenge&&!myTurn?'Đợi đối thủ…':'Lượt: '+attacker.nickname}</h3>
     <p className="battle-matchup-key">▲ Khắc hệ · ▼ Bị khắc</p></div>
     <div className="battle-skill-grid">{attacker.skills.filter(Boolean).map(skill=>{
-      const offensive=skill.element&&(!skill.special||skill.power+skill.bonus>0);
+      const offensive=skill.element&&skill.power>0;
       const matchup=offensive?game()?.skillMatchup?.(skill.element,defender.species):1;
       const mark=matchup>1?'▲':matchup<1?'▼':'';
       const reason=!skill.unlocked?`Mở ở cấp ${skill.unlockLevel}`:

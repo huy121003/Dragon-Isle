@@ -45,16 +45,18 @@ function renderShop(){
       '<span class="shop-icon">🚩</span><span><b>Flagpole</b><small>Island decoration · 3×3 tiles</small></span>'+
       '<strong>'+resourceAmount('gold',buildings.definitions.decor.cost)+'</strong></button></div>';
   }else if(ui.shopTab==="eggs"){
-    html+='<div class="note">'+(isAdmin?'Admin shop: all dragon eggs are available. Prices depend on rarity and unlock level.':'The shop sells pure element eggs. Prices depend on rarity and unlock level.')+' Purchased eggs enter an available Hatchery nest.</div>'+ 
-      '<div class="cards">';
+    html+='<div class="note">'+(isAdmin?'Admin shop: all dragon eggs are available. Prices depend on rarity and unlock level.':'The shop sells pure element eggs. Prices depend on rarity and unlock level.')+' Purchased eggs enter an available Hatchery nest.</div>';
+    if(isAdmin)html+=elementFilter('admin-eggs',ui.shopEggElements)+rarityFilter('admin-eggs',ui.shopEggRarities);
+    html+='<div class="cards">';
     const eggSpecies=DRAGON_DB.species.map(function(raw){return DATA.species[raw.id];}).filter(function(s){
-      return (isAdmin||s.elements.length===1)&&s.detail.giaTrung;
+      return (isAdmin||(s.elements.length===1&&s.detail.giaTrung))&&
+        (!isAdmin||(matchesElementFilter(s,ui.shopEggElements)&&matchesRarityFilter(s,ui.shopEggRarities)));
     });
     const eggPageSize=isAdmin?48:eggSpecies.length;
     const eggPageCount=Math.max(1,Math.ceil(eggSpecies.length/eggPageSize));
     ui.shopEggPage=Math.max(0,Math.min(eggPageCount-1,Number(ui.shopEggPage)||0));
     eggSpecies.slice(ui.shopEggPage*eggPageSize,(ui.shopEggPage+1)*eggPageSize).forEach(function(s){
-      const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
+      const price=shopEggPrice(s,isAdmin),cost=price.vang?price.vang:price.gem;
       const need=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99);
       const canBuy=state.player.level>=need&&(price.vang?state.gold>=cost:state.gems>=cost);
       html+='<div class="shop-item egg-shop-card"><span class="egg-plinth" aria-hidden="true">'+
@@ -128,12 +130,15 @@ function renderShop(){
 
 function renderShopEggDetail(id){
   const s=DATA.species[id];
-  if(!s||(!currentAccount||currentAccount.role!=="admin")&&s.elements.length!==1||!s.detail.giaTrung){openModal("shop");return;}
-  const price=shopEggPrice(s),cost=price.vang?price.vang:price.gem;
+  const isAdmin=currentAccount?.role==="admin";
+  if(!s||!isAdmin&&(s.elements.length!==1||!s.detail.giaTrung)){openModal("shop");return;}
+  const price=shopEggPrice(s,isAdmin);
+  if(!price){openModal("shop");return;}
+  const cost=price.vang?price.vang:price.gem;
   const canBuy=state.player.level>=contentRequirementLevel(ELEMENT_UNLOCK[s.elements[0]]||99)&&
     (price.vang?state.gold>=cost:state.gems>=cost);
   dom.title.textContent="🥚 Eggs "+s.name;
-  dom.body.innerHTML='<div class="note">Pure element egg · incubates in '+
+  dom.body.innerHTML='<div class="note">'+(s.rarity==='transcendent'?'Double Element egg':s.elements.length+'-element egg')+' · incubates in '+
     duration(hatchingSeconds(s))+'</div>'+dragonDetailHtml(s,null)+
     '<div class="actions"><button class="btn" data-action="shop-egg-back">‹ Shop</button>'+ 
     '<button class="btn resource-action" data-action="buy-egg" data-species="'+s.id+'"'+

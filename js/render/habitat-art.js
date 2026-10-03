@@ -7,7 +7,7 @@ function paintHabitatBiome(element,theme,time,night){
   // original habitats. Bring them closer to the fire habitat's visual weight
   // and settle them onto the rear half of their platforms.
   const emphasize=['war','pure','legend','primal','time'].includes(element);
-  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,1);}
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,.8);}
   switch(element){
     case 'fire':{
       structurePlinth('#463d3c','#443846','#302e39','#e0733c');
@@ -243,6 +243,8 @@ function paintHabitatBiome(element,theme,time,night){
 
 /** Flat, faint ground marks give the five newer Habitats their own terrain without blocking paths. */
 function paintHabitatGround(element){
+  const emphasize=['war','pure','legend','primal','time'].includes(element);
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,.8);}
   switch(element){
     case 'war':
       structureLine([[-.31,.035],[-.16,.105],[0,.04],[.16,.105],[.31,.035]],'#4b34364d',.012);
@@ -268,11 +270,14 @@ function paintHabitatGround(element){
       for(const x of [-.09,.09])structureLine([[x,.05],[x*1.35,.085]],'#f3e4cc66',.01);
       break;
   }
+  if(emphasize)ctx.restore();
 }
 
 /** Per-element accents animate inside the habitat silhouette and never affect its footprint. */
 function paintHabitatMotion(element,time){
   const wave=Math.sin(time*.003);
+  const emphasize=['war','pure','legend','primal','time'].includes(element);
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,.8);}
   switch(element){
     case 'fire':
       for(const [x,y] of [[-.25,-.43],[.31,-.47]])
@@ -311,6 +316,7 @@ function paintHabitatMotion(element,time){
     case 'time':
       ctx.save();ctx.translate(0,-.52);ctx.rotate(time*.00085);structureLine([[0,-.07],[0,.035],[.04,.015]],'#fff2d8',.012);ctx.restore();break;
   }
+  if(emphasize)ctx.restore();
 }
 
 function paintHabitat(b,time,night){

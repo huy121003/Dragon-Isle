@@ -95,7 +95,14 @@ try{
   assert.match(fullFilter,/aria-label="Filter: Ice" aria-pressed="false" disabled=""/);
   assert.doesNotMatch(setup,/<select id="arena-element-filter"/);
   assert.match(setup,/Wins <b>4<\/b>/);assert.match(setup,/Losses <b>2<\/b>/);
-  assert.match(setup,/Save attack team<\/span><\/button>/);
+  assert.match(setup,/Save team &amp; find rivals<\/span><\/button>/);
+  assert.match(setup,/Rivals reflect your trainer level and strongest owned dragons/);
+  const loadingRivals=renderToStaticMarkup(React.createElement(ArenaView,
+    {arena:{...arena,busy:true,loadingMessage:'Saving team and finding rivals…'}}));
+  assert.match(loadingRivals,/Saving team and finding rivals/);
+  const loadingArena=renderToStaticMarkup(React.createElement(ArenaView,
+    {arena:{...arena,data:null,loadingMessage:'Loading Arena and finding rivals…'}}));
+  assert.match(loadingArena,/Loading Arena and finding rivals/);
   assert.doesNotMatch(setup,/Choose defense|Your defense team/);
   assert.match(setup,new RegExp('Requires level '+arenaConfig.minBattleLevel));assert.match(setup,/disabled=""/);
   assert.doesNotMatch(setup,/arena-enemy-dragon/);

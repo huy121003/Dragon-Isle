@@ -10,7 +10,7 @@ import ResourceAmount from '../../components/ResourceAmount.jsx';
 function ArenaSetup({arena}){
   const [elements,setElements]=useState([]),[rarities,setRarities]=useState([]),data=arena.data;
   const config=arenaConfig(),teamSize=config.teamSize,minLevel=config.minBattleLevel;
-  if(!data)return <div className="arena-loading">⏳ Loading Arena…
+  if(!data)return <div className="arena-loading">⏳ {arena.loadingMessage||'Loading Arena…'}
     {arena.error&&<p>{arena.error}</p>}<Button onClick={()=>send({action:'arena-refresh'})}>Reload</Button></div>;
   const visibleDragons=data.dragons.filter(dragon=>elements.every(id=>speciesOf(dragon.species)?.elements.includes(id))&&
     (!rarities.length||rarities.includes(speciesOf(dragon.species)?.rarity)));
@@ -36,9 +36,9 @@ function ArenaSetup({arena}){
         selected={arena.draft.attack.includes(dragon.id)} disabled={arena.busy}
         onClick={()=>send({action:'arena-toggle',side:'attack',id:dragon.id})}/>)}
         {!visibleDragons.length&&<p className="arena-empty">No dragons match all selected elements.</p>}</div>
-      <div className="arena-save-bar"><span>AI rivals scale from your trainer and selected dragons.</span>
+      <div className="arena-save-bar"><span>Rivals reflect your trainer level and strongest owned dragons.</span>
         <Button type="primary" size="large" loading={arena.busy} disabled={arena.draft.attack.length!==teamSize}
-          onClick={()=>send({action:'arena-save'})}>Save attack team</Button></div>
+          onClick={()=>send({action:'arena-save'})}>{arena.loadingMessage||'Save team & find rivals'}</Button></div>
     </section>:<section className="arena-setup-section"><div className="arena-section-head"><div><small>02 · CHALLENGE</small>
       <h3>Choose an AI rival</h3></div><Tag color={data.attemptsRemaining?'green':'volcano'}>⚔ {data.attemptsRemaining??3} attempts · resets in {resetText}</Tag></div>
       <Button onClick={()=>{arena.phase='teams';emitRuntime();}}>← Edit teams</Button>

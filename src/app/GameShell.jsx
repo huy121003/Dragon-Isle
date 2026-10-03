@@ -3,6 +3,7 @@ import {Button,Card,Modal,Space,Spin} from 'antd';
 import ArenaView from '../features/arena/ArenaView.jsx';
 import ChallengeView from '../features/challenge/ChallengeView.jsx';
 import { $,game,read,send,text } from './game-bridge.js';
+import {battleModalDismissalProps} from './modal-policy.mjs';
 import {useGameRuntime} from './useGameRuntime.js';
 import {useAuth} from '../features/auth/useAuth.js';
 import AuthView from '../features/auth/AuthView.jsx';
@@ -46,6 +47,9 @@ export default function GameShell(){
   const commerceModal=['shop','crops'].includes(ui?.modal?.name);
   const arenaBattle=ui?.modal?.name==='arena'&&!!(ui.arena?.data?.battle||ui.arena?.presentation);
   const challengeBattle=challenge?.match?.phase==='battle';
+  const arenaModalDismissal=battleModalDismissalProps(arenaBattle,()=>send({action:'close-modal'}));
+  const challengeModalDismissal=battleModalDismissalProps(challengeBattle,()=>
+    challenge?.match?challengeRequest('leave'):setChallengeOpen(false));
 
   return <>
     <ReconnectModal connection={connection}/>
@@ -61,7 +65,7 @@ export default function GameShell(){
       openChallenge={()=>{setChallengeOpen(true);challengeStatus();}} refProp={dockRef}/>
     <Modal className={'game-modal '+(ui?.modal?.name==='arena'?'arena-modal'+(arenaBattle?' battle-modal':''):
         commerceModal?'commerce-modal':['dragons','book'].includes(ui?.modal?.name)?'collection-modal':'')}
-      title={text('sheetTitle')} open={!!ui?.modal} onCancel={()=>send({action:'close-modal'})} footer={null}
+      title={text('sheetTitle')} open={!!ui?.modal} {...arenaModalDismissal} footer={null}
       width={ui?.modal?.name==='arena'?1120:760} destroyOnHidden
       styles={{body:{height:commerceModal?'min(66dvh, 560px)':undefined,
         maxHeight:ui?.modal?.name==='arena'?'min(84dvh, 850px)':'min(72dvh, 700px)',overflowY:'auto'}}}>
@@ -69,7 +73,7 @@ export default function GameShell(){
     </Modal>
     <Modal className={'game-modal arena-modal'+(challengeBattle?' battle-modal':'')} title="🗡️ Thách đấu"
       open={challengeOpen||!!challenge?.match}
-      onCancel={()=>challenge?.match?challengeRequest('leave'):setChallengeOpen(false)} footer={null}
+      {...challengeModalDismissal} footer={null}
       width={1120} destroyOnHidden styles={{body:{maxHeight:'min(84dvh, 850px)',overflowY:'auto'}}}>
       <ChallengeView status={challenge} request={challengeRequest} refresh={challengeStatus}/>
     </Modal>

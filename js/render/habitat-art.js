@@ -151,81 +151,57 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
     case 'war':{
-      // Roman legion helmet-shaped shelter: brow, nose guard, cheek plates and horsehair crest.
+      // Light Roman galea outline sits high on the habitat; open space stays clear below.
       structurePlinth('#a77955','#76513f','#563b35','#e4b477');
-      structurePoly([[-.38,.04],[-.35,-.24],[-.27,-.43],[-.13,-.53],[.12,-.53],[.28,-.41],[.36,-.19],[.34,.04]],
-        '#9a5945','#edbc7c',.02);
-      structurePoly([[-.27,-.23],[-.2,-.4],[-.08,-.47],[.1,-.47],[.23,-.36],[.28,-.2],[.18,-.12],[-.18,-.12]],
-        '#c77a50','#f4d19a',.016);
-      structurePoly([[-.31,-.16],[.31,-.16],[.36,-.07],[-.36,-.07]],'#e1ad70','#ffe0a9',.018);
-      structurePoly([[-.035,-.14],[.035,-.14],[.02,.02],[-.02,.02]],'#f4d5a3');
-      structureLine([[-.22,-.1],[-.28,.015],[-.34,.025]],'#f6d59a',.02);
-      structureLine([[.22,-.1],[.28,.015],[.34,.025]],'#f6d59a',.02);
-      // The waving crest is animated below; its fixed base reads clearly as a Roman galea.
-      structurePoly([[-.12,-.49],[-.2,-.64],[-.12,-.75],[-.04,-.66],[.08,-.73],[.18,-.59],[.12,-.47]],
-        '#a8423d','#f0c17c',.016);
-      structureGlow(0,-.23,.24,'#f5944544');break;
+      structureLine([[-.24,-.38],[-.23,-.5],[-.17,-.6],[-.08,-.65],[.08,-.65],[.18,-.59],[.24,-.49],[.25,-.38]],'#edbc7c',.022);
+      structureLine([[-.23,-.43],[.23,-.43]],'#f4d19a',.018);
+      structureLine([[-.17,-.44],[-.2,-.34],[-.11,-.38]],'#f6d59a',.016);
+      structureLine([[.17,-.44],[.2,-.34],[.11,-.38]],'#f6d59a',.016);
+      structureLine([[-.08,-.65],[-.12,-.73],[-.04,-.7],[.02,-.76],[.1,-.68]],'#c96b55',.023);
+      structureGlow(0,-.51,.13,'#f5944530');break;
     }
     case 'pure':{
-      // Three petal towers meet around a small central light, matching the Pure triskelion.
+      // Three fine petal outlines form an airy Pure mark above the open lower half.
       structurePlinth('#b18fbd','#7c608f','#594669','#f8e6f5');
-      structureEllipse(0,.07,.4,.14,'#af88b5','#f6dff1',.02);
       for(let i=0;i<3;i++){
-        const a=-Math.PI/2+i*Math.PI*2/3,x=Math.cos(a)*.22,y=-.27+Math.sin(a)*.17;
+        const a=-Math.PI/2+i*Math.PI*2/3,x=Math.cos(a)*.12,y=-.52+Math.sin(a)*.08;
         ctx.save();ctx.translate(x,y);ctx.rotate(a+Math.PI/2);
-        structurePoly([[-.105,.14],[-.11,-.05],[0,-.29],[.11,-.05],[.105,.14]],
-          '#eed8ef','#fff8ff',.016);
-        structureLine([[-.05,.08],[0,-.19],[.05,.08]],'#bf91c7',.012);
-        ctx.restore();structureGlow(x,y-.07,.15,'#fbdcff55');
+        structureLine([[0,.065],[-.045,.025],[-.043,-.025],[0,-.13],[.043,-.025],[.045,.025],[0,.065]],'#fff8ff',.015);
+        ctx.restore();
       }
-      structureEllipse(0,-.27,.075,.075,'#fff8ff','#d5b2dc',.014);
-      structureGlow(0,-.25,.3,'#fbd4ff44');break;
+      structureEllipse(0,-.51,.025,.025,'#fff8ff','#d5b2dc',.008);
+      structureGlow(0,-.51,.13,'#fbd4ff30');break;
     }
     case 'legend':{
-      // Paired loop arches echo the Legend flag's interlocking, mirrored strokes.
+      // A single thin twin-scroll trace replaces the heavy paired arches.
       structurePlinth('#68518c','#433867','#302846','#c8b2eb');
-      structureEllipse(0,.07,.4,.14,'#4d3c70','#c5a8ee',.02);
-      for(const s of [-1,1]){
-        structurePoly([[s*.34,.06],[s*.32,-.38],[s*.23,-.52],[s*.14,-.39],[s*.15,.02]],
-          '#7960a7','#decaff',.018);
-        structurePoly([[s*.15,.02],[s*.14,-.2],[s*.06,-.31],[0,-.25],[s*.07,-.1],[s*.08,.05]],
-          '#b29ad9','#f1dcff',.014);
-      }
-      ctx.beginPath();ctx.moveTo(-.2,-.23);
-      ctx.bezierCurveTo(-.36,-.51,-.08,-.59,0,-.28);
-      ctx.bezierCurveTo(.08,-.59,.36,-.51,.2,-.23);
-      ctx.strokeStyle='#f1dcff';ctx.lineWidth=.04;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-.22,-.39);
+      ctx.bezierCurveTo(-.3,-.65,-.045,-.72,0,-.52);
+      ctx.bezierCurveTo(.045,-.72,.3,-.65,.22,-.39);
+      ctx.strokeStyle='#decaff';ctx.lineWidth=.018;ctx.stroke();
+      structureLine([[-.22,-.39],[-.17,-.35]],'#decaff',.014);
+      structureLine([[.22,-.39],[.17,-.35]],'#decaff',.014);
       break;
     }
     case 'primal':{
-      // Primitive rock shelter with three deep claw grooves spiralling around a core.
+      // Three narrow, curved claw traces replace the solid rock wall.
       structurePlinth('#777458','#595944','#424339','#d6d1aa');
-      structurePoly([[-.42,.1],[-.38,-.25],[-.3,-.48],[-.16,-.53],[0,-.43],[.16,-.53],[.3,-.48],[.39,-.22],[.42,.1]],
-        '#66664e','#dfd6a7',.022);
-      structurePoly([[-.3,-.27],[-.24,-.45],[-.12,-.51],[0,-.42],[.12,-.51],[.24,-.45],[.3,-.27],[.22,-.09],[-.22,-.09]],
-        '#403f39','#c8be91',.016);
-      structureEllipse(0,-.31,.12,.12,'#d3c996','#6c654a',.02);
       for(let i=0;i<3;i++){
-        const a=-Math.PI/2+i*Math.PI*2/3;
-        const x=Math.cos(a)*.15,y=-.31+Math.sin(a)*.15;
-        structureLine([[x-.045,y-.1],[x-.02,y-.035],[x+.04,y+.005],[x+.075,y+.085]],'#eee4b8',.027);
-        structureLine([[x-.02,y-.065],[x+.015,y-.015],[x+.055,y+.035]],'#a19870',.012);
+        const x=-.15+i*.15;
+        ctx.beginPath();ctx.moveTo(x-.045,-.37);ctx.bezierCurveTo(x-.07,-.47,x+.06,-.52,x+.035,-.66);
+        ctx.strokeStyle=i===1?'#eee4b8':'#c9c095';ctx.lineWidth=.018;ctx.lineCap='round';ctx.stroke();
       }
       break;
     }
     case 'time':{
-      // Ancient observatory with orbiting ring and a visible hourglass inside its arch.
+      // An open, narrow time ring with a moving hand replaces the solid observatory block.
       structurePlinth('#89808a','#635b6e','#484453','#f0dfc8');
-      structurePoly([[-.36,.07],[-.36,-.37],[-.24,-.47],[.24,-.47],[.36,-.37],[.36,.07]],
-        '#746b78','#ead7bb',.018);
-      structurePoly([[-.25,-.37],[-.18,-.58],[0,-.71],[.18,-.58],[.25,-.37],[.15,-.31],[0,-.5],[-.15,-.31]],
-        '#b5a29e','#f5e8cb',.018);
-      structureEllipse(0,-.28,.21,.21,'#504b5c','#e8d5b4',.025);
-      structureEllipse(0,-.28,.15,.15,'#b5a29e','#f8e9c8',.014);
-      structureLine([[-.09,-.37],[.09,-.37],[0,-.29],[-.09,-.2],[.09,-.2]],'#514b5c',.022);
-      ctx.beginPath();ctx.ellipse(0,-.28,.31,.1,-.48,0,Math.PI*2);
-      ctx.strokeStyle='#f5e0b9';ctx.lineWidth=.026;ctx.stroke();
-      structureGlow(0,-.28,.3,'#e8d5b544');break;
+      ctx.beginPath();ctx.ellipse(0,-.52,.16,.19,-.28,0,Math.PI*2);
+      ctx.strokeStyle='#ead7bb';ctx.lineWidth=.018;ctx.stroke();
+      structureLine([[-.1,-.65],[-.14,-.62]],'#ead7bb',.014);
+      structureLine([[.1,-.39],[.14,-.42]],'#ead7bb',.014);
+      structureLine([[0,-.52],[0,-.61],[.065,-.48]],'#f5e8cb',.016);
+      structureGlow(0,-.52,.16,'#e8d5b522');break;
     }
     case 'metal':{
       structurePlinth('#9baeb1','#627884','#455a68','#e0ece9');
@@ -280,15 +256,15 @@ function paintHabitatMotion(element,time){
       for(let i=0;i<8;i++){const a=i*Math.PI/4;structureLine([[Math.cos(a)*.09,Math.sin(a)*.04],[Math.cos(a)*.12,Math.sin(a)*.055]],'#e6eee6',.012);}
       ctx.restore();break;
     case 'war':
-      structureLine([[-.09,-.65],[-.025+wave*.025,-.72],[.09+wave*.04,-.68]],'#ffe0a0',.024);break;
+      structureLine([[-.07,-.69],[-.02+wave*.018,-.73],[.07+wave*.025,-.7]],'#ffe0a0',.016);break;
     case 'pure':
-      ctx.save();ctx.translate(0,-.27);ctx.rotate(time*.0007);structureEllipse(0,-.075,.022,.06,'#fffaff','#eac2e7',.008);ctx.restore();break;
+      ctx.save();ctx.translate(0,-.51);ctx.rotate(time*.0007);structureEllipse(0,-.035,.012,.032,'#fffaff','#eac2e7',.005);ctx.restore();break;
     case 'legend':
-      ctx.save();ctx.translate(0,-.27);ctx.rotate(time*.0005);structureEllipse(-.09,0,.105,.045,'#c8a9f0','#f2e4ff',.012);ctx.restore();break;
+      ctx.save();ctx.translate(0,-.55);ctx.rotate(time*.0005);structureEllipse(-.055,0,.055,.024,'#c8a9f0','#f2e4ff',.007);ctx.restore();break;
     case 'primal':
-      structureLine([[-.2,-.31],[0,-.26+wave*.015],[.2,-.31]],'#fff0c0',.016);break;
+      structureLine([[-.15,-.45],[0,-.43+wave*.012],[.15,-.45]],'#fff0c0',.012);break;
     case 'time':
-      ctx.save();ctx.translate(0,-.28);ctx.rotate(time*.00085);structureLine([[0,-.11],[0,.045],[.06,.02]],'#fff2d8',.016);ctx.restore();break;
+      ctx.save();ctx.translate(0,-.52);ctx.rotate(time*.00085);structureLine([[0,-.07],[0,.035],[.04,.015]],'#fff2d8',.012);ctx.restore();break;
   }
 }
 
@@ -315,7 +291,7 @@ function paintHabitat(b,time,night){
       time,facing:Math.cos(phase)<0?-1:1,stepPhase:dragonTravelPhase(phase),
       scale:n>2?.86:n===2?1.08:1.35});ctx.restore();
   });
-  if(!n)structureElementBadge(e,0,.11,.31);
+  if(!n)structureElementBadge(e,0,-.08,.27);
   if(b.storedGold>=1)structureEllipse(.38,-.19,.085,.085,'#ffe298','#a86733',.015);
   if(b.storedGems>=1)structurePoly([[-.48,-.19],[-.39,-.28],[-.3,-.19],[-.39,-.1]],'#a6edff','#5c9dc0',.012);
   if(b.level>=3)for(const x of [-.35,.35])structureLantern(x,.08,theme.accent,time,night);

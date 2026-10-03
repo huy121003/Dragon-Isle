@@ -320,11 +320,11 @@ function paintHabitatMotion(element,time){
   if(emphasize)ctx.restore();
 }
 
-function paintHabitat(b,time,night){
+function paintHabitat(b,time,night,occupantsByHabitat){
   const theme=DATA.habitatThemes[b.element]||DATA.habitatThemes.fire;
   const e=b.element;
   paintHabitatBiome(e,theme,time,night);
-  const dragons=occupants(b),n=dragons.length,f=buildingFootprint(b);
+  const dragons=occupants(b,occupantsByHabitat),n=dragons.length,f=buildingFootprint(b);
   const walkers=dragons.map((d,i)=>{
     const phase=time*.0007+d.id*2.17;
     const lane=(i-(n-1)/2)*Math.min(.32,.65/Math.max(1,n-1));

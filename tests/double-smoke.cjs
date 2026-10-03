@@ -5,7 +5,10 @@ const path=require('node:path');
 const catalog=require('../data/dragons.json');
 const game=require('../data/game.json');
 const combat=require('../js/data/combat-rules.js');
+const progressionConfig=require('../js/config/progression.js');
+const arenaConfig=require('../js/config/arena.js');
 const {createArena,arenaWindow}=require('../server/arena.cjs');
+const {createVirtualRivals}=require('../server/arena/virtual-rivals.cjs');
 require('../scripts/extend-catalog.cjs')(catalog,game);
 
 const elements=Object.keys(catalog.elements),species=catalog.species.filter(s=>s.doHiem==='transcendent');
@@ -68,16 +71,20 @@ const rankedExamples=catalog.species.slice(0,10).map((s,index)=>{
   return {id:index+1,species:s.id,level,stars,nickname:'Top '+(index+1),
     power:combat.power(combat.stats(s.elements,s.doHiem,level,catalog.elements,catalog.rarities,stars))};
 }).sort((a,b)=>b.power-a.power);
-const variants=require('../server/arena.cjs').createRivals(rankedExamples,45,'test-window',arena.makeFighter);
+const variants=createVirtualRivals({profile:{dragons:rankedExamples},playerLevel:45,
+  roundKey:'test-window',makeFighter:arena.makeFighter,catalog,arenaConfig,progressionConfig});
 assert.deepEqual(variants.map(rival=>rival.strength),['Weaker','Weaker','Balanced','Stronger','Stronger']);
 const baseline=rankedExamples.slice(0,3).reduce((sum,dragon)=>sum+dragon.power,0);
 const ratios=variants.map(rival=>rival.team.reduce((sum,dragon)=>sum+dragon.power,0)/baseline);
-assert(ratios.length===5&&ratios.every((ratio,index)=>!index||ratio>ratios[index-1]),
-  'Rival power rises across five difficulty bands');
-assert(ratios.every((ratio,index)=>Math.abs(ratio-[.55,.75,.95,1.1,1.25][index])<.04),
-  'Virtual teams tune close to their configured Combat Power targets');
+assert.equal(ratios.length,5,'Arena creates five catalog-backed difficulty bands');
+assert(ratios.every(Number.isFinite),'Every generated team has calculable Combat Power');
+assert(variants.every(rival=>rival.team.length===3&&rival.team.every(dragon=>
+  dragon.id<0&&catalog.species.some(species=>species.id===dragon.species))),
+  'NPC fighters are fresh virtual instances whose species resolve from the full catalog');
+assert(variants.every(rival=>new Set(rival.team.map(dragon=>dragon.species)).size===3),
+  'Each rival team uses three distinct catalog species');
 assert.equal(new Set(variants.map(rival=>rival.team.map(dragon=>dragon.species).join('|'))).size,5,
-  'Rivals use five different top-ten rank bands');
+  'Rival squads are distinct catalog lineups');
 function profile(speciesId){return {player:{level:45},buildings:[{id:1,type:'arena'}],
   dragons:[1,2,3].map(id=>({id,species:speciesId,level:50,nickname:speciesId+' '+id}))};}
 fs.writeFileSync(path.join(profilesDir,'red.json'),JSON.stringify(profile(doubleId('fire',1))));

@@ -78,7 +78,11 @@ try{
   assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Accept/);
   assert.match(invitationHtml,/<button[^>]*disabled=""[^>]*>.*Decline/);
   const dragon={id:2,nickname:'Alex',species:'fire',level:20,power:4250,hp:500,maxHp:500,
-    canBattle:true,skills:[{index:0,name:'Flame Slash',power:1.3,unlocked:true,element:'fire'}]};
+    canBattle:true,skills:[
+      {index:0,name:'Rending Claw',power:.5,unlocked:true,element:null},
+      {index:1,name:'Tail Slam',power:.7,unlocked:true,element:null},
+      {index:2,name:'Flame Slash',power:.9,unlocked:true,element:'fire'},
+      {index:3,name:'Inferno Burst',power:1.1,unlocked:true,element:'fire'}]};
   const unavailable={...dragon,id:4,nickname:'Bé',level:arenaConfig.minBattleLevel-1,canBattle:false,
     battleReason:'Requires level '+arenaConfig.minBattleLevel};
   const data={attack:[],dragons:[dragon,unavailable],wins:4,losses:2,attemptsRemaining:3,resetAt:Date.now()+8*3600000,

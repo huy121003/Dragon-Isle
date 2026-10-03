@@ -5,13 +5,14 @@ import {ResourcePatchSchema} from '../../api/schemas.js';
 import {apiFetch} from '../../api/http.js';
 import {AdminUsersSchema,parseWith} from '../../api/schemas.js';
 
-const RESOURCE_FIELDS=[['gold','🪙 Gold',1_000_000_000_000],['food','🍎 Food',1_000_000_000],
-  ['gems','💎 Gem',1_000_000_000]];
+const RESOURCE_FIELDS=[['level','🎚 Player level',1,1_000_000],['gold','🪙 Gold',0,1_000_000_000_000],
+  ['food','🍎 Food',0,1_000_000_000],['gems','💎 Gem',0,1_000_000_000]];
 function ResourceFields(){
-  return RESOURCE_FIELDS.map(([name,label,max])=><Form.Item key={name} name={name} label={label}
-    rules={[{validator:(_,value)=>value==null||Number.isSafeInteger(value)&&value>=0&&value<=max?
-      Promise.resolve():Promise.reject(new Error('Whole number from 0 to '+max.toLocaleString('en-US')))}]}>
-    <InputNumber min={0} max={max} precision={0} style={{width:'100%'}} placeholder="Leave unchanged"/>
+  return RESOURCE_FIELDS.map(([name,label,min,max])=><Form.Item key={name} name={name} label={label}
+    rules={[{validator:(_,value)=>value==null||Number.isSafeInteger(value)&&value>=min&&value<=max?
+      Promise.resolve():Promise.reject(new Error('Whole number from '+min.toLocaleString('en-US')+
+        ' to '+max.toLocaleString('en-US')))}]}>
+    <InputNumber min={min} max={max} precision={0} style={{width:'100%'}} placeholder="Leave unchanged"/>
   </Form.Item>);
 }
 export default function AdminPanel({open,onClose}){
@@ -27,7 +28,7 @@ export default function AdminPanel({open,onClose}){
   const users=usersQuery.data?.users||[];
 
   useEffect(()=>{
-    if(editing)editForm.setFieldsValue({gold:editing.progress?.gold??10000,
+    if(editing)editForm.setFieldsValue({level:editing.progress?.level??1,gold:editing.progress?.gold??10000,
       food:editing.progress?.food??2500,gems:editing.progress?.gems??20});
   },[editing,editForm]);
 
@@ -48,7 +49,7 @@ export default function AdminPanel({open,onClose}){
     onSuccess:async body=>{
       setEditing(null);bulkForm.resetFields();
       if(body.relogin){
-        message.success('Resources saved. Sign in again to see the new balance.');
+      message.success('Player values saved. Sign in again to see the changes.');
         setTimeout(()=>window.location.reload(),900);return;
       }
       message.success('Updated '+body.updated+' accounts. Players need to sign in again.');
@@ -74,7 +75,7 @@ export default function AdminPanel({open,onClose}){
     {title:'Gem',key:'gems',render:(_,row)=>(row.progress?.gems??20).toLocaleString('en-US')},
     {title:'Last saved',key:'saved',render:(_,row)=>row.progress?.savedAt?new Date(row.progress.savedAt).toLocaleString('en-US'):'—'},
     {title:'Actions',key:'actions',render:(_,row)=><Space wrap>
-      <Button type="primary" size="small" onClick={()=>setEditing(row)}>Edit resources</Button>
+      <Button type="primary" size="small" onClick={()=>setEditing(row)}>Edit player</Button>
       {row.role==='admin'?null:<>
         <Popconfirm title="Reset this player’s progress?" description="The account remains and progress starts over."
           onConfirm={()=>actionMutation.mutate({user:row,action:'reset'})}><Button danger size="small">Reset</Button></Popconfirm>
@@ -89,20 +90,20 @@ export default function AdminPanel({open,onClose}){
     extra={<Button onClick={()=>usersQuery.refetch()}>Refresh</Button>}>
     <Typography.Paragraph>Player: {users.length} · Progress is saved separately for each account.</Typography.Paragraph>
     {usersQuery.error&&<Typography.Paragraph type="danger">{usersQuery.error.message}</Typography.Paragraph>}
-    <Card size="small" title="Set balances for all accounts" style={{marginBottom:16}}>
-      <Typography.Paragraph type="secondary">Enter the resources to change; leave other fields blank. Active players need to sign in again.</Typography.Paragraph>
+    <Card size="small" title="Set values for all accounts" style={{marginBottom:16}}>
+      <Typography.Paragraph type="secondary">Enter only the balances or player level to change; leave other fields blank. Changing level resets the current XP. Active players need to sign in again.</Typography.Paragraph>
       <Form form={bulkForm} layout="vertical" className="admin-resource-form"><ResourceFields/></Form>
-      <Popconfirm title="Apply balances to all players?" description="Each active player must sign in again."
+      <Popconfirm title="Apply values to all players?" description="Each active player must sign in again."
         onConfirm={()=>bulkForm.validateFields().then(values=>applyResources(null,values)).catch(()=>{})}>
         <Button type="primary" loading={resourceMutation.isPending}>Apply to all</Button>
       </Popconfirm>
     </Card>
     <Table rowKey="id" size="small" loading={usersQuery.isFetching} columns={columns} dataSource={users}
       scroll={{x:940}} pagination={{pageSize:12}}/>
-    <Modal title={'Edit resources · '+(editing?.username||'')} open={!!editing} onCancel={()=>setEditing(null)}
+    <Modal title={'Edit player · '+(editing?.username||'')} open={!!editing} onCancel={()=>setEditing(null)}
       onOk={()=>editForm.validateFields().then(values=>applyResources(editing,values)).catch(()=>{})}
-      okText="Save balances" okButtonProps={{loading:resourceMutation.isPending}} destroyOnHidden>
-      <Typography.Paragraph type="secondary">Enter the new balance. This player must sign in again.</Typography.Paragraph>
+      okText="Save changes" okButtonProps={{loading:resourceMutation.isPending}} destroyOnHidden>
+      <Typography.Paragraph type="secondary">Enter the new balance or player level. Changing level resets current XP; this player must sign in again.</Typography.Paragraph>
       <Form form={editForm} layout="vertical"><ResourceFields/></Form>
     </Modal>
   </Drawer>;

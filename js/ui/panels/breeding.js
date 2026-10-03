@@ -39,8 +39,8 @@ function renderBreeding(id){
       inlineTimer(cave.breeding.startedAt,cave.breeding.readyAt)+
       (ready?'<button class="btn good" data-action="collect-breeding" data-id="'+id+'"'+
         (hatcheryFull?' disabled title="Free a Hatchery nest before collecting"':'')+'>Collect bred egg</button>':
-      '<button class="btn primary" data-action="skip-timer" data-kind="breed" data-id="'+id+'">♦ '+
-        gemSkipCost(cave.breeding.readyAt,Date.now())+' Skip</button>')+'</div>';
+      '<button class="btn resource-action" data-action="skip-timer" data-kind="breed" data-id="'+id+'">Skip · '+
+        resourceAmount('gems',gemSkipCost(cave.breeding.readyAt,Date.now()))+'</button>')+'</div>';
     renderDragonPortraits();
     return;
   }
@@ -70,10 +70,12 @@ function renderBreeding(id){
   [["father","Father"],["mother","Mother"]].forEach(function(slot){
     const filter=ui['breed'+(slot[0]==='father'?'Father':'Mother')+'Elements'];
     const query=ui['breed'+(slot[0]==='father'?'Father':'Mother')+'Query'];
-    html+='<section class="breed-side"><h3>'+slot[1]+'</h3>'+elementFilter('breed-'+slot[0],filter)+
+    const rarity=ui['breed'+(slot[0]==='father'?'Father':'Mother')+'Rarities'];
+    html+='<section class="breed-side"><h3>'+slot[1]+'</h3>'+elementFilter('breed-'+slot[0],filter)+rarityFilter('breed-'+slot[0],rarity)+
       '<input class="breed-search" type="search" data-breed-search="'+slot[0]+'" value="'+esc(query)+'" placeholder="Search dragon or species" aria-label="Search '+slot[1]+'">'+
       '<div class="breed-roster">';
     const visible=available.filter(d=>matchesElementFilter(DATA.species[d.species],filter)&&
+      matchesRarityFilter(DATA.species[d.species],rarity)&&
       (!query||`${d.nickname} ${DATA.species[d.species].name}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())));
     if(!visible.length)html+='<p class="note">No dragons match all selected elements.</p>';
     visible.forEach(function(d){

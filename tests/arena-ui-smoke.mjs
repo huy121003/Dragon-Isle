@@ -9,6 +9,16 @@ import arenaConfig from '../js/config/arena.js';
 import challengeConfig from '../js/config/challenge.js';
 import combatConfig from '../js/config/combat.js';
 import dragonConfig from '../js/config/dragons.js';
+import {battleModalDismissalProps} from '../src/app/modal-policy.mjs';
+let dismissalCount=0;
+const lockedDismissal=battleModalDismissalProps(true,()=>dismissalCount++);
+assert.deepEqual({closable:lockedDismissal.closable,maskClosable:lockedDismissal.maskClosable,
+  keyboard:lockedDismissal.keyboard},{closable:false,maskClosable:false,keyboard:false});
+lockedDismissal.onCancel();assert.equal(dismissalCount,0,'An active battle cannot be dismissed through Modal onCancel');
+const openDismissal=battleModalDismissalProps(false,()=>dismissalCount++);
+assert.deepEqual({closable:openDismissal.closable,maskClosable:openDismissal.maskClosable,
+  keyboard:openDismissal.keyboard},{closable:true,maskClosable:true,keyboard:true});
+openDismissal.onCancel();assert.equal(dismissalCount,1,'Non-battle modals keep their normal dismissal behavior');
 const skillStyle=inlineStyle('--skill-color:#2F8FE8; --element:#E8452C; border-color:red');
 assert.equal(skillStyle['--skill-color'],'#2F8FE8');
 assert.equal(skillStyle['--element'],'#E8452C');
@@ -20,7 +30,8 @@ try{
   const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/features/arena/ArenaView.jsx');
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
-    ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'}};
+    ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'},
+    wind:{name:'Wind Dragon',elements:['wind'],rarity:'common'}};
   globalThis.window={DragonConfig:{arena:arenaConfig,challenge:challengeConfig,combat:combatConfig,dragons:dragonConfig},DragonGame:{skillMatchup:(element,target)=>
     element==='fire'&&target==='water'?.5:element==='fire'&&target==='ice'?2:1,
     data:{species,elements:{fire:{mark:'🔥',name:'Fire',color:'#e45'},
@@ -53,6 +64,8 @@ try{
   assert.match(setup,/href="#flag-fire"/);
   assert.match(setup,/fill="#e45"/);
   assert.match(setup,/aria-label="Filter: Fire"/);
+  assert.match(setup,/aria-label="Filter by dragon tier"/);
+  assert.match(setup,/aria-label="Tier: Common"/);
   assert.match(setup,/0\/4 elements selected/);
   const multi=renderToStaticMarkup(React.createElement(ElementFilter,{value:['fire','water'],onChange:()=>{}}));
   assert.match(multi,/2\/4 elements selected/);
@@ -71,7 +84,13 @@ try{
   assert.match(opponents,/arena-hidden-dragon/);assert.match(opponents,/Opponent team concealed/);
   assert.doesNotMatch(opponents,/Water Dragon|Lv20|Rookie Warden/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
+  assert.doesNotMatch(opponents,/Filter by dragon tier/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
+  const refill=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
+    data:{...data,attemptsRemaining:1}}}));
+  assert.match(refill,/Restore all attempts · /);
+  assert.match(refill,/class="resource-amount resource-gems" role="img" aria-label="5 gems"/);
+  assert.match(refill,/Your rival list stays until all five are defeated/);
   const defeated=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
     data:{...data,defeatedOpponentIds:['bot-1']}}}));
   assert.match(defeated,/Defeated this round/);
@@ -80,7 +99,10 @@ try{
   const full={...arena,draft:{attack:fullIds}};
   const fullSetup=renderToStaticMarkup(React.createElement(ArenaView,{arena:full}));
   assert.doesNotMatch(fullSetup.match(/<div class="arena-save-bar">(.*?)<\/div>/)[1],/disabled=""/);
-  const battle={opponent:'Bela',turn:1,attack:[dragon],defense:[{...dragon,id:3,species:'water',nickname:'Milo'}],
+  const battle={opponent:'Bela',turn:1,attack:[dragon,{...dragon,id:5,nickname:'Sparky',species:'fire'},
+      {...dragon,id:6,nickname:'Breeze',species:'wind'}],
+    defense:[{...dragon,id:3,species:'water',nickname:'Milo'},
+      {...dragon,id:7,nickname:'River',species:'water'},{...dragon,id:8,nickname:'Stone',species:'ice'}],
     activeAttack:0,activeDefense:0,events:[]};
   const fighting=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,data:{...data,battle}}}));
   assert.match(fighting,/battle-stage/);assert.match(fighting,/battle-skill-grid/);
@@ -95,17 +117,66 @@ try{
   const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:supportBattle}}}));
   assert.doesNotMatch(supportMenu,/matchup-mark weak/);
-  assert(fighting.indexOf('battle-stage')<fighting.indexOf('arena-parties')&&
-    fighting.indexOf('arena-parties')<fighting.indexOf('battle-controls'),
-    'Hai đội hình phải nằm sát sân đấu trước điều khiển skill');
-  assert.match(fighting,/Your dragons · tap to switch/);
-  assert.match(fighting,/Rival team/);
+  const assertReservePlacement=(html,side)=>{
+    const start=html.indexOf('battle-side '+side),status=html.indexOf('battle-statuses',start),
+      reserves=html.indexOf('arena-reserve-side '+(side==='player'?'attack':'defense'),start),
+      dragon=html.indexOf('battle-dragon',reserves);
+    assert(start>=0&&start<status&&status<reserves&&reserves<dragon,
+      `${side} reserves sit below the active dragon’s statuses and above its portrait`);
+  };
+  assertReservePlacement(fighting,'player');assertReservePlacement(fighting,'opponent');
+  assert(fighting.indexOf('arena-stage-controls')<fighting.indexOf('battle-skill-grid'),
+    'Skill buttons stay inside the battle field');
+  assert.match(fighting,/Your reserve dragons/);
+  assert.match(fighting,/Rival reserve dragons/);
+  assert.equal((fighting.match(/arena-reserve-button/g)||[]).length,4,
+    'Only the two reserve dragons per side appear beside the battlefield');
+  assert.equal((fighting.match(/arena-reserve-hp/g)||[]).length,4,
+    'Every reserve dragon has a visible HP bar');
+  assert.equal((fighting.match(/arena-reserve-avatar-frame/g)||[]).length,4,
+    'Each reserve dragon portrait sits inside a framed tile');
+  assert.equal((fighting.match(/class="arena-reserve-flags"/g)||[]).length,4,
+    'Every reserve tile shows element flags instead of element names');
+  assert.equal((fighting.match(/class="arena-reserve-vitals"/g)||[]).length,4,
+    'Reserve flags and HP share a column beside the avatar');
+  const firstReserve=fighting.slice(fighting.indexOf('class="arena-reserve-button'),fighting.indexOf('</button>',fighting.indexOf('class="arena-reserve-button')));
+  assert(firstReserve.indexOf('arena-reserve-avatar-frame')<firstReserve.indexOf('arena-reserve-vitals')&&
+    firstReserve.indexOf('arena-reserve-flags')<firstReserve.indexOf('arena-reserve-hp'),
+    'Our avatar is left; flags sit above HP in the right column');
+  const rivalStart=fighting.indexOf('arena-reserve-side defense');
+  const rivalButton=fighting.slice(fighting.indexOf('class="arena-reserve-button',rivalStart),
+    fighting.indexOf('</button>',fighting.indexOf('class="arena-reserve-button',rivalStart)));
+  assert(rivalButton.indexOf('arena-reserve-vitals')<rivalButton.indexOf('arena-reserve-avatar-frame')&&
+    rivalButton.indexOf('arena-reserve-flags')<rivalButton.indexOf('arena-reserve-hp'),
+    'Rival flags and HP are left of its avatar');
+  assert.match(firstReserve,/href="#flag-fire"/);
+  assert.doesNotMatch(fighting,/arena-reserve-copy|arena-battle-reserves/);
+  assert.doesNotMatch(fighting,/arena-parties|arena-battle-party/,
+    'Large translucent party overlays are removed');
   assert.doesNotMatch(fighting,/4,250 power|roster-power/);
   assert.doesNotMatch(fighting,/battle-feed|Recent moves/);
-  const details=fighting.match(/<div class="battle-details-scroll"[^>]*>([\s\S]*)<\/div><\/div>$/)?.[1];
-  assert(details&&details.includes('battle-controls')&&!details.includes('battle-feed'),
-    'Arena không hiển thị log lượt đánh');
+  assert.doesNotMatch(fighting,/battle-details-scroll|battle-feed|Recent moves/,
+    'Arena skills stay inside the battle and turn logs remain hidden');
   assert.doesNotMatch(fighting,/Đánh thường/);
+  const duelBattle={...battle,opponent:'Bela'};
+  const duel=renderToStaticMarkup(React.createElement(ChallengeView,{status:{busy:false,match:{id:'duel-1',phase:'battle',opponent:'Bela',myTurn:true,eventSeq:0,battle:duelBattle}},request:()=>{},refresh:()=>{}}));
+  assert.match(duel,/battle-stage has-arena-controls/);
+  assert.match(duel,/Your reserve dragons/);assert.match(duel,/Rival reserve dragons/);
+  assertReservePlacement(duel,'player');assertReservePlacement(duel,'opponent');
+  assert.equal((duel.match(/arena-reserve-button/g)||[]).length,4,
+    'Challenge also shows both sides’ two reserve dragons in the battlefield');
+  assert.equal((duel.match(/arena-reserve-hp/g)||[]).length,4,
+    'Challenge shows HP bars for every reserve dragon');
+  assert.equal((duel.match(/class="arena-reserve-flags"/g)||[]).length,4,
+    'Challenge also shows flags rather than element text');
+  assert.equal((duel.match(/class="arena-reserve-vitals"/g)||[]).length,4);
+  assert(duel.indexOf('arena-stage-controls')<duel.indexOf('battle-skill-grid'),
+    'Challenge skills are inside the battlefield');
+  assert.doesNotMatch(duel,/battle-bench|battle-switch-list|battle-feed|battle-details-scroll|Recent moves/,
+    'Arena and Challenge share the same compact in-field controls without challenge-only panels');
+  const waitingDuel=renderToStaticMarkup(React.createElement(ChallengeView,{status:{busy:false,match:{id:'duel-2',phase:'battle',opponent:'Bela',myTurn:false,eventSeq:0,battle:duelBattle}},request:()=>{},refresh:()=>{}}));
+  assert.match(waitingDuel,/<button[^>]*disabled=""[^>]*class="arena-reserve-button switchable"/,
+    'Reserve switching is disabled while waiting for the opponent’s turn');
   const charging=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle},busy:true,pendingSkill:'Flame Slash'}}));
   assert.match(charging,/is-charging/);assert.match(charging,/is casting Flame Slash/);
@@ -142,8 +213,25 @@ try{
       special:true,skillId:'pure-double-1',effect:'heal'}}));
   assert.match(support,/self-target support/);assert.match(support,/fx-special-seal/);
   assert.match(support,/\+120 HP/);assert.doesNotMatch(support,/matchup-mark/);
+  const positioned=renderToStaticMarkup(React.createElement(SkillEffect,{frame:7,anchors:{
+    attack:{x:120,y:300},defense:{x:480,y:350}},event:{damage:90,skill:'Claw',side:'attack'}}));
+  assert.match(positioned,/--fx-origin-y:300px;--fx-target-y:350px;--fx-damage-y:308px/);
   assert.equal(renderToStaticMarkup(React.createElement(SkillEffect,{event:{switchTo:'Alex'}})),'');
   const styles=readFileSync(new URL('../src/arena.css',import.meta.url),'utf8');
+  assert.match(styles,/\.battle-modal \.battle-stage\{flex:1 1 auto;height:auto;min-height:320px\}/,
+    'Arena field grows into the modal instead of staying compressed to a short percentage');
+  assert.match(styles,/@media\(max-height:700px\)\{\s*\.battle-modal \.battle-stage\{height:auto;min-height:300px\}/,
+    'Short-height viewports keep enough battlefield height for fighters and skill controls');
+  assert.match(styles,/\.battle-modal \.battle-stage\.has-arena-controls \.battle-side\{justify-content:flex-start\}/,
+    'Active dragon details start at the top of each side');
+  assert.match(styles,/\.battle-modal \.arena-stage-controls\{[^}]*bottom:7px/,
+    'Skill controls stay anchored at the bottom of the field');
+  assert.match(styles,/\.battle-modal \.battle-skill-fx \.fx-impact,\.battle-modal \.battle-skill-fx \.fx-special-seal\{top:var\(--fx-target-y,68%\)\}/,
+    'Skill effects follow the measured dragon torso height');
+  assert.match(styles,/\.battle-modal \.arena-reserve-side\{[^}]*grid-template-columns:minmax\(0,1fr\)/,
+    'Reserve dragons form a vertical stack on both sides');
+  assert.match(styles,/\.battle-modal \.battle-vs\{align-self:start/,
+    'VS is aligned with the top fighter details');
   assert(styles.includes('.battle-skill-fx.normal .fx-projectile'));
   assert(styles.includes('.battle-skill-fx.support .fx-trail'));
   for(const element of ['war','pure','legend','primal','time'])

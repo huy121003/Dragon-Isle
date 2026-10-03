@@ -914,11 +914,11 @@ check('guide navigation and game-driven help pages',()=>{
  game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
  const special=game.element('sheetBody').innerHTML;
  assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
- assert.equal((special.match(/class="guide-special-card"/g)||[]).length,30);
- assert.equal((special.match(/class="skill-hex/g)||[]).length,30);
+ assert.equal((special.match(/class="guide-special-card"/g)||[]).length,45);
+ assert.equal((special.match(/class="skill-hex/g)||[]).length,45);
  assert(!special.includes('Cinderheart Sovereign')&&!special.includes('<table'));
  assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
- assert(special.includes('5.5% HP tối đa mỗi lượt trong 3 lượt'));
+ assert(special.includes('maximum HP each turn for 3 turns'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"resources"}})');
  assert(game.element('sheetBody').innerHTML.includes('XP và thưởng khi lên Player Level'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"islands"}})');

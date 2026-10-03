@@ -54,6 +54,7 @@ function handleAction(button){
     case "arena-toggle":arenaToggle(button.dataset.side,id);break;
     case "arena-save":arenaSaveTeam();break;
     case "arena-fight":arenaFight(button.dataset.opponent);break;
+    case "arena-refill":arenaRefill();break;
     case "arena-skill":arenaTurn("skill",Number(button.dataset.skill));break;
     case "arena-switch":arenaTurn("switch",id);break;
     case "arena-forfeit":
@@ -65,7 +66,12 @@ function handleAction(button){
       const backToShop=ui.mode?.fromShop;
       stopMode();if(backToShop)openModal("shop");break;
     }
-    case "shop-tab":ui.shopTab=button.dataset.tab;renderShop();break;
+    case "shop-tab":ui.shopTab=button.dataset.tab;if(ui.shopTab==="eggs")ui.shopEggPage=0;renderShop();break;
+    case "shop-eggs-page":
+      if(currentAccount?.role==="admin"){
+        ui.shopEggPage=Math.max(0,Number(button.dataset.page)||0);renderShop();dom.body.scrollTop=0;
+      }
+      break;
     case "toggle-fixed-day":
       ui.fixedDay=!ui.fixedDay;
       try{localStorage.setItem('dragon-isle-fixed-day',ui.fixedDay?'1':'0');}catch(error){}
@@ -73,10 +79,26 @@ function handleAction(button){
     case "toggle-iso-debug":ui.debugIso=!ui.debugIso;renderShop();break;
     case "book-tab":ui.bookTab=button.dataset.tab;ui.bookPage=0;renderBook();dom.body.scrollTop=0;break;
     case "book-page":ui.bookPage=Number(button.dataset.page)||0;renderBook();dom.body.scrollTop=0;break;
+    case "rarity-filter":{
+      const target=button.dataset.target,rarity=button.dataset.rarity;
+      if(["breed-father","breed-mother","dragon","book","admin-eggs"].includes(target)){
+        const property=target==="breed-father"?"breedFatherRarities":
+          target==="breed-mother"?"breedMotherRarities":target==="admin-eggs"?"shopEggRarities":target+"Rarities";
+        const selected=ui[property];
+        if(rarity==="all")ui[property]=[];
+        else if(DATA.rarities[rarity])ui[property]=selected.includes(rarity)?
+          selected.filter(id=>id!==rarity):[...selected,rarity];
+        if(target==="book"){ui.bookPage=0;renderBook();}
+        else if(target==="dragon")renderDragons();
+        else if(target==="admin-eggs"){ui.shopEggPage=0;renderShop();}
+        else renderBreeding(ui.modal.extra);
+      }
+      break;
+    }
     case "element-filter":{
       const target=button.dataset.target;
-      if(["breed-father","breed-mother","dragon","book"].includes(target)){
-        const property=target==='breed-father'?'breedFatherElements':target==='breed-mother'?'breedMotherElements':target+'Elements';
+      if(["breed-father","breed-mother","dragon","book","admin-eggs"].includes(target)){
+        const property=target==='breed-father'?'breedFatherElements':target==='breed-mother'?'breedMotherElements':target==='admin-eggs'?'shopEggElements':target+'Elements';
         const selected=ui[property],element=button.dataset.element;
         if(element==='all')ui[property]=[];
         else if(DATA.elements[element]){
@@ -85,6 +107,7 @@ function handleAction(button){
         }
         if(target==="book"){ui.bookPage=0;renderBook();}
         else if(target==="dragon")renderDragons();
+        else if(target==="admin-eggs"){ui.shopEggPage=0;renderShop();}
         else renderBreeding(ui.modal.extra);
       }
       break;

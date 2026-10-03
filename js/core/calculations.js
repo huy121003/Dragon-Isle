@@ -118,10 +118,12 @@ function dragonTimeTier(species){return window.DragonRules.hatching.tierOf(speci
 function hatchingSeconds(species){
   return window.DragonRules.hatching.seconds(species,ELEMENT_UNLOCK);
 }
-/** Shop price for a pure-element egg. */
-function shopEggPrice(species){
-  return window.DragonRules.buildings.eggPrice(
-    species.detail.giaTrung,species.rarity,ELEMENT_UNLOCK[species.elements[0]]||1);
+/** Shop price for an egg; admins can buy tiers without regular-shop prices. */
+function shopEggPrice(species,admin=false){
+  const basePrice=species.detail.giaTrung||
+    (admin?window.DragonConfig.economy.shop.adminEggBasePrices[species.rarity]:null);
+  return basePrice?window.DragonRules.buildings.eggPrice(
+    basePrice,species.rarity,ELEMENT_UNLOCK[species.elements[0]]||1):null;
 }
 /** Return passive Gem/hour production for dragons housed in an active Habitat. */
 function habitatGemRate(building){return !building||building.type!=="habitat"||building.stored?0:

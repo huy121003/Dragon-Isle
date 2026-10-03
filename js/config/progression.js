@@ -62,7 +62,9 @@
     /** Required player levels for Hatchery upgrades from level 1->2 onward. */
     hatcheryUpgradeLevels:Object.freeze([5,12,22,35]),
     /** Food cost curve per single feeding action. */
-    feedingCost:Object.freeze({base:10,linear:3,quadratic:.18}),
+    feedingCost:Object.freeze({base:10,linear:3,quadratic:.18,
+      earlyEnd:15,midEnd:40,earlyMultiplier:1.15,midMultiplier:1.6,
+      lateMultiplier:4,lateExponent:1.5}),
     /** Gold production growth by dragon level. */
     incomeGrowth:Object.freeze({linear:.08,quadratic:.0004,multiplier:2.5}),
     /** Reference exchange rate used when the game converts Food price to Gold. */

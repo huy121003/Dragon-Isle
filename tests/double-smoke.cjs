@@ -2,3 +2,4 @@
 // The expanded catalog and shared battle rules are exercised by this focused suite.
 require('./special-skills-smoke.cjs');
 require('./standard-skill-cases.cjs');
+require('./combat-balance-cases.cjs');

@@ -28,7 +28,12 @@
   function dragonFeedCost(level,maxLevel){
     const n=Math.max(1,Math.min(Math.floor(Number(maxLevel)||100),Math.floor(Number(level)||1)));
     const c=config.feedingCost;
-    return Math.ceil(c.base+c.linear*n+c.quadratic*n*n);
+    const multiplier=n<=c.earlyEnd?1+(c.earlyMultiplier-1)*(n-1)/(c.earlyEnd-1):
+      n<=c.midEnd?c.earlyMultiplier+(c.midMultiplier-c.earlyMultiplier)*
+        (n-c.earlyEnd)/(c.midEnd-c.earlyEnd):
+        c.midMultiplier+(c.lateMultiplier-c.midMultiplier)*
+          Math.pow((n-c.midEnd)/(config.dragonMaxLevel-c.midEnd),c.lateExponent);
+    return Math.ceil((c.base+c.linear*n+c.quadratic*n*n)*multiplier);
   }
 
   /** Maximum number of Farms available at a player level. */

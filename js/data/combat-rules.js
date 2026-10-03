@@ -76,7 +76,10 @@
   function damage(actor,target,skill,chart,variance=1,critical=false){
     const power=skillPower(actor.attack,skill);
     if(power<=0)return 0;
-    const armor=100/(100+target.defense*config.armorCoefficient);
+    // Compare armor with the attacker’s base strength so armor does not grow
+    // disproportionately with level. Damage buffs do not alter this reference.
+    const armorAttack=Math.max(1,actor.armorAttack||actor.attack);
+    const armor=armorAttack/(armorAttack+target.defense*config.armorCoefficient);
     const roll=Math.max(config.variance.min,Math.min(config.variance.max,variance));
     return Math.max(1,Math.round(power*matchup(skill.element,target.parts,chart)*armor*roll*
       (critical?config.critical.multiplier:1)));
@@ -94,7 +97,7 @@
 
   /** Damage formula with attack/defense/status modifiers applied. */
   function battleDamage(actor,target,skill,chart,variance=1,critical=false){
-    const boosted={...actor,attack:actor.attack*(1+statusValue(actor,"damage_up"))*
+    const boosted={...actor,armorAttack:actor.attack,attack:actor.attack*(1+statusValue(actor,"damage_up"))*
       (1-statusValue(actor,"damage_down"))};
     const armored={...target,defense:Math.max(0,target.defense*
       (1+Math.max(statusValue(target,"armor_up"),statusValue(target,"carapace")))*

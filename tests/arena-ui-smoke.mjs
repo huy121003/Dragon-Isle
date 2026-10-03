@@ -41,6 +41,25 @@ try{
     legend:{name:'Legend',color:'#8155c5'},primal:{name:'Primal',color:'#8b8e83'},
     time:{name:'Time',color:'#b7aba4'}},
     rarities:{common:{name:'Common',color:'#aaa'}}}}};
+  const {default:GameDock}=await server.ssrLoadModule('/src/components/GameDock.jsx');
+  const dock=renderToStaticMarkup(React.createElement(GameDock,{state:{buildings:[],dragons:[]},
+    ui:{modal:null},challengeOpen:false,openChallenge:()=>{}}));
+  assert.match(dock,/<nav[^>]*aria-label="Main menu"/);
+  assert.match(dock,/<button[^>]*>.*Daily Missions.*<\/button>/,
+    'The React dock must expose Daily Missions to every signed-in player');
+  const challengeDragons=[1,2,3].map(id=>({id,level:arenaConfig.minBattleLevel}));
+  const eligibleDock=renderToStaticMarkup(React.createElement(GameDock,
+    {state:{buildings:[],dragons:challengeDragons},ui:{modal:null},challengeOpen:false,openChallenge:()=>{}}));
+  assert.match(eligibleDock,/Thách đấu/);
+  const breedingDock=renderToStaticMarkup(React.createElement(GameDock,
+    {state:{buildings:[{type:'premiumCave',breeding:{fatherId:1,motherId:2,readyAt:Date.now()-1000}}],
+      dragons:challengeDragons},ui:{modal:null},challengeOpen:false,openChallenge:()=>{}}));
+  assert.doesNotMatch(breedingDock,/Thách đấu/,
+    'A finished breeding timer keeps parents unavailable until the egg is collected');
+  const overLevelDock=renderToStaticMarkup(React.createElement(GameDock,
+    {state:{buildings:[],dragons:[...challengeDragons.slice(0,2),{id:3,level:arenaConfig.maxBattleLevel+1}]},
+      ui:{modal:null},challengeOpen:false,openChallenge:()=>{}}));
+  assert.doesNotMatch(overLevelDock,/Thách đấu/);
   const {default:ChallengeView}=await server.ssrLoadModule('/src/features/challenge/ChallengeView.jsx');
   const invitation={busy:true,match:{phase:'invited',outgoing:false,opponent:'Bela',until:Date.now()+60000}};
   const invitationHtml=renderToStaticMarkup(React.createElement(ChallengeView,

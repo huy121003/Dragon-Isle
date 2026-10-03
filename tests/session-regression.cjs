@@ -52,9 +52,9 @@ function landCost(islandIndex,opened=1){
 function hatchingSeconds(parts,rarity='common'){
   if(parts.length===1)return economy.hatching.pureElementSeconds[parts[0]];
   const tier=rarity==='transcendent'?'double':parts.length;
-  const pressure=parts.reduce((sum,e)=>sum+(progressionConfig.elementUnlocks[e]||1),0)/parts.length;
-  const bonus=Math.min(economy.hatching.maxElementBonusPercent,pressure*economy.hatching.elementLevelPercent);
-  return Math.round((economy.hatching.tierSeconds[tier]||economy.hatching.tierSeconds[4])*(1+bonus));
+  const base=parts.reduce((sum,e)=>sum+(economy.hatching.pureElementSeconds[e]||60),0);
+  return Math.min(economy.hatching.maxTierSeconds[tier]||economy.hatching.maxTierSeconds[4],
+    base*(economy.hatching.tierMultipliers[tier]||economy.hatching.tierMultipliers[4]));
 }
 
 console.log('SESSION REGRESSION: combat');
@@ -77,7 +77,7 @@ assert.equal(economy.progression.goldIncomeMultiplier,2.5);
 assert.equal(worldConfig.gemPerDragonPerHour,0.5);
 assert.deepEqual(economy.habitat.dragonCapacity,[2,3,4,5]);
 assert.deepEqual(economy.hatchery.nests,[1,2,3,4,5]);
-assert.deepEqual(farmingConfig.crops.map(x=>x.duration),[30,180,900,7200]);
+assert.deepEqual(farmingConfig.crops.map(x=>x.duration),[30,180,420,900,1800,7200,14400,28800]);
 assert.deepEqual(buildingConfig.upgradeTimes.habitat,[45,180,600]);
 assert.deepEqual(buildingConfig.upgradeTimes.farm,[30,120,480]);
 assert.deepEqual(buildingConfig.upgradeTimes.hatchery,[90,300,900,2400]);
@@ -120,13 +120,16 @@ console.log('SESSION REGRESSION: hatching / breeding');
 assert.equal(economy.hatching.pureElementSeconds.fire,30);
 assert.equal(economy.hatching.pureElementSeconds.water,60);
 assert.equal(economy.hatching.pureElementSeconds.time,21600);
-assert.deepEqual(economy.hatching.tierSeconds,{2:10800,3:43200,4:129600,double:172800});
-assert.deepEqual(economy.breeding.timeByTier,{1:1800,2:7200,3:28800,4:86400,double:129600});
+assert.deepEqual(economy.hatching.tierMultipliers,{2:2,3:4,4:8,double:12});
+assert.deepEqual(economy.hatching.maxTierSeconds,{2:21600,3:43200,4:86400,double:172800});
+assert.deepEqual(economy.breeding.elementSeconds,{fire:60,water:60,earth:90,wind:120,ice:180,thunder:300,
+  nature:420,dark:600,light:900,metal:1200,war:1800,pure:2400,legend:3000,primal:3600,time:4200});
+assert.equal(economy.breeding.tierMultipliers[2],2);
 assert(hatchingSeconds(['fire','water'])>economy.hatching.pureElementSeconds.fire);
 assert(hatchingSeconds(['fire','water','earth'])>hatchingSeconds(['fire','water']));
 assert(hatchingSeconds(['fire','water','earth','wind'])>hatchingSeconds(['fire','water','earth']));
 assert(hatchingSeconds(['fire','fire','water','earth'],'transcendent')>
-  hatchingSeconds(['fire','water','earth','wind']));
+  hatchingSeconds(['fire','fire','water','earth'],'mythic'));
 
 console.log('SESSION REGRESSION: Academy');
 assert.equal(buildingConfig.definitions.academy.maxLevel,7);

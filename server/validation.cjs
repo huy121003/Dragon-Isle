@@ -15,7 +15,8 @@ const resourceLimits=systemConfig.admin.resourceLimits;
 const ResourcePatchSchema=z.object({
   gold:z.number().int().min(0).max(resourceLimits.gold).optional(),
   food:z.number().int().min(0).max(resourceLimits.food).optional(),
-  gems:z.number().int().min(0).max(resourceLimits.gems).optional()
+  gems:z.number().int().min(0).max(resourceLimits.gems).optional(),
+  level:z.number().int().min(1).max(resourceLimits.playerLevel).optional()
 }).strict().refine(value=>Object.keys(value).length>0,'At least one resource is required.');
 
 const CredentialsSchema=z.object({

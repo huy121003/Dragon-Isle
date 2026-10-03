@@ -24,13 +24,16 @@
       config.double.base+Math.floor((averageLevel-config.double.minParentLevel)/10)*
       config.double.perTenLevels):0;
     const factor=premium?config.premium.rareFactor:1;
+    // The configured caps apply to the standard cave; Premium boosts may exceed them.
     return {three:three*factor,four:four*factor,double:double*factor};
   }
 
   /** Split the remaining common probability between 1- and 2-element tiers. */
-  function commonTierChances(tierKey,rareTotal,hasTwo){
+  function commonTierChances(tierKey,rareTotal,hasOne,hasTwo){
     const pair=config.tierWeights[tierKey]||[1,0],remaining=Math.max(0,1-rareTotal);
-    const two=hasTwo?remaining*pair[1]/(pair[0]+pair[1]):0;
+    if(!hasOne)return {one:0,two:hasTwo?remaining:0};
+    if(!hasTwo)return {one:remaining,two:0};
+    const two=remaining*pair[1]/(pair[0]+pair[1]);
     return {one:remaining-two,two};
   }
 
@@ -64,7 +67,11 @@
     const pool=[...new Set(fatherSpecies.elements.concat(motherSpecies.elements))];
     const canInherit=parts=>parts.some(e=>fatherSpecies.elements.includes(e))&&
       parts.some(e=>motherSpecies.elements.includes(e));
-    const groups=[pool.slice(),[],[],[],[]];
+    // One-element offspring are only possible from two parents of the exact same
+    // one-element species; all other pairings assign zero probability to this tier.
+    const sameSingleSpecies=fatherSpecies.elements.length===1&&motherSpecies.elements.length===1&&
+      fatherSpecies.id===motherSpecies.id;
+    const groups=[sameSingleSpecies?pool.slice():[],[],[],[],[]];
 
     for(const first of pool)for(const second of pool){
       if(first===second)continue;
@@ -102,7 +109,8 @@
       bothTriple:fatherSpecies.elements.length===3&&motherSpecies.elements.length===3,
       poolSize:pool.length,premium
     });
-    const common=commonTierChances(tierKey,rare.three+rare.four+rare.double,!!groups[1].length);
+    const common=commonTierChances(tierKey,rare.three+rare.four+rare.double,
+      !!groups[0].length,!!groups[1].length);
     const weights=[common.one,common.two,rare.three,rare.four,rare.double];
 
     return groups.flatMap((ids,index)=>{
@@ -115,17 +123,18 @@
   }
 
   /** Breeding duration in seconds for the resulting species and parent mix. */
-  function seconds(species,tier,elementUnlocks,parentSpecies,premium){
-    const pressure=species.elements.reduce((sum,id)=>sum+(elementUnlocks[id]||1),0)/species.elements.length;
-    let durationScale=1+Math.min(config.maxElementBonusPercent,pressure*config.elementLevelPercent);
+  function seconds(species,tier,_elementUnlocks,parentSpecies=[],premium){
+    const elementTime=species.elements.reduce((sum,id)=>sum+(config.elementSeconds[id]||config.fallbackSeconds),0);
+    const multiplier=tier===1?1:(config.tierMultipliers[tier]||config.tierMultipliers[4]);
+    let duration=elementTime*multiplier;
     if(parentSpecies.length===2){
       const union=new Set(parentSpecies.flatMap(parent=>parent.elements));
-      durationScale+=Math.max(0,union.size-2)*config.parentUnionPercent;
-      if(parentSpecies[0].elements.length!==parentSpecies[1].elements.length)
-        durationScale+=config.mixedParentPercent;
+      const parentScale=1+Math.max(0,union.size-2)*config.parentUnionPercent+
+        (parentSpecies[0].elements.length!==parentSpecies[1].elements.length?config.mixedParentPercent:0);
+      duration*=parentScale;
     }
-    const base=config.timeByTier[tier]||config.timeByTier[4];
-    return Math.round(base*durationScale*(premium?config.premium.timeFactor:1));
+    duration=Math.round(duration*(premium?config.premium.timeFactor:1));
+    return tier===1?duration:Math.min(duration,config.maxTierSeconds[tier]||config.maxTierSeconds[4]);
   }
 
   return {rareTierChances,commonTierChances,candidateBias,offspringOptions,seconds};

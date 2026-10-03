@@ -7,7 +7,7 @@
 function plantCrop(buildingId,cropId){
   const b=buildingById(buildingId),crop=cropById(cropId);
   if(!b||b.type!=="farm"||b.stored||!crop)return false;
-  if(DATA.crops.indexOf(crop)>=b.level){toast("Upgrade the Farm to unlock this crop.");return false;}
+  if((crop.unlockLevel||DATA.crops.indexOf(crop)+1)>b.level){toast("Upgrade the Farm to unlock this crop.");return false;}
   if(b.crop){toast("The Farm is growing a crop.");return false;}
   if(!spendGold(crop.cost))return false;
   const startedAt=Date.now();

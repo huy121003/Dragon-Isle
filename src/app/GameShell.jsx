@@ -77,6 +77,6 @@ export default function GameShell(){
       width={1120} destroyOnHidden styles={{body:{maxHeight:'min(84dvh, 850px)',overflowY:'auto'}}}>
       <ChallengeView status={challenge} request={challengeRequest} refresh={challengeStatus}/>
     </Modal>
-    <AdminPanel open={admin} onClose={()=>setAdmin(false)}/>
+    {account?.role==='admin'&&<AdminPanel open={admin} onClose={()=>setAdmin(false)}/>}
   </>;
 }

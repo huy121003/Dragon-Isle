@@ -14,7 +14,7 @@ function paintFlag(b,time,night){
   for(const s of [-1,1])structureEllipse(s*.18,.025,.04,.025,'#879d62');
 }
 
-function drawBuilding(b,time){
+function drawBuilding(b,time,occupantsByHabitat){
   const f=buildingFootprint(b),v=footprintVertices(b.x,b.y,f.w,f.h);
   const center=gridToScreen(b.x+f.w/2,b.y+f.h/2);
   const width=Math.max(...v.map(p=>p.x))-Math.min(...v.map(p=>p.x));
@@ -29,7 +29,7 @@ function drawBuilding(b,time){
   structureBounds=ui.debugIso?{min:Infinity,max:-Infinity}:null;
   // Animation code below converts back to local pixels for drawDragon/drawEgg.
   structureUnit=unit;structureUnitX=unitX;structureUnitY=unitY;
-  if(b.type==='habitat')paintHabitat(b,time,night);
+  if(b.type==='habitat')paintHabitat(b,time,night,occupantsByHabitat);
   else if(b.type==='farm')paintFarm(b,time,night);
   else if(b.type==='hatchery')paintHatchery(b,time,night);
   else if(b.type==='academy')paintAcademy(b,time,night);

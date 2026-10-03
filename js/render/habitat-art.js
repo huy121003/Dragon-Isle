@@ -3,6 +3,8 @@
 /* RENDER: Element-specific Habitat biome and Habitat renderer. */
 function paintHabitatBiome(element,theme,time,night){
   const pulse=.78+.22*Math.sin(time*.005);
+  // Match the five newer structures to the old habitats' width-to-height ratio.
+  const accentScaleY=1.6;
   switch(element){
     case 'fire':{
       structurePlinth('#463d3c','#443846','#302e39','#e0733c');
@@ -151,72 +153,71 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
     case 'war':{
-      structurePlinth('#864347','#6a303e','#462c37','#f4a36e');
-      structurePoly([[-.35,.1],[-.35,-.42],[0,-.58],[.35,-.42],[.35,.1]],
-        '#773642','#f9b66a',.02);
-      structurePoly([[-.2,-.19],[0,-.46],[.2,-.19],[.16,-.03],[0,-.1],[-.16,-.03]],
-        '#c65b42','#f8d599',.018);
-      for(const x of [-.35,.35]){
-        structureLine([[x,.06],[x,-.68]],'#fbd494',.024);
-        structurePoly([[x,-.7],[x-.06,-.58],[x+.06,-.58]],'#f6bb70');
-      }
-      structureGlow(0,-.23,.25,'#f5944566');break;
+      // A small sculpted Roman galea makes this read as a War habitat, not a floating flag.
+      structurePlinth('#a77955','#76513f','#563b35','#e4b477');
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
+      structurePoly([[-.2,-.31],[0,-.25],[.2,-.31],[0,-.37]],'#c98d61','#efd09a',.012);
+      structurePoly([[-.25,-.38],[-.22,-.5],[-.15,-.59],[-.06,-.63],[.08,-.63],[.18,-.57],[.24,-.46],[.24,-.38]],
+        '#9a5945','#edbc7c',.018);
+      structurePoly([[-.18,-.45],[-.13,-.54],[-.05,-.57],[.07,-.57],[.15,-.52],[.19,-.44],[.12,-.41],[-.13,-.41]],
+        '#47393a','#e8bc7a',.012);
+      structurePoly([[-.25,-.41],[.25,-.41],[.28,-.36],[-.28,-.36]],'#e1ad70','#ffe0a9',.014);
+      structurePoly([[-.04,-.4],[.04,-.4],[.02,-.31],[-.02,-.31]],'#f4d5a3');
+      structurePoly([[-.09,-.62],[-.13,-.72],[-.07,-.75],[0,-.68],[.07,-.74],[.13,-.64],[.08,-.61]],
+        '#b95246','#f0c17c',.014);
+      structureGlow(0,-.5,.14,'#f5944533');ctx.restore();break;
     }
     case 'pure':{
-      structurePlinth('#a87faa','#785482','#553c70','#fff0fa');
-      structureEllipse(0,.08,.4,.14,'#bc8cbb','#f7d6ed',.02);
-      for(const x of [-.3,.3]){
-        structurePoly([[x-.06,.03],[x-.07,-.43],[x,-.56],[x+.07,-.43],[x+.06,.03]],
-          '#f5d9f0','#ffffff',.016);
-        structureGlow(x,-.43,.13,'#ffb8f174');
-      }
-      structurePoly([[-.19,-.1],[0,-.63],[.19,-.1]],'#e9bee4','#fff4ff',.022);
-      structurePoly([[-.13,-.15],[0,-.53],[.13,-.15]],'#f9e9f8');
-      structureGlow(0,-.29,.31,'#fbd4ff66');break;
+      // Small open shrine with three petal arches around a light; the lower tile stays clear.
+      structurePlinth('#b18fbd','#7c608f','#594669','#f8e6f5');
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
+      structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#bb96c3','#f8e6f5',.012);
+      for(const x of [-.17,.17])structurePoly([[x-.025,-.36],[x-.02,-.54],[x,-.57],[x+.02,-.54],[x+.025,-.36]],'#e4cce9','#fff8ff',.01);
+      structurePoly([[-.23,-.53],[-.18,-.59],[-.08,-.56],[0,-.67],[.08,-.56],[.18,-.59],[.23,-.53],[.19,-.49],[.08,-.53],[0,-.61],[-.08,-.53],[-.19,-.49]],
+        '#d6b6df','#fff8ff',.014);
+      structureEllipse(0,-.51,.035,.035,'#fffaff','#d5b2dc',.008);
+      structureGlow(0,-.52,.13,'#fbd4ff30');ctx.restore();break;
     }
     case 'legend':{
-      structurePlinth('#60458e','#3b315f','#2b284c','#bfa2ed');
-      structureEllipse(0,.06,.4,.16,'#402c64','#d3b7ff',.02);
-      for(const x of [-.23,.23]){
-        structurePoly([[x-.11,.04],[x-.065,-.43],[x,-.62],[x+.065,-.43],[x+.11,.04]],
-          '#7457a2','#d8c2fb',.018);
-        structureGlow(x,-.44,.2,'#b597ff70');
-      }
-      ctx.beginPath();
-      for(let i=0;i<65;i++){
-        const t=i/64*Math.PI*2,x=.2*Math.sin(t),y=-.35+.11*Math.sin(t)*Math.cos(t);
-        if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-      }
-      ctx.strokeStyle='#f3d8ff';ctx.lineWidth=.03;ctx.stroke();break;
+      // Slim twin-scroll portal: visible supports and a small open doorway give the glyph a building form.
+      structurePlinth('#68518c','#433867','#302846','#c8b2eb');
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
+      structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#76609a','#c8b2eb',.012);
+      structurePoly([[-.19,-.36],[-.16,-.53],[-.11,-.58],[-.07,-.54],[-.08,-.36]],'#7960a7','#decaff',.012);
+      structurePoly([[.19,-.36],[.16,-.53],[.11,-.58],[.07,-.54],[.08,-.36]],'#7960a7','#decaff',.012);
+      structurePoly([[-.1,-.53],[-.07,-.62],[0,-.67],[.07,-.62],[.1,-.53],[.065,-.5],[0,-.57],[-.065,-.5]],'#b29ad9','#f1dcff',.012);
+      structurePoly([[-.055,-.36],[-.055,-.47],[0,-.51],[.055,-.47],[.055,-.36]],'#302846','#bfa2ed',.01);
+      ctx.beginPath();ctx.moveTo(-.18,-.47);
+      ctx.bezierCurveTo(-.23,-.65,-.04,-.69,0,-.54);
+      ctx.bezierCurveTo(.04,-.69,.23,-.65,.18,-.47);
+      ctx.strokeStyle='#decaff';ctx.lineWidth=.014;ctx.stroke();
+      ctx.restore();break;
     }
     case 'primal':{
+      // A light stone grotto with a real opening and three claw marks above its lintel.
       structurePlinth('#777458','#595944','#424339','#d6d1aa');
-      structurePoly([[-.38,.1],[-.31,-.24],[-.16,-.44],[.16,-.44],[.34,-.21],[.38,.1]],
-        '#62614b','#d8d0a5',.021);
-      for(const x of [-.27,0,.27]){
-        structurePoly([[x-.085,-.21],[x,-.58-(x===0?.09:0)],[x+.085,-.21]],
-          '#b4a87f','#e8ddac',.015);
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
+      structurePoly([[-.25,-.34],[-.23,-.48],[-.17,-.58],[-.11,-.55],[0,-.64],[.1,-.55],[.17,-.58],[.23,-.47],[.25,-.34],[.16,-.31],[0,-.35],[-.16,-.31]],
+        '#77765c','#d8d0a5',.016);
+      structurePoly([[-.14,-.34],[-.13,-.43],[-.08,-.49],[0,-.52],[.08,-.49],[.13,-.43],[.14,-.34]],'#403f39','#b6ae83',.012);
+      for(let i=0;i<3;i++){
+        const x=-.13+i*.13;
+        structureLine([[x-.03,-.54],[x-.01,-.59],[x+.025,-.63]],'#eee4b8',.014);
       }
-      structureEllipse(0,-.2,.15,.16,'#d0c496','#625c48',.018);
-      structureLine([[-.09,-.2],[0,-.34],[.09,-.2],[0,-.07],[-.09,-.2]],
-        '#eee2b9',.016);break;
+      ctx.restore();break;
     }
     case 'time':{
-      structurePlinth('#908085','#625c6d','#494456','#f0e4d2');
-      structureEllipse(0,.05,.39,.16,'#61576c','#e4c7a8',.025);
-      for(const x of [-.3,.3]){
-        structurePoly([[x-.04,.05],[x-.04,-.48],[x+.04,-.48],[x+.04,.05]],
-          '#b5a6a0','#f3e0bf',.012);
-      }
-      structureEllipse(0,-.4,.2,.2,'#d7c9b8','#f9eaca',.03);
-      structureEllipse(0,-.4,.14,.14,'#766d79','#f9eaca',.014);
-      for(let i=0;i<12;i++){
-        const a=i*Math.PI/6;
-        structureLine([[Math.sin(a)*.14,-.4-Math.cos(a)*.14],
-          [Math.sin(a)*.18,-.4-Math.cos(a)*.18]],'#fff1d9',.014);
-      }
-      structureLine([[0,-.4],[0,-.51],[.085,-.34]],'#fff1d9',.019);
-      structureGlow(0,-.4,.3,'#e8d5b563');break;
+      // Small clock-gate with two slim supports, a lintel and a readable moving dial.
+      structurePlinth('#89808a','#635b6e','#484453','#f0dfc8');
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
+      structurePoly([[-.22,-.32],[0,-.25],[.22,-.32],[0,-.39]],'#89808a','#f0dfc8',.012);
+      for(const x of [-.16,.16])structurePoly([[x-.022,-.36],[x-.02,-.61],[x+.02,-.61],[x+.022,-.36]],'#746b78','#ead7bb',.012);
+      structurePoly([[-.23,-.58],[-.18,-.66],[0,-.72],[.18,-.66],[.23,-.58],[.18,-.54],[0,-.61],[-.18,-.54]],'#b5a29e','#f5e8cb',.014);
+      structureEllipse(0,-.51,.095,.095,'#504b5c','#e8d5b4',.016);
+      structureEllipse(0,-.51,.064,.064,'#b5a29e','#f8e9c8',.01);
+      for(let i=0;i<8;i++){const a=i*Math.PI/4;structureLine([[Math.cos(a)*.071,-.51+Math.sin(a)*.071],[Math.cos(a)*.084,-.51+Math.sin(a)*.084]],'#fff1d9',.008);}
+      structureLine([[0,-.51],[0,-.56],[.04,-.49]],'#514b5c',.012);
+      structureGlow(0,-.51,.14,'#e8d5b522');ctx.restore();break;
     }
     case 'metal':{
       structurePlinth('#9baeb1','#627884','#455a68','#e0ece9');
@@ -237,13 +238,93 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
   }
+  paintHabitatGround(element);
+  paintHabitatMotion(element,time);
 }
 
-function paintHabitat(b,time,night){
+/** Flat, faint ground marks give the five newer Habitats their own terrain without blocking paths. */
+function paintHabitatGround(element){
+  const emphasize=['war','pure','legend','primal','time'].includes(element);
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,1);}
+  switch(element){
+    case 'war':
+      structureLine([[-.31,.035],[-.16,.105],[0,.04],[.16,.105],[.31,.035]],'#4b34364d',.012);
+      structureLine([[-.2,.005],[-.2,.075]],'#f2c18755',.01);
+      structureLine([[.2,.005],[.2,.075]],'#f2c18755',.01);
+      break;
+    case 'pure':
+      structureLine([[-.22,.045],[-.1,.105],[0,.06],[.1,.105],[.22,.045]],'#fff8ff77',.012);
+      structureEllipse(0,.07,.035,.017,'#fff8ff55');
+      break;
+    case 'legend':
+      structureLine([[-.25,.035],[-.13,.095],[0,.04],[.13,.095],[.25,.035]],'#e6d4ff66',.012);
+      structureLine([[-.09,.06],[-.04,.085],[0,.06],[.04,.085],[.09,.06]],'#f1dcff55',.01);
+      break;
+    case 'primal':
+      structureEllipse(-.29,.045,.045,.018,'#373a3255');
+      structureEllipse(.27,.075,.055,.02,'#373a3255');
+      structureEllipse(.05,.125,.035,.014,'#eee4b866');
+      structureLine([[-.19,.11],[-.08,.145],[.02,.13]],'#e8dfb866',.012);
+      break;
+    case 'time':
+      structureEllipse(0,.075,.15,.06,'#e7d7bf33','#f0dfc855',.01);
+      for(const x of [-.09,.09])structureLine([[x,.05],[x*1.35,.085]],'#f3e4cc66',.01);
+      break;
+  }
+  if(emphasize)ctx.restore();
+}
+
+/** Per-element accents animate inside the habitat silhouette and never affect its footprint. */
+function paintHabitatMotion(element,time){
+  const wave=Math.sin(time*.003);
+  const emphasize=['war','pure','legend','primal','time'].includes(element);
+  if(emphasize){ctx.save();ctx.translate(0,.425);ctx.scale(1.65,1.6);}
+  switch(element){
+    case 'fire':
+      for(const [x,y] of [[-.25,-.43],[.31,-.47]])
+        structurePoly([[x-.035,y+.055],[x-.04,y-.005],[x,y-.045-Math.max(0,wave)*.035],[x+.04,y-.005],[x+.035,y+.055]],'#ffc45c');
+      break;
+    case 'water':
+      structureLine([[-.2,.16],[0,.18+wave*.016],[.2,.15]],'#efffff',.013);break;
+    case 'earth':
+      structureEllipse(-.26,.12+wave*.012,.045,.023,'#e1c48b');break;
+    case 'wind': /* The four-blade windmill above already spins. */ break;
+    case 'ice':
+      for(const [i,x] of [[0,-.3],[1,.22]]){const a=time*.002+i*Math.PI,y=-.35-i*.08;
+        structureLine([[x+Math.cos(a)*.035,y+Math.sin(a)*.035],[x-Math.cos(a)*.035,y-Math.sin(a)*.035]],'#fff',.014);}
+      break;
+    case 'thunder':
+      if(Math.sin(time*.016)>0.7)structureGlow(.02,-.28,.18,'#fff58caa');break;
+    case 'nature':
+      structurePoly([[-.29,-.43],[-.34+wave*.025,-.5],[-.24,-.47]],'#bce886');break;
+    case 'dark':
+      structureEllipse(.29+wave*.035,-.37,.017,.017,'#dfc8f6');break;
+    case 'light':
+      ctx.save();ctx.translate(0,-.43);ctx.rotate(time*.0005);structureLine([[0,-.17],[0,-.25]],'#fff9d9',.018);ctx.restore();break;
+    case 'metal':
+      ctx.save();ctx.translate(0,.045);ctx.rotate(time*.0007);
+      structureEllipse(0,0,.09,.04,'#d9e7e1','#506875',.012);
+      for(let i=0;i<8;i++){const a=i*Math.PI/4;structureLine([[Math.cos(a)*.09,Math.sin(a)*.04],[Math.cos(a)*.12,Math.sin(a)*.055]],'#e6eee6',.012);}
+      ctx.restore();break;
+    case 'war':
+      structureLine([[-.07,-.69],[-.02+wave*.018,-.73],[.07+wave*.025,-.7]],'#ffe0a0',.016);break;
+    case 'pure':
+      ctx.save();ctx.translate(0,-.51);ctx.rotate(time*.0007);structureEllipse(0,-.035,.012,.032,'#fffaff','#eac2e7',.005);ctx.restore();break;
+    case 'legend':
+      ctx.save();ctx.translate(0,-.55);ctx.rotate(time*.0005);structureEllipse(-.055,0,.055,.024,'#c8a9f0','#f2e4ff',.007);ctx.restore();break;
+    case 'primal':
+      structureLine([[-.15,-.45],[0,-.43+wave*.012],[.15,-.45]],'#fff0c0',.012);break;
+    case 'time':
+      ctx.save();ctx.translate(0,-.52);ctx.rotate(time*.00085);structureLine([[0,-.07],[0,.035],[.04,.015]],'#fff2d8',.012);ctx.restore();break;
+  }
+  if(emphasize)ctx.restore();
+}
+
+function paintHabitat(b,time,night,occupantsByHabitat){
   const theme=DATA.habitatThemes[b.element]||DATA.habitatThemes.fire;
   const e=b.element;
   paintHabitatBiome(e,theme,time,night);
-  const dragons=occupants(b),n=dragons.length,f=buildingFootprint(b);
+  const dragons=occupants(b,occupantsByHabitat),n=dragons.length,f=buildingFootprint(b);
   const walkers=dragons.map((d,i)=>{
     const phase=time*.0007+d.id*2.17;
     const lane=(i-(n-1)/2)*Math.min(.32,.65/Math.max(1,n-1));
@@ -262,8 +343,7 @@ function paintHabitat(b,time,night){
       time,facing:Math.cos(phase)<0?-1:1,stepPhase:dragonTravelPhase(phase),
       scale:n>2?.86:n===2?1.08:1.35});ctx.restore();
   });
-  if(!n){ctx.fillStyle=theme.accent;ctx.textAlign='center';ctx.font='bold .28px system-ui';
-    ctx.fillText(DATA.elements[e]?.mark||'✦',0,.11);}
+  if(!n)structureElementBadge(e,0,-.08,.27);
   if(b.storedGold>=1)structureEllipse(.38,-.19,.085,.085,'#ffe298','#a86733',.015);
   if(b.storedGems>=1)structurePoly([[-.48,-.19],[-.39,-.28],[-.3,-.19],[-.39,-.1]],'#a6edff','#5c9dc0',.012);
   if(b.level>=3)for(const x of [-.35,.35])structureLantern(x,.08,theme.accent,time,night);

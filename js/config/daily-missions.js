@@ -1,8 +1,8 @@
 /**
  * Daily mission targets and rewards.
  *
- * Resource goals count only the matching in-game collection action. Reset time
- * is interpreted in the player's local timezone.
+ * Resource goals count only the matching in-game collection action. The server
+ * resets progress at 05:00 in the Asia/Ho_Chi_Minh timezone.
  */
 (function(root,factory){
   const config=factory();
@@ -15,7 +15,7 @@
     objectives:Object.freeze({
       hatch:Object.freeze({title:"Hatch a Dragon",icon:"🥚",goal:1,reward:Object.freeze({xp:40,gold:500,food:250})}),
       breed:Object.freeze({title:"Breed a Dragon",icon:"💞",goal:1,reward:Object.freeze({xp:35,gold:500,food:250})}),
-      feed:Object.freeze({title:"Feed 3 Dragons",icon:"🍎",goal:3,reward:Object.freeze({xp:25,gold:350,food:250})}),
+      feed:Object.freeze({title:"Feed Dragons 3 Times",icon:"🍎",goal:3,reward:Object.freeze({xp:25,gold:350,food:250})}),
       plant:Object.freeze({title:"Plant Food",icon:"🌱",goal:1,reward:Object.freeze({xp:20,gold:250,food:300})}),
       arena:Object.freeze({title:"Fight in the Arena",icon:"⚔️",goal:1,reward:Object.freeze({xp:30,gold:400,food:250})}),
       collectGold:Object.freeze({title:"Collect Gold",icon:"🪙",goal:1000,reward:Object.freeze({xp:25,gold:250,food:200})}),

@@ -26,15 +26,25 @@ function islandRegionCount(index){
   return count;
 }
 function legacyRegionFull(r){
+  if(legacyRegionCache.source!==state.land||legacyRegionCache.length!==state.land.length){
+    legacyRegionCache.source=state.land;
+    legacyRegionCache.length=state.land.length;
+    legacyRegionCache.values.clear();
+  }
+  if(legacyRegionCache.values.has(r.id))return legacyRegionCache.values.get(r.id);
   const land=landSet();
   const n=DATA.islandRegionSize;
-  for(let y=r.y;y<r.y+n;y++)for(let x=r.x;x<r.x+n;x++)if(!land.has(key(x,y)))return false;
-  return true;
+  let full=true;
+  for(let y=r.y;y<r.y+n&&full;y++)for(let x=r.x;x<r.x+n;x++)
+    if(!land.has(key(x,y))){full=false;break;}
+  legacyRegionCache.values.set(r.id,full);
+  return full;
 }
 function islandComplete(index){return islandRegionCount(index)===islandRegionTotal(index);}
 /* STATE: Tra cứu đất bằng Set tạm, không ghi cấu trúc này into bản lưu JSON. */
 const landCache={source:null,length:-1,set:new Set()};
 const regionCache={source:null,length:-1,set:new Set()};
+const legacyRegionCache={source:null,length:-1,values:new Map()};
 function landSet(){
   if(landCache.source!==state.land||landCache.length!==state.land.length){
     landCache.source=state.land;landCache.length=state.land.length;

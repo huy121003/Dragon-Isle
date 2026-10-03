@@ -43,8 +43,8 @@
       doubleBase:breed.double.base,doublePerTenLevels:breed.double.perTenLevels,
       doubleCap:breed.double.cap,doubleMinParentLevel:breed.double.minParentLevel,
       premiumRareFactor:breed.premium.rareFactor,premiumTimeFactor:breed.premium.timeFactor,
-      timeByTier:breed.timeByTier,elementLevelPercent:breed.elementLevelPercent,
-      maxElementBonusPercent:breed.maxElementBonusPercent,
+      fallbackSeconds:breed.fallbackSeconds,elementSeconds:breed.elementSeconds,tierMultipliers:breed.tierMultipliers,
+      maxTierSeconds:breed.maxTierSeconds,
       parentUnionPercent:breed.parentUnionPercent,mixedParentPercent:breed.mixedParentPercent
     },
     island:e.island,land:e.land,

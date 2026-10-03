@@ -131,7 +131,7 @@ function renderShop(){
 function renderShopEggDetail(id){
   const s=DATA.species[id];
   const isAdmin=currentAccount?.role==="admin";
-  if(!s||!isAdmin&&(s.elements.length!==1||!s.detail.giaTrung)){openModal("shop");return;}
+  if(!s||(!isAdmin&&(s.elements.length!==1||!s.detail.giaTrung))){openModal("shop");return;}
   const price=shopEggPrice(s,isAdmin);
   if(!price){openModal("shop");return;}
   const cost=price.vang?price.vang:price.gem;

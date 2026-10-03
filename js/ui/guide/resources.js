@@ -2,7 +2,7 @@
 
 /* GUIDE: Economy/resource guide section. */
 function guideResources(){
-  const crops=DATA.crops.map((crop,index)=>[esc(crop.name),'Farm Lv'+(index+1),money(crop.cost)+' vàng',
+  const crops=DATA.crops.map((crop,index)=>[esc(crop.name),'Farm Lv'+(crop.unlockLevel||index+1),money(crop.cost)+' vàng',
     duration(crop.duration),money(crop.yield)+' thức ăn']);
   const progression=window.DragonConfig.progression,rewards=progression.rewards,income=progression.incomeGrowth;
   const rarityEntries=Object.entries(DATA.rarities);

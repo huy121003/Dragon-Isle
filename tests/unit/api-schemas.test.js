@@ -18,5 +18,8 @@ describe('API schemas',()=>{
   it('rejects invalid resource mutations',()=>{
     expect(ResourcePatchSchema.safeParse({gems:-1}).success).toBe(false);
     expect(ResourcePatchSchema.safeParse({gold:1000,gems:20}).success).toBe(true);
+    expect(ResourcePatchSchema.safeParse({level:60}).success).toBe(true);
+    expect(ResourcePatchSchema.safeParse({level:0}).success).toBe(false);
+    expect(ResourcePatchSchema.safeParse({level:1_000_001}).success).toBe(false);
   });
 });

@@ -6,6 +6,7 @@ const path=require('node:path');
 const net=require('node:net');
 const {spawn}=require('node:child_process');
 const economyRules=require('../data/economy.js');
+const dailyMissions=require('../server/daily-missions.cjs');
 const root=path.resolve(__dirname,'..');
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dragon-isle-auth-'));
 for(const name of ['dragons.json','game.json'])fs.copyFileSync(path.join(root,'data',name),path.join(temporary,name));
@@ -129,13 +130,16 @@ async function launch(port){
     assert.equal((await resourcePut(editB,{gold:999},cookieB)).status,401);
     const activeB=await post('/api/auth/login','Bela_2','very-safe-pass-2');
     assert.equal((await resourcePut(editB,{gold:999},session(activeB))).status,403);
-    for(const invalid of [{},{gold:-1},{food:1.5},{gems:1_000_000_001},{gold:'999'},{level:60}])
+    assert.equal((await resourcePut(editB,{level:60},session(activeB))).status,403);
+    for(const invalid of [{},{gold:-1},{food:1.5},{gems:1_000_000_001},{gold:'999'},
+      {level:0},{level:1_000_001}])
       assert.equal((await resourcePut(editB,invalid,adminCookie)).status,400);
-    assert.equal((await resourcePut(editB,{gold:4321,gems:77},adminCookie)).status,200);
+    assert.equal((await resourcePut(editB,{gold:4321,gems:77,level:60},adminCookie)).status,200);
     assert.equal((await fetch(base+'/api/save',{headers:{Cookie:session(activeB),'X-Dragon-Account':idB}})).status,401);
     assert.equal((await resourcePut(editB,{food:321},adminCookie)).status,200);
     const profileB=JSON.parse(fs.readFileSync(path.join(temporary,'profiles',idB+'.json'),'utf8'));
     assert.equal(profileB.gold,4321);assert.equal(profileB.food,321);assert.equal(profileB.gems,77);
+    assert.equal(profileB.player.level,60);assert.equal(profileB.player.xp,0);
     assert.equal(profileB.dragons.length,1);assert.equal(profileB.buildings.length,2);
     assert(profileB.buildings.some(b=>b.type==='hatchery'&&b.level===1));
     assert.equal((await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:session(activeB),
@@ -144,18 +148,19 @@ async function launch(port){
     assert.equal(c.status,200);
     const idC=JSON.parse(fs.readFileSync(path.join(temporary,'users.json'),'utf8')).find(u=>u.username==='Cami_3').id;
     assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:session(c),'X-Dragon-Account':idC}})).json()),null);
-    const bulk=await resourcePut('/api/admin/resources',{food:0,gems:42},adminCookie);
+    const bulk=await resourcePut('/api/admin/resources',{food:0,gems:42,level:5},adminCookie);
     assert.equal(bulk.status,200);
     assert.equal((await bulk.json()).updated,3);
     assert.equal((await fetch(base+'/api/admin/users',{headers:{Cookie:adminCookie}})).status,401);
     for(const [id,expectedGold] of [[idA,500],[idB,4321],[idC,economyRules.starting.gold]]){
       const profile=JSON.parse(fs.readFileSync(path.join(temporary,'profiles',id+'.json'),'utf8'));
       assert.equal(profile.gold,expectedGold);assert.equal(profile.food,0);assert.equal(profile.gems,42);
+      assert.equal(profile.player.level,5);assert.equal(profile.player.xp,0);
       assert.equal(profile.dragons.length,idA===id?0:1);
     }
     const adminAgain=await post('/api/auth/login','Alex_1','very-safe-pass-1');
     const summary=(await (await fetch(base+'/api/admin/users',{headers:{Cookie:session(adminAgain)}})).json()).users;
-    assert(summary.every(user=>user.progress.food===0&&user.progress.gems===42));
+    assert(summary.every(user=>user.progress.food===0&&user.progress.gems===42&&user.progress.level===5));
     const page=await (await fetch(base+'/')).text();
     assert(page.includes('/assets/index-'),'Máy chủ phải phục vụ bản React đã build');
     assert.equal((await fetch(base+'/src/main.jsx')).status,403);
@@ -239,6 +244,12 @@ async function launch(port){
       {action:'skill',skillIndex:2,expectedTurn:round.battle.turn})).json();
     assert.equal(round.result?.won,true,'An Arena victory completes and keeps its existing rewards');
     assert(round.result.reward.gold>0&&round.result.reward.food>0&&round.result.reward.gems>0);
+    const profileFile=path.join(temporary,'profiles',idA+'.json');
+    const winnerProfile=JSON.parse(fs.readFileSync(profileFile,'utf8'));
+    assert.equal(winnerProfile.dailyMissions.progress.arena,1,
+      'A finished battle with player skills advances the Arena mission');
+    winnerProfile.dailyMissions=dailyMissions.emptyState();
+    fs.writeFileSync(profileFile,JSON.stringify(winnerProfile));
     assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).wins,1);
     const afterWin=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert(afterWin.defeatedOpponentIds.includes(choices.opponents[0].id),
@@ -251,6 +262,9 @@ async function launch(port){
       const result=await (await arenaCall('turn','POST',cookieAdmin,
         {action:'forfeit',expectedTurn:match.battle.turn})).json();
       assert.equal(result.result.won,false);
+      const afterForfeit=JSON.parse(fs.readFileSync(profileFile,'utf8'));
+      assert.equal(afterForfeit.dailyMissions.progress.arena,0,
+        'Forfeiting without using a skill must not complete the Arena mission');
     }
     const exhausted=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(exhausted.attemptsRemaining,0);

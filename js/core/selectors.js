@@ -5,7 +5,10 @@
  */
 function buildingById(id){return state.buildings.find(function(b){return b.id===id;});}
 function dragonById(id){return state.dragons.find(function(d){return d.id===id;});}
-function occupants(building){return state.dragons.filter(function(d){return d.habitatId===building.id;});}
+function occupants(building,index){
+  return index?index.get(building.id)||[]:
+    state.dragons.filter(function(d){return d.habitatId===building.id;});
+}
 /** Maximum level comes from balance config; DATA.buildings only supplies display metadata. */
 function maxBuildingLevel(building){
   return window.DragonConfig.buildings.definitions[building.type].maxLevel;

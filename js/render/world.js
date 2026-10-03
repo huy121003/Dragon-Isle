@@ -42,8 +42,7 @@ function drawBackground(time){
     ctx.beginPath();ctx.arc(x,y,7,Math.PI*1.1,Math.PI*1.9);ctx.arc(x+14,y,7,Math.PI*1.1,Math.PI*1.9);ctx.stroke();
   }
 }
-function islandColors(island){
-  const palette={
+const ISLAND_PALETTES={
     home:["#73bd67","#b9df8c","#39765b","#e3f5a0"],
     fire:["#594b4b","#b25b39","#322b40","#ff893e"],
     water:["#47a1b4","#95d6c2","#285d83","#b6f6ed"],
@@ -60,9 +59,15 @@ function islandColors(island){
     legend:["#53387b","#aa8de0","#312554","#eddaff"],
     primal:["#686a50","#afb185","#424338","#eee6ba"],
     time:["#827478","#c8b9a7","#4d4754","#f3e9d4"]
-  }[island.element||"home"];
-  return {ground:palette[0],rim:palette[1],shadow:palette[2],accent:palette[3]};
+};
+function islandColors(island){
+  const p=ISLAND_PALETTES[island.element||"home"]||ISLAND_PALETTES.home;
+  return {ground:p[0],rim:p[1],shadow:p[2],accent:p[3]};
 }
+const ISLAND_GROUND_ACCENTS={fire:'#ff9a52',water:'#bcfff0',earth:'#e9d19a',wind:'#f1fff5',
+  ice:'#f4ffff',thunder:'#ffe994',nature:'#d3f1a4',dark:'#c8a7eb',light:'#fff4c6',
+  metal:'#d1e6e7',war:'#f9a879',pure:'#f6d2f7',legend:'#d7b6ff',primal:'#ebe4b2',
+  time:'#f0ddbc',home:'#d3ed9e'};
 function islandHash(n,seed){return ((Math.sin(n*127.1+seed*78.233)*43758.5453)%1+1)%1;}
 function islandPolygon(points,fill,stroke){
   ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
@@ -107,7 +112,11 @@ function drawIslandClouds(island,index,time,rim,bottom,opacity){
   }
   ctx.restore();
 }
+const islandOutlineCache=new WeakMap();
 function islandOutline(island,index){
+  const cached=islandOutlineCache.get(island);
+  if(cached&&cached.x===island.x&&cached.y===island.y&&
+    cached.size===island.size&&cached.index===index)return cached.points;
   const corners=footprintVertices(island.x,island.y,island.size,island.size),points=[];
   for(let edge=0;edge<4;edge++){
     const a=corners[edge],b=corners[(edge+1)%4],dx=b.x-a.x,dy=b.y-a.y;
@@ -118,6 +127,7 @@ function islandOutline(island,index){
       points.push({x:a.x+dx*t+nx*rough,y:a.y+dy*t+ny*rough});
     }
   }
+  islandOutlineCache.set(island,{x:island.x,y:island.y,size:island.size,index,points});
   return points;
 }
 function islandOutlinePath(points){
@@ -128,11 +138,14 @@ function islandOutlinePath(points){
 function drawIslandGround(island,index,time,colors){
   ctx.save();
   const kind=island.element||'home';
-  const accents={fire:'#ff9a52',water:'#bcfff0',earth:'#e9d19a',wind:'#f1fff5',
-    ice:'#f4ffff',thunder:'#ffe994',nature:'#d3f1a4',dark:'#c8a7eb',
-    light:'#fff4c6',metal:'#d1e6e7',war:'#f9a879',pure:'#f6d2f7',
-    legend:'#d7b6ff',primal:'#ebe4b2',time:'#f0ddbc',home:'#d3ed9e'}[kind];
-  for(let n=0;n<24;n++){
+  const accents=ISLAND_GROUND_ACCENTS[kind]||ISLAND_GROUND_ACCENTS.home;
+  // Far zoom makes tiny marks invisible; skip them instead of spending a frame
+  // drawing detail that occupies less than a pixel.
+  const zoom=ui.camera.zoom;
+  const glows=zoom<.18?5:zoom<.3?9:zoom<.48?16:24;
+  const details=zoom<.18?8:zoom<.3?18:zoom<.48?36:64;
+  const sways=zoom<.18?0:zoom<.3?3:zoom<.48?6:9;
+  for(let n=0;n<glows;n++){
     const c=island.x+4+islandHash(n+10,index+210)*(island.size-8);
     const r=island.y+4+islandHash(n+81,index+310)*(island.size-8);
     const p=gridToScreen(c,r),radius=DATA.tileW*(1.5+islandHash(n+40,index)*2.5);
@@ -140,7 +153,7 @@ function drawIslandGround(island,index,time,colors){
     ellipse(p.x,p.y,radius,radius*.24,n%3?accents:colors.rim);
   }
   ctx.globalAlpha=1;
-  for(let n=0;n<9;n++){
+  for(let n=0;n<sways;n++){
     const c=island.x+7+islandHash(n,index+350)*(island.size-14);
     const r=island.y+7+islandHash(n+36,index+350)*(island.size-14);
     const start=gridToScreen(c,r),turn=islandHash(n+74,index)*Math.PI*2;
@@ -154,7 +167,7 @@ function drawIslandGround(island,index,time,colors){
     ctx.lineCap='round';ctx.stroke();
   }
   // Small, flat details fill the open land without hiding buildings or touch targets.
-  for(let n=0;n<64;n++){
+  for(let n=0;n<details;n++){
     const c=island.x+3+islandHash(n+171,index+530)*(island.size-6);
     const r=island.y+3+islandHash(n+281,index+630)*(island.size-6);
     const p=gridToScreen(c,r),s=DATA.tileW*(.35+islandHash(n+45,index+720)*.4);
@@ -177,6 +190,18 @@ function drawIslandGround(island,index,time,colors){
   }
   ctx.restore();
 }
+/** Stamp the same system glyph used by this island's element flag on the terrain. */
+function drawIslandElementBadge(island,index,colors){
+  if(!island.element)return;
+  const p=gridToScreen(island.x+island.size*.5,island.y+island.size*.22);
+  const size=clamp(DATA.tileW*.52*ui.camera.zoom,10,30);
+  ctx.save();ctx.globalAlpha=.94;
+  ctx.beginPath();ctx.arc(p.x,p.y,size*.72,0,Math.PI*2);
+  ctx.fillStyle=colors.shadow+'dd';ctx.fill();ctx.strokeStyle=colors.rim;
+  ctx.lineWidth=Math.max(1,size*.1);ctx.stroke();
+  drawElementEmblem(island.element,p.x,p.y,size*.86);
+  ctx.restore();
+}
 function drawFloatingIslands(lo,hi,time,drawContents){
   islandDrawOrder().forEach(function(index){
     const island=DATA.islands[index];
@@ -186,7 +211,7 @@ function drawFloatingIslands(lo,hi,time,drawContents){
     if(Math.max(...xs)+edgeMargin<lo.x||Math.min(...xs)-edgeMargin>hi.x||
       Math.max(...ys)+depth+edgeMargin<lo.y||Math.min(...ys)-edgeMargin>hi.y)return;
     const c=islandColors(island),opened=index<state.unlockedIslands;
-    const bob=islandBob(index,time),width=Math.max(...xs)-Math.min(...xs);
+    const bob=renderIslandBob(index,time),width=Math.max(...xs)-Math.min(...xs);
     const rim=islandOutline(island,index);
     const bottom=rim.map((p,n)=>({x:p.x+(v[2].x-p.x)*.025,
       y:p.y+depth*(.69+.18*islandHash(n+37,index+440))}));
@@ -219,6 +244,7 @@ function drawFloatingIslands(lo,hi,time,drawContents){
     islandOutlinePath(rim);
     ctx.fillStyle=top;ctx.fill();ctx.strokeStyle=c.rim;ctx.lineWidth=DATA.tileH*.38;ctx.stroke();
     drawIslandGround(island,index,time,c);
+    drawIslandElementBadge(island,index,c);
     for(let row=0;row<3;row++)for(let col=0;col<3;col++){
       const r={index,col,row,x:island.x+col*DATA.islandRegionSize,
         y:island.y+row*DATA.islandRegionSize,id:index+':'+col+':'+row};
@@ -250,10 +276,11 @@ function drawFloatingIslands(lo,hi,time,drawContents){
   });
 }
 function drawIslandWeather(index,time){
-  const count=DATA.environment?.particlesPerIsland||10;
+  const fullCount=DATA.environment?.particlesPerIsland||10;
+  const count=ui.camera.zoom<.18?2:ui.camera.zoom<.3?4:ui.camera.zoom<.48?7:fullCount;
   if(index>=state.unlockedIslands)return;
   const island=DATA.islands[index];
-  ctx.save();ctx.translate(0,islandBob(index,time));
+  ctx.save();ctx.translate(0,renderIslandBob(index,time));
   footprintPath(island.x,island.y,island.size,island.size);ctx.clip();
   for(let n=0;n<count;n++){
     const speed=4+islandHash(n+40,index)*7;
@@ -278,7 +305,7 @@ function drawNightLighting(lo,hi,time){
   DATA.islands.forEach((island,index)=>{
     if(index>=state.unlockedIslands)return;
     const p=gridToScreen(island.x+island.size/2,island.y+island.size/2);
-    p.y+=islandBob(index,time);
+    p.y+=renderIslandBob(index,time);
     const radius=island.size*DATA.tileW*.5;
     if(p.x<lo.x-radius||p.x>hi.x+radius||p.y<lo.y-radius||p.y>hi.y+radius)return;
     const glow=island.element==='fire'?'#fc6b30':island.element==='dark'?'#806dc1':

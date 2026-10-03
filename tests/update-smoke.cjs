@@ -250,7 +250,8 @@ check('daily mission panel renders the server-provided progress and reset time',
  const html=g.element('sheetBody').innerHTML;
  assert(html.includes('Daily Missions')||g.element('sheetTitle').textContent.includes('Daily Missions'));
  assert(html.includes('1 / 1')&&html.includes('1,000 / 1,000'));
- assert(html.includes('Resets at'));
+ assert(html.includes('Resets at 05:00 Vietnam time (UTC+7)'));
+ assert(html.includes('Feed Dragons 3 Times'));
 });
 check('mission action handlers no longer grant client-side progress',()=>{
  const g=lifecycle;
@@ -408,7 +409,8 @@ check('element unlocks, hatchery gates and crop timers follow the progression cu
    light:22,metal:27,war:32,pure:37,legend:42,primal:48,time:55
  });
  assert.deepEqual(snapshot(balance,'[1,2,3,4].map(hatcheryUpgradePlayerLevel)'),[5,12,22,35]);
- assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.duration)'),[30,180,900,7200]);
+ assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.duration)'),[30,180,420,900,1800,7200,14400,28800]);
+ assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.unlockLevel)'),[1,2,2,3,3,4,4,4]);
  assert.deepEqual(snapshot(balance,'DATA.upgradeTimes'),{
    habitat:[45,180,600],farm:[30,120,480],hatchery:[90,300,900,2400],academy:[300,900,1800,3600,7200,14400]
  });
@@ -517,21 +519,33 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
  assert.equal(economy.run('hatchingSeconds(DATA.species.fire)'),30);
  assert.equal(economy.run('hatchingSeconds(DATA.species.water)'),60);
  assert.equal(economy.run('hatchingSeconds(DATA.species.time)'),21600);
- assert.equal(economy.run('hatchingSeconds(DATA.species[FOUR_IDS[0]])')>=129600,true);
- assert.equal(economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])')>=172800,true);
+ assert(economy.run('hatchingSeconds(DATA.species[FOUR_IDS[0]])')<=
+   economy.run('window.DragonConfig.hatching.maxTierSeconds[4]'));
+ assert(economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])')<=
+   economy.run('window.DragonConfig.hatching.maxTierSeconds.double'));
  const ids=snapshot(economy,'({two:Object.keys(DATA.species).find(id=>DATA.species[id].elements.length===2),'+
    'three:TRIPLE_IDS[0],four:FOUR_IDS[0],double:DOUBLE_IDS[0]})');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])')>45);
+ assert.equal(economy.run('hatchingSeconds(DATA.species["fire>water"])'),180,
+   'Fire and Water incubation uses both pure-element timers and the 2-element multiplier');
+ assert.equal(economy.run('breedingSeconds(DATA.species["fire>water"])'),240,
+   'Fire and Water breeding uses both element timers and the offspring tier multiplier');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
    economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>
    economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.three)+'])'));
+ const doubleElements=snapshot(economy,'DATA.species['+JSON.stringify(ids.double)+'].elements');
  assert(economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')>
-   economy.run('hatchingSeconds(DATA.species['+JSON.stringify(ids.four)+'])'));
+   economy.run('hatchingSeconds({rarity:"mythic",elements:'+JSON.stringify(doubleElements)+'})'),
+   'Double Element gets its higher tier multiplier for the same component elements');
  assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.three)+'])')>
    economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.two)+'])'));
- assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>=86400);
- assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')>=129600);
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')>
+   economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.three)+'])'));
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.four)+'])')<=
+   economy.run('window.DragonConfig.breeding.maxTierSeconds[4]'));
+ assert(economy.run('breedingSeconds(DATA.species['+JSON.stringify(ids.double)+'])')<=
+   economy.run('window.DragonConfig.breeding.maxTierSeconds.double'));
  economy.run('state=newGame();addEgg(DOUBLE_IDS[0],"shop")');
  assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),
    economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])*1000'));
@@ -670,6 +684,15 @@ check('Shop purchase and Farm planting keep their panels stable',()=>{
    'Harvest returns directly to crop choices');
 });
 const navigation=await boot();
+check('farm crops unlock by Farm level and new tiers can be planted',()=>{
+ navigation.run('state=newGame();state.gold=100000;state.buildings.push({id:95,type:"farm",level:1,stored:false,crop:null})');
+ assert.equal(navigation.run('plantCrop(95,"blueberry")'),false,'Level one cannot plant level two crops');
+ navigation.run('buildingById(95).level=2');
+ assert.equal(navigation.run('plantCrop(95,"blueberry")'),true);
+ navigation.run('buildingById(95).crop=null;buildingById(95).level=4');
+ assert.equal(navigation.run('plantCrop(95,"crystal-melon")'),true);
+ assert.deepEqual(snapshot(navigation,'DATA.crops.map(c=>c.unlockLevel)'),[1,2,2,3,3,4,4,4]);
+});
 check('dragon detail back navigation and habitat actions follow their source and state',()=>{
  navigation.run('state=newGame();openModal("dragons");handleAction({dataset:{action:"dragon-detail",id:"2"}})');
  assert.equal(navigation.run('ui.modal.name'),'dragon-detail');
@@ -693,6 +716,11 @@ check('dragon detail back navigation and habitat actions follow their source and
  navigation.run('buildingById(1).upgradeEnds=Date.now()+60000;renderHabitat(1)');
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="move"'));
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="store"'));
+ navigation.run('currentAccount.role="player";ui.shopTab="save";openModal("shop")');
+ assert.equal(navigation.run('ui.shopTab'),'special',
+   'Regular players are redirected away from the admin-only Data tab');
+ assert(!navigation.element('sheetBody').innerHTML.includes('data-tab="save"'),
+   'Regular players do not see the Data tab');
  navigation.run('currentAccount={id:"admin",username:"admin",role:"admin"};ui.shopTab="save";openModal("shop")');
  assert(navigation.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
  assert(navigation.element('sheetBody').innerHTML.includes('aria-label="2,500 food"'));
@@ -723,10 +751,10 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
    'ui.breedDraft={father:state.dragons[0].id,mother:state.dragons.at(-1).id};'+
    'state.buildings.push({id:state.nextId++,type:"cave",level:1,stored:false,x:740,y:705,breeding:null})');
  const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons.at(-1))');
- assert(Math.abs(odds.filter(o=>o.id.includes('>')).reduce((n,o)=>n+o.chance,0)-.75)<1e-9);
+ assert(Math.abs(odds.filter(o=>o.id.includes('>')).reduce((n,o)=>n+o.chance,0)-1)<1e-9);
  balance.run('renderBreeding(state.buildings.at(-1).id)');
  const html=balance.element('sheetBody').innerHTML;
- assert(html.includes('75.00%'));
+ assert(html.includes('100.00%'));
  assert(html.includes('breed-probabilities')&&html.includes('breed-tier-outcomes'));
  assert.equal(balance.run('breedingChanceLabel(.000000015)'),'0.00000150%');
  assert.equal((html.match(/class="breed-chance /g)||[]).length,5);
@@ -747,7 +775,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  assert.equal(four(outcomes('fire>water>earth','fire>water>wind',30)).length,0,
    'A four-element set missing from the 150 recipes cannot appear');
  const overlap=outcomes('fire>earth>ice','fire>earth>dark',30);
- assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.0225)<1e-9);
+ assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.03)<1e-9);
  const focused=outcomes('fire>earth>ice','fire>earth>dark',30);
  const fullyInherited=four(focused).filter(o=>o.id.split('>').every(e=>
    ['fire','earth','ice','dark'].includes(e)));
@@ -763,7 +791,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  const doubles=double(outcomes(fireFours[0],fireFours[1],40));
  assert.equal(doubles.length,2,'Both Double variants of the shared primary are possible');
  assert(doubles.every(o=>o.id.startsWith('fire>fire>')));
- assert(Math.abs(chance(doubles)-.009)<1e-9);
+ assert(Math.abs(chance(doubles)-.012)<1e-9);
  assert.equal(double(outcomes(fireFours[0],waterFour,100)).length,0);
  assert.equal(double(outcomes(fireFours[0],'fire>water>earth',100)).length,0);
  assert.equal(four(outcomes(fireFours[0],fireFours[1],100)).length,0);
@@ -820,8 +848,8 @@ check('premium cave shares busy rules and has its own breeding turn',()=>{
    'state.dragons.push({...state.dragons[0],id:92,species:"fire>earth>dark",nickname:"Other"});'+
    'state.buildings.push({id:93,type:"premiumCave",level:1,x:750,y:692,stored:false,breeding:null},'+
    '{id:94,type:"cave",level:1,x:738,y:707,stored:false,breeding:null});renderBreeding(93)');
- assert(premium.element('sheetBody').innerHTML.includes('29.40%'));
- assert(premium.element('sheetBody').innerHTML.includes('3.57%'));
+ assert(premium.element('sheetBody').innerHTML.includes('25.20%'));
+ assert(premium.element('sheetBody').innerHTML.includes('5.60%'));
  assert(premium.element('sheetBody').innerHTML.includes('1.40× chance'));
  assert(premium.element('sheetBody').innerHTML.includes('premium-breeding-banner'));
  premium.run('startBreeding(93,2,92)');
@@ -876,9 +904,13 @@ check('guide navigation and game-driven help pages',()=>{
  assert(!chart.includes('class="guide-element"'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
  const breeding=game.element('sheetBody').innerHTML;
- assert(breeding.includes('0,9%')&&breeding.includes('2,8%')&&
+ assert(breeding.includes('1,2%')&&breeding.includes('28%')&&
    breeding.includes('mỗi ô ấp một trứng độc lập'));
- assert(breeding.includes('Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ'));
+ assert(breeding.includes('Rồng 1 hệ chỉ có thể lai ra khi hai bố mẹ cùng một giống rồng 1 hệ'));
+ assert(breeding.includes('Nếu Lồng ấp đầy, kết quả ở lại Hang'));
+ assert(!breeding.includes('nhận trứng lai vào Inventory'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"challenge"}})');
+ assert(game.element('sheetBody').innerHTML.includes('Đổi sang rồng dự bị không mất lượt'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
  const special=game.element('sheetBody').innerHTML;
  assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
@@ -1168,7 +1200,7 @@ check('Double Element breeding needs qualified parents and preserves probability
   const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons[1])');
   const double=odds.filter(o=>db.species.find(s=>s.id===o.id)?.doHiem==='transcendent');
   assert(double.some(o=>o.id==='fire>fire>water>thunder'),JSON.stringify(double));
-  assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.0105)<1e-9);
+  assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.0185)<1e-9);
   assert(Math.abs(odds.reduce((total,o)=>total+o.chance,0)-1)<1e-9);
   balance.run('state.dragons[1].species=FOUR_IDS.find(id=>DATA.species[id].elements[0]==="earth");');
   assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].rarity==="transcendent").length'),0);
@@ -1272,7 +1304,7 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
  const odds=JSON.parse(game.run('JSON.stringify(breedingOptions(state.dragons[0],state.dragons[1]))'));
  const sum=odds.reduce((a,o)=>a+o.chance,0);assert(Math.abs(sum-1)<1e-9);
  const tier=n=>odds.filter(o=>o.id.split('>').length===n).reduce((a,o)=>a+o.chance,0);
- assert(Math.abs(tier(3)-.195)<1e-9);assert(Math.abs(tier(4)-.0225)<1e-9);
+ assert(Math.abs(tier(3)-.16)<1e-9);assert(Math.abs(tier(4)-.03)<1e-9);
  const results=[0,0,0,0];let seed=234553;
  for(let i=0;i<100000;i++){
    seed=(seed*1664525+1013904223)>>>0;const roll=seed/4294967296;
@@ -1297,7 +1329,7 @@ check('100000 rolls for 3, 4, 5 and 6 parent-union elements',()=>{
     JSON.stringify({id:502,species:b,level:35})+')');
   let cumulative=0;const thresholds=options.map(o=>(cumulative+=o.chance));
   const p4=options.filter(o=>o.id.split('>').length===4).reduce((n,o)=>n+o.chance,0);
-  assert(Math.abs(p4-(size===3?0:.0225))<1e-9);
+  assert(Math.abs(p4-(size===3?0:.03))<1e-9);
   assert(options.filter(o=>o.id.split('>').length===4).every(o=>
     o.id.split('>').every(e=>new Set(a.split('>').concat(b.split('>'))).has(e))));
   let seed=234553,observed=0;
@@ -1522,7 +1554,7 @@ check('low building silhouettes and larger habitat dragons retain the exact base
  assert.equal(dragons[0],1.35);
  assert.deepEqual(dragons.slice(1),[.86,.86,.86,.86]);
 });
-check('all ten habitat environments render with dragons',()=>{
+check('all fifteen habitat environments render with dragons',()=>{
  const before=game.drawCalls.length;
  game.run('for(const [i,element] of Object.keys(DATA.elements).entries()){' +
    'const b={id:state.dragons[0].habitatId,type:"habitat",element,x:738+i,y:700,'+

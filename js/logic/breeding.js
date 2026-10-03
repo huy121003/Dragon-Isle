@@ -95,7 +95,7 @@ function collectBreeding(caveId){
   }
   cave.breeding=null;
   gainPlayerXP(window.DragonConfig.progression.xpSources.breed);
-  toast(egg.hatcheryId?"The bred egg entered the Hatchery.":"The Hatchery is full; the bred egg is waiting in Inventory.");
+  toast("The bred egg entered the Hatchery.");
   const center=buildingCenter(cave);burst(center.x,center.y,"#efbdff",20);
-  AUDIO.play("egg");openModal(egg.hatcheryId?"hatchery":"inventory",egg.hatcheryId||null);saveGame();
+  AUDIO.play("egg");openModal("hatchery",egg.hatcheryId);saveGame();
 }

@@ -36,11 +36,7 @@ const DATA={
     academyUpgrades:CONFIG.progression.academyUpgrades
   },
   upgradeTimes:CONFIG.buildings.upgradeTimes,
-  breedingTimes:{
-    common:CONFIG.breeding.timeByTier[1],rare:CONFIG.breeding.timeByTier[2],
-    epic:CONFIG.breeding.timeByTier[3],legendary:CONFIG.breeding.timeByTier[4],
-    mythic:CONFIG.breeding.timeByTier.double,transcendent:CONFIG.breeding.timeByTier.double
-  },
+  elementBreedingTimes:CONFIG.breeding.elementSeconds,
   dragonForms:GAME_CONFIG.dragonForms,tertiaryForms:GAME_CONFIG.tertiaryForms,
   buildings:Object.fromEntries(Object.entries(GAME_CONFIG.buildings).map(function([id,meta]){
     return [id,{...meta,...BUILDING_BALANCE[id]}];

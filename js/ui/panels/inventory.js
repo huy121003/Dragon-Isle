@@ -19,7 +19,7 @@ function renderInventory(){
   if(!stored.length)html+='<p>Select a building on the island and choose Store.</p>';
   stored.forEach(function(b){
     html+='<button class="shop-item" data-action="place-inventory" data-id="'+b.id+'"><span class="shop-icon">'+
-      (b.type==="habitat"?DATA.elements[b.element].mark:b.type==="farm"?"🌱":b.type==="hatchery"?"🥚":isBreedingCave(b)?"💞":b.type==="arena"?"⚔️":"🚩")+
+      (b.type==="habitat"?elementFlag(b.element,false,"lg"):b.type==="farm"?"🌱":b.type==="hatchery"?"🥚":isBreedingCave(b)?"💞":b.type==="arena"?"⚔️":"🚩")+
       '</span><span><b>'+buildingName(b)+'</b><small>Level '+b.level+' · '+
       reservedFootprint(b).w+'×'+reservedFootprint(b).h+' tiles · tap to place on the island</small></span></button>';
   });

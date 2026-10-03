@@ -346,6 +346,7 @@
 .arena-stage-controls .battle-skill-grid .battle-skill-icon .battle-skill-label .skill-hex{width:35px;height:35px}
 .arena-stage-controls .battle-skill-grid .battle-skill-icon.special{height:52px;min-height:52px;background:#ffffff16;border:2px solid #ffe5a0;box-shadow:0 0 0 2px #edb84988,0 0 15px #ffc85688}
 .arena-stage-controls .battle-skill-grid .battle-skill-icon.special .battle-skill-label{color:inherit}
+.arena-stage-controls .battle-skill-glyph{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#142b3dde;color:#fff7db;font:700 18px Georgia,serif;text-shadow:0 1px 4px #12283c}
 .battle-skill-state,.battle-skill-cooldown{position:absolute;right:-4px;bottom:-5px;display:grid;place-items:center;min-width:17px;height:17px;border-radius:9px;background:#183f55;color:#fff;font:700 10px system-ui;font-style:normal}
 .battle-skill-state{font-size:9px}
 .battle-statuses.compact{position:absolute;z-index:4;top:-3px;left:50%;transform:translateX(-50%);flex-wrap:nowrap;min-height:16px;margin:0;gap:2px}

@@ -9,6 +9,16 @@ import {game,send} from '../../app/game-bridge.js';
 import {badges,fmt,Portrait,RarityGem,SkillHex,speciesOf,Stars} from './ArenaShared.jsx';
 import {battleSnapshot,MatchupMark,SkillEffect,StatusIcons} from './ArenaEffects.jsx';
 import {useBattleAnchors} from './useBattleAnchors.js';
+const specialGlyph={burn:'♨',blood_crit:'✹',detonate_burn:'✺',heal_lowest:'✚',
+  heal_team:'✣',cleanse_heal_lowest:'✧',shield:'⬢',armor_down:'⬡',
+  switch_trap:'◇',multi:'⚔',damage_reduction:'◈',switch_punish:'➤',
+  freeze_chance:'❄',damage_down:'↘',lock_switch:'⛓',next_attack_up:'⚡',
+  area:'✺',poison:'☠',regen_team:'❀',spore_bloom:'✿',curse:'☾',
+  curse_strike:'◐',lifesteal_cost:'♥',cleanse_team_heal:'✧',revive_first:'✦',
+  armor_up:'⬟',reflect:'↶',damage_up:'⬆',last_stand:'⚑',
+  cleanse_heal_self:'✧',vitality:'♥',dispel_strike:'✹',copy_last:'✦',
+  repeat_punish:'⟳',low_hp_power:'⚔',carapace:'◆',execute:'✘',
+  rewind_ally:'◷',echo_last:'⟲'};
 
 export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   const presentation=arena.presentation;
@@ -81,6 +91,8 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
           skill.description||'Skill')}
         onClick={()=>act('skill',challenge?{skillIndex:skill.index}:{skill:skill.index})}>
         <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>
+          {skill.special&&<i className="battle-skill-glyph" aria-hidden="true">
+            {specialGlyph[skill.effect?.kind]||'✦'}</i>}
           {!skill.unlocked&&<i className="battle-skill-state">🔒</i>}
           {skill.remainingCooldown>0&&<i className="battle-skill-cooldown">{skill.remainingCooldown}</i>}
         </span></Button>;

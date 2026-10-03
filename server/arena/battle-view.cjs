@@ -8,8 +8,10 @@ const combat=require('../../js/data/combat-rules.js');
 const progressionConfig=require('../../js/config/progression.js');
 const arenaConfig=require('../../js/config/arena.js');
 
-const statusIcons={poison:'☠',freeze:'❄',damage_up:'⚔',damage_down:'🗡',
-  armor_up:'🛡',armor_down:'⚒',damage_reduction:'✦',regen:'✚',vitality:'♥',accuracy_down:'◌'};
+const statusIcons={poison:'☠',burn:'♨',curse:'☾',freeze:'❄',damage_up:'⚔',damage_down:'↘',
+  armor_up:'⬟',armor_down:'⬡',damage_reduction:'◈',regen:'✚',vitality:'♥',
+  accuracy_down:'◎',shield:'⬢',reflect:'↶',lock_switch:'⛓',next_attack_up:'⚡',
+  carapace:'◆',carapace_strike:'✦'};
 
 /** Stable public status payload for React clients. */
 function statusSnapshot(fighter){
@@ -34,7 +36,7 @@ function publicBattle(battle){
     stars:fighter.stars||0,nickname:fighter.nickname,hp:fighter.hp,
     maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),
     skills:fighter.skills.map((skill,index)=>skill?{
-      index,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
+      index,id:skill.id,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
       special:!!skill.special,effect:skill.effect||null,description:skill.description||null,
       cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
       unlockLevel:progressionConfig.skillUnlockLevels[index],

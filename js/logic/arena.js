@@ -1,7 +1,7 @@
 "use strict";
 /* Team hình và trận đánh đi qua API; chỉ hiệu ứng được tính trên trình duyệt. */
 ui.arena={data:null,draft:{attack:[]},phase:"teams",busy:false,result:null,error:null,
-  presentation:null,animating:false,pendingSkill:null};
+  loadingMessage:null,presentation:null,animating:false,pendingSkill:null};
 let arenaAnimationTimer=0;
 /** Publish Arena UI changes through the React runtime, with a legacy event fallback. */
 function notifyArenaRuntime(){
@@ -33,13 +33,14 @@ async function loadArena(){
   if(ui.arena.busy)return;
   finishArenaPresentation();
   ui.arena.phase="teams";
-  ui.arena.busy=true;ui.arena.error=null;ui.arena.result=null;renderArena();
+  ui.arena.busy=true;ui.arena.loadingMessage="Loading Arena and finding rivals…";
+  ui.arena.error=null;ui.arena.result=null;renderArena();
   try{
     await saveGame();
     ui.arena.data=await arenaRequest('list');
     ui.arena.draft={attack:ui.arena.data.attack.slice()};
   }catch(error){ui.arena.error=error.message;}
-  ui.arena.busy=false;if(ui.modal?.name==='arena')renderArena();
+  ui.arena.busy=false;ui.arena.loadingMessage=null;if(ui.modal?.name==='arena')renderArena();
   notifyArenaRuntime();
 }
 /** Toggle one eligible dragon in the local attack draft without mutating server state. */
@@ -62,11 +63,11 @@ async function arenaSaveTeam(){
     toast('Choose exactly '+teamSize+' attack dragons.');return;
   }
   try{
-    ui.arena.busy=true;renderArena();await saveGame();
+    ui.arena.busy=true;ui.arena.loadingMessage="Saving team and finding rivals…";renderArena();await saveGame();
     await arenaRequest('team','PUT',{attack});
     ui.arena.data=await arenaRequest('list');ui.arena.phase="opponents";toast('Attack team saved. Choose an Arena rival.');
   }catch(error){ui.arena.error=error.message;}
-  ui.arena.busy=false;renderArena();notifyArenaRuntime();
+  ui.arena.busy=false;ui.arena.loadingMessage=null;renderArena();notifyArenaRuntime();
 }
 /** Start an Arena match against a selected AI rival after forcing a safe save. */
 async function arenaFight(opponentId){

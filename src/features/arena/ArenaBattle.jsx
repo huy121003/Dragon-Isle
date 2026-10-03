@@ -57,10 +57,10 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   };
   const ReserveVitals=({dragon})=><span className="arena-reserve-vitals">
     <span className="arena-reserve-flags" aria-hidden="true">{badges(dragon.species)}</span>
-    <StatusIcons dragon={dragon} compact/>
     <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
       <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
     </span>
+    <StatusIcons dragon={dragon} compact/>
   </span>;
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>
     <h2>{battle.opponent}</h2></div><Button danger onClick={()=>act('forfeit')}

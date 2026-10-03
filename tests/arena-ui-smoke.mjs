@@ -28,6 +28,16 @@ assert.match(renderToStaticMarkup(React.createElement('span',{className:'skill-h
 const server=await createServer({server:{middlewareMode:true},appType:'custom',logLevel:'error'});
 try{
   const {default:ArenaView,SkillEffect,ElementFilter}=await server.ssrLoadModule('/src/features/arena/ArenaView.jsx');
+  const {skillDamageLabel}=await server.ssrLoadModule('/src/features/arena/BattleSkillControls.jsx');
+  const normalSkills=JSON.parse(readFileSync(new URL('../data/skills/normal.json',import.meta.url)));
+  const elementalSkills=JSON.parse(readFileSync(new URL('../data/skills/elemental.json',import.meta.url)));
+  const specialSkills=JSON.parse(readFileSync(new URL('../data/special-skills.json',import.meta.url))).skills;
+  for(const skill of [...normalSkills,...Object.values(elementalSkills).flat(),...specialSkills]){
+    const detail=skillDamageLabel(skill);
+    if(skill.power>0)assert(detail.includes(`${+(skill.power*100).toFixed(1)}%`),
+      `${skill.id} detail reflects its actual damage multiplier`);
+    else assert(!detail.includes('100%'),`${skill.id} has no fixed 100% attack`);
+  }
   const species={fire:{name:'Fire Dragon',elements:['fire'],rarity:'common'},
     water:{name:'Water Dragon',elements:['water'],rarity:'common'},
     ice:{name:'Ice Dragon',elements:['ice'],rarity:'common'},
@@ -135,6 +145,9 @@ try{
   assert.match(fighting,/Flame Slash/);assert.match(fighting,/Milo/);
   assert.match(fighting,/▼ ×0.5/);
   assert.match(fighting,/battle-skill-matchup weak/);
+  assert.equal((fighting.match(/class="ant-btn[^\"]*battle-skill-info/g)||[]).length,4,
+    'Each skill has a separate information control');
+  assert.doesNotMatch(fighting,/battle-skill-summary/,'The skill button has no summary row');
   const strongBattle={...battle,defense:[{...battle.defense[0],species:'ice'}]};
   const strongMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:strongBattle}}}));
@@ -171,6 +184,8 @@ try{
   assert(firstReserve.indexOf('arena-reserve-avatar-frame')<firstReserve.indexOf('arena-reserve-vitals')&&
     firstReserve.indexOf('arena-reserve-flags')<firstReserve.indexOf('arena-reserve-hp'),
     'Our avatar is left; flags sit above HP in the right column');
+  assert(firstReserve.indexOf('arena-reserve-hp')<firstReserve.indexOf('battle-statuses compact'),
+    'Reserve statuses occupy a row below HP');
   const rivalStart=fighting.indexOf('arena-reserve-side defense');
   const rivalButton=fighting.slice(fighting.indexOf('class="arena-reserve-button',rivalStart),
     fighting.indexOf('</button>',fighting.indexOf('class="arena-reserve-button',rivalStart)));

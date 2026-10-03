@@ -101,3 +101,17 @@ export function ElementFilter({value,onChange}){
       <ElementFlag id={id}/>{value.includes(id)&&<span className="filter-check" aria-hidden="true">✓</span>}</button>)}
   </div><small className="filter-count">{value.length}/{maxElements} elements selected · match all selected elements</small></div>;
 }
+/** Filter roster cards by dragon rarity; gems reuse the same tier art as the cards. */
+export function RarityFilter({value,onChange}){
+  const rarities=game()?.data?.rarities||{};
+  return <div className="arena-filter-wrap"><div className="arena-rarity-filter" role="group" aria-label="Filter by dragon tier">
+    <button type="button" className={'arena-filter-btn arena-filter-all'+(!value.length?' active':'')}
+      aria-label="All tiers" aria-pressed={!value.length} onClick={()=>onChange([])}>All</button>
+    {Object.entries(rarities).map(([id,rarity])=><button key={id} type="button"
+      className={'arena-filter-btn arena-rarity-filter-btn'+(value.includes(id)?' active selected':'')}
+      title={rarity.name+(value.includes(id)?' · Selected':'')} aria-label={'Tier: '+rarity.name}
+      aria-pressed={value.includes(id)} onClick={()=>onChange(value.includes(id)?value.filter(item=>item!==id):[...value,id])}>
+      <RarityGem id={id} element={Object.keys(game()?.data?.elements||{})[0]}/>
+      {value.includes(id)&&<span className="filter-check" aria-hidden="true">✓</span>}</button>)}
+  </div><small className="filter-count">{value.length?value.map(id=>rarities[id]?.name||id).join(', '):'All tiers'}</small></div>;
+}

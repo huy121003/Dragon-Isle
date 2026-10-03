@@ -102,12 +102,15 @@ export function SkillEffect({event,frame,anchors}){
 }
 const statusGlyphs={poison:'☠',regen:'✚',heal:'✚',cleanse:'✧',freeze:'❄',
   damage_up:'⚔',damage_down:'↘',armor_up:'⬟',armor_down:'⬡',damage_reduction:'◈',
-  vitality:'♥',accuracy_down:'◎',burn:'♨',curse:'☾',shield:'⬢',reflect:'↶'};
+  vitality:'♥',accuracy_down:'◎',burn:'♨',curse:'☾',shield:'⬢',reflect:'↶',
+  lock_switch:'⛓',next_attack_up:'⚡',carapace:'◆',carapace_strike:'✦'};
 export function StatusIcons({dragon,compact=false}){
   const names={damage_up:'Damage ↑',damage_down:'Damage ↓',armor_up:'Armor ↑',
     armor_down:'Armor ↓',damage_reduction:'Damage resistance',poison:'Poison',
     freeze:'Frozen',regen:'Regeneration',vitality:'Maximum HP ↑',accuracy_down:'Accuracy ↓',
-    burn:'Burn',curse:'Curse',shield:'Shield',reflect:'Reflect'};
+    burn:'Burn',curse:'Curse',shield:'Shield',reflect:'Reflect',
+    lock_switch:'Switch locked',next_attack_up:'Next attack ↑',
+    carapace:'Carapace',carapace_strike:'Counter attack ↑'};
   return <div className={'battle-statuses'+(compact?' compact':'')} aria-label="Active statuses">
     {(dragon.statuses||[]).map((status,index)=><span key={status.kind+'-'+index}
       className={'battle-status status-'+status.kind}

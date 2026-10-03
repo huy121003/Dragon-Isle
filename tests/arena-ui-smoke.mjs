@@ -133,11 +133,13 @@ try{
   const fighting=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,data:{...data,battle}}}));
   assert.match(fighting,/battle-stage/);assert.match(fighting,/battle-skill-grid/);
   assert.match(fighting,/Flame Slash/);assert.match(fighting,/Milo/);
-  assert.match(fighting,/matchup-mark weak/);assert.match(fighting,/▼.*WEAK/);
+  assert.match(fighting,/Weak ×0.5/);
+  assert.doesNotMatch(fighting,/matchup-mark weak/);
   const strongBattle={...battle,defense:[{...battle.defense[0],species:'ice'}]};
   const strongMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,
     data:{...data,battle:strongBattle}}}));
-  assert.match(strongMenu,/matchup-mark strong/);assert.match(strongMenu,/▲.*STRONG/);
+  assert.match(strongMenu,/Strong ×2/);
+  assert.doesNotMatch(strongMenu,/matchup-mark strong/);
   const supportBattle={...battle,attack:[{...dragon,skills:[{...dragon.skills[0],
     special:true,power:0,bonus:0,description:'Heal',effect:{kind:'heal',target:'self'}}]}]};
   const supportMenu=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,

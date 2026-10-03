@@ -70,14 +70,15 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
     <div className="battle-skill-grid">{skillOptions.map(skill=>{
       const offensive=skill.element&&(!skill.special||skill.power+skill.bonus>0);
       const matchup=offensive?game()?.skillMatchup?.(skill.element,defender.species):1;
+      const matchupText=matchup>1?' · Strong ×'+matchup:matchup<1?' · Weak ×'+matchup:'';
       return <Button key={skill.index}
         disabled={disabled||!skill.unlocked||skill.remainingCooldown>0}
         className={'battle-skill battle-skill-icon '+(skill.unlocked?'':'locked')+(skill.special?' special':'')}
-        title={skill.name+' — '+(!skill.unlocked?'Unlocks at Lv'+skill.unlockLevel:
+        title={skill.name+matchupText+' — '+(!skill.unlocked?'Unlocks at Lv'+skill.unlockLevel:
           skill.remainingCooldown?'Cooldown · '+skill.remainingCooldown+' turns':
-          skill.description|| (skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
+          skill.description|| (skill.element?'Base + '+Math.round((skill.bonus||0)*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
           Math.round(skill.power*100)+'% base attack'))}
-        aria-label={skill.name+' — '+(!skill.unlocked?'Unlocks at level '+skill.unlockLevel:
+        aria-label={skill.name+matchupText+' — '+(!skill.unlocked?'Unlocks at level '+skill.unlockLevel:
           skill.remainingCooldown?'Cooldown, '+skill.remainingCooldown+' turns':
           skill.description||'Skill')}
         onClick={()=>act('skill',challenge?{skillIndex:skill.index}:{skill:skill.index})}>

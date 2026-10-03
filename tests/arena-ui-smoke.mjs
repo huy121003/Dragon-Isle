@@ -83,6 +83,8 @@ try{
   assert.match(setup,/href="#flag-fire"/);
   assert.match(setup,/fill="#e45"/);
   assert.match(setup,/aria-label="Filter: Fire"/);
+  assert.match(setup,/aria-label="Filter by dragon tier"/);
+  assert.match(setup,/aria-label="Tier: Common"/);
   assert.match(setup,/0\/4 elements selected/);
   const multi=renderToStaticMarkup(React.createElement(ElementFilter,{value:['fire','water'],onChange:()=>{}}));
   assert.match(multi,/2\/4 elements selected/);
@@ -101,6 +103,7 @@ try{
   assert.match(opponents,/arena-hidden-dragon/);assert.match(opponents,/Opponent team concealed/);
   assert.doesNotMatch(opponents,/Water Dragon|Lv20|Rookie Warden/);
   assert.doesNotMatch(opponents,/arena-element-filter|Filter: Fire/);
+  assert.doesNotMatch(opponents,/Filter by dragon tier/);
   assert.doesNotMatch(opponents,/arena-roster-grid/);
   const refill=renderToStaticMarkup(React.createElement(ArenaView,{arena:{...arena,phase:'opponents',
     data:{...data,attemptsRemaining:1}}}));

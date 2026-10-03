@@ -37,8 +37,9 @@ let state = null;
 let storageAvailable = true;
 let saveWarningShown = false;
 const ui = {modal:null,shopTab:"special",bookTab:"all",bookPage:0,guideTab:"start",
-  breedFatherElements:[],breedMotherElements:[],breedFatherQuery:"",breedMotherQuery:"",
-  dragonElements:[],bookElements:[],dragonSort:"power",fixedDay:false,dayOffset:0,debugIso:false,
+  breedFatherElements:[],breedMotherElements:[],breedFatherRarities:[],breedMotherRarities:[],
+  breedFatherQuery:"",breedMotherQuery:"",
+  dragonElements:[],bookElements:[],dragonRarities:[],bookRarities:[],shopEggElements:[],shopEggRarities:[],dragonSort:"power",fixedDay:false,dayOffset:0,debugIso:false,
   returnModal:null,dragonReturn:null,
   breedDraft:{father:null,mother:null},selection:null,mode:null,pointers:new Map(),gesture:null,
   camera:{x:0,y:0,zoom:.9},

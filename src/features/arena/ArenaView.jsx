@@ -3,16 +3,17 @@ import React,{useState} from 'react';
 import {Button,Tag} from 'antd';
 import '../../arena.css';
 import {emitRuntime,send} from '../../app/game-bridge.js';
-import {arenaConfig,ElementFilter,fmt,RosterCard,speciesOf,TeamSlots} from './ArenaShared.jsx';
+import {arenaConfig,ElementFilter,RarityFilter,fmt,RosterCard,speciesOf,TeamSlots} from './ArenaShared.jsx';
 import {Battle} from './ArenaBattle.jsx';
 import ResourceAmount from '../../components/ResourceAmount.jsx';
 
 function ArenaSetup({arena}){
-  const [elements,setElements]=useState([]),data=arena.data;
+  const [elements,setElements]=useState([]),[rarities,setRarities]=useState([]),data=arena.data;
   const config=arenaConfig(),teamSize=config.teamSize,minLevel=config.minBattleLevel;
   if(!data)return <div className="arena-loading">⏳ Loading Arena…
     {arena.error&&<p>{arena.error}</p>}<Button onClick={()=>send({action:'arena-refresh'})}>Reload</Button></div>;
-  const visibleDragons=data.dragons.filter(dragon=>elements.every(id=>speciesOf(dragon.species)?.elements.includes(id)));
+  const visibleDragons=data.dragons.filter(dragon=>elements.every(id=>speciesOf(dragon.species)?.elements.includes(id))&&
+    (!rarities.length||rarities.includes(speciesOf(dragon.species)?.rarity)));
   const resetSeconds=Math.max(0,Math.ceil(((data.resetAt||0)-Date.now())/1000));
   const resetText=Math.floor(resetSeconds/3600)+'h '+String(Math.floor(resetSeconds%3600/60)).padStart(2,'0')+'m';
   return <div className="arena-hub">
@@ -30,6 +31,7 @@ function ArenaSetup({arena}){
       <h3>Attack team</h3></div><Tag color="gold">Exactly {teamSize} dragons at Lv{minLevel}+</Tag></div>
       <div className="arena-teams-preview single"><TeamSlots title="⚔ Attack" ids={arena.draft.attack} dragons={data.dragons}/></div>
       <ElementFilter value={elements} onChange={setElements}/>
+      <RarityFilter value={rarities} onChange={setRarities}/>
       <div className="arena-roster-grid">{visibleDragons.map(dragon=><RosterCard key={dragon.id} dragon={dragon}
         selected={arena.draft.attack.includes(dragon.id)} disabled={arena.busy}
         onClick={()=>send({action:'arena-toggle',side:'attack',id:dragon.id})}/>)}

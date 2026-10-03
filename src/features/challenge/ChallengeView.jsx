@@ -1,13 +1,13 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Button,Switch} from 'antd';
 import {Battle} from '../arena/ArenaBattle.jsx';
-import {ElementFilter,RosterCard} from '../arena/ArenaShared.jsx';
+import {ElementFilter,RarityFilter,RosterCard} from '../arena/ArenaShared.jsx';
 import '../../arena.css';
 import '../../challenge.css';
 import {game} from '../../app/game-bridge.js';
 
 export default function ChallengeView({status,request,refresh}){
-  const match=status?.match,[selection,setSelection]=useState([]),[elements,setElements]=useState([]);
+  const match=status?.match,[selection,setSelection]=useState([]),[elements,setElements]=useState([]),[rarities,setRarities]=useState([]);
   const challengeConfig=window.DragonConfig.challenge,arenaConfig=window.DragonConfig.arena;
   const teamSize=challengeConfig.teamSize,minLevel=arenaConfig.minBattleLevel;
   const [presentation,setPresentation]=useState(null),[animating,setAnimating]=useState(false);
@@ -36,7 +36,8 @@ export default function ChallengeView({status,request,refresh}){
     await request('turn',{...body,expectedTurn:match.battle.turn,expectedEvents:match.eventSeq});
   }
   const roster=match?.roster?.filter(dragon=>elements.every(element=>
-    game()?.data?.species?.[dragon.species]?.elements?.includes(element)))||[];
+    game()?.data?.species?.[dragon.species]?.elements?.includes(element))&&
+    (!rarities.length||rarities.includes(game()?.data?.species?.[dragon.species]?.rarity)))||[];
   const opponentReconnecting=match?.opponentConnection==='reconnecting';
   const opponentReconnectSeconds=opponentReconnecting?
     Math.max(0,Math.ceil(((match?.opponentReconnectUntil||0)-Date.now())/1000)):0;
@@ -61,6 +62,7 @@ export default function ChallengeView({status,request,refresh}){
       <p>Your selection is private. {match.opponentReady?'Opponent is ready.':'Waiting for opponent selection.'}</p>
       {match.ready?<p className="challenge-waiting">You are ready. Waiting for {match.opponent}…</p>:<>
         <ElementFilter value={elements} onChange={setElements}/>
+        <RarityFilter value={rarities} onChange={setRarities}/>
         <div className="arena-roster-grid">{roster.map(dragon=><RosterCard key={dragon.id} dragon={dragon}
           selected={selection.includes(dragon.id)} onClick={()=>setSelection(current=>current.includes(dragon.id)?
             current.filter(id=>id!==dragon.id):current.length<teamSize?[...current,dragon.id]:current)}/>)}

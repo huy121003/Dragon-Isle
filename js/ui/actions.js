@@ -79,10 +79,26 @@ function handleAction(button){
     case "toggle-iso-debug":ui.debugIso=!ui.debugIso;renderShop();break;
     case "book-tab":ui.bookTab=button.dataset.tab;ui.bookPage=0;renderBook();dom.body.scrollTop=0;break;
     case "book-page":ui.bookPage=Number(button.dataset.page)||0;renderBook();dom.body.scrollTop=0;break;
+    case "rarity-filter":{
+      const target=button.dataset.target,rarity=button.dataset.rarity;
+      if(["breed-father","breed-mother","dragon","book","admin-eggs"].includes(target)){
+        const property=target==="breed-father"?"breedFatherRarities":
+          target==="breed-mother"?"breedMotherRarities":target==="admin-eggs"?"shopEggRarities":target+"Rarities";
+        const selected=ui[property];
+        if(rarity==="all")ui[property]=[];
+        else if(DATA.rarities[rarity])ui[property]=selected.includes(rarity)?
+          selected.filter(id=>id!==rarity):[...selected,rarity];
+        if(target==="book"){ui.bookPage=0;renderBook();}
+        else if(target==="dragon")renderDragons();
+        else if(target==="admin-eggs"){ui.shopEggPage=0;renderShop();}
+        else renderBreeding(ui.modal.extra);
+      }
+      break;
+    }
     case "element-filter":{
       const target=button.dataset.target;
-      if(["breed-father","breed-mother","dragon","book"].includes(target)){
-        const property=target==='breed-father'?'breedFatherElements':target==='breed-mother'?'breedMotherElements':target+'Elements';
+      if(["breed-father","breed-mother","dragon","book","admin-eggs"].includes(target)){
+        const property=target==='breed-father'?'breedFatherElements':target==='breed-mother'?'breedMotherElements':target==='admin-eggs'?'shopEggElements':target+'Elements';
         const selected=ui[property],element=button.dataset.element;
         if(element==='all')ui[property]=[];
         else if(DATA.elements[element]){
@@ -91,6 +107,7 @@ function handleAction(button){
         }
         if(target==="book"){ui.bookPage=0;renderBook();}
         else if(target==="dragon")renderDragons();
+        else if(target==="admin-eggs"){ui.shopEggPage=0;renderShop();}
         else renderBreeding(ui.modal.extra);
       }
       break;

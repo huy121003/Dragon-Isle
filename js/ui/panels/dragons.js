@@ -4,11 +4,12 @@
 function renderDragons(){
   dom.title.textContent="🐲 Owned Dragons · "+state.dragons.length;
   const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
-  let html='<div class="note">Tap a dragon card for its stats and skills. Feed '+feedsPerLevel+' times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+
+  let html='<div class="note">Tap a dragon card for its stats and skills. Feed '+feedsPerLevel+' times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+rarityFilter('dragon',ui.dragonRarities)+
     '<div class="dragon-sort" role="group" aria-label="Sort dragons"><span>Sort:</span>'+[
       ['level','Level'],['stars','Stars']].map(([key,label])=>
         '<button class="btn '+(ui.dragonSort===key?'active':'')+'" data-action="dragon-sort" data-sort="'+key+'">'+label+'</button>').join('')+'</div><div class="cards">';
-  const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements))
+  const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements)&&
+      matchesRarityFilter(DATA.species[d.species],ui.dragonRarities))
     .slice().sort((a,b)=>{
       const left=ui.dragonSort==='level'?a.level:ui.dragonSort==='stars'?(a.stars||0):dragonCombatPower(a);
       const right=ui.dragonSort==='level'?b.level:ui.dragonSort==='stars'?(b.stars||0):dragonCombatPower(b);

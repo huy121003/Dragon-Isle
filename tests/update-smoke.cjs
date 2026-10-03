@@ -362,11 +362,22 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
 });
 check('admin egg shop exposes the full catalog in small pages while players see pure eggs only',()=>{
  const pure=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.length===1&&s.detail.giaTrung).length');
- const all=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.detail.giaTrung).length');
- balance.run('currentAccount={id:"admin",username:"admin",role:"admin"};state.player.level=100;state.gold=state.food=state.gems=1000000;ui.shopTab="eggs";ui.shopEggPage=0;renderShop()');
+ const all=balance.run('DRAGON_DB.species.length');
+ const specialPrices=snapshot(balance,'({quad:shopEggPrice(DATA.species[FOUR_IDS[0]],true),double:shopEggPrice(DATA.species[DOUBLE_IDS[0]],true)})');
+ assert(specialPrices.quad.gem>0&&specialPrices.double.gem>0,'Admin prices cover Mythic and Double eggs');
+ balance.run('currentAccount={id:"admin",username:"admin",role:"admin"};state.player.level=100;state.gold=state.food=state.gems=1000000;ui.shopTab="eggs";ui.shopEggPage=0;ui.shopEggElements=[];ui.shopEggRarities=[];renderShop()');
  let html=balance.element('sheetBody').innerHTML;
  assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,Math.min(48,all));
  assert(html.includes(all+' eggs'));
+ assert(html.includes('data-target="admin-eggs"'),'Admin egg shop has element and tier filters');
+ balance.run('handleAction({dataset:{action:"rarity-filter",target:"admin-eggs",rarity:"mythic"}})');
+ const mythicCount=balance.run('DRAGON_DB.species.filter(raw=>DATA.species[raw.id].rarity==="mythic").length');
+ assert(balance.element('sheetBody').innerHTML.includes(mythicCount+' eggs'));
+ balance.run('handleAction({dataset:{action:"rarity-filter",target:"admin-eggs",rarity:"all"}});handleAction({dataset:{action:"element-filter",target:"admin-eggs",element:"fire"}})');
+ const fireCount=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.includes("fire")).length');
+ assert(balance.element('sheetBody').innerHTML.includes(fireCount+' eggs'));
+ balance.run('handleAction({dataset:{action:"element-filter",target:"admin-eggs",element:"all"}})');
+ html=balance.element('sheetBody').innerHTML;
  if(all>48){
    const first=html.match(/data-action="shop-egg-detail" data-species="([^"]+)"/)[1];
    balance.run('handleAction({dataset:{action:"shop-eggs-page",page:"1"}})');
@@ -377,7 +388,7 @@ check('admin egg shop exposes the full catalog in small pages while players see 
  balance.run('currentAccount={id:"player",username:"player",role:"player"};ui.shopTab="eggs";renderShop()');
  html=balance.element('sheetBody').innerHTML;
  assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,pure);
- assert(!html.includes('· '+all+' eggs'));
+ assert(!html.includes(' · '+all+' eggs'));
 });
 check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.fire)'),30,'Fire pure egg should hatch in 30 seconds');
@@ -710,7 +721,7 @@ check('dragon detail back navigation and habitat actions follow their source and
    'Regular players are redirected away from the admin-only Data tab');
  assert(!navigation.element('sheetBody').innerHTML.includes('data-tab="save"'),
    'Regular players do not see the Data tab');
- navigation.run('currentAccount.role="admin";ui.shopTab="save";openModal("shop")');
+ navigation.run('currentAccount={id:"admin",username:"admin",role:"admin"};ui.shopTab="save";openModal("shop")');
  assert(navigation.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
  assert(navigation.element('sheetBody').innerHTML.includes('aria-label="2,500 food"'));
  assert(navigation.element('sheetBody').innerHTML.includes('<summary>Testing &amp; debug</summary>'));
@@ -1056,10 +1067,17 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
    html.indexOf('data-action="start-breeding"')<html.indexOf('breed-results'),
    'Start breeding should be available before the long possible-dragon list');
  assert(html.includes('data-breed-search="father"')&&html.includes('data-breed-search="mother"'));
+ assert(html.includes('data-action="rarity-filter" data-target="breed-father"')&&
+   html.includes('data-action="rarity-filter" data-target="breed-mother"'));
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"fire"}})');
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"water"}})');
  assert.deepEqual(snapshot(game,'ui.breedFatherElements'),['fire','water']);
  assert.deepEqual(snapshot(game,'ui.breedMotherElements'),[]);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-father",rarity:"epic"}})');
+ assert.deepEqual(snapshot(game,'ui.breedFatherRarities'),['epic']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-mother",rarity:"rare"}})');
+ assert.deepEqual(snapshot(game,'ui.breedMotherRarities'),['rare']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-father",rarity:"all"}});handleAction({dataset:{action:"rarity-filter",target:"breed-mother",rarity:"all"}})');
  html=game.element('sheetBody').innerHTML;
  assert(html.includes('aria-label="Filter: Fire" aria-pressed="true"'));
  assert(html.includes('aria-label="Filter: Water" aria-pressed="true"'));
@@ -1075,6 +1093,12 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
  assert.notEqual(game.run('ui.breedDraft.mother'),game.run('ui.breedDraft.father'));
 });
 check('four-element AND filters apply in dragon roster and book',()=>{
+ game.run('ui.modal={name:"book"};renderBook()');
+ assert(game.element('sheetBody').innerHTML.includes('class="tier-glyph"'));
+ assert(game.element('sheetBody').innerHTML.includes('data-action="rarity-filter" data-target="book"'));
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"book",rarity:"mythic"}})');
+ assert.deepEqual(snapshot(game,'ui.bookRarities'),['mythic']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"book",rarity:"all"}})');
  assert(game.run('matchesElementFilter(DATA.species["fire>water"],["fire","water"])'));
  assert(!game.run('matchesElementFilter(DATA.species["fire>water"],["fire","earth"])'));
  for(const element of ['fire','water','earth','wind','ice'])game.run('handleAction({dataset:{action:"element-filter",target:"book",element:"'+element+'"}})');
@@ -1085,6 +1109,9 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  assert.deepEqual(snapshot(game,'ui.bookElements'),[]);
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
+ assert(game.element('sheetBody').innerHTML.includes('data-action="rarity-filter" data-target="dragon"'));
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"dragon",rarity:"epic"}})');
+ assert.deepEqual(snapshot(game,'ui.dragonRarities'),['epic']);
 });
 check('all single-element dragons are named after their element',()=>{
   const ids=['war','pure','legend','primal','time'];

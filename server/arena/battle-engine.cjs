@@ -46,7 +46,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     if(skill.effect?.kind==='echo_last'&&!actor.lastDirectDamage)
       throw Object.assign(new Error('Temporal Echo needs a previous direct attack.'),{status:400});
     if(skill.effect?.kind==='copy_last'){
-      const last=skillRegistry.get(battle.lastSkillBySide?.[other]);
+      const last=skillRegistry.get(target.lastSkill);
       if(last&&!['copy_last','revive_first'].includes(last.effect?.kind))
         cast={...last,power:last.power*.65,bonus:(last.bonus||0)*.65,
           special:true,effect:last.effect?{...last.effect,
@@ -213,7 +213,8 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         support(actor);
       }else if(kind==='lifesteal_cost'){
         support(actor,fx.heal(actor,Math.min(totalDamage*effect.value,actor.maxHp*effect.healCap)));
-      }else if(!offensive)support(actor);
+      }else if(kind==='curse'&&!offensive){fx.addStatus(target,effect,skill.element);support(target);}
+      else if(!offensive)support(actor);
       if(totalDamage>0&&kind!=='echo_last'&&!aoe)actor.lastDirectDamage=totalDamage;
       actor.skillUses??={};actor.skillUses[skill.id]=(actor.skillUses[skill.id]||0)+1;
       actor.lastSkill=skill.id;

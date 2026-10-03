@@ -358,3 +358,32 @@
 .fx-damage>strong{font-size:clamp(21px,3.6vw,34px);-webkit-text-stroke:.5px #17202a}
 .fx-damage.healing{background:transparent}
 .battle-skill-fx.missed .fx-damage{background:transparent}
+
+/* Readable skill cards, with a single-line name and number summary. */
+.arena-stage-controls .battle-skill-grid .battle-skill-card,
+.battle-modal .arena-stage-controls .battle-skill-grid .battle-skill-card{
+  width:100%;height:56px;min-height:56px;padding:5px 7px;position:relative;
+  display:flex;align-items:stretch;gap:2px;border-radius:9px;text-align:left;
+  background:#172e3fe8;color:#fff;border:1px solid #b7dfda8c;
+}
+.arena-stage-controls .battle-skill-grid .battle-skill-card.special{border-color:#f2cc70;box-shadow:inset 0 0 0 1px #f2cc7055}
+.arena-stage-controls .battle-skill-grid .battle-skill-label{height:28px;display:flex;align-items:center;gap:5px;white-space:nowrap;min-width:0}
+.arena-stage-controls .battle-skill-icon-wrap{position:relative;flex:none;display:block;width:25px;height:26px}
+.arena-stage-controls .battle-skill-grid .battle-skill-icon-wrap .skill-hex{width:25px;height:26px}
+.arena-stage-controls .battle-skill-icon-wrap .battle-skill-glyph{width:17px;height:17px;font-size:12px}
+.arena-stage-controls .battle-skill-name{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.arena-stage-controls .battle-skill-matchup{flex:none;font-size:16px;font-weight:900;line-height:1}
+.arena-stage-controls .battle-skill-matchup.strong{color:#77efaa}
+.arena-stage-controls .battle-skill-matchup.weak{color:#ff9ab2}
+.arena-stage-controls .battle-skill-grid .battle-skill-summary{display:block;width:100%;font-size:10px;color:#e4f4ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.arena-skill-popover .ant-popover-inner{max-width:min(460px,calc(100vw - 24px))}
+.arena-skill-popover-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arena-skill-popover-content{max-width:420px;font-size:12px;line-height:1.55}
+.arena-skill-popover-content>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arena-skill-unavailable{color:#c44747}
+/* Damage and crit labels float as text, including critical and missed variants. */
+.battle-skill-fx .fx-damage,.battle-skill-fx.critical .fx-damage,
+.battle-skill-fx.missed .fx-damage,.battle-skill-fx .fx-damage.healing{
+  background:none;border:0;box-shadow:none;border-radius:0;padding:0;min-width:0;
+}
+.battle-skill-fx .fx-damage .matchup-mark{background:none;border:0;box-shadow:none;padding:0 2px;text-shadow:0 2px 4px #101722}

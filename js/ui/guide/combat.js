@@ -34,27 +34,7 @@ function guideChallenge(){
 }
 
 function guideSpecialSkills(){
-  const detail=function(skill){
-    const e=skill.effect,percent=value=>+(value*100).toFixed(2)+'%',turns=e.duration+' lượt',
-      attack=skill.power>0?'Đòn đánh gây sát thương hệ theo '+percent(skill.power)+' tấn công gốc + '+
-        percent(skill.bonus||0)+' bổ sung, sau đó áp dụng khắc hệ, giáp và chí mạng. ':'Chiêu hỗ trợ thuần, không gây sát thương. ';
-    const effect={
-      poison:()=>`Gây độc lên mục tiêu, mất ${percent(e.value)} HP tối đa mỗi lượt trong ${turns}.`,
-      regen:()=>`Hồi ${percent(e.value)} HP tối đa mỗi lượt trong ${turns}.`,
-      heal:()=>`Hồi ngay ${percent(e.value)} HP tối đa.`,
-      cleanse:()=>`Gỡ các trạng thái bất lợi và hồi ngay ${percent(e.value)} HP tối đa.`,
-      vitality:()=>`Tăng HP tối đa ${percent(e.value)} trong ${turns} và hồi lượng HP tương ứng.`,
-      freeze:()=>`Đóng băng mục tiêu trong ${turns}, khiến mục tiêu mất lượt hành động.`,
-      multi:()=>`Tấn công ${e.hits} nhịp; mỗi nhịp có ${percent(e.missChance)} xác suất hụt và tính sát thương riêng.`,
-      damage_up:()=>`Tăng sát thương gây ra ${percent(e.value)} trong ${turns}.`,
-      damage_down:()=>`Giảm sát thương mục tiêu gây ra ${percent(e.value)} trong ${turns}.`,
-      armor_up:()=>`Tăng giáp của bản thân ${percent(e.value)} trong ${turns}.`,
-      armor_down:()=>`Giảm giáp mục tiêu ${percent(e.value)} trong ${turns}.`,
-      damage_reduction:()=>`Giảm sát thương bản thân nhận vào ${percent(e.value)} trong ${turns}.`,
-      accuracy_down:()=>`Giảm độ chính xác mục tiêu ${percent(e.value)} trong ${turns}.`
-    };
-    return esc(skill.description||'')+' Hồi chiêu '+skill.cooldown+' lượt.';
-  };
+  const detail=skill=>esc(skill.descriptionVi||skill.description||'')+' Hồi chiêu '+skill.cooldown+' lượt.';
   const groups=Object.keys(DATA.elements).map(function(element){
     const cards=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
       const skill=skillsForSpecies(DATA.species[id])[3];

@@ -206,7 +206,7 @@ function extendCatalog(db,game){
     dragon.moTa=dragon.hienTuong;
     dragon.sachGhi='Double Element: '+db.elements[primary].ten+
       '; additional: '+partners.map(e=>db.elements[e].ten).join(', ')+
-      '. Special Skill: '+skill.name+' — '+skill.description;
+      '. Special Skill: '+skill.name+' — '+(skill.descriptionVi||skill.description);
     db.species.push(dragon);seen.add(recipe.speciesId);
   }
   if(ids.some(id=>specialSkillCatalog.skills.filter(skill=>skill.element===id).length!==3))

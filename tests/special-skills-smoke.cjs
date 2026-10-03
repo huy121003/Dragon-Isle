@@ -112,7 +112,7 @@ for(const skill of special){
 {
   const actor=fighter('legend',1),target=fighter('earth',2);
   const battle=setup([actor],[target]);
-  battle.lastSkillBySide={defense:'fire-special-1'};
+  target.lastSkill='fire-special-1';
   const mimic=game.skills.elemental.legend.find(s=>s.effect?.kind==='copy_last');
   engine.strike(battle,'attack',mimic,3);
   assert.equal(fx.status(target,'burn')?.value,.04*.65,'Mimic scales copied burn');
@@ -132,4 +132,5 @@ for(const skill of special){
   engine.strike(setup([actor],[target]),'attack',echo,3);
   assert(target.hp<target.maxHp,'Echo repeats an eligible direct hit');
 }
+require('./special-skill-cases.cjs');
 console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');

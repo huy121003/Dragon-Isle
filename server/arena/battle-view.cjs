@@ -32,18 +32,25 @@ function record(battle,event){
 
 /** Public DTO used by Arena/Challenge React views. */
 function publicBattle(battle){
-  const view=fighter=>({id:fighter.id,species:fighter.species,level:fighter.level,
+  const view=(fighter,side)=>({id:fighter.id,species:fighter.species,level:fighter.level,
     stars:fighter.stars||0,nickname:fighter.nickname,hp:fighter.hp,
     maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),
     skills:fighter.skills.map((skill,index)=>skill?{
       index,id:skill.id,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
-      special:!!skill.special,effect:skill.effect||null,description:skill.description||null,
+      special:!!skill.special,effect:skill.effect||null,description:skill.descriptionVi||skill.description||null,
       cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
       unlockLevel:progressionConfig.skillUnlockLevels[index],
-      available:skill.effect?.kind!=='echo_last'||fighter.lastDirectDamage>0,
+      available:skill.effect?.kind==='echo_last'?fighter.lastDirectDamage>0:
+        skill.effect?.kind==='revive_first'?
+          !battle.revives?.[side]&&battle[side].some(ally=>ally.hp<=0):true,
+      unavailableReason:skill.effect?.kind==='revive_first'?
+        battle.revives?.[side]?'Đội đã dùng lượt hồi sinh trong trận này.':
+          !battle[side].some(ally=>ally.hp<=0)?'Cần ít nhất một đồng đội đã gục.':null:
+        skill.effect?.kind==='echo_last'&&!fighter.lastDirectDamage?
+          'Cần gây sát thương trực tiếp trước đó.':null,
       unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
-  return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
-    defense:battle.defense.map(view),activeAttack:battle.activeAttack,
+  return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(f=>view(f,'attack')),
+    defense:battle.defense.map(f=>view(f,'defense')),activeAttack:battle.activeAttack,
     activeDefense:battle.activeDefense,eventSeq:Number.isSafeInteger(battle.eventSeq)?battle.eventSeq:battle.events.length,
     events:battle.events.slice(-arenaConfig.eventHistory)};
 }

@@ -706,10 +706,10 @@ check('two-element breeding is favored and chance labels have two decimals',()=>
    'ui.breedDraft={father:state.dragons[0].id,mother:state.dragons.at(-1).id};'+
    'state.buildings.push({id:state.nextId++,type:"cave",level:1,stored:false,x:740,y:705,breeding:null})');
  const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons.at(-1))');
- assert(Math.abs(odds.filter(o=>o.id.includes('>')).reduce((n,o)=>n+o.chance,0)-.75)<1e-9);
+ assert(Math.abs(odds.filter(o=>o.id.includes('>')).reduce((n,o)=>n+o.chance,0)-1)<1e-9);
  balance.run('renderBreeding(state.buildings.at(-1).id)');
  const html=balance.element('sheetBody').innerHTML;
- assert(html.includes('75.00%'));
+ assert(html.includes('100.00%'));
  assert(html.includes('breed-probabilities')&&html.includes('breed-tier-outcomes'));
  assert.equal(balance.run('breedingChanceLabel(.000000015)'),'0.00000150%');
  assert.equal((html.match(/class="breed-chance /g)||[]).length,5);
@@ -730,7 +730,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  assert.equal(four(outcomes('fire>water>earth','fire>water>wind',30)).length,0,
    'A four-element set missing from the 150 recipes cannot appear');
  const overlap=outcomes('fire>earth>ice','fire>earth>dark',30);
- assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.0225)<1e-9);
+ assert(four(overlap).length>0&&Math.abs(chance(four(overlap))-.03)<1e-9);
  const focused=outcomes('fire>earth>ice','fire>earth>dark',30);
  const fullyInherited=four(focused).filter(o=>o.id.split('>').every(e=>
    ['fire','earth','ice','dark'].includes(e)));
@@ -746,7 +746,7 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  const doubles=double(outcomes(fireFours[0],fireFours[1],40));
  assert.equal(doubles.length,2,'Both Double variants of the shared primary are possible');
  assert(doubles.every(o=>o.id.startsWith('fire>fire>')));
- assert(Math.abs(chance(doubles)-.009)<1e-9);
+ assert(Math.abs(chance(doubles)-.012)<1e-9);
  assert.equal(double(outcomes(fireFours[0],waterFour,100)).length,0);
  assert.equal(double(outcomes(fireFours[0],'fire>water>earth',100)).length,0);
  assert.equal(four(outcomes(fireFours[0],fireFours[1],100)).length,0);
@@ -803,8 +803,8 @@ check('premium cave shares busy rules and has its own breeding turn',()=>{
    'state.dragons.push({...state.dragons[0],id:92,species:"fire>earth>dark",nickname:"Other"});'+
    'state.buildings.push({id:93,type:"premiumCave",level:1,x:750,y:692,stored:false,breeding:null},'+
    '{id:94,type:"cave",level:1,x:738,y:707,stored:false,breeding:null});renderBreeding(93)');
- assert(premium.element('sheetBody').innerHTML.includes('29.40%'));
- assert(premium.element('sheetBody').innerHTML.includes('3.57%'));
+ assert(premium.element('sheetBody').innerHTML.includes('25.20%'));
+ assert(premium.element('sheetBody').innerHTML.includes('5.60%'));
  assert(premium.element('sheetBody').innerHTML.includes('1.40× chance'));
  assert(premium.element('sheetBody').innerHTML.includes('premium-breeding-banner'));
  premium.run('startBreeding(93,2,92)');
@@ -859,9 +859,9 @@ check('guide navigation and game-driven help pages',()=>{
  assert(!chart.includes('class="guide-element"'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"breeding"}})');
  const breeding=game.element('sheetBody').innerHTML;
- assert(breeding.includes('0,9%')&&breeding.includes('2,8%')&&
+ assert(breeding.includes('1,2%')&&breeding.includes('28%')&&
    breeding.includes('mỗi ô ấp một trứng độc lập'));
- assert(breeding.includes('Rồng 1 hệ có thể lấy một hệ từ bố hoặc mẹ'));
+ assert(breeding.includes('Rồng 1 hệ chỉ có thể lai ra khi hai bố mẹ cùng một giống rồng 1 hệ'));
  assert(breeding.includes('Nếu Lồng ấp đầy, kết quả ở lại Hang'));
  assert(!breeding.includes('nhận trứng lai vào Inventory'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"challenge"}})');
@@ -1139,7 +1139,7 @@ check('Double Element breeding needs qualified parents and preserves probability
   const odds=snapshot(balance,'breedingOptions(state.dragons[0],state.dragons[1])');
   const double=odds.filter(o=>db.species.find(s=>s.id===o.id)?.doHiem==='transcendent');
   assert(double.some(o=>o.id==='fire>fire>water>thunder'),JSON.stringify(double));
-  assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.0105)<1e-9);
+  assert(Math.abs(double.reduce((total,o)=>total+o.chance,0)-.0185)<1e-9);
   assert(Math.abs(odds.reduce((total,o)=>total+o.chance,0)-1)<1e-9);
   balance.run('state.dragons[1].species=FOUR_IDS.find(id=>DATA.species[id].elements[0]==="earth");');
   assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].rarity==="transcendent").length'),0);
@@ -1243,7 +1243,7 @@ check('rare breeding, 100000 roll Monte Carlo',()=>{
  const odds=JSON.parse(game.run('JSON.stringify(breedingOptions(state.dragons[0],state.dragons[1]))'));
  const sum=odds.reduce((a,o)=>a+o.chance,0);assert(Math.abs(sum-1)<1e-9);
  const tier=n=>odds.filter(o=>o.id.split('>').length===n).reduce((a,o)=>a+o.chance,0);
- assert(Math.abs(tier(3)-.195)<1e-9);assert(Math.abs(tier(4)-.0225)<1e-9);
+ assert(Math.abs(tier(3)-.16)<1e-9);assert(Math.abs(tier(4)-.03)<1e-9);
  const results=[0,0,0,0];let seed=234553;
  for(let i=0;i<100000;i++){
    seed=(seed*1664525+1013904223)>>>0;const roll=seed/4294967296;
@@ -1268,7 +1268,7 @@ check('100000 rolls for 3, 4, 5 and 6 parent-union elements',()=>{
     JSON.stringify({id:502,species:b,level:35})+')');
   let cumulative=0;const thresholds=options.map(o=>(cumulative+=o.chance));
   const p4=options.filter(o=>o.id.split('>').length===4).reduce((n,o)=>n+o.chance,0);
-  assert(Math.abs(p4-(size===3?0:.0225))<1e-9);
+  assert(Math.abs(p4-(size===3?0:.03))<1e-9);
   assert(options.filter(o=>o.id.split('>').length===4).every(o=>
     o.id.split('>').every(e=>new Set(a.split('>').concat(b.split('>'))).has(e))));
   let seed=234553,observed=0;

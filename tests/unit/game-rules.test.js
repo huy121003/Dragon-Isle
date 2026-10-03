@@ -30,7 +30,7 @@ describe('shared gameplay rules',()=>{
     expect(buildings.goldToGemCost(10000)).toBe(2);
   });
 
-  it('builds normalized breeding candidates in the pure rule layer',()=>{
+  it('only allows same-species single-element breeding and normalizes candidates',()=>{
     const speciesById={
       fire:{id:'fire',elements:['fire']},
       water:{id:'water',elements:['water']},
@@ -42,10 +42,25 @@ describe('shared gameplay rules',()=>{
       fatherLevel:10,motherLevel:10,speciesById,
       elementOrder:['fire','water'],fourIds:[],doubleIds:[],quads:{},premium:false
     });
-    expect(options.map(option=>option.id).sort()).toEqual(
-      ['fire','fire>water','water','water>fire'].sort());
+    expect(options.map(option=>option.id).sort()).toEqual(['fire>water','water>fire'].sort());
     expect(options.reduce((sum,option)=>sum+option.chance,0)).toBeCloseTo(1,10);
-    expect(options.find(option=>option.id==='fire>water').chance).toBeCloseTo(.375,10);
+    expect(options.find(option=>option.id==='fire>water').chance).toBeCloseTo(.5,10);
+
+    const sameSpecies=breeding.offspringOptions({
+      fatherSpecies:speciesById.fire,motherSpecies:speciesById.fire,
+      fatherLevel:10,motherLevel:10,speciesById,
+      elementOrder:['fire','water'],fourIds:[],doubleIds:[],quads:{},premium:false
+    });
+    expect(sameSpecies).toEqual([{id:'fire',chance:1}]);
+
+    const chances=breeding.rareTierChances({averageLevel:40,hasThree:true,hasFour:true,
+      hasDouble:true,bothTriple:true,poolSize:4,premium:false});
+    expect(chances).toEqual({three:.18,four:.04,double:.012});
+    const maximum=breeding.rareTierChances({averageLevel:100,hasThree:true,hasFour:true,
+      hasDouble:true,bothTriple:true,poolSize:4,premium:true});
+    expect(maximum.three).toBeCloseTo(.28,10);
+    expect(maximum.four).toBeCloseTo(.14,10);
+    expect(maximum.double).toBeCloseTo(.07,10);
   });
 
   it('preserves incubation and breeding timing',()=>{

@@ -362,11 +362,23 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
 });
 check('admin egg shop exposes the full catalog in small pages while players see pure eggs only',()=>{
  const pure=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.length===1&&s.detail.giaTrung).length');
- const all=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.detail.giaTrung).length');
- balance.run('currentAccount={id:"admin",username:"admin",role:"admin"};state.player.level=100;state.gold=state.food=state.gems=1000000;ui.shopTab="eggs";ui.shopEggPage=0;renderShop()');
+ const all=balance.run('DRAGON_DB.species.length');
+ const specialPrices=snapshot(balance,'({quad:shopEggPrice(DATA.species[FOUR_IDS[0]],true),double:shopEggPrice(DATA.species[DOUBLE_IDS[0]],true)})');
+ assert(specialPrices.quad.gem>0&&specialPrices.double.gem>0,'Admin prices cover Mythic and Double eggs without regular-shop prices');
+ balance.run('currentAccount={id:"admin",username:"admin",role:"admin"};state.player.level=100;state.gold=state.food=state.gems=1000000;ui.shopTab="eggs";ui.shopEggPage=0;ui.shopEggElements=[];ui.shopEggRarities=[];renderShop()');
  let html=balance.element('sheetBody').innerHTML;
  assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,Math.min(48,all));
  assert(html.includes(all+' eggs'));
+ assert(html.includes('data-target="admin-eggs"'),'Admin egg shop has element and tier filters');
+ balance.run('handleAction({dataset:{action:"rarity-filter",target:"admin-eggs",rarity:"mythic"}})');
+ const mythicCount=balance.run('DRAGON_DB.species.filter(raw=>DATA.species[raw.id].rarity==="mythic").length');
+ html=balance.element('sheetBody').innerHTML;
+ assert(html.includes(mythicCount+' eggs'),'Admin rarity filter narrows egg offers');
+ balance.run('handleAction({dataset:{action:"rarity-filter",target:"admin-eggs",rarity:"all"}});handleAction({dataset:{action:"element-filter",target:"admin-eggs",element:"fire"}})');
+ const fireCount=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.includes("fire")).length');
+ assert(balance.element('sheetBody').innerHTML.includes(fireCount+' eggs'),'Admin element filter narrows egg offers');
+ balance.run('handleAction({dataset:{action:"element-filter",target:"admin-eggs",element:"all"}})');
+ html=balance.element('sheetBody').innerHTML;
  if(all>48){
    const first=html.match(/data-action="shop-egg-detail" data-species="([^"]+)"/)[1];
    balance.run('handleAction({dataset:{action:"shop-eggs-page",page:"1"}})');

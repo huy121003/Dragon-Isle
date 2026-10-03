@@ -10,18 +10,11 @@ const config=require('../../js/config/challenge.js');
  * Create Challenge presence/reconnect policy around injected auth/profile/clock dependencies.
  * Keeps online visibility and reconnect grace math out of the Challenge state machine.
  */
-function createPresence({auth,users,profile,now,heartbeatMs=config.heartbeatMs,reconnectMs=config.reconnectGraceMs}){
+function createPresence({auth,users,now,heartbeatMs=config.heartbeatMs,reconnectMs=config.reconnectGraceMs}){
   /** True when an account is eligible to stay inside an existing challenge. */
-  function sessionAvailable(id){
-    const user=users().find(item=>item.id===id);
+  function sessionAvailable(id,userSnapshot){
+    const user=userSnapshot||users().find(item=>item.id===id);
     return !!(user&&!user.disabled&&user.challengeEnabled&&auth.hasActiveSession(id));
-  }
-
-  /** Lobby visibility requires a valid session plus a recently saved profile heartbeat. */
-  async function lobbyActive(id){
-    if(!sessionAvailable(id))return false;
-    const saved=Number((await profile(id))?.savedAt)||0;
-    return saved<=now()&&saved>now()-config.lobbySaveFreshMs;
   }
 
   /**
@@ -49,7 +42,7 @@ function createPresence({auth,users,profile,now,heartbeatMs=config.heartbeatMs,r
     return now()-(Number(lastSeen)||0)>reconnectMs;
   }
 
-  return {sessionAvailable,lobbyActive,touch,state,expired};
+  return {sessionAvailable,touch,state,expired};
 }
 
 module.exports={createPresence};

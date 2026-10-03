@@ -28,6 +28,10 @@ function createChallengeStore({stateFile,users,now}){
       raw.seen=Array.isArray(raw.seen)&&raw.seen.length===2?
         raw.seen.map(value=>Number(value)||fallback):[fallback,fallback];
       raw.persistedAt=Number(raw.persistedAt)||fallback;
+      if(raw.battle){
+        raw.battle.events=Array.isArray(raw.battle.events)?raw.battle.events:[];
+        raw.battle.eventSeq=Number.isSafeInteger(raw.battle.eventSeq)?raw.battle.eventSeq:raw.battle.events.length;
+      }
       matches.set(raw.id,raw);
       raw.players.forEach(id=>byUser.set(id,raw.id));
     }

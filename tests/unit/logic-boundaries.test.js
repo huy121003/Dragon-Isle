@@ -145,6 +145,18 @@ describe('logic architecture boundaries',()=>{
     expect(connection).not.toMatch(/RECONNECT_MS|PROLONGED_MS/);
   });
 
+  it('keeps admin player data behind both UI and server role checks',()=>{
+    const shell=read('src/app/GameShell.jsx');
+    const hud=read('src/components/GameHud.jsx');
+    const panel=read('src/features/admin/AdminPanel.jsx');
+    const route=read('server/routes/admin.cjs');
+    expect(shell).toContain("account?.role==='admin'&&<AdminPanel");
+    expect(hud).toContain("account.role==='admin'&&<Button onClick={onAdmin}");
+    expect(route).toContain("operator.role!=='admin'");
+    expect(panel).toContain("['level','🎚 Player level',1,1_000_000]");
+    expect(route).toContain('profile.player={...(profile.player||{}),level,xp:0}');
+  });
+
   it('documents the intended config -> rules -> service -> UI flow',()=>{
     const docs=read('docs/LOGIC_ARCHITECTURE.md');
     expect(docs).toContain('js/config/');

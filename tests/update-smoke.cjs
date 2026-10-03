@@ -1127,8 +1127,8 @@ check('all single-element dragons are named after their element',()=>{
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
 });
-check('1770 unique phenomenon-named species and no retired Special category',()=>{
- assert.equal(db.species.length,1770);
+check('1785 unique phenomenon-named species and no retired Special category',()=>{
+ assert.equal(db.species.length,1785);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
  assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.endsWith(' Dragon')));
  assert(db.species.filter(s=>s.doHiem==='transcendent').every(s=>s.ten.startsWith('Resonant ')));
@@ -1235,7 +1235,7 @@ check('every catalog species draws with the rebuilt renderer',()=>{
     if(id.indexOf('>')<0)silhouettes.add(JSON.stringify(balance.drawCalls
       .filter(call=>call[0]==='moveTo'||call[0]==='lineTo').slice(0,30)));
   }
-  assert.equal(ids.length,1770);
+  assert.equal(ids.length,1785);
   assert.equal(silhouettes.size,15,'Every primary element needs distinct geometry');
   balance.drawCalls.length=0;
 });

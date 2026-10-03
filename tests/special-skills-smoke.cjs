@@ -18,6 +18,7 @@ for(const skill of special){
   const a=fighter(skill.element,1),reserve=fighter('water',2),b=fighter('earth',3);
   const battle=setup([a,reserve],[b,fighter('ice',4)]);
   if(skill.effect.kind==='revive_first'){reserve.hp=0;reserve.statuses=[];}
+  if(skill.effect.kind==='echo_last')a.lastDirectDamage=100;
   a.skills[3]=skill;
   assert.doesNotThrow(()=>engine.strike(battle,'attack',skill,3),skill.name);
   assert(battle.events.length>0,skill.name+' emits a replay event');
@@ -121,5 +122,14 @@ for(const skill of special){
   fx.addStatus(target,{kind:'reflect',value:.18,cap:.12,duration:2},'metal');
   const hp=actor.hp;engine.strike(battle,'attack',actor.skills[0],0);
   assert(actor.hp<hp,'reflect damages the direct attacker');
+}
+{
+  const actor=fighter('time',1),target=fighter('earth',2);
+  const echo=game.skills.elemental.time.find(s=>s.effect?.kind==='echo_last');
+  assert.throws(()=>engine.strike(setup([actor],[target]),'attack',echo,3),
+    /previous direct attack/);
+  actor.lastDirectDamage=actor.attack;
+  engine.strike(setup([actor],[target]),'attack',echo,3);
+  assert(target.hp<target.maxHp,'Echo repeats an eligible direct hit');
 }
 console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');

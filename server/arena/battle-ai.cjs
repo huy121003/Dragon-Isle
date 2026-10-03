@@ -21,8 +21,9 @@ function createBattleAi({typeChart}){
   function chooseDefenseSkill(battle){
     const actor=battle.defense[battle.activeDefense],target=battle.attack[battle.activeAttack];
     const ready=readySkills(actor).filter(({skill})=>
-      skill.effect?.kind!=='revive_first'||battle.defense.some(f=>f.hp<=0)&&
-      !battle.revives?.defense);
+      (skill.effect?.kind!=='revive_first'||battle.defense.some(f=>f.hp<=0)&&
+      !battle.revives?.defense)&&
+      (skill.effect?.kind!=='echo_last'||actor.lastDirectDamage>0));
     if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
     const incoming=Math.max(1,...readySkills(target).map(({skill})=>
       combat.battleDamage(target,actor,skill,typeChart)));

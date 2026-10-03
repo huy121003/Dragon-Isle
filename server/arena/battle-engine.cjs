@@ -43,6 +43,8 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     if(!actor||actor.hp<=0||!target||target.hp<=0)return;
     actor.statuses||=[];actor.cooldowns||=[0,0,0,0];
     let cast=skill;
+    if(skill.effect?.kind==='echo_last'&&!actor.lastDirectDamage)
+      throw Object.assign(new Error('Temporal Echo needs a previous direct attack.'),{status:400});
     if(skill.effect?.kind==='copy_last'){
       const last=skillRegistry.get(battle.lastSkillBySide?.[other]);
       if(last&&!['copy_last','revive_first'].includes(last.effect?.kind))
@@ -287,8 +289,9 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       for(const side of ['attack','defense']){
         if(!alive(left)||!alive(right))break;
         const fighter=active(battle,side),ready=readySkills(fighter).filter(({skill})=>
-          skill.effect?.kind!=='revive_first'||battle[side].some(f=>f.hp<=0)&&
-          !battle.revives?.[side]);
+          (skill.effect?.kind!=='revive_first'||battle[side].some(f=>f.hp<=0)&&
+          !battle.revives?.[side])&&
+          (skill.effect?.kind!=='echo_last'||fighter.lastDirectDamage>0));
         if(!ready.length)throw Object.assign(new Error('This dragon has no unlocked skills.'),{status:400});
         const chosen=side==='defense'?chooseDefenseSkill(battle):
           ready[Math.floor(rng()*ready.length)];

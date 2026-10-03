@@ -40,6 +40,7 @@ function publicBattle(battle){
       special:!!skill.special,effect:skill.effect||null,description:skill.description||null,
       cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
       unlockLevel:progressionConfig.skillUnlockLevels[index],
+      available:skill.effect?.kind!=='echo_last'||fighter.lastDirectDamage>0,
       unlocked:fighter.level>=progressionConfig.skillUnlockLevels[index]}:null)});
   return {opponent:battle.opponent,turn:battle.turn,attack:battle.attack.map(view),
     defense:battle.defense.map(view),activeAttack:battle.activeAttack,

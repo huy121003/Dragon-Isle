@@ -84,10 +84,8 @@ function handleAction(button){
       if(["breed-father","breed-mother","dragon","book","admin-eggs"].includes(target)){
         const property=target==="breed-father"?"breedFatherRarities":
           target==="breed-mother"?"breedMotherRarities":target==="admin-eggs"?"shopEggRarities":target+"Rarities";
-        const selected=ui[property];
         if(rarity==="all")ui[property]=[];
-        else if(DATA.rarities[rarity])ui[property]=selected.includes(rarity)?
-          selected.filter(id=>id!==rarity):[...selected,rarity];
+        else if(DATA.rarities[rarity])ui[property]=[rarity];
         if(target==="book"){ui.bookPage=0;renderBook();}
         else if(target==="dragon")renderDragons();
         else if(target==="admin-eggs"){ui.shopEggPage=0;renderShop();}

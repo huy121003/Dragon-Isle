@@ -23,11 +23,16 @@ function createAdminRoutes({auth,challenge,profilesDir}){
     const resourceUser=pathname.match(/^\/api\/admin\/users\/([0-9a-f-]{36})\/resources$/);
     if((resourceUser||pathname==='/api/admin/resources')&&req.method==='PUT'){
       const patch=await readBody(req,systemConfig.api.adminBytes);
-      if(!validResourcePatch(patch)){json(res,400,{error:'Chỉ nhận gold, food, gems dạng số nguyên không âm trong giới hạn.'});return true;}
+      if(!validResourcePatch(patch)){json(res,400,{error:'Gold, food, gems và player level phải là số nguyên trong giới hạn.'});return true;}
       const targets=resourceUser?auth.listUsers().filter(user=>user.id===resourceUser[1]):auth.listUsers();
       if(!targets.length){json(res,404,{error:'Không tìm thấy tài khoản.'});return true;}
+      const {level,...resources}=patch;
       await auth.withRevokedUsers(targets.map(user=>user.id),()=>Promise.all(targets.map(user=>
-        updateJson(path.join(profilesDir,user.id+'.json'),current=>({...current||newProfile(),...patch})))));
+        updateJson(path.join(profilesDir,user.id+'.json'),current=>{
+          const profile={...(current||newProfile()),...resources};
+          if(level!==undefined)profile.player={...(profile.player||{}),level,xp:0};
+          return profile;
+        }))));
       json(res,200,{ok:true,updated:targets.length,relogin:targets.some(user=>user.id===operator.id)});return true;
     }
     const action=pathname.match(/^\/api\/admin\/users\/([0-9a-f-]{36})\/(reset|disable|enable)$/);

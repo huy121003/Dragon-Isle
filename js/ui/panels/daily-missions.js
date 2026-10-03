@@ -17,8 +17,8 @@ function renderDailyMissions(){
     html+='<article class="daily-mission-card'+(claimed?' claimed':'')+(!available?' locked':'')+'">'+
       '<span class="daily-mission-icon">'+mission.icon+'</span><div class="daily-mission-copy">'+
       '<b>'+esc(mission.title)+'</b><small>'+progressLabel+'</small><div class="daily-mission-track"><span style="width:'+percent+'%"></span></div>'+ 
-      '<small class="daily-mission-reward">Reward: '+mission.reward.xp+' XP · '+money(mission.reward.gold)+
-      ' gold · '+money(mission.reward.food)+' food</small>'+(!available?'<small>Unlock the Arena and prepare 3 eligible dragons.</small>':'')+
+      '<small class="daily-mission-reward">Reward: '+mission.reward.xp+' XP · '+resourceAmount('gold',mission.reward.gold)+
+      resourceAmount('food',mission.reward.food)+'</small>'+(!available?'<small>Unlock the Arena and prepare 3 eligible dragons.</small>':'')+
       '</div><button class="btn '+(complete&&!claimed&&available?'good':'')+'" data-action="claim-daily-mission" data-id="'+id+'"'+
       (complete&&!claimed&&available?'':' disabled')+'>'+buttonLabel+'</button></article>';
   });

@@ -40,7 +40,7 @@ function renderHabitat(id){
   const b=buildingById(id);
   if(!b||b.type!=="habitat"||b.stored){closeModal();return;}
   const ds=occupants(b),rate=habitatIncomePerMinute(b);
-  dom.title.textContent=DATA.elements[b.element].mark+' '+buildingName(b)+' · Level '+b.level;
+  dom.title.textContent=buildingName(b)+' · Level '+b.level;
   let html='<div class="panel"><h3>Habitat details</h3><div class="element-list">'+
       elementFlag(b.element,true)+'</div>'+
     '<div class="stat-grid"><div><span>📐 Footprint</span><b>'+buildingFootprint(b).w+'×'+buildingFootprint(b).h+' tiles</b></div>'+
@@ -101,7 +101,7 @@ function renderAssign(dragonId){
   if(!homes.length)html+='<div class="note">No matching Habitat has room. Build or upgrade one.</div>';
   homes.forEach(function(b){
     html+='<button class="shop-item" data-action="assign" data-dragon="'+dragonId+'" data-building="'+b.id+'">'+
-      '<span class="shop-icon" style="color:'+DATA.elements[b.element].color+'">'+DATA.elements[b.element].mark+
+      '<span class="shop-icon" style="--element:'+DATA.elements[b.element].color+'">'+elementFlag(b.element,false,'lg')+
       '</span><span><b>'+buildingName(b)+'</b><small>Level '+b.level+' · '+occupants(b).length+'/'+
       habitatCapacity(b.level)+' dragons</small></span></button>';
   });

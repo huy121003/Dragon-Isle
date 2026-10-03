@@ -14,12 +14,12 @@ function renderCrops(id){
   let html='<div class="cards crop-shop-cards">';
   DATA.crops.forEach(function(c,index){
     const yieldAmount=Math.round(c.yield*(1+(b.level-1)*.2));
-    const locked=index>=b.level;
+    const unlockLevel=c.unlockLevel||index+1,locked=unlockLevel>b.level;
     html+='<button class="shop-item resource-offer" data-action="plant" data-id="'+id+'" data-crop="'+c.id+'"'+
       (locked?' disabled':'')+'>'+
-      '<span class="shop-icon">🌿</span><span><b>'+c.name+'</b><small>'+duration(c.duration)+' → '+
+      '<span class="shop-icon crop-icon crop-'+c.id+'">'+(c.icon||'🌿')+'</span><span><b>'+c.name+'</b><small>'+duration(c.duration)+' → '+
       resourceAmount('food',yieldAmount)+'</small></span><strong>'+
-      (locked?'Unlocks at level '+(index+1):state.gold<c.cost?'Need '+resourceAmount('gold',c.cost-state.gold):resourceAmount('gold',c.cost))+'</strong></button>';
+      (locked?'Unlocks at Farm level '+unlockLevel:state.gold<c.cost?'Need '+resourceAmount('gold',c.cost-state.gold):resourceAmount('gold',c.cost))+'</strong></button>';
   });
   dom.body.innerHTML=html+'</div>';
 }

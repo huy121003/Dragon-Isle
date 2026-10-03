@@ -379,7 +379,8 @@ check('element unlocks, hatchery gates and crop timers follow the progression cu
    light:22,metal:27,war:32,pure:37,legend:42,primal:48,time:55
  });
  assert.deepEqual(snapshot(balance,'[1,2,3,4].map(hatcheryUpgradePlayerLevel)'),[5,12,22,35]);
- assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.duration)'),[30,180,900,7200]);
+ assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.duration)'),[30,180,420,900,1800,7200,14400,28800]);
+ assert.deepEqual(snapshot(balance,'DATA.crops.map(c=>c.unlockLevel)'),[1,2,2,3,3,4,4,4]);
  assert.deepEqual(snapshot(balance,'DATA.upgradeTimes'),{
    habitat:[45,180,600],farm:[30,120,480],hatchery:[90,300,900,2400],academy:[300,900,1800,3600,7200,14400]
  });
@@ -653,6 +654,15 @@ check('Shop purchase and Farm planting keep their panels stable',()=>{
    'Harvest returns directly to crop choices');
 });
 const navigation=await boot();
+check('farm crops unlock by Farm level and new tiers can be planted',()=>{
+ navigation.run('state=newGame();state.gold=100000;state.buildings.push({id:95,type:"farm",level:1,stored:false,crop:null})');
+ assert.equal(navigation.run('plantCrop(95,"blueberry")'),false,'Level one cannot plant level two crops');
+ navigation.run('buildingById(95).level=2');
+ assert.equal(navigation.run('plantCrop(95,"blueberry")'),true);
+ navigation.run('buildingById(95).crop=null;buildingById(95).level=4');
+ assert.equal(navigation.run('plantCrop(95,"crystal-melon")'),true);
+ assert.deepEqual(snapshot(navigation,'DATA.crops.map(c=>c.unlockLevel)'),[1,2,2,3,3,4,4,4]);
+});
 check('dragon detail back navigation and habitat actions follow their source and state',()=>{
  navigation.run('state=newGame();openModal("dragons");handleAction({dataset:{action:"dragon-detail",id:"2"}})');
  assert.equal(navigation.run('ui.modal.name'),'dragon-detail');

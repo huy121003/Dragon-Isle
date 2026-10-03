@@ -2,29 +2,64 @@
 
 /* RENDER: Farm, Hatchery, Academy and Arena building renderers. */
 function paintFarm(b,time,night){
-  structurePlinth('#a28c58','#766449','#655342','#d9c67e');
-  // Terraced rows, each with curved soil grooves and actual crops.
+  const mature=!!b.crop&&b.crop.readyAt<=Date.now();
+  const crop=b.crop&&cropById(b.crop.id);
+  structurePlinth('#aab779','#71845d','#526848','#e3d59b');
+  // Curved raised beds, clean stone paths and irrigation channels read clearly at map scale.
+  structurePoly([[-.43,.045],[-.23,-.045],[.43,.045],[.22,.14],[0,.22]],'#8b9e69','#e5dba7',.014);
   for(let row=0;row<3;row++){
-    const y=.025+row*.075;
-    structurePoly([[-.38+row*.055,y-.057],[.17+row*.05,y-.057],
-      [.34+row*.025,y],[0+row*.05,y+.048]],row%2?'#674935':'#7b5335','#ab7947',.008);
-    if(b.crop)for(let col=0;col<3;col++){
-      const x=-.25+col*.2+row*.035;
-      structureCrop(x,y-.02,b.crop.readyAt<=Date.now(),time,
-        b.crop.id==='dragonfruit'?'#f270a1':b.crop.id==='pumpkin'?'#efac45':'#f8d277');
+    const y=-.015+row*.095,shift=(row-1)*.035;
+    structurePoly([[-.38+shift,y-.035],[.18+shift,y-.035],[.34+shift,y+.018],[-.02+shift,y+.07]],
+      row%2?'#76523a':'#835a3d','#bd8a55',.01);
+    structureLine([[-.34+shift,y+.005],[.12+shift,y+.005]],'#c99a60',.008);
+    if(b.crop)for(let col=0;col<4;col++){
+      const x=-.27+col*.145+shift;
+      structureCrop(x,y-.005,mature,time,crop||b.crop.id);
     }
   }
-  // Elevated wooden granary with a pitched two-sided roof and chimney.
-  structurePoly([[-.27,-.16],[.03,-.24],[.25,-.16],[.25,-.43],[-.03,-.53],[-.27,-.43]],'#986a49');
-  structurePoly([[-.27,-.43],[-.03,-.61],[.25,-.43],[.04,-.37],[-.03,-.48]],'#dc9860','#ffe1a0',.014);
-  structurePoly([[.04,-.37],[.25,-.43],[.25,-.16],[.04,-.12]],'#684d3e');
-  structurePoly([[-.115,-.22],[-.115,-.39],[-.035,-.42],[.035,-.39],[.035,-.2]],'#513e35','#eec990',.011);
-  structureLine([[-.115,-.38],[.035,-.22]],'#e5ba83',.012);
-  structureLine([[-.24,-.29],[.005,-.35]],'#e5bd8a',.01);
-  structurePoly([[.14,-.53],[.21,-.55],[.21,-.75],[.14,-.72]],'#887257');
+  // Irrigation glints and fence posts make the plots look maintained rather than bare dirt.
+  for(let i=0;i<4;i++){
+    const x=-.33+i*.22;
+    structureLine([[x,.13],[x+.04,.17],[x+.09,.15]],'#76cbd0',.012);
+  }
+  for(const x of [-.43,.43]){
+    structureLine([[x,.07],[x-.015,-.1],[x+.015,-.19]],'#75513c',.014);
+    structureEllipse(x-.015,-.2,.026,.027,'#f7e4a4','#966b47',.006);
+  }
+  // Red-and-cream barn with readable doorway, windows and a raised roofline.
+  structurePoly([[-.26,-.13],[-.04,-.21],[.2,-.13],[.2,-.43],[-.03,-.52],[-.26,-.43]],'#b4664a','#744b3f',.018);
+  structurePoly([[.2,-.13],[.31,-.17],[.31,-.46],[.2,-.43]],'#774d42','#e4b876',.012);
+  structurePoly([[-.31,-.42],[-.08,-.64],[.26,-.48],[.2,-.4],[-.03,-.51],[-.26,-.42]],
+    b.level>=3?'#55745a':'#d59a58','#f5d89b',.017);
+  structurePoly([[-.11,-.25],[-.11,-.43],[-.04,-.46],[.045,-.42],[.045,-.22]],'#573d36','#efcf91',.012);
+  structureLine([[-.11,-.42],[.045,-.24]],'#dbad75',.01);
+  for(const x of [-.21,.12]){
+    structurePoly([[x,-.31],[x+.075,-.285],[x+.075,-.35],[x,-.375]],'#d9eff0','#725346',.01);
+    structureLine([[x+.037,-.36],[x+.037,-.3]],'#725346',.008);
+  }
+  structurePoly([[.22,-.49],[.3,-.52],[.3,-.69],[.22,-.66]],'#8e7350','#f0cf8b',.01);
+  structurePoly([[.205,-.69],[.26,-.74],[.315,-.68],[.3,-.64],[.22,-.65]],'#9d7950','#f0d49d',.01);
+  // Higher Farm levels add visible equipment and richer planting rows.
+  if(b.level>=2){
+    structureLine([[-.36,-.1],[-.36,-.36]],'#6f5740',.018);
+    ctx.save();ctx.translate(-.36,-.36);ctx.rotate(time*.0007);
+    for(let i=0;i<4;i++){ctx.rotate(Math.PI/2);structurePoly([[0,0],[.018,-.03],[.11,-.15],[-.012,-.12]],'#e8ddb1','#87965e',.008);}
+    structureEllipse(0,0,.025,.025,'#f4d88d');ctx.restore();
+  }
+  if(b.level>=3){
+    structureEllipse(-.28,-.4,.064,.12,'#d8bd85','#795941',.014);
+    structurePoly([[-.34,-.5],[-.28,-.56],[-.22,-.5],[-.23,-.45],[-.33,-.45]],'#857252','#e5ce9e',.01);
+  }
+  if(b.level>=4){
+    for(const x of [.32,.39]){
+      structureLine([[x,.1],[x,-.16]],'#76523c',.013);
+      structureEllipse(x,-.19,.055,.045,'#4f985a','#d4e7a1',.01);
+      if(mature)structureEllipse(x+.018,-.18,.014,.018,'#edbf4c','#fff0ac',.004);
+    }
+  }
   const smoke=night>.4?Math.sin(time*.002)*.025:0;
-  structureEllipse(.2+smoke,-.78,.04,.023,'#f4eee688');
-  if(b.level>2)structureBanner(-.34,-.14,'#79b36b','#f7e6a4',time);
+  structureEllipse(.27+smoke,-.78,.035,.02,'#f4eee677');
+  if(b.level>2)structureBanner(-.42,-.14,'#6d9660','#f7e6a4',time);
 }
 
 function paintHatchery(b,time,night){

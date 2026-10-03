@@ -160,6 +160,11 @@
     .skill-hex.neutral{outline:2px solid #ffe4a2;outline-offset:1px}
     .skill-hex.elemental{outline:2px solid var(--skill-color);outline-offset:1px}
     .skill-hex.locked{opacity:.72}
+    .skill-hex.special svg{opacity:.38}
+    .skill-hex .skill-special-glyph{position:absolute;inset:0;display:grid;place-items:center;
+      font:900 22px Georgia,serif;font-style:normal;color:#fff6ce;text-shadow:0 1px 4px #142336,
+      0 0 6px #142336;pointer-events:none}
+    .skill-hex.locked .skill-special-glyph{opacity:.7}
     .skill-hex i{position:absolute;right:1px;bottom:3px;font-size:10px;font-style:normal;filter:drop-shadow(0 1px 2px #182a3a)}
     .skill-card b,.skill-card small,.skill-card strong{display:block}.skill-card b{font-size:12px}
     .skill-card small{font-size:10px;color:#607983;line-height:1.35;margin:3px 0}.skill-card strong{font-size:10px;color:#375a6a}

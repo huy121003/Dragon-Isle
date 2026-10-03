@@ -19,6 +19,7 @@ const mark=(f,who,kind,value=.04,turns=3)=>fx.addStatus(f[who],{kind,value,durat
 let checked=0;
 for(const s of skills){
   assert(s.descriptionVi&&/[À-ỹ]/u.test(s.descriptionVi),s.id+' Vietnamese description');
+  assert(s.glyph,s.id+' special icon');
   const f=fixture(s),k=s.effect.kind;
   f.actor.hp-=Math.round(f.actor.maxHp*.2);
   f.ally.hp-=Math.round(f.ally.maxHp*.4);
@@ -30,6 +31,7 @@ for(const s of skills){
   if(k==='detonate_burn')mark(f,'enemy','burn');
   if(k==='dispel_strike')mark(f,'enemy','armor_up');
   if(k==='rewind_ally')f.ally.damageLastTurn=Math.round(f.ally.maxHp*.3);
+  assert.equal(publicBattle(f.battle).attack[0].skills[3].glyph,s.glyph,s.id+' icon reaches battle UI');
   const before={a:f.actor.hp,b:f.ally.hp,e:f.enemy.hp,r:f.reserve.hp};
   cast(f,s);
   const hits=f.battle.events;

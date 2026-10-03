@@ -916,6 +916,9 @@ check('guide navigation and game-driven help pages',()=>{
  assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
  assert.equal((special.match(/class="guide-special-card"/g)||[]).length,45);
  assert.equal((special.match(/class="skill-hex/g)||[]).length,45);
+ assert.equal((special.match(/class="skill-special-glyph"/g)||[]).length,45);
+ const doubleDetail=game.run('dragonDetailHtml(DATA.species[DOUBLE_IDS[0]],null)');
+ assert(doubleDetail.includes('skill-special-glyph'),'Dragon detail shows the special icon');
  assert(!special.includes('Cinderheart Sovereign')&&!special.includes('<table'));
  assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
  assert(special.includes('thiêu đốt 4% HP tối đa')&&

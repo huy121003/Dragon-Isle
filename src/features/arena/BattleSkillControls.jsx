@@ -2,7 +2,6 @@ import React from 'react';
 import {Button,Popover} from 'antd';
 import {game} from '../../app/game-bridge.js';
 import {SkillHex} from './ArenaShared.jsx';
-import {specialGlyph} from './ArenaSkillGlyph.js';
 
 const pct=value=>`${+(value*100).toFixed(1)}%`;
 function summary(skill){
@@ -51,7 +50,7 @@ export function BattleSkillControls({attacker,defender,disabled,animating,challe
           onClick={()=>act('skill',challenge?{skillIndex:skill.index}:{skill:skill.index})}>
           <span className="battle-skill-label"><span className="battle-skill-icon-wrap">
             <SkillHex element={skill.element} locked={!skill.unlocked}/>
-            {skill.special&&<i className="battle-skill-glyph" aria-hidden="true">{specialGlyph[skill.effect?.kind]||'✦'}</i>}
+            {skill.special&&<i className="battle-skill-glyph" aria-hidden="true">{skill.glyph||'✦'}</i>}
           </span><span className="battle-skill-name" title={skill.name}>{skill.name}</span>
             {mark&&<span className={'battle-skill-matchup '+(matchup>1?'strong':'weak')} aria-label={`×${matchup}`}>{mark}</span>}
           </span>

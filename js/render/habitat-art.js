@@ -151,57 +151,66 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
     case 'war':{
-      // Light Roman galea outline sits high on the habitat; open space stays clear below.
+      // A small sculpted Roman galea makes this read as a War habitat, not a floating flag.
       structurePlinth('#a77955','#76513f','#563b35','#e4b477');
-      structureLine([[-.24,-.38],[-.23,-.5],[-.17,-.6],[-.08,-.65],[.08,-.65],[.18,-.59],[.24,-.49],[.25,-.38]],'#edbc7c',.022);
-      structureLine([[-.23,-.43],[.23,-.43]],'#f4d19a',.018);
-      structureLine([[-.17,-.44],[-.2,-.34],[-.11,-.38]],'#f6d59a',.016);
-      structureLine([[.17,-.44],[.2,-.34],[.11,-.38]],'#f6d59a',.016);
-      structureLine([[-.08,-.65],[-.12,-.73],[-.04,-.7],[.02,-.76],[.1,-.68]],'#c96b55',.023);
-      structureGlow(0,-.51,.13,'#f5944530');break;
+      structurePoly([[-.2,-.31],[0,-.25],[.2,-.31],[0,-.37]],'#c98d61','#efd09a',.012);
+      structurePoly([[-.25,-.38],[-.22,-.5],[-.15,-.59],[-.06,-.63],[.08,-.63],[.18,-.57],[.24,-.46],[.24,-.38]],
+        '#9a5945','#edbc7c',.018);
+      structurePoly([[-.18,-.45],[-.13,-.54],[-.05,-.57],[.07,-.57],[.15,-.52],[.19,-.44],[.12,-.41],[-.13,-.41]],
+        '#47393a','#e8bc7a',.012);
+      structurePoly([[-.25,-.41],[.25,-.41],[.28,-.36],[-.28,-.36]],'#e1ad70','#ffe0a9',.014);
+      structurePoly([[-.04,-.4],[.04,-.4],[.02,-.31],[-.02,-.31]],'#f4d5a3');
+      structurePoly([[-.09,-.62],[-.13,-.72],[-.07,-.75],[0,-.68],[.07,-.74],[.13,-.64],[.08,-.61]],
+        '#b95246','#f0c17c',.014);
+      structureGlow(0,-.5,.14,'#f5944533');break;
     }
     case 'pure':{
-      // Three fine petal outlines form an airy Pure mark above the open lower half.
+      // Small open shrine with three petal arches around a light; the lower tile stays clear.
       structurePlinth('#b18fbd','#7c608f','#594669','#f8e6f5');
-      for(let i=0;i<3;i++){
-        const a=-Math.PI/2+i*Math.PI*2/3,x=Math.cos(a)*.12,y=-.52+Math.sin(a)*.08;
-        ctx.save();ctx.translate(x,y);ctx.rotate(a+Math.PI/2);
-        structureLine([[0,.065],[-.045,.025],[-.043,-.025],[0,-.13],[.043,-.025],[.045,.025],[0,.065]],'#fff8ff',.015);
-        ctx.restore();
-      }
-      structureEllipse(0,-.51,.025,.025,'#fff8ff','#d5b2dc',.008);
-      structureGlow(0,-.51,.13,'#fbd4ff30');break;
+      structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#bb96c3','#f8e6f5',.012);
+      for(const x of [-.17,.17])structurePoly([[x-.025,-.36],[x-.02,-.54],[x,-.57],[x+.02,-.54],[x+.025,-.36]],'#e4cce9','#fff8ff',.01);
+      structurePoly([[-.23,-.53],[-.18,-.59],[-.08,-.56],[0,-.67],[.08,-.56],[.18,-.59],[.23,-.53],[.19,-.49],[.08,-.53],[0,-.61],[-.08,-.53],[-.19,-.49]],
+        '#d6b6df','#fff8ff',.014);
+      structureEllipse(0,-.51,.035,.035,'#fffaff','#d5b2dc',.008);
+      structureGlow(0,-.52,.13,'#fbd4ff30');break;
     }
     case 'legend':{
-      // A single thin twin-scroll trace replaces the heavy paired arches.
+      // Slim twin-scroll portal: visible supports and a small open doorway give the glyph a building form.
       structurePlinth('#68518c','#433867','#302846','#c8b2eb');
-      ctx.beginPath();ctx.moveTo(-.22,-.39);
-      ctx.bezierCurveTo(-.3,-.65,-.045,-.72,0,-.52);
-      ctx.bezierCurveTo(.045,-.72,.3,-.65,.22,-.39);
-      ctx.strokeStyle='#decaff';ctx.lineWidth=.018;ctx.stroke();
-      structureLine([[-.22,-.39],[-.17,-.35]],'#decaff',.014);
-      structureLine([[.22,-.39],[.17,-.35]],'#decaff',.014);
+      structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#76609a','#c8b2eb',.012);
+      structurePoly([[-.19,-.36],[-.16,-.53],[-.11,-.58],[-.07,-.54],[-.08,-.36]],'#7960a7','#decaff',.012);
+      structurePoly([[.19,-.36],[.16,-.53],[.11,-.58],[.07,-.54],[.08,-.36]],'#7960a7','#decaff',.012);
+      structurePoly([[-.1,-.53],[-.07,-.62],[0,-.67],[.07,-.62],[.1,-.53],[.065,-.5],[0,-.57],[-.065,-.5]],'#b29ad9','#f1dcff',.012);
+      structurePoly([[-.055,-.36],[-.055,-.47],[0,-.51],[.055,-.47],[.055,-.36]],'#302846','#bfa2ed',.01);
+      ctx.beginPath();ctx.moveTo(-.18,-.47);
+      ctx.bezierCurveTo(-.23,-.65,-.04,-.69,0,-.54);
+      ctx.bezierCurveTo(.04,-.69,.23,-.65,.18,-.47);
+      ctx.strokeStyle='#decaff';ctx.lineWidth=.014;ctx.stroke();
       break;
     }
     case 'primal':{
-      // Three narrow, curved claw traces replace the solid rock wall.
+      // A light stone grotto with a real opening and three claw marks above its lintel.
       structurePlinth('#777458','#595944','#424339','#d6d1aa');
+      structurePoly([[-.25,-.34],[-.23,-.48],[-.17,-.58],[-.11,-.55],[0,-.64],[.1,-.55],[.17,-.58],[.23,-.47],[.25,-.34],[.16,-.31],[0,-.35],[-.16,-.31]],
+        '#77765c','#d8d0a5',.016);
+      structurePoly([[-.14,-.34],[-.13,-.43],[-.08,-.49],[0,-.52],[.08,-.49],[.13,-.43],[.14,-.34]],'#403f39','#b6ae83',.012);
       for(let i=0;i<3;i++){
-        const x=-.15+i*.15;
-        ctx.beginPath();ctx.moveTo(x-.045,-.37);ctx.bezierCurveTo(x-.07,-.47,x+.06,-.52,x+.035,-.66);
-        ctx.strokeStyle=i===1?'#eee4b8':'#c9c095';ctx.lineWidth=.018;ctx.lineCap='round';ctx.stroke();
+        const x=-.13+i*.13;
+        structureLine([[x-.03,-.54],[x-.01,-.59],[x+.025,-.63]],'#eee4b8',.014);
       }
       break;
     }
     case 'time':{
-      // An open, narrow time ring with a moving hand replaces the solid observatory block.
+      // Small clock-gate with two slim supports, a lintel and a readable moving dial.
       structurePlinth('#89808a','#635b6e','#484453','#f0dfc8');
-      ctx.beginPath();ctx.ellipse(0,-.52,.16,.19,-.28,0,Math.PI*2);
-      ctx.strokeStyle='#ead7bb';ctx.lineWidth=.018;ctx.stroke();
-      structureLine([[-.1,-.65],[-.14,-.62]],'#ead7bb',.014);
-      structureLine([[.1,-.39],[.14,-.42]],'#ead7bb',.014);
-      structureLine([[0,-.52],[0,-.61],[.065,-.48]],'#f5e8cb',.016);
-      structureGlow(0,-.52,.16,'#e8d5b522');break;
+      structurePoly([[-.22,-.32],[0,-.25],[.22,-.32],[0,-.39]],'#89808a','#f0dfc8',.012);
+      for(const x of [-.16,.16])structurePoly([[x-.022,-.36],[x-.02,-.61],[x+.02,-.61],[x+.022,-.36]],'#746b78','#ead7bb',.012);
+      structurePoly([[-.23,-.58],[-.18,-.66],[0,-.72],[.18,-.66],[.23,-.58],[.18,-.54],[0,-.61],[-.18,-.54]],'#b5a29e','#f5e8cb',.014);
+      structureEllipse(0,-.51,.095,.095,'#504b5c','#e8d5b4',.016);
+      structureEllipse(0,-.51,.064,.064,'#b5a29e','#f8e9c8',.01);
+      for(let i=0;i<8;i++){const a=i*Math.PI/4;structureLine([[Math.cos(a)*.071,-.51+Math.sin(a)*.071],[Math.cos(a)*.084,-.51+Math.sin(a)*.084]],'#fff1d9',.008);}
+      structureLine([[0,-.51],[0,-.56],[.04,-.49]],'#514b5c',.012);
+      structureGlow(0,-.51,.14,'#e8d5b522');break;
     }
     case 'metal':{
       structurePlinth('#9baeb1','#627884','#455a68','#e0ece9');
@@ -222,7 +231,37 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
   }
+  paintHabitatGround(element);
   paintHabitatMotion(element,time);
+}
+
+/** Flat, faint ground marks give the five newer Habitats their own terrain without blocking paths. */
+function paintHabitatGround(element){
+  switch(element){
+    case 'war':
+      structureLine([[-.31,.035],[-.16,.105],[0,.04],[.16,.105],[.31,.035]],'#4b34364d',.012);
+      structureLine([[-.2,.005],[-.2,.075]],'#f2c18755',.01);
+      structureLine([[.2,.005],[.2,.075]],'#f2c18755',.01);
+      break;
+    case 'pure':
+      structureLine([[-.22,.045],[-.1,.105],[0,.06],[.1,.105],[.22,.045]],'#fff8ff77',.012);
+      structureEllipse(0,.07,.035,.017,'#fff8ff55');
+      break;
+    case 'legend':
+      structureLine([[-.25,.035],[-.13,.095],[0,.04],[.13,.095],[.25,.035]],'#e6d4ff66',.012);
+      structureLine([[-.09,.06],[-.04,.085],[0,.06],[.04,.085],[.09,.06]],'#f1dcff55',.01);
+      break;
+    case 'primal':
+      structureEllipse(-.29,.045,.045,.018,'#373a3255');
+      structureEllipse(.27,.075,.055,.02,'#373a3255');
+      structureEllipse(.05,.125,.035,.014,'#eee4b866');
+      structureLine([[-.19,.11],[-.08,.145],[.02,.13]],'#e8dfb866',.012);
+      break;
+    case 'time':
+      structureEllipse(0,.075,.15,.06,'#e7d7bf33','#f0dfc855',.01);
+      for(const x of [-.09,.09])structureLine([[x,.05],[x*1.35,.085]],'#f3e4cc66',.01);
+      break;
+  }
 }
 
 /** Per-element accents animate inside the habitat silhouette and never affect its footprint. */

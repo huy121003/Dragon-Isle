@@ -4,6 +4,7 @@ const {readJson,updateJson}=require('../store.cjs');
 const {validSave}=require('../validation.cjs');
 const systemConfig=require('../../js/config/system.js');
 const missions=require('../daily-missions.cjs');
+const {newProfile}=require('../profile.cjs');
 function createSaveRoutes({auth,profilesDir}){
   return async function handle(req,res,pathname){
     if(pathname!=='/api/save'||!['GET','PUT'].includes(req.method))return false;
@@ -15,6 +16,7 @@ function createSaveRoutes({auth,profilesDir}){
     const file=path.join(profilesDir,user.id+'.json');
     if(req.method==='GET'){
       let profile=await readJson(file,null);
+      if(!profile&&user.role==='admin')profile=await updateJson(file,current=>current||newProfile({admin:true}));
       if(profile){
         const daily=missions.ensureState(profile.dailyMissions);
         if(JSON.stringify(profile.dailyMissions)!==JSON.stringify(daily))

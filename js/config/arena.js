@@ -14,14 +14,16 @@
     /** Exact number of dragons required in the player's attack team. */
     teamSize:3,
     /** Owned dragon level range accepted by Arena and live Challenge. */
-    minBattleLevel:10,
+    minBattleLevel:5,
     maxBattleLevel:100,
     /** Attempts granted per server-time reset window. */
     attemptsPerWindow:3,
     /** Reset boundaries are 00:00, 08:00 and 16:00 Vietnam time. */
     attemptWindowMs:8*60*60*1000,
+    /** Gem cost to instantly restore all Arena attempts. */
+    attemptRefillGemCost:5,
     /** Target rival squad Combat Power relative to the player's three strongest dragons. */
-    rivalPowerRatios:Object.freeze([.65,1,1.12]),
+    rivalPowerRatios:Object.freeze([.55,.75,.95,1.1,1.25]),
     /** Safety cap that ends battles which cannot naturally reach a knockout. */
     maxTurns:80,
     /** Number of recent authoritative events exposed to clients. */

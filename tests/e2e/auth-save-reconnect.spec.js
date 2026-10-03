@@ -11,9 +11,9 @@ test('register, keep session, queue save offline and reconnect',async({page,cont
   await auth.locator('input[type="password"]').fill('strong-pass-123');
   await page.getByRole('button',{name:'Create account'}).click();
 
-  await expect(page.getByText(new RegExp('Level 1 · '+username))).toBeVisible({timeout:15000});
+  await expect(page.getByText(new RegExp('Level 100 · '+username))).toBeVisible({timeout:15000});
   await page.reload();
-  await expect(page.getByText(new RegExp('Level 1 · '+username))).toBeVisible({timeout:15000});
+  await expect(page.getByText(new RegExp('Level 100 · '+username))).toBeVisible({timeout:15000});
 
   await context.setOffline(true);
   const saveResult=await page.evaluate(()=>window.DragonGame.save());
@@ -24,5 +24,5 @@ test('register, keep session, queue save offline and reconnect',async({page,cont
   await context.setOffline(false);
   await page.evaluate(()=>window.dispatchEvent(new Event('online')));
   await expect(page.getByRole('heading',{name:'Connection lost'})).toBeHidden({timeout:15000});
-  await expect(page.getByText(new RegExp('Level 1 · '+username))).toBeVisible();
+  await expect(page.getByText(new RegExp('Level 100 · '+username))).toBeVisible();
 });

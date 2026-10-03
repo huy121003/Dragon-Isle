@@ -67,6 +67,12 @@ async function launch(port){
     assert(!fs.readFileSync(path.join(temporary,'users.json'),'utf8').includes('very-safe-pass'));
     const idA=users.find(u=>u.username==='Alex_1').id,idB=users.find(u=>u.username==='Bela_2').id;
     assert.notEqual(idA,idB);
+    const initialAdmin=await (await fetch(base+'/api/save',{headers:{Cookie:cookieA,'X-Dragon-Account':idA}})).json();
+    assert.equal(initialAdmin.player.level,100,'A new admin account starts at level 100');
+    assert.equal(initialAdmin.gold,1_000_000);assert.equal(initialAdmin.food,1_000_000);
+    assert.equal(initialAdmin.gems,1_000_000,'A new admin account receives one million of each resource');
+    assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:cookieB,'X-Dragon-Account':idB}})).json()),null,
+      'A new regular account keeps the existing normal starter flow');
     const state={version:5,lastTick:12345,savedAt:Date.now(),land:[],dragons:[],buildings:[],eggs:[],gold:123};
     const putA=await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookieA,'X-Dragon-Account':idA,'Content-Type':'application/json'},body:JSON.stringify(state)});
     assert.equal(putA.status,200);

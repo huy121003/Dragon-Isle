@@ -66,7 +66,12 @@ function handleAction(button){
       const backToShop=ui.mode?.fromShop;
       stopMode();if(backToShop)openModal("shop");break;
     }
-    case "shop-tab":ui.shopTab=button.dataset.tab;renderShop();break;
+    case "shop-tab":ui.shopTab=button.dataset.tab;if(ui.shopTab==="eggs")ui.shopEggPage=0;renderShop();break;
+    case "shop-eggs-page":
+      if(currentAccount?.role==="admin"){
+        ui.shopEggPage=Math.max(0,Number(button.dataset.page)||0);renderShop();dom.body.scrollTop=0;
+      }
+      break;
     case "toggle-fixed-day":
       ui.fixedDay=!ui.fixedDay;
       try{localStorage.setItem('dragon-isle-fixed-day',ui.fixedDay?'1':'0');}catch(error){}

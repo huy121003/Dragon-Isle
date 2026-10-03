@@ -147,6 +147,8 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         throw Object.assign(new Error('Choose a different living dragon.'),{status:400});
       battle[side==='attack'?'activeAttack':'activeDefense']=index;
       record(battle,{side,switchTo:battle[side][index].nickname});
+      // The same player may choose a skill after switching; event sequence still advances.
+      return null;
     }else if(action?.action==='skill'){
       const index=action.skillIndex;
       if(!Number.isInteger(index)||index<0||index>=actor.skills.length||

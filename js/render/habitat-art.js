@@ -151,24 +151,19 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
     case 'war':{
-      // Roman legion barracks: stone castra, arched gate, tiled roof and standards.
+      // Roman legion helmet-shaped shelter: brow, nose guard, cheek plates and horsehair crest.
       structurePlinth('#a77955','#76513f','#563b35','#e4b477');
-      structurePoly([[-.39,.08],[-.39,-.39],[-.26,-.47],[.26,-.47],[.39,-.39],[.39,.08]],
+      structurePoly([[-.38,.04],[-.35,-.24],[-.27,-.43],[-.13,-.53],[.12,-.53],[.28,-.41],[.36,-.19],[.34,.04]],
         '#9a5945','#edbc7c',.02);
-      structurePoly([[-.43,-.39],[-.29,-.56],[.29,-.56],[.43,-.39],[.32,-.32],[0,-.4],[-.32,-.32]],
-        '#c77a50','#f4d19a',.02);
-      structureLine([[-.27,-.53],[-.27,-.43],[-.18,-.39]],'#f6d59a',.014);
-      structureLine([[.27,-.53],[.27,-.43],[.18,-.39]],'#f6d59a',.014);
-      structurePoly([[-.13,.08],[-.13,-.12],[-.1,-.25],[0,-.33],[.1,-.25],[.13,-.12],[.13,.08]],
-        '#493834','#e8bc7a',.018);
-      structureEllipse(0,-.255,.085,.08,'#d4a46b','#f5d99f',.012);
-      structureLine([[0,-.2],[0,-.3]],'#725341',.012);
-      for(const x of [-.34,.34]){
-        structureLine([[x,.04],[x,-.68]],'#d9bd89',.022);
-        structurePoly([[x,-.69],[x-.1,-.63],[x-.08,-.47],[x+.08,-.47],[x+.1,-.63]],'#a8423d','#f0c17c',.012);
-        structureLine([[x,-.61],[x,-.49]],'#f1d093',.01);
-      }
-      structureElementBadge('war',0,-.18,.22);
+      structurePoly([[-.27,-.23],[-.2,-.4],[-.08,-.47],[.1,-.47],[.23,-.36],[.28,-.2],[.18,-.12],[-.18,-.12]],
+        '#c77a50','#f4d19a',.016);
+      structurePoly([[-.31,-.16],[.31,-.16],[.36,-.07],[-.36,-.07]],'#e1ad70','#ffe0a9',.018);
+      structurePoly([[-.035,-.14],[.035,-.14],[.02,.02],[-.02,.02]],'#f4d5a3');
+      structureLine([[-.22,-.1],[-.28,.015],[-.34,.025]],'#f6d59a',.02);
+      structureLine([[.22,-.1],[.28,.015],[.34,.025]],'#f6d59a',.02);
+      // The waving crest is animated below; its fixed base reads clearly as a Roman galea.
+      structurePoly([[-.12,-.49],[-.2,-.64],[-.12,-.75],[-.04,-.66],[.08,-.73],[.18,-.59],[.12,-.47]],
+        '#a8423d','#f0c17c',.016);
       structureGlow(0,-.23,.24,'#f5944544');break;
     }
     case 'pure':{
@@ -184,7 +179,6 @@ function paintHabitatBiome(element,theme,time,night){
         ctx.restore();structureGlow(x,y-.07,.15,'#fbdcff55');
       }
       structureEllipse(0,-.27,.075,.075,'#fff8ff','#d5b2dc',.014);
-      structureElementBadge('pure',0,.01,.2);
       structureGlow(0,-.25,.3,'#fbd4ff44');break;
     }
     case 'legend':{
@@ -201,7 +195,7 @@ function paintHabitatBiome(element,theme,time,night){
       ctx.bezierCurveTo(-.36,-.51,-.08,-.59,0,-.28);
       ctx.bezierCurveTo(.08,-.59,.36,-.51,.2,-.23);
       ctx.strokeStyle='#f1dcff';ctx.lineWidth=.04;ctx.stroke();
-      structureElementBadge('legend',0,.005,.2);break;
+      break;
     }
     case 'primal':{
       // Primitive rock shelter with three deep claw grooves spiralling around a core.
@@ -217,7 +211,7 @@ function paintHabitatBiome(element,theme,time,night){
         structureLine([[x-.045,y-.1],[x-.02,y-.035],[x+.04,y+.005],[x+.075,y+.085]],'#eee4b8',.027);
         structureLine([[x-.02,y-.065],[x+.015,y-.015],[x+.055,y+.035]],'#a19870',.012);
       }
-      structureElementBadge('primal',0,.035,.2);break;
+      break;
     }
     case 'time':{
       // Ancient observatory with orbiting ring and a visible hourglass inside its arch.
@@ -231,7 +225,6 @@ function paintHabitatBiome(element,theme,time,night){
       structureLine([[-.09,-.37],[.09,-.37],[0,-.29],[-.09,-.2],[.09,-.2]],'#514b5c',.022);
       ctx.beginPath();ctx.ellipse(0,-.28,.31,.1,-.48,0,Math.PI*2);
       ctx.strokeStyle='#f5e0b9';ctx.lineWidth=.026;ctx.stroke();
-      structureElementBadge('time',0,.04,.2);
       structureGlow(0,-.28,.3,'#e8d5b544');break;
     }
     case 'metal':{
@@ -252,6 +245,50 @@ function paintHabitatBiome(element,theme,time,night){
       structureLine([[-.25,-.02],[.25,-.02]],'#f4d19b',.022);
       break;
     }
+  }
+  paintHabitatMotion(element,time);
+}
+
+/** Per-element accents animate inside the habitat silhouette and never affect its footprint. */
+function paintHabitatMotion(element,time){
+  const wave=Math.sin(time*.003);
+  switch(element){
+    case 'fire':
+      for(const [x,y] of [[-.25,-.43],[.31,-.47]])
+        structurePoly([[x-.035,y+.055],[x-.04,y-.005],[x,y-.045-Math.max(0,wave)*.035],[x+.04,y-.005],[x+.035,y+.055]],'#ffc45c');
+      break;
+    case 'water':
+      structureLine([[-.2,.16],[0,.18+wave*.016],[.2,.15]],'#efffff',.013);break;
+    case 'earth':
+      structureEllipse(-.26,.12+wave*.012,.045,.023,'#e1c48b');break;
+    case 'wind': /* The four-blade windmill above already spins. */ break;
+    case 'ice':
+      for(const [i,x] of [[0,-.3],[1,.22]]){const a=time*.002+i*Math.PI,y=-.35-i*.08;
+        structureLine([[x+Math.cos(a)*.035,y+Math.sin(a)*.035],[x-Math.cos(a)*.035,y-Math.sin(a)*.035]],'#fff',.014);}
+      break;
+    case 'thunder':
+      if(Math.sin(time*.016)>0.7)structureGlow(.02,-.28,.18,'#fff58caa');break;
+    case 'nature':
+      structurePoly([[-.29,-.43],[-.34+wave*.025,-.5],[-.24,-.47]],'#bce886');break;
+    case 'dark':
+      structureEllipse(.29+wave*.035,-.37,.017,.017,'#dfc8f6');break;
+    case 'light':
+      ctx.save();ctx.translate(0,-.43);ctx.rotate(time*.0005);structureLine([[0,-.17],[0,-.25]],'#fff9d9',.018);ctx.restore();break;
+    case 'metal':
+      ctx.save();ctx.translate(0,.045);ctx.rotate(time*.0007);
+      structureEllipse(0,0,.09,.04,'#d9e7e1','#506875',.012);
+      for(let i=0;i<8;i++){const a=i*Math.PI/4;structureLine([[Math.cos(a)*.09,Math.sin(a)*.04],[Math.cos(a)*.12,Math.sin(a)*.055]],'#e6eee6',.012);}
+      ctx.restore();break;
+    case 'war':
+      structureLine([[-.09,-.65],[-.025+wave*.025,-.72],[.09+wave*.04,-.68]],'#ffe0a0',.024);break;
+    case 'pure':
+      ctx.save();ctx.translate(0,-.27);ctx.rotate(time*.0007);structureEllipse(0,-.075,.022,.06,'#fffaff','#eac2e7',.008);ctx.restore();break;
+    case 'legend':
+      ctx.save();ctx.translate(0,-.27);ctx.rotate(time*.0005);structureEllipse(-.09,0,.105,.045,'#c8a9f0','#f2e4ff',.012);ctx.restore();break;
+    case 'primal':
+      structureLine([[-.2,-.31],[0,-.26+wave*.015],[.2,-.31]],'#fff0c0',.016);break;
+    case 'time':
+      ctx.save();ctx.translate(0,-.28);ctx.rotate(time*.00085);structureLine([[0,-.11],[0,.045],[.06,.02]],'#fff2d8',.016);ctx.restore();break;
   }
 }
 

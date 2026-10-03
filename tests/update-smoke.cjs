@@ -686,7 +686,12 @@ check('dragon detail back navigation and habitat actions follow their source and
  navigation.run('buildingById(1).upgradeEnds=Date.now()+60000;renderHabitat(1)');
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="move"'));
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="store"'));
- navigation.run('ui.shopTab="save";openModal("shop")');
+ navigation.run('currentAccount.role="player";ui.shopTab="save";openModal("shop")');
+ assert.equal(navigation.run('ui.shopTab'),'special',
+   'Regular players are redirected away from the admin-only Data tab');
+ assert(!navigation.element('sheetBody').innerHTML.includes('data-tab="save"'),
+   'Regular players do not see the Data tab');
+ navigation.run('currentAccount.role="admin";ui.shopTab="save";openModal("shop")');
  assert(navigation.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
  assert(navigation.element('sheetBody').innerHTML.includes('aria-label="2,500 food"'));
  assert(navigation.element('sheetBody').innerHTML.includes('<summary>Testing &amp; debug</summary>'));
@@ -1503,7 +1508,7 @@ check('low building silhouettes and larger habitat dragons retain the exact base
  assert.equal(dragons[0],1.35);
  assert.deepEqual(dragons.slice(1),[.86,.86,.86,.86]);
 });
-check('all ten habitat environments render with dragons',()=>{
+check('all fifteen habitat environments render with dragons',()=>{
  const before=game.drawCalls.length;
  game.run('for(const [i,element] of Object.keys(DATA.elements).entries()){' +
    'const b={id:state.dragons[0].habitatId,type:"habitat",element,x:738+i,y:700,'+

@@ -21,6 +21,13 @@ describe('server new profile',()=>{
     expect(Number.isFinite(habitat.purchaseCost)).toBe(true);
   });
 
+  it('starts new admin profiles at level 100 with one million of each resource',()=>{
+    const profile=newProfile({admin:true});
+    expect(profile.player).toEqual({level:100,xp:0});
+    expect({gold:profile.gold,food:profile.food,gems:profile.gems})
+      .toEqual({gold:1_000_000,food:1_000_000,gems:1_000_000});
+  });
+
   it('creates a valid starter footprint without balance data from game.json',()=>{
     const profile=newProfile();
     expect(profile.land.length).toBeGreaterThan(0);

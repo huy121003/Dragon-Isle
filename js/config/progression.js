@@ -54,7 +54,7 @@
     xpSources:Object.freeze({
       buildingBuild:Object.freeze({habitat:35,farm:30,cave:75,premiumCave:100,academy:100,arena:100,decor:5}),
       buildingUpgradeBase:30,buildingUpgradePerLevel:15,land:60,island:250,
-      crop:Object.freeze([8,20,55,150]),hatchKnown:25,hatchNew:50,breed:45,
+      crop:Object.freeze([8,20,30,55,80,150,220,320]),hatchKnown:25,hatchNew:50,breed:45,
       dragonLevelBase:8,dragonLevelPerTen:3
     }),
     /** Farm availability grows by one every N levels until maxFarms. */

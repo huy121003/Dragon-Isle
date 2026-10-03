@@ -13,13 +13,15 @@ const worldConfig=require('../js/config/world.js');
  *
  * @returns {object} Save profile mới tương thích với SAVE_VERSION hiện tại.
  */
-function newProfile(){
+function newProfile({admin=false}={}){
   const now=Date.now(),land=[];
   const origin=game.islands[0],region=game.islandRegionSize;
   const startX=origin.x+region,startY=origin.y+region;
   for(let y=startY;y<startY+region;y++)for(let x=startX;x<startX+region;x++)land.push(x+','+y);
-  return {version:systemConfig.save.version,lastTick:now,savedAt:now,nextId:4,player:{level:1,xp:0},
-    gold:economyConfig.starting.gold,food:economyConfig.starting.food,gems:economyConfig.starting.gems,
+  return {version:systemConfig.save.version,lastTick:now,savedAt:now,nextId:4,player:{level:admin?100:1,xp:0},
+    gold:admin?1_000_000:economyConfig.starting.gold,
+    food:admin?1_000_000:economyConfig.starting.food,
+    gems:admin?1_000_000:economyConfig.starting.gems,
     expansions:0,land,regions:[],unlockedIslands:1,eggs:[],discovered:['fire'],recipes:[],
     habitatPurchases:{fire:1},
     buildings:[{id:1,type:'habitat',element:'fire',x:startX+11,y:startY+11,level:1,stored:false,

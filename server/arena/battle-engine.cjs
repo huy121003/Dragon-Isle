@@ -73,6 +73,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         actor.maxHp*(kind==='last_stand'?cost:0))));
       const offensive=combat.skillPower(actor.attack,cast)>0||kind==='echo_last';
       const aoe=['area','spore_bloom'].includes(kind);
+      const poisonedBefore=!!fx.status(target,'poison');
       const victims=aoe?fx.living(battle[other]):offensive?[target]:[];
       let totalDamage=0;
       for(const victim of victims){
@@ -113,8 +114,10 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
               Math.round(victim.maxHp*(reflect.cap||.12)));
             fx.absorb(actor,reflected);
           }
-          if(fx.status(victim,'carapace')&&victim.hp>0)
-            fx.addStatus(victim,{kind:'carapace_strike',value:effect.counterBonus||.15,duration:2},skill.element);
+          const carapace=fx.status(victim,'carapace');
+          if(carapace&&victim.hp>0)
+            fx.addStatus(victim,{kind:'carapace_strike',
+              value:carapace.counterBonus||.15,duration:2},skill.element);
         }
         if(hits&&victim.hp>0){
           if(['poison','burn','curse','armor_down','damage_down'].includes(kind))
@@ -129,7 +132,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
             const burst=fx.absorb(victim,Math.round(victim.maxHp*effect.value));
             damage+=burst;totalDamage+=burst;
           }
-          if(kind==='spore_bloom'&&fx.status(target,'poison')&&victim!==target)
+          if(kind==='spore_bloom'&&poisonedBefore&&victim!==target)
             fx.addStatus(victim,{kind:'poison',value:effect.value,duration:effect.duration},skill.element);
           if(kind==='dispel_strike'){
             const buff=victim.statuses.find(s=>['armor_up','damage_reduction'].includes(s.kind));
@@ -171,7 +174,10 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         'carapace'].includes(kind)){fx.addStatus(actor,{...effect,
           duration:effect.duration+1},skill.element);support(actor);}
       else if(kind==='switch_trap'){
-        battle.traps??={};battle.traps[other]={turns:effect.duration,value:effect.value};
+        battle.traps??={};
+        const trap=battle.traps[other];
+        if(!trap)battle.traps[other]={turns:effect.duration,value:effect.value};
+        else trap.value=Math.max(trap.value,effect.value);
         support(actor);
       }else if(kind==='lifesteal_cost'){
         support(actor,fx.heal(actor,Math.min(totalDamage*effect.value,actor.maxHp*effect.healCap)));
@@ -249,7 +255,9 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     for(;battle.turn<=arenaConfig.maxTurns&&alive(left)&&alive(right);battle.turn++){
       for(const side of ['attack','defense']){
         if(!alive(left)||!alive(right))break;
-        const fighter=active(battle,side),ready=readySkills(fighter);
+        const fighter=active(battle,side),ready=readySkills(fighter).filter(({skill})=>
+          skill.effect?.kind!=='revive_first'||battle[side].some(f=>f.hp<=0)&&
+          !battle.revives?.[side]);
         if(!ready.length)throw Object.assign(new Error('This dragon has no unlocked skills.'),{status:400});
         const chosen=side==='defense'?chooseDefenseSkill(battle):
           ready[Math.floor(rng()*ready.length)];

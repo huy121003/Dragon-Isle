@@ -20,7 +20,9 @@ function createBattleAi({typeChart}){
   /** Server-side defensive AI. Higher score means more useful in current state. */
   function chooseDefenseSkill(battle){
     const actor=battle.defense[battle.activeDefense],target=battle.attack[battle.activeAttack];
-    const ready=readySkills(actor);
+    const ready=readySkills(actor).filter(({skill})=>
+      skill.effect?.kind!=='revive_first'||battle.defense.some(f=>f.hp<=0)&&
+      !battle.revives?.defense);
     if(!ready.length)throw Object.assign(new Error('The defender has no unlocked skills.'),{status:400});
     const incoming=Math.max(1,...readySkills(target).map(({skill})=>
       combat.battleDamage(target,actor,skill,typeChart)));
@@ -35,6 +37,21 @@ function createBattleAi({typeChart}){
       const already=kind&&actor.statuses.some(status=>status.kind===kind);
       const enemyHas=kind&&target.statuses.some(status=>status.kind===kind);
       const missing=Math.max(0,combat.effectiveMaxHp(actor)-actor.hp);
+      const allies=battle.defense.filter(f=>f.hp>0);
+      const teamMissing=allies.reduce((sum,f)=>sum+Math.max(0,f.maxHp-f.hp),0);
+      if(kind==='revive_first'&&battle.defense.some(f=>f.hp<=0)&&!battle.revives?.defense)
+        return Math.max(value,incoming*2);
+      if(['heal_lowest','cleanse_heal_lowest','rewind_ally'].includes(kind))
+        value+=Math.min(teamMissing,Math.max(...allies.map(f=>f.maxHp),0)*
+          (effect.value||.2))*ai.healWeight;
+      if(['heal_team','cleanse_team_heal','regen_team'].includes(kind))
+        value+=Math.min(teamMissing,allies.reduce((sum,f)=>sum+f.maxHp,0)*
+          effect.value)*ai.healWeight;
+      if(kind==='shield'&&!already)value+=actor.maxHp*effect.value*ai.defenseWeight;
+      if(kind==='area')value=battle.attack.filter(f=>f.hp>0).reduce((sum,f)=>
+        sum+Math.min(f.hp,combat.battleDamage(actor,f,skill,typeChart)),0);
+      if(kind==='freeze_chance'&&!enemyHas)value+=incoming*ai.freezeWeight*effect.value;
+      if(kind==='burn'&&!enemyHas)value+=target.maxHp*effect.value*effect.duration*.5;
       if(kind==='heal'||kind==='cleanse')value+=Math.min(missing,actor.maxHp*effect.value)*ai.healWeight;
       else if(kind==='regen'&&!already)
         value+=Math.min(missing,actor.maxHp*effect.value*effect.duration)*ai.regenWeight;

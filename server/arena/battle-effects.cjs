@@ -16,6 +16,8 @@ function addStatus(fighter,effect,element){
   if(current){
     if((effect.value||0)>(current.value||0)){
       current.value=effect.value;current.element=element;
+      if(effect.kind==='shield')current.amount=Math.max(current.amount||0,
+        Math.round(fighter.maxHp*effect.value));
       if(effect.healingReduction)current.healingReduction=effect.healingReduction;
     }
     return current;

@@ -1,13 +1,14 @@
 "use strict";
 
 function drawParticles(dt,time){
-  // Gravity is shared by every particle, so project it once per frame.
-  const gravity=worldToGrid(DATA.originX,DATA.originY+45*dt);
+  // Gravity is shared by active particles, so project it only when needed.
+  let gravity=null;
   for(const p of ui.particles){
     if(p.life<=0)continue;
     p.life-=dt;
     if(p.life<=0)continue;
     p.c+=p.vc*dt;p.r+=p.vr*dt;
+    if(!gravity)gravity=worldToGrid(DATA.originX,DATA.originY+45*dt);
     p.vc+=gravity.c;p.vr+=gravity.r;
     ctx.globalAlpha=clamp(p.life/p.max,0,1);
     const point=gridToScreen(p.c,p.r);

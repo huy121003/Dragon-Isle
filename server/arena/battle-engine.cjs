@@ -74,8 +74,35 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       const offensive=combat.skillPower(actor.attack,cast)>0||kind==='echo_last';
       const aoe=['area','spore_bloom'].includes(kind);
       const poisonedBefore=!!fx.status(target,'poison');
-      const victims=aoe?fx.living(battle[other]):offensive?[target]:[];
+      const repeated=['multi','low_hp_power'].includes(kind);
+      const victims=aoe?fx.living(battle[other]):offensive&&!repeated?[target]:[];
       let totalDamage=0;
+      if(repeated){
+        // Resolve each hit against the current living target. A knockout sends
+        // the next hit to the next living reserve instead of discarding it.
+        let current=target;
+        for(let i=0;i<effect.hits&&actor.hp>0;i++){
+          if(current.hp<=0)current=battle[other].find(f=>f.hp>0);
+          if(!current)break;
+          const miss=Math.min(combatConfig.maxAccuracyPenalty,
+            (effect.missChance||0)+combat.statusValue(actor,'accuracy_down'));
+          if(rng()<miss){recordHit(current,0,{hits:0,misses:1});continue;}
+          const crit=rng()<combatConfig.critical.chance;
+          const variance=combatConfig.variance.min+rng()*
+            (combatConfig.variance.max-combatConfig.variance.min);
+          const power=kind==='low_hp_power'&&actor.hp/actor.maxHp<effect.threshold?
+            effect.lowPower:cast.power;
+          const dealt=combat.battleDamage(actor,current,{...cast,power},
+            catalog.typeChart,variance,crit);
+          const actual=fx.absorb(current,dealt);
+          totalDamage+=actual;
+          recordHit(current,actual,{hits:1,critical:crit,
+            matchup:combat.matchup(skill.element,current.parts,catalog.typeChart)});
+          const reflect=fx.status(current,'reflect');
+          if(reflect)fx.absorb(actor,Math.min(Math.round(actual*reflect.value),
+            Math.round(current.maxHp*(reflect.cap||.12))));
+        }
+      }
       for(const victim of victims){
         if(victim.hp<=0)continue;
         let hits=0,misses=0,critical=false,damage=0;

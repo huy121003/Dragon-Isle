@@ -70,4 +70,14 @@ for(const skill of special){
   assert(combat.battleDamage(actor,target,skill,catalog.typeChart)<baseline,
     'Primeval Carapace adds actual defense');
 }
+{
+  const actor=fighter('wind',1),first=fighter('earth',2),reserve=fighter('water',3);
+  const battle=setup([actor],[first,reserve]);
+  first.hp=1;
+  const combo=game.skills.elemental.wind.find(s=>s.effect?.kind==='multi');
+  const hp=reserve.hp;
+  engine.strike(battle,'attack',combo,3);
+  assert(reserve.hp<hp,'remaining combo hits continue onto the next living reserve');
+  assert(battle.events.some(event=>event.target===reserve.nickname&&event.damage>0));
+}
 console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');

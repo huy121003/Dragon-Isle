@@ -24,13 +24,16 @@
       config.double.base+Math.floor((averageLevel-config.double.minParentLevel)/10)*
       config.double.perTenLevels):0;
     const factor=premium?config.premium.rareFactor:1;
+    // The configured caps apply to the standard cave; Premium boosts may exceed them.
     return {three:three*factor,four:four*factor,double:double*factor};
   }
 
   /** Split the remaining common probability between 1- and 2-element tiers. */
-  function commonTierChances(tierKey,rareTotal,hasTwo){
+  function commonTierChances(tierKey,rareTotal,hasOne,hasTwo){
     const pair=config.tierWeights[tierKey]||[1,0],remaining=Math.max(0,1-rareTotal);
-    const two=hasTwo?remaining*pair[1]/(pair[0]+pair[1]):0;
+    if(!hasOne)return {one:0,two:hasTwo?remaining:0};
+    if(!hasTwo)return {one:remaining,two:0};
+    const two=remaining*pair[1]/(pair[0]+pair[1]);
     return {one:remaining-two,two};
   }
 
@@ -64,7 +67,11 @@
     const pool=[...new Set(fatherSpecies.elements.concat(motherSpecies.elements))];
     const canInherit=parts=>parts.some(e=>fatherSpecies.elements.includes(e))&&
       parts.some(e=>motherSpecies.elements.includes(e));
-    const groups=[pool.slice(),[],[],[],[]];
+    // One-element offspring are only possible from two parents of the exact same
+    // one-element species; all other pairings assign zero probability to this tier.
+    const sameSingleSpecies=fatherSpecies.elements.length===1&&motherSpecies.elements.length===1&&
+      fatherSpecies.id===motherSpecies.id;
+    const groups=[sameSingleSpecies?pool.slice():[],[],[],[],[]];
 
     for(const first of pool)for(const second of pool){
       if(first===second)continue;
@@ -102,7 +109,8 @@
       bothTriple:fatherSpecies.elements.length===3&&motherSpecies.elements.length===3,
       poolSize:pool.length,premium
     });
-    const common=commonTierChances(tierKey,rare.three+rare.four+rare.double,!!groups[1].length);
+    const common=commonTierChances(tierKey,rare.three+rare.four+rare.double,
+      !!groups[0].length,!!groups[1].length);
     const weights=[common.one,common.two,rare.three,rare.four,rare.double];
 
     return groups.flatMap((ids,index)=>{

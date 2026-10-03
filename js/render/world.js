@@ -177,6 +177,18 @@ function drawIslandGround(island,index,time,colors){
   }
   ctx.restore();
 }
+/** Stamp the same system glyph used by this island's element flag on the terrain. */
+function drawIslandElementBadge(island,index,colors){
+  if(!island.element)return;
+  const p=gridToScreen(island.x+island.size*.5,island.y+island.size*.22);
+  const size=clamp(DATA.tileW*.52*ui.camera.zoom,10,30);
+  ctx.save();ctx.globalAlpha=.94;
+  ctx.beginPath();ctx.arc(p.x,p.y,size*.72,0,Math.PI*2);
+  ctx.fillStyle=colors.shadow+'dd';ctx.fill();ctx.strokeStyle=colors.rim;
+  ctx.lineWidth=Math.max(1,size*.1);ctx.stroke();
+  drawElementEmblem(island.element,p.x,p.y,size*.86);
+  ctx.restore();
+}
 function drawFloatingIslands(lo,hi,time,drawContents){
   islandDrawOrder().forEach(function(index){
     const island=DATA.islands[index];
@@ -219,6 +231,7 @@ function drawFloatingIslands(lo,hi,time,drawContents){
     islandOutlinePath(rim);
     ctx.fillStyle=top;ctx.fill();ctx.strokeStyle=c.rim;ctx.lineWidth=DATA.tileH*.38;ctx.stroke();
     drawIslandGround(island,index,time,c);
+    drawIslandElementBadge(island,index,c);
     for(let row=0;row<3;row++)for(let col=0;col<3;col++){
       const r={index,col,row,x:island.x+col*DATA.islandRegionSize,
         y:island.y+row*DATA.islandRegionSize,id:index+':'+col+':'+row};

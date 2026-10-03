@@ -3,11 +3,8 @@
 /* RENDER: Element-specific Habitat biome and Habitat renderer. */
 function paintHabitatBiome(element,theme,time,night){
   const pulse=.78+.22*Math.sin(time*.005);
-  // The five newer structures were reading smaller and more detached than the
-  // original habitats. Bring them closer to the fire habitat's visual weight
-  // and settle them onto the rear half of their platforms.
-  const emphasize=['war','pure','legend','primal','time'].includes(element);
-  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,.8);}
+  // Match the five newer structures to the old habitats' width-to-height ratio.
+  const accentScaleY=['pure','legend','time'].includes(element)?.72:.8;
   switch(element){
     case 'fire':{
       structurePlinth('#463d3c','#443846','#302e39','#e0733c');
@@ -158,6 +155,7 @@ function paintHabitatBiome(element,theme,time,night){
     case 'war':{
       // A small sculpted Roman galea makes this read as a War habitat, not a floating flag.
       structurePlinth('#a77955','#76513f','#563b35','#e4b477');
+      ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.2,-.31],[0,-.25],[.2,-.31],[0,-.37]],'#c98d61','#efd09a',.012);
       structurePoly([[-.25,-.38],[-.22,-.5],[-.15,-.59],[-.06,-.63],[.08,-.63],[.18,-.57],[.24,-.46],[.24,-.38]],
         '#9a5945','#edbc7c',.018);
@@ -167,21 +165,23 @@ function paintHabitatBiome(element,theme,time,night){
       structurePoly([[-.04,-.4],[.04,-.4],[.02,-.31],[-.02,-.31]],'#f4d5a3');
       structurePoly([[-.09,-.62],[-.13,-.72],[-.07,-.75],[0,-.68],[.07,-.74],[.13,-.64],[.08,-.61]],
         '#b95246','#f0c17c',.014);
-      structureGlow(0,-.5,.14,'#f5944533');break;
+      structureGlow(0,-.5,.14,'#f5944533');ctx.restore();break;
     }
     case 'pure':{
       // Small open shrine with three petal arches around a light; the lower tile stays clear.
       structurePlinth('#b18fbd','#7c608f','#594669','#f8e6f5');
+      ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#bb96c3','#f8e6f5',.012);
       for(const x of [-.17,.17])structurePoly([[x-.025,-.36],[x-.02,-.54],[x,-.57],[x+.02,-.54],[x+.025,-.36]],'#e4cce9','#fff8ff',.01);
       structurePoly([[-.23,-.53],[-.18,-.59],[-.08,-.56],[0,-.67],[.08,-.56],[.18,-.59],[.23,-.53],[.19,-.49],[.08,-.53],[0,-.61],[-.08,-.53],[-.19,-.49]],
         '#d6b6df','#fff8ff',.014);
       structureEllipse(0,-.51,.035,.035,'#fffaff','#d5b2dc',.008);
-      structureGlow(0,-.52,.13,'#fbd4ff30');break;
+      structureGlow(0,-.52,.13,'#fbd4ff30');ctx.restore();break;
     }
     case 'legend':{
       // Slim twin-scroll portal: visible supports and a small open doorway give the glyph a building form.
       structurePlinth('#68518c','#433867','#302846','#c8b2eb');
+      ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#76609a','#c8b2eb',.012);
       structurePoly([[-.19,-.36],[-.16,-.53],[-.11,-.58],[-.07,-.54],[-.08,-.36]],'#7960a7','#decaff',.012);
       structurePoly([[.19,-.36],[.16,-.53],[.11,-.58],[.07,-.54],[.08,-.36]],'#7960a7','#decaff',.012);
@@ -191,11 +191,12 @@ function paintHabitatBiome(element,theme,time,night){
       ctx.bezierCurveTo(-.23,-.65,-.04,-.69,0,-.54);
       ctx.bezierCurveTo(.04,-.69,.23,-.65,.18,-.47);
       ctx.strokeStyle='#decaff';ctx.lineWidth=.014;ctx.stroke();
-      break;
+      ctx.restore();break;
     }
     case 'primal':{
       // A light stone grotto with a real opening and three claw marks above its lintel.
       structurePlinth('#777458','#595944','#424339','#d6d1aa');
+      ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.25,-.34],[-.23,-.48],[-.17,-.58],[-.11,-.55],[0,-.64],[.1,-.55],[.17,-.58],[.23,-.47],[.25,-.34],[.16,-.31],[0,-.35],[-.16,-.31]],
         '#77765c','#d8d0a5',.016);
       structurePoly([[-.14,-.34],[-.13,-.43],[-.08,-.49],[0,-.52],[.08,-.49],[.13,-.43],[.14,-.34]],'#403f39','#b6ae83',.012);
@@ -203,11 +204,12 @@ function paintHabitatBiome(element,theme,time,night){
         const x=-.13+i*.13;
         structureLine([[x-.03,-.54],[x-.01,-.59],[x+.025,-.63]],'#eee4b8',.014);
       }
-      break;
+      ctx.restore();break;
     }
     case 'time':{
       // Small clock-gate with two slim supports, a lintel and a readable moving dial.
       structurePlinth('#89808a','#635b6e','#484453','#f0dfc8');
+      ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.22,-.32],[0,-.25],[.22,-.32],[0,-.39]],'#89808a','#f0dfc8',.012);
       for(const x of [-.16,.16])structurePoly([[x-.022,-.36],[x-.02,-.61],[x+.02,-.61],[x+.022,-.36]],'#746b78','#ead7bb',.012);
       structurePoly([[-.23,-.58],[-.18,-.66],[0,-.72],[.18,-.66],[.23,-.58],[.18,-.54],[0,-.61],[-.18,-.54]],'#b5a29e','#f5e8cb',.014);
@@ -215,7 +217,7 @@ function paintHabitatBiome(element,theme,time,night){
       structureEllipse(0,-.51,.064,.064,'#b5a29e','#f8e9c8',.01);
       for(let i=0;i<8;i++){const a=i*Math.PI/4;structureLine([[Math.cos(a)*.071,-.51+Math.sin(a)*.071],[Math.cos(a)*.084,-.51+Math.sin(a)*.084]],'#fff1d9',.008);}
       structureLine([[0,-.51],[0,-.56],[.04,-.49]],'#514b5c',.012);
-      structureGlow(0,-.51,.14,'#e8d5b522');break;
+      structureGlow(0,-.51,.14,'#e8d5b522');ctx.restore();break;
     }
     case 'metal':{
       structurePlinth('#9baeb1','#627884','#455a68','#e0ece9');
@@ -236,7 +238,6 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
   }
-  if(emphasize)ctx.restore();
   paintHabitatGround(element);
   paintHabitatMotion(element,time);
 }
@@ -244,7 +245,8 @@ function paintHabitatBiome(element,theme,time,night){
 /** Flat, faint ground marks give the five newer Habitats their own terrain without blocking paths. */
 function paintHabitatGround(element){
   const emphasize=['war','pure','legend','primal','time'].includes(element);
-  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,.8);}
+  const accentScaleY=['pure','legend','time'].includes(element)?.72:.8;
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);}
   switch(element){
     case 'war':
       structureLine([[-.31,.035],[-.16,.105],[0,.04],[.16,.105],[.31,.035]],'#4b34364d',.012);
@@ -277,7 +279,8 @@ function paintHabitatGround(element){
 function paintHabitatMotion(element,time){
   const wave=Math.sin(time*.003);
   const emphasize=['war','pure','legend','primal','time'].includes(element);
-  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,.8);}
+  const accentScaleY=['pure','legend','time'].includes(element)?.72:.8;
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,accentScaleY);}
   switch(element){
     case 'fire':
       for(const [x,y] of [[-.25,-.43],[.31,-.47]])

@@ -80,7 +80,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         if(victim.hp<=0)continue;
         let hits=0,misses=0,critical=false,damage=0;
         const attempts=kind==='multi'||kind==='low_hp_power'?effect.hits:1;
-        for(let i=0;i<attempts&&victim.hp>0;i++){
+        for(let i=0;i<attempts&&victim.hp>0&&actor.hp>0;i++){
           const miss=Math.min(combatConfig.maxAccuracyPenalty,
             (kind==='multi'?effect.missChance:0)+combat.statusValue(actor,'accuracy_down'));
           if(rng()<miss){misses++;continue;}
@@ -165,7 +165,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         if(f)support(f,fx.heal(f,Math.min(f.maxHp*effect.cap,(f.damageLastTurn||0)*effect.value)));
       }else if(kind==='regen_team'){
         for(const f of fx.living(allies)){fx.addStatus(f,{kind:'regen',value:effect.value,
-          duration:effect.duration+1},skill.element);support(f);}
+          duration:effect.duration},skill.element);support(f);}
       }else if(kind==='vitality'){
         const old=combat.effectiveMaxHp(actor);fx.addStatus(actor,{...effect,
           duration:effect.duration+1},skill.element);

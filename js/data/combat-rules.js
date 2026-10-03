@@ -97,9 +97,10 @@
     const boosted={...actor,attack:actor.attack*(1+statusValue(actor,"damage_up"))*
       (1-statusValue(actor,"damage_down"))};
     const armored={...target,defense:Math.max(0,target.defense*
-      (1+statusValue(target,"armor_up"))*(1-statusValue(target,"armor_down")))};
+      (1+Math.max(statusValue(target,"armor_up"),statusValue(target,"carapace")))*
+      (1-Math.min(.35,statusValue(target,"armor_down"))))};
     return Math.max(0,Math.round(damage(boosted,armored,skill,chart,variance,critical)*
-      (1-statusValue(target,"damage_reduction"))));
+      (1-Math.min(.5,statusValue(target,"damage_reduction")))));
   }
 
   return {stats,power,matchup,skillPower,damage,battleDamage,effectiveMaxHp,statusValue};

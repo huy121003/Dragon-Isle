@@ -4,6 +4,7 @@ const game=require('../data/game.json');
 require('../scripts/extend-catalog.cjs')(catalog,game);
 const {createBattleEngine}=require('../server/arena/battle-engine.cjs');
 const fx=require('../server/arena/battle-effects.cjs');
+const combat=require('../js/data/combat-rules.js');
 const engine=createBattleEngine({catalog,game,rng:()=>.99});
 const species=primary=>catalog.species.find(s=>s.doubleElement===primary).id;
 const fighter=(primary,id)=>engine.makeFighter({id,species:species(primary),level:50,
@@ -61,5 +62,12 @@ for(const skill of special){
   engine.strike(battle,'attack',revive,3);
   assert.equal(dead.hp,Math.round(dead.maxHp*.12));
   assert.throws(()=>engine.strike(battle,'attack',revive,3),/revive/);
+}
+{
+  const actor=fighter('fire',1),target=fighter('primal',2),skill=actor.skills[0];
+  const baseline=combat.battleDamage(actor,target,skill,catalog.typeChart);
+  fx.addStatus(target,{kind:'carapace',value:.35,duration:2},'primal');
+  assert(combat.battleDamage(actor,target,skill,catalog.typeChart)<baseline,
+    'Primeval Carapace adds actual defense');
 }
 console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');

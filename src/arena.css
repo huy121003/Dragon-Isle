@@ -9,7 +9,14 @@
 .battle-modal .arena-view,.battle-modal .challenge-panel{height:100%;min-height:0}
 .battle-modal .arena-battle{box-sizing:border-box;height:100%;min-height:0;display:flex;flex-direction:column}
 .battle-modal .battle-stage{flex:0 0 auto;height:clamp(160px,43%,360px);min-height:0}
-.arena-parties{position:absolute;z-index:4;left:8px;right:8px;bottom:7px;display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0;pointer-events:none}.arena-battle-party{min-width:0;padding:5px 6px;border-radius:11px;background:#fffdf0e8;border:1px solid #ffffffc9;box-shadow:0 2px 8px #1a455340;backdrop-filter:blur(5px);pointer-events:auto}.arena-battle-party>b{display:block;margin:0 0 3px;font-size:9px;color:#54706d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.arena-battle-party>div{display:flex;gap:4px;justify-content:center}.arena-party-dragon{position:relative;display:grid;place-items:center;min-width:0;width:clamp(34px,5vw,52px);height:47px;padding:1px;border:2px solid #e0e9e1;border-radius:9px;background:#f5faf6;cursor:pointer}.arena-party-dragon.active{border-color:#24a477;box-shadow:0 0 0 2px #74d8ad80}.arena-party-dragon .arena-portrait{width:34px;height:31px}.arena-party-dragon .arena-element-row{position:absolute;right:0;bottom:0;gap:0}.arena-party-dragon .element-flag{width:12px;height:15px}.arena-party-dragon.dead{filter:grayscale(1);opacity:.48;cursor:not-allowed}.arena-party-dragon>i{position:absolute;inset:0;display:grid;place-items:center;color:#d32432;font-style:normal;font-size:42px;font-weight:900;text-shadow:0 1px 3px white;line-height:1}.arena-party-dragon:disabled{cursor:not-allowed}
+.arena-stage-controls{position:absolute;z-index:6;left:72px;right:72px;bottom:9px}
+.arena-stage-controls .battle-controls{display:flex;align-items:center;gap:8px;margin:0;padding:7px 8px;border:1px solid #ffffff70;border-radius:15px;background:#173e54ed;box-shadow:0 5px 18px #153e4e66;backdrop-filter:blur(6px)}
+.arena-stage-controls .battle-controls-heading{flex:0 0 128px;min-width:0}.arena-stage-controls .battle-controls-heading>small{color:#edcf8c;font-size:9px;letter-spacing:.08em}.arena-stage-controls .battle-controls-heading h3,.arena-stage-controls .battle-matchup-key{display:none}
+.arena-stage-controls .battle-skill-grid{flex:1;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.arena-stage-controls .battle-skill-grid .ant-btn{min-width:0;min-height:50px;padding:4px 5px;background:#ffffff16;border-color:#ffffff55;color:#fff}
+.arena-stage-controls .battle-skill-grid .ant-btn:not(:disabled):hover{background:#ffffff28}
+.arena-stage-controls .battle-skill-grid .ant-btn small{color:#deebeb}
+.arena-stage-controls .battle-skill-grid .ant-btn.locked{background:#ffffff12}
 .battle-modal .battle-dragon{height:min(20dvh,185px);min-height:0}
 .battle-modal .battle-dragon .arena-portrait{width:auto;max-width:100%;max-height:100%;object-fit:contain}
 .battle-details-scroll{min-height:0}
@@ -55,6 +62,7 @@
 .arena-save-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #e2eae5;font-size:12px;color:#637781}
 .arena-save-bar .ant-btn{min-width:145px}
 .arena-element-filter{display:flex;align-items:center;gap:5px;overflow-x:auto;padding:7px 0;scrollbar-width:thin}.arena-filter-btn{display:grid;place-items:center;position:relative;flex:none;min-width:39px;min-height:39px;padding:2px 5px;border:1px solid #bad6ca;border-radius:10px;background:#fff;color:#273c4d;font-size:12px;font-weight:800;cursor:pointer}.arena-filter-btn.active{background:#d1f4e5;border-color:#168f66;box-shadow:inset 0 0 0 2px #168f66,0 2px 6px #1f79543d}.arena-filter-btn:disabled{opacity:.4;cursor:not-allowed}.arena-filter-btn .element-flag{pointer-events:none}
+.arena-rarity-filter{display:flex;align-items:center;gap:5px;overflow-x:auto;padding:5px 0;scrollbar-width:thin}.arena-rarity-filter-btn{width:43px;height:43px;padding:3px}.arena-rarity-filter-btn .rarity-gem{width:29px;height:34px;pointer-events:none}.arena-rarity-filter .filter-check{position:absolute;right:-3px;top:-4px;width:15px;height:15px;border-radius:50%;background:#168f66;color:#fff;font-size:10px;line-height:15px;text-align:center;box-shadow:0 0 0 2px #fff}
 .arena-opponents{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
 .arena-opponent-card{padding:13px;border:1px solid #e9ded1;border-radius:16px;background:linear-gradient(#fffbf1,#f4f0e8)}
 .arena-opponent-card.defeated{opacity:.62;border-color:#9ab7a0;background:linear-gradient(#f1f7f1,#e9f1ea)}
@@ -176,8 +184,8 @@
 @keyframes fx-time-ring{0%{opacity:1;transform:rotate(110deg) scale(1.1)}100%{opacity:0;transform:rotate(-100deg) scale(.2)}}
 @keyframes fx-time-particle{0%{opacity:0;transform:rotate(calc(var(--i)*45deg)) translateX(53px)}38%{opacity:1}100%{opacity:0;transform:rotate(calc(var(--i)*45deg)) translateX(0)}}
 @keyframes fx-symbol-echo{0%,28%{opacity:0;transform:scale(.25)}52%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.5)}}
-@keyframes fx-flight-right{0%{left:24%;opacity:0;transform:translate(-50%,-50%) scale(.3)}16%{opacity:1}45%{left:76%;opacity:1;transform:translate(-50%,-50%) scale(1.35)}65%,100%{left:76%;opacity:0;transform:translate(-50%,-50%) scale(.2)}}
-@keyframes fx-flight-left{0%{left:76%;opacity:0;transform:translate(-50%,-50%) scale(.3)}16%{opacity:1}45%{left:24%;opacity:1;transform:translate(-50%,-50%) scale(1.35)}65%,100%{left:24%;opacity:0;transform:translate(-50%,-50%) scale(.2)}}
+@keyframes fx-flight-right{0%{left:var(--origin);top:var(--fx-origin-y,68%);opacity:0;transform:translate(-50%,-50%) scale(.3)}16%{opacity:1}45%{left:var(--target);top:var(--fx-target-y,68%);opacity:1;transform:translate(-50%,-50%) scale(1.35)}65%,100%{left:var(--target);top:var(--fx-target-y,68%);opacity:0;transform:translate(-50%,-50%) scale(.2)}}
+@keyframes fx-flight-left{0%{left:var(--origin);top:var(--fx-origin-y,68%);opacity:0;transform:translate(-50%,-50%) scale(.3)}16%{opacity:1}45%{left:var(--target);top:var(--fx-target-y,68%);opacity:1;transform:translate(-50%,-50%) scale(1.35)}65%,100%{left:var(--target);top:var(--fx-target-y,68%);opacity:0;transform:translate(-50%,-50%) scale(.2)}}
 @keyframes fx-trail{0%{opacity:0;transform:scaleX(0)}30%{opacity:1;transform:scaleX(.65)}55%{opacity:.85;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1)}}
 @keyframes fx-impact{0%,29%{opacity:0;transform:translate(-50%,-50%) scale(.2)}48%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}}
 @keyframes fx-ring{0%{opacity:1;transform:scale(.2)}100%{opacity:0;transform:scale(1.65)}}
@@ -236,7 +244,98 @@
 .breed-tier-outcomes{margin:7px 0;border:1px solid #d8e8e0;border-radius:11px;background:white}.breed-tier-outcomes summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:10px;font-weight:800;color:#286c6c}.breed-tier-outcomes summary b{color:#197c61;font-variant-numeric:tabular-nums}.breed-result-list{max-height:310px;overflow:auto;padding:0 9px 9px}.breed-result-list .egg-card{margin:6px 0}.breed-result-list .egg-card>strong{white-space:nowrap;color:#177e61;font-variant-numeric:tabular-nums}
 @media(max-width:600px){.breed-selection{gap:5px}.breed-side{padding:5px}.breed-roster{max-height:270px}.breed-dragon{grid-template-columns:34px minmax(0,1fr);padding:3px;min-height:65px}.breed-dragon .dragon-preview{width:34px;height:40px}.breed-dragon .selection-check{display:none}.breed-dragon-text b{font-size:10px}}
 .element-filter{display:flex;gap:5px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:thin}.element-filter .btn{flex:none;padding:4px 9px;white-space:nowrap}.element-filter .flag-filter{display:inline-grid;place-items:center;position:relative;min-width:38px;min-height:39px;padding:2px 4px}.element-filter .flag-filter.active{background:#d1f4e5;border-color:#168f66;box-shadow:inset 0 0 0 2px #168f66,0 2px 6px #1f79543d}.element-filter .flag-filter .element-flag{pointer-events:none}.filter-check{position:absolute;right:-2px;top:-4px;display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#087d58;color:#fff;border:1px solid #fff;font-size:11px;line-height:1;font-weight:900}.filter-count{display:block;margin:0 2px 7px;color:#406b5e;font-size:11px;font-weight:700}
+.rarity-filter-wrap{margin-top:3px}.rarity-filter .rarity-filter-btn{min-width:38px;min-height:39px;position:relative;padding:2px 4px}.rarity-filter .rarity-gem{width:24px;height:28px;pointer-events:none}.book-filters{min-width:0}.tier-glyph{font-size:18px;font-weight:900;line-height:1}.book-tier-filter{min-width:38px;padding:6px 10px}.book-toolbar>.tabs{display:flex;gap:5px;flex-wrap:wrap}
 .breed-parents{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0}.breed-parent{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:120px;padding:9px;background:#f1f8f3;border-radius:14px;text-align:center}.breed-parent .dragon-preview{width:88px;height:75px}.breed-parent small{font-size:11px}.breed-parent .element-list{justify-content:center}.breed-parent .element-badge{font-size:9px;padding:2px 4px}.breed-heart{font-size:28px;color:#e57fa1}
 .arena-stars{color:#e5ad32;font-size:15px;letter-spacing:1px;white-space:nowrap;text-shadow:0 1px 2px #35280a}
 .arena-enemy-team.concealed{justify-content:center;gap:9px;padding:10px;margin-bottom:12px}.arena-hidden-dragon{position:relative;display:grid;place-items:center;width:72px;height:68px;border:1px solid #c4c9be;border-radius:14px;background:radial-gradient(circle at 50% 35%,#e6e8e1,#c4c9be);overflow:hidden;filter:blur(1.5px)}.arena-hidden-dragon>span{font-size:39px;opacity:.6;filter:grayscale(1) blur(2px)}.arena-hidden-dragon>i{position:absolute;inset:0;display:grid;place-items:center;color:#44565b;font-size:30px;font-style:normal;font-weight:900;text-shadow:0 1px 5px #fff}
 .arena-team-slot>.arena-stars{position:absolute;top:2px;right:3px;font-size:10px;letter-spacing:0;z-index:2}
+
+/* Arena reserves and skills stay inside the field without covering it with team cards. */
+@media(max-width:690px){
+  .battle-modal .arena-stage-controls{left:43px;right:43px;bottom:5px}
+  .battle-modal .arena-stage-controls .battle-controls{display:flex;gap:4px;padding:4px}
+  .battle-modal .arena-stage-controls .battle-controls-heading{display:none}
+  .battle-modal .arena-stage-controls .battle-skill-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+  .battle-modal .arena-stage-controls .battle-skill-grid .ant-btn{min-height:43px;padding:3px;font-size:10px}
+  .battle-modal .arena-stage-controls .battle-skill-grid .ant-btn small{font-size:8px}
+  .battle-modal .arena-stage-controls .battle-skill-label{gap:3px}
+  .battle-modal .arena-stage-controls .battle-skill-grid .skill-hex{width:23px;height:24px;font-size:10px}
+}
+@media(max-width:390px){
+  .battle-modal .arena-stage-controls{left:36px;right:36px}
+  .battle-modal .arena-stage-controls .battle-skill-grid .battle-skill-name{font-size:9px}
+}
+
+/* Let the field claim the modal's remaining height; short viewports must not crush it. */
+.battle-modal .battle-stage{flex:1 1 auto;height:auto;min-height:320px}
+.battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:86px}
+.battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(22dvh,190px)}
+@media(max-width:690px){
+  .battle-modal .battle-stage{height:auto;min-height:300px}
+  .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:100px}
+  .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(20dvh,145px)}
+}
+@media(max-height:700px){
+  .battle-modal .battle-stage{height:auto;min-height:300px}
+  .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:78px}
+  .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(18dvh,125px)}
+}
+@media(max-width:690px) and (max-height:700px){
+  .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:98px}
+  .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(17dvh,112px)}
+}
+
+/* The reserves stack beneath the active fighter, mirrored on the two sides. */
+.battle-modal .battle-stage.has-arena-controls{align-items:stretch}
+.battle-modal .battle-stage.has-arena-controls .battle-side{justify-content:flex-start}
+.battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(26dvh,220px);margin-top:auto}
+.battle-modal .battle-vs{align-self:start;margin-top:11px}
+.battle-modal .arena-reserve-side{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1fr);align-self:flex-start;gap:6px;width:min(100%,164px);min-width:0;margin-top:5px}
+.battle-modal .battle-side.opponent .arena-reserve-side{align-self:flex-end}
+.battle-modal .arena-reserve-button{box-sizing:border-box;position:relative;display:flex;align-items:center;min-width:0;width:100%;height:58px;padding:5px 8px;border:1px solid #a5d5ce;border-radius:12px;background:linear-gradient(125deg,#244e5eea,#16394ddf);box-shadow:inset 0 1px #ffffff50,0 4px 10px #163c4b55;cursor:default;backdrop-filter:blur(5px)}
+.battle-modal .battle-side.opponent .arena-reserve-button{border-color:#d9c6a7;background:linear-gradient(235deg,#4e5364e8,#263f52e8)}
+.battle-modal .arena-reserve-button.switchable{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.battle-modal .arena-reserve-button.switchable:hover:not(:disabled),.battle-modal .arena-reserve-button.switchable:focus-visible{transform:translateY(-2px);border-color:#fff0ac;box-shadow:0 0 0 2px #fff0aca8,0 6px 15px #163c4b70}
+.battle-modal .arena-reserve-button:disabled:not(.dead){opacity:1;color:inherit}
+.battle-modal .arena-reserve-top{display:flex;align-items:center;justify-content:flex-start;gap:8px;width:100%;min-width:0;height:100%}
+.battle-modal .battle-side.opponent .arena-reserve-top{justify-content:flex-end}
+.battle-modal .arena-reserve-avatar-frame{display:grid;place-items:center;flex:0 0 43px;width:43px;height:42px;overflow:hidden;border:1px solid #c6eedc;border-radius:10px;background:linear-gradient(145deg,#f5fcf7,#d9ebe2);box-shadow:inset 0 1px 3px #ffffff,0 1px 3px #102f3a}
+.battle-modal .arena-reserve-avatar-frame .arena-portrait{width:39px;height:35px;filter:drop-shadow(0 2px 2px #173a4866)}
+.battle-modal .arena-reserve-vitals{display:flex;flex:1 1 0;flex-direction:column;justify-content:center;gap:5px;min-width:0;max-width:84px;height:100%}
+.battle-modal .arena-reserve-flags{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:2px;min-width:0}
+.battle-modal .battle-side.opponent .arena-reserve-flags{justify-content:flex-end}
+.battle-modal .arena-reserve-flags .element-flag{width:14px;height:18px;filter:drop-shadow(0 1px 2px #102936)}
+.battle-modal .arena-reserve-hp{display:block;flex:none;width:100%;height:7px;overflow:hidden;border:1px solid #b5d9cb;border-radius:6px;background:#c8d6d3;box-shadow:inset 0 1px 2px #203b3b55}
+.battle-modal .arena-reserve-hp i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#42b882,#98d96f);transition:width .2s}
+.battle-modal .arena-reserve-button.dead .arena-reserve-avatar-frame,.battle-modal .arena-reserve-button.dead .arena-reserve-flags{filter:grayscale(1);opacity:.5}
+.battle-modal .arena-reserve-button.dead .arena-reserve-hp i{width:0!important}
+.battle-modal .arena-reserve-button.dead{cursor:not-allowed}
+.battle-modal .arena-reserve-dead-mark{position:absolute;z-index:3;inset:0;display:grid;place-items:center;color:#d32432;font-size:43px;font-style:normal;font-weight:1000;line-height:1;text-shadow:0 1px 3px white}
+.battle-modal .battle-skill-fx .fx-trail{left:var(--origin);top:var(--fx-origin-y,68%);width:var(--fx-distance,52%);rotate:var(--fx-angle,0rad);transform-origin:left center}
+.battle-modal .battle-skill-fx .fx-projectile{top:var(--fx-origin-y,68%)}
+.battle-modal .battle-skill-fx .fx-impact,.battle-modal .battle-skill-fx .fx-special-seal{top:var(--fx-target-y,68%)}
+.battle-modal .battle-skill-fx .fx-damage{top:var(--fx-damage-y,60%)}
+.battle-modal .battle-skill-fx.self-target .fx-projectile{left:var(--origin)}
+.battle-modal .battle-skill-fx .fx-skill-name{bottom:22%}
+@media(max-width:690px){
+  .battle-modal .arena-reserve-side{gap:4px;width:min(100%,130px);margin-top:3px}
+  .battle-modal .arena-reserve-button{height:48px;padding:3px 5px;border-radius:10px}
+  .battle-modal .arena-reserve-top{gap:3px}
+  .battle-modal .arena-reserve-avatar-frame{flex-basis:31px;width:31px;height:32px;border-radius:8px}
+  .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:29px;height:27px}
+  .battle-modal .arena-reserve-flags .element-flag{width:10px;height:13px}
+  .battle-modal .arena-reserve-hp{height:6px}
+  .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:108px}
+  .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(19dvh,132px)}
+  .battle-modal .arena-stage-controls{bottom:7px}
+}
+@media(max-height:700px){
+  .battle-modal .battle-stage.has-arena-controls .battle-side{padding-bottom:110px}
+  .battle-modal .battle-stage.has-arena-controls .battle-dragon{height:min(17dvh,118px)}
+}
+@media(max-width:390px){
+  .battle-modal .arena-reserve-side{width:min(100%,108px)}
+  .battle-modal .arena-reserve-avatar-frame{flex-basis:27px;width:27px;height:29px}
+  .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:25px;height:23px}
+  .battle-modal .arena-reserve-flags .element-flag{width:8px;height:11px}
+}

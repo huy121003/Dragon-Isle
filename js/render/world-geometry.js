@@ -7,6 +7,8 @@
  * only while projecting/hit-testing and never mutates persisted state.
  */
 let pixelRatio=1,viewW=0,viewH=0;
+let cachedIslandOrder=null;
+let cachedBobTime=NaN,cachedIslandBobs=[];
 
 function resizeCanvas(){
   const rect=dom.stage.getBoundingClientRect();
@@ -32,16 +34,25 @@ function islandBob(index,time=ui.renderTime??performance.now()){
   return (Math.sin(time*.00115+index*1.73)*.85+
     Math.sin(time*.00043+index*2.19)*.15)*DATA.tileH*1.35;
 }
+/* One island has the same bob in every draw pass of a frame. */
+function renderIslandBob(index,time){
+  if(index<0)return 0;
+  if(cachedBobTime!==time){cachedBobTime=time;cachedIslandBobs=Array(DATA.islands.length);}
+  if(cachedIslandBobs[index]===undefined)cachedIslandBobs[index]=islandBob(index,time);
+  return cachedIslandBobs[index];
+}
 /* Back-to-front order in the projected view: lower islands, then right islands, cover earlier ones. */
 function islandDrawOrder(){
-  return DATA.islands.map((island,index)=>({index,
+  if(cachedIslandOrder)return cachedIslandOrder;
+  cachedIslandOrder=DATA.islands.map((island,index)=>({index,
     center:gridToScreen(island.x+island.size/2,island.y+island.size/2)}))
     .sort((a,b)=>a.center.y-b.center.y||a.center.x-b.center.x||a.index-b.index)
     .map(item=>item.index);
+  return cachedIslandOrder;
 }
 function screenToGrid(x,y,time=ui.renderTime??performance.now()){
   const p=screenToWorld(x,y);
-  for(const index of islandDrawOrder().reverse()){
+  for(const index of islandDrawOrder().slice().reverse()){
     const island=DATA.islands[index],candidate=worldToGrid(p.x,p.y-islandBob(index,time));
     if(candidate.c>=island.x&&candidate.c<island.x+island.size&&
       candidate.r>=island.y&&candidate.r<island.y+island.size)return candidate;

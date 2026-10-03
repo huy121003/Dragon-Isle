@@ -918,7 +918,7 @@ check('guide navigation and game-driven help pages',()=>{
  assert.equal((special.match(/class="skill-hex/g)||[]).length,45);
  assert(!special.includes('Cinderheart Sovereign')&&!special.includes('<table'));
  assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
- assert(special.includes('maximum HP each turn for 3 turns'));
+ assert(special.includes('thiêu đốt 4% HP tối đa')&&\n   special.includes('Chỉ dùng khi có ít nhất một đồng đội gục'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"resources"}})');
  assert(game.element('sheetBody').innerHTML.includes('XP và thưởng khi lên Player Level'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"islands"}})');

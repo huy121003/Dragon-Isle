@@ -23,10 +23,6 @@ function skillUnlocked(dragon,skill){
 function speciesStats(species,level,stars=0){
   return window.DragonCombat.stats(species.elements,species.rarity,level,DRAGON_DB.elements,DRAGON_DB.rarities,stars);
 }
-/** Return the flat elemental bonus shown in skill detail UI. */
-function elementalBonus(skill,level,species,stars=0){
-  return skill.element?Math.round(speciesStats(species,level,stars).attack*skill.bonus):0;
-}
 /** Return pre-defense skill power for display; actual battle damage remains server authoritative. */
 function skillPowerPreview(species,level,skill,stars=0){
   return Math.round(window.DragonCombat.skillPower(speciesStats(species,level,stars).attack,skill));

@@ -1,0 +1,212 @@
+{
+  "fire": [
+    {
+      "id": "fire-1",
+      "name": "Flame Slash",
+      "icon": "🔥",
+      "power": 0.9
+    },
+    {
+      "id": "fire-2",
+      "name": "Inferno Burst",
+      "icon": "☄️",
+      "power": 1.1
+    }
+  ],
+  "water": [
+    {
+      "id": "water-1",
+      "name": "Water Strike",
+      "icon": "💧",
+      "power": 0.9
+    },
+    {
+      "id": "water-2",
+      "name": "Tidal Surge",
+      "icon": "🌊",
+      "power": 1.1
+    }
+  ],
+  "earth": [
+    {
+      "id": "earth-1",
+      "name": "Earthquake",
+      "icon": "⛰️",
+      "power": 0.9
+    },
+    {
+      "id": "earth-2",
+      "name": "Stone Impact",
+      "icon": "🪨",
+      "power": 1.1
+    }
+  ],
+  "wind": [
+    {
+      "id": "wind-1",
+      "name": "Wind Blade",
+      "icon": "🌪️",
+      "power": 0.9
+    },
+    {
+      "id": "wind-2",
+      "name": "Cyclone",
+      "icon": "🪽",
+      "power": 1.1
+    }
+  ],
+  "ice": [
+    {
+      "id": "ice-1",
+      "name": "Frost Slash",
+      "icon": "❄️",
+      "power": 0.9
+    },
+    {
+      "id": "ice-2",
+      "name": "Blizzard",
+      "icon": "🧊",
+      "power": 1.1
+    }
+  ],
+  "thunder": [
+    {
+      "id": "thunder-1",
+      "name": "Thunder Strike",
+      "icon": "⚡",
+      "power": 0.9
+    },
+    {
+      "id": "thunder-2",
+      "name": "Sky Thunder",
+      "icon": "🌩️",
+      "power": 1.1
+    }
+  ],
+  "nature": [
+    {
+      "id": "nature-1",
+      "name": "Vine Lash",
+      "icon": "🌿",
+      "power": 0.9
+    },
+    {
+      "id": "nature-2",
+      "name": "Thorn Forest",
+      "icon": "🍃",
+      "power": 1.1
+    }
+  ],
+  "dark": [
+    {
+      "id": "dark-1",
+      "name": "Shadow Slash",
+      "icon": "🌑",
+      "power": 0.9
+    },
+    {
+      "id": "dark-2",
+      "name": "Dark Moon",
+      "icon": "🦇",
+      "power": 1.1
+    }
+  ],
+  "light": [
+    {
+      "id": "light-1",
+      "name": "Light Blade",
+      "icon": "✨",
+      "power": 0.9
+    },
+    {
+      "id": "light-2",
+      "name": "Holy Radiance",
+      "icon": "☀️",
+      "power": 1.1
+    }
+  ],
+  "metal": [
+    {
+      "id": "metal-1",
+      "name": "Iron Slash",
+      "icon": "⚙️",
+      "power": 0.9
+    },
+    {
+      "id": "metal-2",
+      "name": "Steel Storm",
+      "icon": "🛡️",
+      "power": 1.1
+    }
+  ],
+  "war": [
+    {
+      "id": "war-1",
+      "name": "Banner Charge",
+      "icon": "🪖",
+      "power": 0.9
+    },
+    {
+      "id": "war-2",
+      "name": "Siege Breaker",
+      "icon": "🛡️",
+      "power": 1.1
+    }
+  ],
+  "pure": [
+    {
+      "id": "pure-1",
+      "name": "Prism Ray",
+      "icon": "🔺",
+      "power": 0.9
+    },
+    {
+      "id": "pure-2",
+      "name": "Purifying Nova",
+      "icon": "✨",
+      "power": 1.1
+    }
+  ],
+  "legend": [
+    {
+      "id": "legend-1",
+      "name": "Eternal Arc",
+      "icon": "∞",
+      "power": 0.9
+    },
+    {
+      "id": "legend-2",
+      "name": "Fatebreaker",
+      "icon": "🌌",
+      "power": 1.1
+    }
+  ],
+  "primal": [
+    {
+      "id": "primal-1",
+      "name": "Ancient Fang",
+      "icon": "🐾",
+      "power": 0.9
+    },
+    {
+      "id": "primal-2",
+      "name": "Origin Roar",
+      "icon": "🦖",
+      "power": 1.1
+    }
+  ],
+  "time": [
+    {
+      "id": "time-1",
+      "name": "Second Hand",
+      "icon": "⏳",
+      "power": 0.9
+    },
+    {
+      "id": "time-2",
+      "name": "Epoch Storm",
+      "icon": "⌛",
+      "power": 1.1
+    }
+  ]
+}

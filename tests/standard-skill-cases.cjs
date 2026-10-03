@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const catalog=require('../data/dragons.json'),game=require('../data/game.json');
+const catalog=require('../data/catalog-loader.cjs').loadDragonCatalog(),game=require('../data/catalog-loader.cjs').loadGameCatalog();
 require('../scripts/extend-catalog.cjs')(catalog,game);
 const combat=require('../js/data/combat-rules.js');
 const {createBattleEngine}=require('../server/arena/battle-engine.cjs');
@@ -10,6 +10,14 @@ const elements=Object.keys(catalog.elements);
 const standard=[...game.skills.neutral,...Object.entries(game.skills.elemental).flatMap(([element,list])=>
   list.filter(s=>!s.special).map(s=>({...s,element})))];
 assert.equal(standard.length,32,'2 neutral + 30 elemental skills');
+for(const [element,skills] of Object.entries(game.skills.elemental)){
+  for(const [slot,skill] of skills.filter(s=>!s.special).entries()){
+    assert.equal(skill.power,[.9,1.1][slot],`${element} slot ${slot+1} direct elemental power`);
+    assert(!Object.hasOwn(skill,'bonus'),`${skill.id} stores direct % base attack only`);
+  }
+}
+assert.deepEqual(game.skills.neutral.map(skill=>skill.power),[.5,.7],
+  'neutral attacks use 50% and 70% of base attack');
 const make=(element,id)=>engine.makeFighter({id,species:species[element],level:50,nickname:element+id});
 let resolved=0,strong=0,weak=0,neutral=0;
 const variance=require('../js/config/combat.js').variance;

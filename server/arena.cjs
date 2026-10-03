@@ -26,8 +26,9 @@ function createArena({profilesDir,dataDir,catalogDir=dataDir,auth}){
   const arenaDir=path.join(dataDir,'arena');
   const file=id=>path.join(arenaDir,id+'.json');
   const profile=id=>path.join(profilesDir,id+'.json');
-  const catalog=require(path.join(catalogDir,'dragons.json'));
-  const game=require(path.join(catalogDir,'game.json'));
+  const {loadDragonCatalog,loadGameCatalog}=require('../data/catalog-loader.cjs');
+  const catalog=loadDragonCatalog(catalogDir);
+  const game=loadGameCatalog(catalogDir);
   require('../scripts/extend-catalog.cjs')(catalog,game);
   const unlocked=profile=>profile?.buildings?.some(building=>building.type==='arena'&&!building.stored);
   const eligibility=createEligibility();

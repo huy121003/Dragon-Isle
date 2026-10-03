@@ -1,4 +1,4 @@
-/* LOGIC DỮ LIỆU: Công thức rồng dùng các bảng thuần JSON trong data/dragons.json. */
+/* LOGIC DỮ LIỆU: Công thức rồng dùng các bảng thuần JSON trong data/dragons/*.json. */
 (function(root){
 'use strict';
 const DB=root.DragonDatabase;
@@ -78,7 +78,7 @@ function buildDragon(elements) {
   if (E[1]) hat.push({ he: e1.id, ...e1.hat, tanSuat: 0.4 });
   if (e2)   hat.push({ he: e2.id, ...e2.hat, tanSuat: 0.15 });
 
-  // Bốn vị trí chiêu tham chiếu các định nghĩa trong data/game.json.
+  // Bốn vị trí chiêu tham chiếu các định nghĩa trong data/skills/*.json.
   const skillIds = els.length === 1 ? ['claw', 'slam', els[0] + '-1', els[0] + '-2']
     : (els.length === 2 ? ['claw', 'slam'] : els.length === 3 ? ['claw'] : [])
       .concat(els.map(e => e + '-1'));

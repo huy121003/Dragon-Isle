@@ -1,6 +1,7 @@
 const fs=require('node:fs/promises');
 const path=require('node:path');
 const {reply}=require('./http.cjs');
+const {loadDragonCatalog,loadGameCatalog}=require('../data/catalog-loader.cjs');
 
 function createStaticHandler({root,dataDir}){
   const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
@@ -8,18 +9,17 @@ function createStaticHandler({root,dataDir}){
   return async function handle(req,res,pathname){
     if(req.method!=='GET'&&req.method!=='HEAD'){reply(res,405,'Phương thức không hỗ trợ.');return;}
     if(pathname==='/js/data/db-cache.js'){
-      const [dragons,game]=await Promise.all(['dragons.json','game.json'].map(name=>
-        fs.readFile(path.join(dataDir,name),'utf8').then(JSON.parse)));
+      const dragons=loadDragonCatalog(dataDir),game=loadGameCatalog(dataDir);
       require('../scripts/extend-catalog.cjs')(dragons,game);
       const source='/* DATA: Bản cập nhật trực tiếp từ JSON. */\nwindow.DragonDatabase='+
         JSON.stringify(dragons)+';\nwindow.GameDatabase='+JSON.stringify(game)+';\n';
       reply(res,200,source,'text/javascript; charset=utf-8');return;
     }
-    if(pathname==='/data/dragons.json'){
-      const [dragons,game]=await Promise.all(['dragons.json','game.json'].map(name=>
-        fs.readFile(path.join(dataDir,name),'utf8').then(JSON.parse)));
+    if(pathname==='/data/dragons.json'||pathname==='/data/game.json'){
+      const dragons=loadDragonCatalog(dataDir),game=loadGameCatalog(dataDir);
       require('../scripts/extend-catalog.cjs')(dragons,game);
-      reply(res,200,req.method==='HEAD'?'':JSON.stringify(dragons),'application/json; charset=utf-8');return;
+      reply(res,200,req.method==='HEAD'?'':JSON.stringify(pathname==='/data/dragons.json'?dragons:game),
+        'application/json; charset=utf-8');return;
     }
     if(!(['/', '/index.html', '/css/style.css', '/debug/gallery.html',
         '/data/dragons.json', '/data/game.json', '/data/economy.js'].includes(pathname)||

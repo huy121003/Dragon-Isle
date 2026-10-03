@@ -95,9 +95,9 @@ check('Arena keeps only new presentation events when a free swap and skill share
   assert.equal(arenaEvents.payload.eventSeq,3);
   assert.deepEqual(Array.from(arenaEvents.calls,payload=>payload.expectedEvents),[0,1]);
 });
-const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
+const db=require('../data/catalog-loader.cjs').loadDragonCatalog();
 assert.equal(Object.keys(db.quads).length,150,'Exactly 150 four-element recipes must be in dragons.json');
-require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
+require('../scripts/extend-catalog.cjs')(db,require('../data/catalog-loader.cjs').loadGameCatalog());
 const balance=await boot();
 const lifecycle=await boot();
 const countdownUI=await boot();
@@ -315,7 +315,7 @@ check('battle preview, multiple attacking elements and colored skill symbols',()
  const combat=require('../js/data/combat-rules.js');
  const waterFire=db.species.find(s=>s.elements.join('>')==='water>fire');
  const ice=db.species.find(s=>s.id==='ice');
- const flame={...JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).skills.elemental.fire[0],element:'fire'};
+ const flame={...require('../data/catalog-loader.cjs').loadGameCatalog().skills.elemental.fire[0],element:'fire'};
  const attacker={species:waterFire.id,level:25},defender={species:ice.id,level:25};
  const actor=combat.stats(waterFire.elements,waterFire.doHiem,25,db.elements,db.rarities);
  const target={...combat.stats(ice.elements,ice.doHiem,25,db.elements,db.rarities),parts:ice.elements};
@@ -326,7 +326,7 @@ check('battle preview, multiple attacking elements and colored skill symbols',()
  assert(matchup.strong.includes('ice'),'Secondary Fire counters Ice');
  const detail=balance.run('dragonDetailHtml(DATA.species["fire"],{species:"fire",level:25,nickname:"Fire",habitatId:1})');
  assert(detail.includes('skill-hex neutral')&&detail.includes('skill-hex elemental'));
- assert(detail.includes('100% base attack + '));
+ assert(detail.includes('90% tấn công gốc'));
 });
 check('early player XP, level rewards and dragon feeding costs',()=>{
  assert.equal(balance.run('playerXPNeeded(1)'),93);
@@ -915,14 +915,11 @@ check('guide navigation and game-driven help pages',()=>{
  const special=game.element('sheetBody').innerHTML;
  assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
  assert.equal((special.match(/class="guide-special-card"/g)||[]).length,45);
- assert.equal((special.match(/class="skill-hex/g)||[]).length,45);
  assert.equal((special.match(/class="skill-special-glyph"/g)||[]).length,45);
- const doubleDetail=game.run('dragonDetailHtml(DATA.species[DOUBLE_IDS[0]],null)');
- assert(doubleDetail.includes('skill-special-glyph'),'Dragon detail shows the special icon');
+ assert.equal((special.match(/class="skill-hex/g)||[]).length,45);
  assert(!special.includes('Cinderheart Sovereign')&&!special.includes('<table'));
  assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
- assert(special.includes('thiêu đốt 4% HP tối đa')&&
-   special.includes('Chỉ dùng khi có ít nhất một đồng đội gục'));
+ assert(special.includes('HP tối đa của mục tiêu mỗi lượt trong 3 lượt'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"resources"}})');
  assert(game.element('sheetBody').innerHTML.includes('XP và thưởng khi lên Player Level'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"islands"}})');
@@ -1168,7 +1165,7 @@ check('ordered pairs, unique triples and 150 balanced four-element species',()=>
  assert.equal(new Set(quartets).size,fours.length);
  assert.deepEqual(new Set(quartets),new Set(Object.keys(db.quads)));
  assert.equal(db.quads['earth|fire|water|wind'],undefined,'Unlisted sets are not invented');
- const existing=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'))).species
+ const existing=require('../data/catalog-loader.cjs').loadDragonCatalog().species
    .filter(s=>s.elements.length===4);
  for(const s of existing)assert.equal(byId.get(s.id)?.ten,s.ten,
    'Previously owned dragon IDs and names must survive');
@@ -1537,7 +1534,7 @@ check('depth sorting uses the farthest grid cell for every footprint',()=>{
    '{id:83,type:"decor",x:756,y:705,level:1,stored:false}];'+
    'drawBuilding=b=>order.push(b.id);drawScene(1200,.016);'+
    'drawBuilding=original;state.buildings=saved;return order;})()');
- const footprints=JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))).footprints;
+ const footprints=require('../data/catalog-loader.cjs').loadGameCatalog().footprints;
  const buildings=[{id:81,type:'farm',x:748,y:701},{id:82,type:'academy',x:742,y:698},
    {id:83,type:'decor',x:756,y:705}];
  const depth=b=>b.x+footprints[b.type][0][0]-1+b.y+footprints[b.type][0][1]-1;

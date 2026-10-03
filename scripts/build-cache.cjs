@@ -2,8 +2,9 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const dragons=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'),'utf8'));
-const game=JSON.parse(fs.readFileSync(path.join(root,'data/game.json'),'utf8'));
+const {loadDragonCatalog,loadGameCatalog}=require('../data/catalog-loader.cjs');
+const dragons=loadDragonCatalog();
+const game=loadGameCatalog();
 require('./extend-catalog.cjs')(dragons,game);
 const output='/* Cache tạo từ JSON, sửa data/*.json rồi chạy node scripts/build-cache.cjs. */\n'+
   'window.DragonDatabase='+JSON.stringify(dragons)+';\n'+

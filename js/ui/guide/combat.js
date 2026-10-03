@@ -11,7 +11,7 @@ function guideArena(){
     'Arena tạo năm đối thủ máy lần đầu bạn vào đấu trường. Danh sách giữ nguyên qua các mốc hồi lượt; hạ hết năm đối thủ sẽ tạo vòng mới và hồi đầy lượt. Mỗi khung 8 giờ có ba lượt, làm mới lúc 00:00, 08:00 và 16:00 theo giờ Việt Nam; bạn cũng có thể dùng gem để hồi đầy lượt ngay.',
     'Arena đánh theo lượt. Chạm avatar rồng dự bị để đổi rồng mà không mất lượt, rồi chọn skill; đối thủ chọn skill đang mở theo sát thương dự kiến sau giáp, xung khắc và hiệu ứng hữu ích.',
     'Bốn ô skill mở theo level '+window.DragonConfig.progression.skillUnlockLevels.join(', ')+'. Special Skill có cooldown; buff/hồi máu thuần không gây sát thương.',
-    'Skill hệ dùng hệ của chính skill để khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân '+strong+'; ▼ Weak nhân '+weak+'; skill thường không có hệ nên hệ số là 1.',
+    'Chiêu không hệ gây 50% hoặc 70% tấn công gốc; chiêu hệ gây 90% hoặc 110% tấn công gốc trước khắc hệ. Hệ của skill khắc hệ chủ đạo của mục tiêu. ▲ Strong nhân '+strong+'; ▼ Weak nhân '+weak+'; skill không có hệ dùng hệ số 1.',
     'Sát thương còn chịu giáp, biến thiên ngẫu nhiên khoảng '+Math.round(combat.variance.min*100)+'–'+Math.round(combat.variance.max*100)+'%, trạng thái đang có và chí mạng. Xác suất crit '+critChance+'%, hệ số crit '+combat.critical.multiplier+'.',
     'Dưới HP của cả rồng trên sân và dự bị có biểu tượng trạng thái cùng số lượt còn lại. Độc, thiêu đốt và nguyền vẫn tác dụng lên rồng dự bị; tổng sát thương này tối đa 10% HP tối đa mỗi lượt.',
     'Hiệu ứng cùng loại không cộng dồn và không kéo dài thời gian đang có. Đổi rồng không chuyển trạng thái sang rồng mới. Hồi sinh chỉ dùng một lần cho cả đội mỗi trận.',
@@ -38,7 +38,7 @@ function guideSpecialSkills(){
   const groups=Object.keys(DATA.elements).map(function(element){
     const cards=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
       const skill=skillsForSpecies(DATA.species[id])[3];
-      return '<article class="guide-special-card"><h4>'+skillHex(skill)+' '+esc(skill.name)+'</h4><p>'+detail(skill)+'</p></article>';
+      return '<article class="guide-special-card"><h4>'+skillHex(skill)+' <span class="skill-name" title="'+esc(skill.name)+'">'+esc(skill.name)+'</span></h4><p>'+detail(skill)+'</p></article>';
     });
     return '<details class="guide-special-group"><summary>'+elementFlag(element,false,'sm')+' '+
       esc(DATA.elements[element].name)+' · '+cards.length+' chiêu</summary><div class="guide-special-cards">'+cards.join('')+'</div></details>';

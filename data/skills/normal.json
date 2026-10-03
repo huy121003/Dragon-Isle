@@ -1,0 +1,14 @@
+[
+  {
+    "id": "claw",
+    "name": "Rending Claw",
+    "icon": "🗡️",
+    "power": 0.5
+  },
+  {
+    "id": "slam",
+    "name": "Tail Slam",
+    "icon": "💥",
+    "power": 0.7
+  }
+]

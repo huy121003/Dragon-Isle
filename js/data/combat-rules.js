@@ -65,7 +65,7 @@
    */
   function skillPower(attack,skill){
     if(skill.special)return attack*(skill.power+skill.bonus);
-    return skill.element?attack*(1+skill.bonus):attack*skill.power;
+    return attack*skill.power;
   }
 
   /**

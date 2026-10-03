@@ -9,8 +9,9 @@ const {newProfile}=require('../server/profile.cjs');
 
 const root=path.resolve(__dirname,'..');
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dragon-isle-auth-session-'));
-for(const name of ['dragons.json','game.json'])
+for(const name of ['dragon-core.json','game.json'])
   fs.copyFileSync(path.join(root,'data',name),path.join(temporary,name));
+for(const folder of ['dragons','skills'])fs.cpSync(path.join(root,'data',folder),path.join(temporary,folder),{recursive:true});
 
 function freePort(){return new Promise(resolve=>{
   const probe=net.createServer();probe.listen(0,'127.0.0.1',()=>{

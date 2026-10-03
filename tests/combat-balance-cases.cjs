@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const catalog=require('../data/dragons.json'),game=require('../data/game.json');
+const catalog=require('../data/catalog-loader.cjs').loadDragonCatalog(),game=require('../data/catalog-loader.cjs').loadGameCatalog();
 require('../scripts/extend-catalog.cjs')(catalog,game);
 const combat=require('../js/data/combat-rules.js');
 const rules=require('../js/rules/progression.js');
@@ -23,7 +23,7 @@ for(const level of [1,15,40,100]){
     const damage=combat.damage(value,{...value,parts:sample[tier].elements},skill,
       catalog.typeChart,1,false);
     const hits=Math.ceil(value.hp/damage);
-    assert(hits>=3&&hits<=7,`${tier} level ${level} equal-tier duel lasts ${hits} hits`);
+    assert(hits>=5&&hits<=9,`${tier} level ${level} equal-tier duel lasts ${hits} hits`);
   }
 }
 for(const level of [40,100]){
@@ -55,4 +55,4 @@ assert(rules.dragonFeedCost(99,100)>100000,'each feed from level 99 to 100 excee
 assert(rules.dragonFeedCost(99,100)*4<=12*48000,
   'four level-99 feeds fit within one full 12-farm crystal-melon harvest');
 assert(config.defenseScale<.6,'base defense is reduced');
-console.log(`PASS six tiers × four level milestones: combat ranking, 3–7 hits; food ${totals.join(', ')}`);
+console.log(`PASS six tiers × four level milestones: combat ranking, 5–9 hits; food ${totals.join(', ')}`);

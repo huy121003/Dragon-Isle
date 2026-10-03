@@ -48,9 +48,9 @@ Máy chủ HTTP phù hợp để thử trên máy cá nhân hoặc mạng nội 
 
 | File / thư mục | Nội dung |
 | --- | --- |
-| `data/dragons.json`, `data/elements-expansion.json` | Loài gốc và 5 hệ mở rộng; vẫn cần cho build, máy chủ và dữ liệu rồng đã lưu |
-| `data/double-element-dragons.json`, `data/special-skills.json` | 45 công thức rồng Double Element cùng cấu hình độ hiếm; 45 skill đặc biệt nằm riêng để có thể dùng lại ở bậc khác |
-| `data/game.json`, `js/config/`, `data/economy.js` | Bản đồ 16 đảo và vùng đất 24×24; cấu hình cân bằng nằm trong `js/config/`, còn `data/economy.js` là lớp tương thích |
+| `data/dragon-core.json`, `data/dragons/{common,rare,epic,legendary,mythic}.json`, `data/elements-expansion.json` | Loài gốc và 5 hệ mở rộng; vẫn cần cho build, máy chủ và dữ liệu rồng đã lưu |
+| `data/dragons/transcendent.json`, `data/special-skills.json` | 45 công thức rồng Double Element cùng cấu hình độ hiếm; 45 skill đặc biệt nằm riêng để có thể dùng lại ở bậc khác |
+| `data/game.json`, `data/skills/{normal,elemental}.json`, `js/config/`, `data/economy.js` | Bản đồ 16 đảo và vùng đất 24×24; cấu hình cân bằng nằm trong `js/config/`, còn `data/economy.js` là lớp tương thích |
 | `data/users.json`, `data/sessions.json` | Máy chủ tự tạo tài khoản và phiên; không lưu trong repository và không cho tải trực tiếp qua web |
 | `data/profiles/` | Một file JSON tiến trình riêng cho từng tài khoản |
 | `server/auth.cjs`, `server/store.cjs`, `server/profile.cjs` | Xác thực, ghi JSON nguyên tử và tạo hồ sơ đầu tiên khi admin cấp tài nguyên |
@@ -95,7 +95,7 @@ Rồng lên cấp sau bốn lần cho ăn; lượng thức ăn mỗi lần tăng
 - EXP cần để lên cấp là `round(60 + 25 × cấp + 8 × cấp^1,5)`. Khi lên cấp nhận vàng, thức ăn và gem; cấp chia hết cho 5 nhận thêm 3 gem.
 - Mở một vùng đất nhận 60 EXP; mua một đảo nhận 250 EXP. Số Farm tối đa là 1 ở cấp 1–4, thêm 1 ở các mốc cấp 5, 10, 15… và tối đa 12 Farm. Farm đã cất kho vẫn tính vào giới hạn.
 - Tỷ lệ gốc của rồng 3 hệ là 15–27%, rồng 4 hệ là 2,25–4,5%; phần còn lại phân bổ cho rồng 1 và 2 hệ. Giao diện hiển thị xác suất từng giống theo hai chữ số thập phân.
-- Rồng **Double Element** có bốn slot nhưng chỉ ba hệ: hai slot đầu là hệ chủ đạo trùng nhau. Có ba loài riêng cho mỗi hệ, thuộc bậc Transcendent với chỉ số nằm giữa rồng 3 hệ và 4 hệ. Bố mẹ đều phải có bốn slot, ít nhất ba hệ riêng, cùng hệ chủ đạo và đạt cấp 40; xác suất gốc 0,9–1,8%, thấp hơn rồng 4 hệ. Trứng và hình thể theo dạng vương miện hoặc áo choàng; Sổ tay có tab riêng. Danh sách 45 thiết kế nằm trong `data/double-element-dragons.json`, còn kỹ năng nằm trong `data/special-skills.json`.
+- Rồng **Double Element** có bốn slot nhưng chỉ ba hệ: hai slot đầu là hệ chủ đạo trùng nhau. Có ba loài riêng cho mỗi hệ, thuộc bậc Transcendent với chỉ số nằm giữa rồng 3 hệ và 4 hệ. Bố mẹ đều phải có bốn slot, ít nhất ba hệ riêng, cùng hệ chủ đạo và đạt cấp 40; xác suất gốc 0,9–1,8%, thấp hơn rồng 4 hệ. Trứng và hình thể theo dạng vương miện hoặc áo choàng; Sổ tay có tab riêng. Danh sách 45 thiết kế nằm trong `data/dragons/transcendent.json`, còn kỹ năng nằm trong `data/special-skills.json`.
 - Shop Food bán gói 100, 500 hoặc 2.000 thức ăn với giá 15 vàng mỗi thức ăn. Các tham số cân bằng nằm trong `js/config/`.
 - Nhiệm vụ hằng ngày do máy chủ tính tiến độ và thưởng, làm mới lúc 05:00 giờ Việt Nam. Nhiệm vụ cho ăn yêu cầu ba lần cho ăn, có thể cùng một rồng.
 

@@ -44,8 +44,8 @@ function autoAssignWaitingEggs(){
 /** Purchase an unlocked pure-element egg and persist the resulting resource/egg state. */
 function buyEgg(speciesId){
   const species=DATA.species[speciesId];
-  if(!species||species.elements.length!==1||!species.detail.giaTrung){
-    toast("The Shop only sells pure element dragon eggs.");return;
+  if(!species||(!currentAccount||currentAccount.role!=="admin")&&species.elements.length!==1||!species.detail.giaTrung){
+    toast(currentAccount?.role==="admin"?"This egg is unavailable in the Shop.":"The Shop only sells pure element dragon eggs.");return;
   }
   const level=contentRequirementLevel(ELEMENT_UNLOCK[species.elements[0]]||99);
   if(state.player.level<level){toast("This egg unlocks at level "+level+".");return;}

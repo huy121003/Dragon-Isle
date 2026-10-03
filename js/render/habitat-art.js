@@ -4,7 +4,7 @@
 function paintHabitatBiome(element,theme,time,night){
   const pulse=.78+.22*Math.sin(time*.005);
   // Match the five newer structures to the old habitats' width-to-height ratio.
-  const accentScaleY=1.1;
+  const accentScaleY=1.6;
   switch(element){
     case 'fire':{
       structurePlinth('#463d3c','#443846','#302e39','#e0733c');
@@ -155,7 +155,7 @@ function paintHabitatBiome(element,theme,time,night){
     case 'war':{
       // A small sculpted Roman galea makes this read as a War habitat, not a floating flag.
       structurePlinth('#a77955','#76513f','#563b35','#e4b477');
-      ctx.save();ctx.translate(0,.3);ctx.scale(1.65,accentScaleY);
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.2,-.31],[0,-.25],[.2,-.31],[0,-.37]],'#c98d61','#efd09a',.012);
       structurePoly([[-.25,-.38],[-.22,-.5],[-.15,-.59],[-.06,-.63],[.08,-.63],[.18,-.57],[.24,-.46],[.24,-.38]],
         '#9a5945','#edbc7c',.018);
@@ -170,7 +170,7 @@ function paintHabitatBiome(element,theme,time,night){
     case 'pure':{
       // Small open shrine with three petal arches around a light; the lower tile stays clear.
       structurePlinth('#b18fbd','#7c608f','#594669','#f8e6f5');
-      ctx.save();ctx.translate(0,.3);ctx.scale(1.65,accentScaleY);
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#bb96c3','#f8e6f5',.012);
       for(const x of [-.17,.17])structurePoly([[x-.025,-.36],[x-.02,-.54],[x,-.57],[x+.02,-.54],[x+.025,-.36]],'#e4cce9','#fff8ff',.01);
       structurePoly([[-.23,-.53],[-.18,-.59],[-.08,-.56],[0,-.67],[.08,-.56],[.18,-.59],[.23,-.53],[.19,-.49],[.08,-.53],[0,-.61],[-.08,-.53],[-.19,-.49]],
@@ -181,7 +181,7 @@ function paintHabitatBiome(element,theme,time,night){
     case 'legend':{
       // Slim twin-scroll portal: visible supports and a small open doorway give the glyph a building form.
       structurePlinth('#68518c','#433867','#302846','#c8b2eb');
-      ctx.save();ctx.translate(0,.3);ctx.scale(1.65,accentScaleY);
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.23,-.32],[0,-.25],[.23,-.32],[0,-.39]],'#76609a','#c8b2eb',.012);
       structurePoly([[-.19,-.36],[-.16,-.53],[-.11,-.58],[-.07,-.54],[-.08,-.36]],'#7960a7','#decaff',.012);
       structurePoly([[.19,-.36],[.16,-.53],[.11,-.58],[.07,-.54],[.08,-.36]],'#7960a7','#decaff',.012);
@@ -196,7 +196,7 @@ function paintHabitatBiome(element,theme,time,night){
     case 'primal':{
       // A light stone grotto with a real opening and three claw marks above its lintel.
       structurePlinth('#777458','#595944','#424339','#d6d1aa');
-      ctx.save();ctx.translate(0,.3);ctx.scale(1.65,accentScaleY);
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.25,-.34],[-.23,-.48],[-.17,-.58],[-.11,-.55],[0,-.64],[.1,-.55],[.17,-.58],[.23,-.47],[.25,-.34],[.16,-.31],[0,-.35],[-.16,-.31]],
         '#77765c','#d8d0a5',.016);
       structurePoly([[-.14,-.34],[-.13,-.43],[-.08,-.49],[0,-.52],[.08,-.49],[.13,-.43],[.14,-.34]],'#403f39','#b6ae83',.012);
@@ -209,7 +209,7 @@ function paintHabitatBiome(element,theme,time,night){
     case 'time':{
       // Small clock-gate with two slim supports, a lintel and a readable moving dial.
       structurePlinth('#89808a','#635b6e','#484453','#f0dfc8');
-      ctx.save();ctx.translate(0,.3);ctx.scale(1.65,accentScaleY);
+      ctx.save();ctx.translate(0,.425);ctx.scale(1.65,accentScaleY);
       structurePoly([[-.22,-.32],[0,-.25],[.22,-.32],[0,-.39]],'#89808a','#f0dfc8',.012);
       for(const x of [-.16,.16])structurePoly([[x-.022,-.36],[x-.02,-.61],[x+.02,-.61],[x+.022,-.36]],'#746b78','#ead7bb',.012);
       structurePoly([[-.23,-.58],[-.18,-.66],[0,-.72],[.18,-.66],[.23,-.58],[.18,-.54],[0,-.61],[-.18,-.54]],'#b5a29e','#f5e8cb',.014);
@@ -278,7 +278,7 @@ function paintHabitatGround(element){
 function paintHabitatMotion(element,time){
   const wave=Math.sin(time*.003);
   const emphasize=['war','pure','legend','primal','time'].includes(element);
-  if(emphasize){ctx.save();ctx.translate(0,.3);ctx.scale(1.65,1.1);}
+  if(emphasize){ctx.save();ctx.translate(0,.425);ctx.scale(1.65,1.6);}
   switch(element){
     case 'fire':
       for(const [x,y] of [[-.25,-.43],[.31,-.47]])

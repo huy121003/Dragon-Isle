@@ -57,6 +57,7 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
   };
   const ReserveVitals=({dragon})=><span className="arena-reserve-vitals">
     <span className="arena-reserve-flags" aria-hidden="true">{badges(dragon.species)}</span>
+    <StatusIcons dragon={dragon} compact/>
     <span className="arena-reserve-hp" role="img" aria-label={`${fmt.format(dragon.hp)} / ${fmt.format(dragon.maxHp)} HP`}>
       <i style={{width:Math.max(0,Math.min(100,dragon.hp/dragon.maxHp*100))+'%'}}/>
     </span>
@@ -70,16 +71,19 @@ export function Battle({arena,challenge=false,onDuelAction,myTurn=true}){
       const matchup=offensive?game()?.skillMatchup?.(skill.element,defender.species):1;
       return <Button key={skill.index}
         disabled={disabled||!skill.unlocked||skill.remainingCooldown>0}
-        className={'battle-skill '+(skill.unlocked?'':'locked')+(skill.special?' special':'')}
+        className={'battle-skill battle-skill-icon '+(skill.unlocked?'':'locked')+(skill.special?' special':'')}
+        title={skill.name+' — '+(!skill.unlocked?'Unlocks at Lv'+skill.unlockLevel:
+          skill.remainingCooldown?'Cooldown · '+skill.remainingCooldown+' turns':
+          skill.description|| (skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
+          Math.round(skill.power*100)+'% base attack'))}
+        aria-label={skill.name+' — '+(!skill.unlocked?'Unlocks at level '+skill.unlockLevel:
+          skill.remainingCooldown?'Cooldown, '+skill.remainingCooldown+' turns':
+          skill.description||'Skill')}
         onClick={()=>act('skill',challenge?{skillIndex:skill.index}:{skill:skill.index})}>
         <span className="battle-skill-label"><SkillHex element={skill.element} locked={!skill.unlocked}/>
-          <span className="battle-skill-name">{skill.name}</span>
-          {skill.unlocked&&<MatchupMark value={matchup}/>}</span>
-        <small>{!skill.unlocked?'Unlocks at Lv'+skill.unlockLevel:
-          skill.remainingCooldown?'Cooldown · '+skill.remainingCooldown+' turns':
-          skill.special?skill.description+' · CD '+skill.cooldown:
-          skill.element?'Base + '+Math.round(skill.bonus*100)+'% '+game()?.data?.elements?.[skill.element]?.name:
-          Math.round(skill.power*100)+'% base attack'}</small></Button>;
+          {!skill.unlocked&&<i className="battle-skill-state">🔒</i>}
+          {skill.remainingCooldown>0&&<i className="battle-skill-cooldown">{skill.remainingCooldown}</i>}
+        </span></Button>;
     })}</div>
   </div>;
   return <div className="arena-battle"><div className="battle-top"><div><small>⚔ {challenge?'DUEL':'BATTLE'} · TURN {battle.turn}</small>

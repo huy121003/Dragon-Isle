@@ -63,7 +63,7 @@ function guideSpecialSkills(){
     return '<details class="guide-special-group"><summary>'+elementFlag(element,false,'sm')+' '+
       esc(DATA.elements[element].name)+' · '+cards.length+' chiêu</summary><div class="guide-special-cards">'+cards.join('')+'</div></details>';
   });
-  return '<p>Mỗi hệ Double Element có hai Special Skill ở ô thứ tư. Biểu tượng, tên và tác dụng lấy từ danh mục skill đang dùng trong Arena.</p>'+
+  return '<p>Mỗi hệ có ba Double Element Special Skill ở ô thứ tư. Mỗi rồng Double Element đang mang một trong ba chiêu của hệ chủ đạo. Biểu tượng, tên và tác dụng lấy từ danh mục skill đang dùng trong Arena.</p>'+
     '<div class="guide-callout">Skill hỗ trợ thuần gây 0 sát thương. Skill có đòn đánh chịu giáp, hệ số khắc hệ và tỉ lệ chí mạng; đòn nhiều nhịp kiểm tra hụt riêng từng nhịp. Cùng một loại trạng thái không cộng dồn.</div>'+groups.join('');
 }
 

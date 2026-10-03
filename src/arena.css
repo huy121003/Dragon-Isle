@@ -297,7 +297,7 @@
 .battle-modal .arena-reserve-button.switchable{cursor:pointer;transition:transform .15s,box-shadow .15s}
 .battle-modal .arena-reserve-button.switchable:hover:not(:disabled),.battle-modal .arena-reserve-button.switchable:focus-visible{transform:translateY(-2px);border-color:#fff0ac;box-shadow:0 0 0 2px #fff0aca8,0 6px 15px #163c4b70}
 .battle-modal .arena-reserve-button:disabled:not(.dead){opacity:1;color:inherit}
-.battle-modal .arena-reserve-top{display:flex;align-items:center;justify-content:flex-start;gap:8px;width:100%;min-width:0;height:100%}
+.battle-modal .arena-reserve-top{position:relative;display:flex;align-items:center;justify-content:flex-start;gap:8px;width:100%;min-width:0;height:100%}
 .battle-modal .battle-side.opponent .arena-reserve-top{justify-content:flex-end}
 .battle-modal .arena-reserve-avatar-frame{display:grid;place-items:center;flex:0 0 43px;width:43px;height:42px;overflow:hidden;border:1px solid #c6eedc;border-radius:10px;background:linear-gradient(145deg,#f5fcf7,#d9ebe2);box-shadow:inset 0 1px 3px #ffffff,0 1px 3px #102f3a}
 .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:39px;height:35px;filter:drop-shadow(0 2px 2px #173a4866)}
@@ -339,3 +339,21 @@
   .battle-modal .arena-reserve-avatar-frame .arena-portrait{width:25px;height:23px}
   .battle-modal .arena-reserve-flags .element-flag{width:8px;height:11px}
 }
+
+/* Compact skill controls are only used inside Arena and Challenge battles. */
+.arena-stage-controls .battle-skill-grid .battle-skill-icon{width:52px;height:52px;justify-self:center;padding:5px;border-width:1px;border-radius:14px}
+.arena-stage-controls .battle-skill-grid .battle-skill-icon .battle-skill-label{position:relative;display:grid;place-items:center;width:100%;height:100%}
+.arena-stage-controls .battle-skill-grid .battle-skill-icon .battle-skill-label .skill-hex{width:35px;height:35px}
+.arena-stage-controls .battle-skill-grid .battle-skill-icon.special{height:52px;min-height:52px;background:#ffffff16;border:2px solid #ffe5a0;box-shadow:0 0 0 2px #edb84988,0 0 15px #ffc85688}
+.arena-stage-controls .battle-skill-grid .battle-skill-icon.special .battle-skill-label{color:inherit}
+.battle-skill-state,.battle-skill-cooldown{position:absolute;right:-4px;bottom:-5px;display:grid;place-items:center;min-width:17px;height:17px;border-radius:9px;background:#183f55;color:#fff;font:700 10px system-ui;font-style:normal}
+.battle-skill-state{font-size:9px}
+.battle-statuses.compact{position:absolute;z-index:4;top:-3px;left:50%;transform:translateX(-50%);flex-wrap:nowrap;min-height:16px;margin:0;gap:2px}
+.arena-reserve-side.opponent .battle-statuses.compact{left:auto;right:50%;transform:translateX(50%)}
+.battle-statuses.compact .battle-status{width:17px;height:17px;border-radius:6px;font-size:11px}
+.battle-statuses.compact .battle-status sup{right:-4px;bottom:-5px;font-size:8px;padding:0 2px}
+/* Damage floats directly over the target with no enclosing card. */
+.fx-damage{min-width:0;max-width:42%;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;text-shadow:0 2px 5px #17202acc,0 0 10px #17202a;animation:fx-number 1.38s both}
+.fx-damage>strong{font-size:clamp(21px,3.6vw,34px);-webkit-text-stroke:.5px #17202a}
+.fx-damage.healing{background:transparent}
+.battle-skill-fx.missed .fx-damage{background:transparent}

@@ -100,13 +100,18 @@ export function SkillEffect({event,frame,anchors}){
     <small className="fx-skill-name">{event.skill}</small>
   </div>;
 }
-export function StatusIcons({dragon}){
+const statusGlyphs={poison:'☠',regen:'✚',heal:'✚',cleanse:'✧',freeze:'❄',
+  damage_up:'⚔',damage_down:'↘',armor_up:'⬟',armor_down:'⬡',damage_reduction:'◈',
+  vitality:'♥',accuracy_down:'◎',burn:'♨',curse:'☾',shield:'⬢',reflect:'↶'};
+export function StatusIcons({dragon,compact=false}){
   const names={damage_up:'Damage ↑',damage_down:'Damage ↓',armor_up:'Armor ↑',
     armor_down:'Armor ↓',damage_reduction:'Damage resistance',poison:'Poison',
-    freeze:'Frozen',regen:'Regeneration',vitality:'Maximum HP ↑',accuracy_down:'Accuracy ↓'};
-  return <div className="battle-statuses" aria-label="Active statuses">{(dragon.statuses||[]).map(status=><span
-    key={status.kind} className={'battle-status status-'+status.kind}
-    title={`${names[status.kind]||status.kind}: ${status.turns} actions remaining`}
-    aria-label={`${names[status.kind]||status.kind}: ${status.turns} actions remaining`}>
-    {status.icon||'✦'}<sup>{status.turns}</sup></span>)}</div>;
+    freeze:'Frozen',regen:'Regeneration',vitality:'Maximum HP ↑',accuracy_down:'Accuracy ↓',
+    burn:'Burn',curse:'Curse',shield:'Shield',reflect:'Reflect'};
+  return <div className={'battle-statuses'+(compact?' compact':'')} aria-label="Active statuses">
+    {(dragon.statuses||[]).map((status,index)=><span key={status.kind+'-'+index}
+      className={'battle-status status-'+status.kind}
+      title={`${names[status.kind]||status.kind}: ${status.turns} turns remaining`}
+      aria-label={`${names[status.kind]||status.kind}: ${status.turns} turns remaining`}>
+      <i aria-hidden="true">{statusGlyphs[status.kind]||'✦'}</i><sup>{status.turns}</sup></span>)}</div>;
 }

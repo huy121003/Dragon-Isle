@@ -1,0 +1,456 @@
+{
+  "version": 1,
+  "rarity": "transcendent",
+  "dragons": [
+    {
+      "speciesId": "fire>fire>water>thunder",
+      "primary": "fire",
+      "partners": [
+        "water",
+        "thunder"
+      ],
+      "form": "crown",
+      "specialSkillId": "fire-special-1"
+    },
+    {
+      "speciesId": "fire>fire>dark>pure",
+      "primary": "fire",
+      "partners": [
+        "dark",
+        "pure"
+      ],
+      "form": "mantle",
+      "specialSkillId": "fire-special-2"
+    },
+    {
+      "speciesId": "fire>fire>wind>metal",
+      "primary": "fire",
+      "partners": [
+        "wind",
+        "metal"
+      ],
+      "form": "crown",
+      "specialSkillId": "fire-special-3"
+    },
+    {
+      "speciesId": "water>water>earth>nature",
+      "primary": "water",
+      "partners": [
+        "earth",
+        "nature"
+      ],
+      "form": "crown",
+      "specialSkillId": "water-special-1"
+    },
+    {
+      "speciesId": "water>water>light>legend",
+      "primary": "water",
+      "partners": [
+        "light",
+        "legend"
+      ],
+      "form": "mantle",
+      "specialSkillId": "water-special-2"
+    },
+    {
+      "speciesId": "water>water>ice>war",
+      "primary": "water",
+      "partners": [
+        "ice",
+        "war"
+      ],
+      "form": "crown",
+      "specialSkillId": "water-special-3"
+    },
+    {
+      "speciesId": "earth>earth>wind>dark",
+      "primary": "earth",
+      "partners": [
+        "wind",
+        "dark"
+      ],
+      "form": "crown",
+      "specialSkillId": "earth-special-1"
+    },
+    {
+      "speciesId": "earth>earth>metal>primal",
+      "primary": "earth",
+      "partners": [
+        "metal",
+        "primal"
+      ],
+      "form": "mantle",
+      "specialSkillId": "earth-special-2"
+    },
+    {
+      "speciesId": "earth>earth>thunder>pure",
+      "primary": "earth",
+      "partners": [
+        "thunder",
+        "pure"
+      ],
+      "form": "crown",
+      "specialSkillId": "earth-special-3"
+    },
+    {
+      "speciesId": "wind>wind>ice>light",
+      "primary": "wind",
+      "partners": [
+        "ice",
+        "light"
+      ],
+      "form": "crown",
+      "specialSkillId": "wind-special-1"
+    },
+    {
+      "speciesId": "wind>wind>war>time",
+      "primary": "wind",
+      "partners": [
+        "war",
+        "time"
+      ],
+      "form": "mantle",
+      "specialSkillId": "wind-special-2"
+    },
+    {
+      "speciesId": "wind>wind>nature>legend",
+      "primary": "wind",
+      "partners": [
+        "nature",
+        "legend"
+      ],
+      "form": "crown",
+      "specialSkillId": "wind-special-3"
+    },
+    {
+      "speciesId": "ice>ice>thunder>metal",
+      "primary": "ice",
+      "partners": [
+        "thunder",
+        "metal"
+      ],
+      "form": "crown",
+      "specialSkillId": "ice-special-1"
+    },
+    {
+      "speciesId": "ice>ice>pure>fire",
+      "primary": "ice",
+      "partners": [
+        "pure",
+        "fire"
+      ],
+      "form": "mantle",
+      "specialSkillId": "ice-special-2"
+    },
+    {
+      "speciesId": "ice>ice>dark>primal",
+      "primary": "ice",
+      "partners": [
+        "dark",
+        "primal"
+      ],
+      "form": "crown",
+      "specialSkillId": "ice-special-3"
+    },
+    {
+      "speciesId": "thunder>thunder>nature>war",
+      "primary": "thunder",
+      "partners": [
+        "nature",
+        "war"
+      ],
+      "form": "crown",
+      "specialSkillId": "thunder-special-1"
+    },
+    {
+      "speciesId": "thunder>thunder>legend>water",
+      "primary": "thunder",
+      "partners": [
+        "legend",
+        "water"
+      ],
+      "form": "mantle",
+      "specialSkillId": "thunder-special-2"
+    },
+    {
+      "speciesId": "thunder>thunder>light>time",
+      "primary": "thunder",
+      "partners": [
+        "light",
+        "time"
+      ],
+      "form": "crown",
+      "specialSkillId": "thunder-special-3"
+    },
+    {
+      "speciesId": "nature>nature>dark>pure",
+      "primary": "nature",
+      "partners": [
+        "dark",
+        "pure"
+      ],
+      "form": "crown",
+      "specialSkillId": "nature-special-1"
+    },
+    {
+      "speciesId": "nature>nature>primal>earth",
+      "primary": "nature",
+      "partners": [
+        "primal",
+        "earth"
+      ],
+      "form": "mantle",
+      "specialSkillId": "nature-special-2"
+    },
+    {
+      "speciesId": "nature>nature>metal>fire",
+      "primary": "nature",
+      "partners": [
+        "metal",
+        "fire"
+      ],
+      "form": "crown",
+      "specialSkillId": "nature-special-3"
+    },
+    {
+      "speciesId": "dark>dark>light>legend",
+      "primary": "dark",
+      "partners": [
+        "light",
+        "legend"
+      ],
+      "form": "crown",
+      "specialSkillId": "dark-special-1"
+    },
+    {
+      "speciesId": "dark>dark>time>wind",
+      "primary": "dark",
+      "partners": [
+        "time",
+        "wind"
+      ],
+      "form": "mantle",
+      "specialSkillId": "dark-special-2"
+    },
+    {
+      "speciesId": "dark>dark>war>water",
+      "primary": "dark",
+      "partners": [
+        "war",
+        "water"
+      ],
+      "form": "crown",
+      "specialSkillId": "dark-special-3"
+    },
+    {
+      "speciesId": "light>light>metal>primal",
+      "primary": "light",
+      "partners": [
+        "metal",
+        "primal"
+      ],
+      "form": "crown",
+      "specialSkillId": "light-special-1"
+    },
+    {
+      "speciesId": "light>light>fire>ice",
+      "primary": "light",
+      "partners": [
+        "fire",
+        "ice"
+      ],
+      "form": "mantle",
+      "specialSkillId": "light-special-2"
+    },
+    {
+      "speciesId": "light>light>pure>earth",
+      "primary": "light",
+      "partners": [
+        "pure",
+        "earth"
+      ],
+      "form": "crown",
+      "specialSkillId": "light-special-3"
+    },
+    {
+      "speciesId": "metal>metal>war>time",
+      "primary": "metal",
+      "partners": [
+        "war",
+        "time"
+      ],
+      "form": "crown",
+      "specialSkillId": "metal-special-1"
+    },
+    {
+      "speciesId": "metal>metal>water>thunder",
+      "primary": "metal",
+      "partners": [
+        "water",
+        "thunder"
+      ],
+      "form": "mantle",
+      "specialSkillId": "metal-special-2"
+    },
+    {
+      "speciesId": "metal>metal>legend>wind",
+      "primary": "metal",
+      "partners": [
+        "legend",
+        "wind"
+      ],
+      "form": "crown",
+      "specialSkillId": "metal-special-3"
+    },
+    {
+      "speciesId": "war>war>pure>fire",
+      "primary": "war",
+      "partners": [
+        "pure",
+        "fire"
+      ],
+      "form": "crown",
+      "specialSkillId": "war-special-1"
+    },
+    {
+      "speciesId": "war>war>earth>nature",
+      "primary": "war",
+      "partners": [
+        "earth",
+        "nature"
+      ],
+      "form": "mantle",
+      "specialSkillId": "war-special-2"
+    },
+    {
+      "speciesId": "war>war>primal>ice",
+      "primary": "war",
+      "partners": [
+        "primal",
+        "ice"
+      ],
+      "form": "crown",
+      "specialSkillId": "war-special-3"
+    },
+    {
+      "speciesId": "pure>pure>legend>water",
+      "primary": "pure",
+      "partners": [
+        "legend",
+        "water"
+      ],
+      "form": "crown",
+      "specialSkillId": "pure-special-1"
+    },
+    {
+      "speciesId": "pure>pure>wind>dark",
+      "primary": "pure",
+      "partners": [
+        "wind",
+        "dark"
+      ],
+      "form": "mantle",
+      "specialSkillId": "pure-special-2"
+    },
+    {
+      "speciesId": "pure>pure>time>thunder",
+      "primary": "pure",
+      "partners": [
+        "time",
+        "thunder"
+      ],
+      "form": "crown",
+      "specialSkillId": "pure-special-3"
+    },
+    {
+      "speciesId": "legend>legend>primal>earth",
+      "primary": "legend",
+      "partners": [
+        "primal",
+        "earth"
+      ],
+      "form": "crown",
+      "specialSkillId": "legend-special-1"
+    },
+    {
+      "speciesId": "legend>legend>ice>light",
+      "primary": "legend",
+      "partners": [
+        "ice",
+        "light"
+      ],
+      "form": "mantle",
+      "specialSkillId": "legend-special-2"
+    },
+    {
+      "speciesId": "legend>legend>fire>nature",
+      "primary": "legend",
+      "partners": [
+        "fire",
+        "nature"
+      ],
+      "form": "crown",
+      "specialSkillId": "legend-special-3"
+    },
+    {
+      "speciesId": "primal>primal>time>wind",
+      "primary": "primal",
+      "partners": [
+        "time",
+        "wind"
+      ],
+      "form": "crown",
+      "specialSkillId": "primal-special-1"
+    },
+    {
+      "speciesId": "primal>primal>thunder>metal",
+      "primary": "primal",
+      "partners": [
+        "thunder",
+        "metal"
+      ],
+      "form": "mantle",
+      "specialSkillId": "primal-special-2"
+    },
+    {
+      "speciesId": "primal>primal>water>dark",
+      "primary": "primal",
+      "partners": [
+        "water",
+        "dark"
+      ],
+      "form": "crown",
+      "specialSkillId": "primal-special-3"
+    },
+    {
+      "speciesId": "time>time>fire>ice",
+      "primary": "time",
+      "partners": [
+        "fire",
+        "ice"
+      ],
+      "form": "crown",
+      "specialSkillId": "time-special-1"
+    },
+    {
+      "speciesId": "time>time>nature>war",
+      "primary": "time",
+      "partners": [
+        "nature",
+        "war"
+      ],
+      "form": "mantle",
+      "specialSkillId": "time-special-2"
+    },
+    {
+      "speciesId": "time>time>earth>light",
+      "primary": "time",
+      "partners": [
+        "earth",
+        "light"
+      ],
+      "form": "crown",
+      "specialSkillId": "time-special-3"
+    }
+  ]
+}

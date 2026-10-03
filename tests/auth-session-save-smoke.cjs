@@ -94,7 +94,10 @@ function eligibleProfile(){
     assert.equal((await me(a2)).status,200,'Another device session must remain valid');
 
     const initialA=await getSave(a2,idA);
-    assert.equal(initialA.res.status,200);assert.equal(initialA.body,null);assert.equal(initialA.revision,0);
+    assert.equal(initialA.res.status,200);assert.equal(initialA.revision,0);
+    assert.equal(initialA.body.player.level,100,'The first registered admin starts at level 100');
+    assert.equal(initialA.body.gold,1_000_000);assert.equal(initialA.body.food,1_000_000);
+    assert.equal(initialA.body.gems,1_000_000,'The admin starter profile grants one million of each resource');
     const first=eligibleProfile();first.gold=11111;
     const saved1=await putSave(a2,idA,first,0);
     assert.equal(saved1.res.status,200);assert.equal(saved1.revision,1);

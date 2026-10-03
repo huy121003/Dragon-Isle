@@ -3,6 +3,11 @@
 /* RENDER: Element-specific Habitat biome and Habitat renderer. */
 function paintHabitatBiome(element,theme,time,night){
   const pulse=.78+.22*Math.sin(time*.005);
+  // The five newer structures were reading smaller and more detached than the
+  // original habitats. Bring them closer to the fire habitat's visual weight
+  // and settle them onto the rear half of their platforms.
+  const emphasize=['war','pure','legend','primal','time'].includes(element);
+  if(emphasize){ctx.save();ctx.translate(0,.09);ctx.scale(1.18,1.18);}
   switch(element){
     case 'fire':{
       structurePlinth('#463d3c','#443846','#302e39','#e0733c');
@@ -231,6 +236,7 @@ function paintHabitatBiome(element,theme,time,night){
       break;
     }
   }
+  if(emphasize)ctx.restore();
   paintHabitatGround(element);
   paintHabitatMotion(element,time);
 }

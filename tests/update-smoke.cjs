@@ -789,14 +789,14 @@ check('four-element and Double breeding follow the parent recipes',()=>{
  const waterFour=snapshot(balance,'FOUR_IDS.find(id=>DATA.species[id].elements[0]==="water")');
  assert.equal(double(outcomes(fireFours[0],fireFours[1],39)).length,0);
  const doubles=double(outcomes(fireFours[0],fireFours[1],40));
- assert.equal(doubles.length,2,'Both Double variants of the shared primary are possible');
+ assert.equal(doubles.length,3,'All three Double variants of the shared primary are possible');
  assert(doubles.every(o=>o.id.startsWith('fire>fire>')));
  assert(Math.abs(chance(doubles)-.012)<1e-9);
  assert.equal(double(outcomes(fireFours[0],waterFour,100)).length,0);
  assert.equal(double(outcomes(fireFours[0],'fire>water>earth',100)).length,0);
  assert.equal(four(outcomes(fireFours[0],fireFours[1],100)).length,0);
  const doubleParent=double(outcomes(fireFours[0],fireFours[1],40))[0].id;
- assert.equal(double(outcomes(doubleParent,fireFours[0],40)).length,2);
+ assert.equal(double(outcomes(doubleParent,fireFours[0],40)).length,3);
  for(const options of [same,overlap,outcomes(fireFours[0],fireFours[1],40)])
    assert(Math.abs(chance(options)-1)<1e-9);
 });
@@ -1209,9 +1209,9 @@ check('Double Element breeding needs qualified parents and preserves probability
   balance.run('state.dragons[1].species=FOUR_IDS.find(id=>DATA.species[id].elements[0]==="earth");');
   assert.equal(balance.run('breedingOptions(state.dragons[0],state.dragons[1]).filter(o=>DATA.species[o.id].rarity==="transcendent").length'),0);
 });
-check('30 Double Element designs draw at baby, young and adult stages',()=>{
+check('45 Double Element designs draw at baby, young and adult stages',()=>{
   const ids=db.species.filter(s=>s.doHiem==='transcendent').map(s=>s.id);
-  assert.equal(ids.length,30);
+  assert.equal(ids.length,45);
   for(const id of ids)for(const level of [1,15,35]){
     const before=balance.drawCalls.length;
     balance.run('drawDragon(ctx,{dragon:{id:906,species:'+JSON.stringify(id)+',level:'+level+

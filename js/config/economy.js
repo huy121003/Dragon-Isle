@@ -26,6 +26,9 @@
       habitatUnlockLinear:.08,habitatUnlockQuadratic:.006,
       habitatRepeatLinear:.32,habitatRepeatQuadratic:.10,
       eggBaseMultiplier:2.2,eggUnlockLinear:.18,eggUnlockQuadratic:.012,
+      /** Admin-only base costs for tiers without regular-shop egg prices. */
+      adminEggBasePrices:Object.freeze({mythic:Object.freeze({gem:100}),
+        transcendent:Object.freeze({gem:100})}),
       eggRarityMultiplier:Object.freeze({common:1,rare:2,epic:4,legendary:8,mythic:16,transcendent:20}),
       /** Standard Food bundles purchased with Gold; cost = amount * progression.foodGoldPrice. */
       standardFoodAmounts:Object.freeze([100,500,2000]),

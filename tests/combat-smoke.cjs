@@ -31,7 +31,7 @@ assert(combat.power(rare)>combat.power(fire),'Combat Power should include elemen
 assert(fireHigher.hp>fire.hp&&fireHigher.attack>fire.attack&&fireHigher.defense>fire.defense);
 assert(rare.hp>fire.hp&&rare.attack>fire.attack);
 assert.deepEqual(Object.keys(fire),['hp','attack','defense']);
-const rawDefense=Math.round(db.elements.fire.chiSo.phongThu*db.rarities.common.heSoChiSo*(1+.07*24+.0003*24**2));
+const rawDefense=Math.round(db.elements.fire.chiSo.phongThu*db.rarities.common.heSoChiSo*(1+.085*24+.00055*24**2));
 assert.equal(fire.defense,Math.round(rawDefense*.45),'Global defense scale should lower base armor by 55%');
 for(let stars=1;stars<=5;stars++){
   const enhanced=combat.stats(['fire'],'common',25,db.elements,db.rarities,stars);

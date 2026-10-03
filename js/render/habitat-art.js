@@ -7,7 +7,7 @@ function paintHabitatBiome(element,theme,time,night){
   // original habitats. Bring them closer to the fire habitat's visual weight
   // and settle them onto the rear half of their platforms.
   const emphasize=['war','pure','legend','primal','time'].includes(element);
-  if(emphasize){ctx.save();ctx.translate(0,.09);ctx.scale(1.18,1.18);}
+  if(emphasize){ctx.save();ctx.translate(0,.1);ctx.scale(1.65,1);}
   switch(element){
     case 'fire':{
       structurePlinth('#463d3c','#443846','#302e39','#e0733c');

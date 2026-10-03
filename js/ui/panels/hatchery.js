@@ -58,7 +58,7 @@ function renderReadyEgg(id){
   homes.forEach(function(b){
     html+='<button class="shop-item" data-action="place-ready-egg" data-id="'+egg.id+
       '" data-building="'+b.id+'"><span class="shop-icon" style="color:'+DATA.elements[b.element].color+'">'+
-      DATA.elements[b.element].mark+'</span><span><b>'+buildingName(b)+'</b><small>Level '+b.level+
+      elementFlag(b.element,false,'lg')+'</span><span><b>'+buildingName(b)+'</b><small>Level '+b.level+
       ' · '+occupants(b).length+'/'+habitatCapacity(b.level)+' dragons</small></span><strong>Place in ›</strong></button>';
   });
   html+='</div><div class="actions"><button class="btn" data-action="hatchery-menu" data-id="'+

@@ -14,6 +14,7 @@ const worldConfig=require('../js/config/world.js');
 const systemConfig=require('../js/config/system.js');
 const challengeConfig=require('../js/config/challenge.js');
 const combat=require('../js/data/combat-rules.js');
+const combatConfig=require('../js/config/combat.js');
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json'),'utf8'));
 require('../scripts/extend-catalog.cjs')(catalog,game);
 
@@ -66,10 +67,11 @@ for(const attacker of Object.keys(catalog.typeChart)){
 }
 const rawFireDefense=Math.round(
   catalog.elements.fire.chiSo.phongThu*catalog.rarities.common.heSoChiSo*
-  (1+.07*24+.0003*24**2)
+  (1+combatConfig.statGrowth.linear*24+combatConfig.statGrowth.quadratic*24**2)
 );
 const fireStats=combat.stats(['fire'],'common',25,catalog.elements,catalog.rarities,0);
-assert.equal(fireStats.defense,Math.round(rawFireDefense*.6),'Global defense scale must remain 0.60');
+assert.equal(combatConfig.defenseScale,.45);
+assert.equal(fireStats.defense,Math.round(rawFireDefense*combatConfig.defenseScale));
 
 console.log('SESSION REGRESSION: economy');
 assert.deepEqual(economy.starting,{gold:10000,food:2500,gems:20});

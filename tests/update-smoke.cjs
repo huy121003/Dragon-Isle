@@ -360,6 +360,25 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  balance.run('gainPlayerXP(playerXPNeeded(60))');
  assert.equal(balance.run('state.player.level'),61);
 });
+check('admin egg shop exposes the full catalog in small pages while players see pure eggs only',()=>{
+ const pure=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.length===1&&s.detail.giaTrung).length');
+ const all=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.detail.giaTrung).length');
+ balance.run('currentAccount={id:"admin",username:"admin",role:"admin"};state.player.level=100;state.gold=state.food=state.gems=1000000;ui.shopTab="eggs";ui.shopEggPage=0;renderShop()');
+ let html=balance.element('sheetBody').innerHTML;
+ assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,Math.min(48,all));
+ assert(html.includes(all+' eggs'));
+ if(all>48){
+   const first=html.match(/data-action="shop-egg-detail" data-species="([^"]+)"/)[1];
+   balance.run('handleAction({dataset:{action:"shop-eggs-page",page:"1"}})');
+   html=balance.element('sheetBody').innerHTML;
+   const second=html.match(/data-action="shop-egg-detail" data-species="([^"]+)"/)[1];
+   assert.notEqual(first,second);
+ }
+ balance.run('currentAccount={id:"player",username:"player",role:"player"};ui.shopTab="eggs";renderShop()');
+ html=balance.element('sheetBody').innerHTML;
+ assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,pure);
+ assert(!html.includes('· '+all+' eggs'));
+});
 check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.fire)'),30,'Fire pure egg should hatch in 30 seconds');
  assert.equal(balance.run('hatchingSeconds(DATA.species.water)'),60,'Water pure egg should hatch in one minute');

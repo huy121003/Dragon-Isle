@@ -66,6 +66,12 @@ async function launch(port){
     assert(!fs.readFileSync(path.join(temporary,'users.json'),'utf8').includes('very-safe-pass'));
     const idA=users.find(u=>u.username==='Alex_1').id,idB=users.find(u=>u.username==='Bela_2').id;
     assert.notEqual(idA,idB);
+    const initialAdmin=await (await fetch(base+'/api/save',{headers:{Cookie:cookieA,'X-Dragon-Account':idA}})).json();
+    assert.equal(initialAdmin.player.level,100,'A new admin account starts at level 100');
+    assert.equal(initialAdmin.gold,1_000_000);assert.equal(initialAdmin.food,1_000_000);
+    assert.equal(initialAdmin.gems,1_000_000,'A new admin account receives one million of each resource');
+    assert.equal((await (await fetch(base+'/api/save',{headers:{Cookie:cookieB,'X-Dragon-Account':idB}})).json()),null,
+      'A new regular account keeps the existing normal starter flow');
     const state={version:5,lastTick:12345,savedAt:Date.now(),land:[],dragons:[],buildings:[],eggs:[],gold:123};
     const putA=await fetch(base+'/api/save',{method:'PUT',headers:{Cookie:cookieA,'X-Dragon-Account':idA,'Content-Type':'application/json'},body:JSON.stringify(state)});
     assert.equal(putA.status,200);
@@ -157,12 +163,14 @@ async function launch(port){
     const {newProfile}=require('../server/profile.cjs');
     const cookieAdmin=session(adminAgain);
     const high=newProfile();
+    high.gems=100;
     high.buildings.push({id:4,type:'arena',level:1,x:200,y:182,stored:false});
     high.dragons[0].level=100;high.dragons[0].species='water';
     high.dragons.push({...high.dragons[0],id:5,species:'water',nickname:'Backup',level:100});
     high.dragons.push({...high.dragons[0],id:9,nickname:'Guard',level:100});
     high.dragons.push({...high.dragons[0],id:6,nickname:'Breeding',level:20});
-    high.dragons.push({...high.dragons[0],id:8,nickname:'Low level',level:9});
+    high.dragons.push({...high.dragons[0],id:8,nickname:'Low level',level:4});
+    high.dragons.push({...high.dragons[0],id:10,nickname:'Eligible level',level:5});
     high.buildings.push({id:7,type:'cave',level:1,x:204,y:182,stored:false,
       breeding:{fatherId:6,motherId:12,readyAt:Date.now()+3600_000}});
     async function putProfile(id,cookie,value){
@@ -186,18 +194,21 @@ async function launch(port){
       'Reject dragons below the minimum battle level');
     assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[6,5,9]})).status,400,
       'Reject dragons in active breeding');
+    assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:[10,5,9]})).status,200,
+      'Allow a level 5 dragon into an Arena team');
     assert.equal((await arenaCall('team','PUT',cookieAdmin,{attack:highTeam})).status,200);
     const choices=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert(choices.dragons.every(dragon=>Number.isFinite(dragon.power))&&
       choices.dragons.every((dragon,index,list)=>!index||list[index-1].power>=dragon.power),
       'The server returns every owned dragon with its Combat Power ranking');
-    assert.equal(choices.opponents.length,3,'The server creates exactly three rivals');
+    assert.equal(choices.opponents.length,5,'The server creates exactly five rivals');
     assert(choices.opponents.every(rival=>String(rival.id).startsWith('bot-')),
       'Arena rivals are server-generated, not other accounts');
     assert(choices.opponents.every(rival=>!('team' in rival)&&!('level' in rival)&&!('strength' in rival)),
       'Rival strength and dragons are hidden until the battle starts');
     assert.equal(choices.attemptsRemaining,3);
-    assert.equal(choices.dragons.find(d=>d.id===8).battleReason,'Requires level 10');
+    assert.equal(choices.dragons.find(d=>d.id===8).battleReason,'Requires level 5');
+    assert.equal(choices.dragons.find(d=>d.id===10).canBattle,true);
     assert.equal(choices.dragons.find(d=>d.id===6).battleReason,'Breeding');
     assert(choices.opponents.every(rival=>Object.keys(rival).length===1),
       'The list exposes only opaque rival IDs');
@@ -209,7 +220,21 @@ async function launch(port){
       'Starting a match immediately consumes an attempt');
     assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:choices.opponents[1].id})).status,409,
       'A player cannot open another match while one is active');
-    let round=started;
+    const swapped=await (await arenaCall('turn','POST',cookieAdmin,
+      {action:'switch',dragonId:5,expectedTurn:started.battle.turn})).json();
+    assert.equal(swapped.battle.turn,started.battle.turn,'Swapping does not spend the Arena turn');
+    assert.equal(swapped.battle.attack[swapped.battle.activeAttack].id,5);
+    assert.equal(swapped.battle.events.at(-1).switchTo,'Backup');
+    assert.equal(swapped.battle.events.length,started.battle.events.length+1,
+      'The Arena AI does not attack when the player switches');
+    assert.equal(swapped.battle.eventSeq,started.battle.eventSeq+1);
+    assert.equal(swapped.battle.attack[swapped.battle.activeAttack].hp,
+      started.battle.attack[1].hp,'A free swap does not deal damage');
+    assert.equal((await arenaCall('turn','POST',cookieAdmin,
+      {action:'skill',skillIndex:2,expectedTurn:swapped.battle.turn,
+        expectedEvents:started.battle.eventSeq})).status,409,
+    'Reject a stale action even though a free swap kept the same turn');
+    let round=swapped;
     for(let i=0;i<80&&!round.result;i++)round=await (await arenaCall('turn','POST',cookieAdmin,
       {action:'skill',skillIndex:2,expectedTurn:round.battle.turn})).json();
     assert.equal(round.result?.won,true,'An Arena victory completes and keeps its existing rewards');
@@ -230,13 +255,43 @@ async function launch(port){
     const exhausted=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(exhausted.attemptsRemaining,0);
     assert.equal((await arenaCall('fight','POST',cookieAdmin,{opponentId:exhausted.opponents[1].id})).status,429);
+    const gemsBefore=JSON.parse(fs.readFileSync(path.join(temporary,'profiles',idA+'.json'),'utf8')).gems;
+    const refill=await (await arenaCall('refill','POST',cookieAdmin,{})).json();
+    assert.equal(refill.attemptsRemaining,3,'Gem refill restores all attempts immediately');
+    assert.equal(refill.gems,gemsBefore-5,'Gem refill charges the configured five-gem cost');
+    assert.equal((await (await arenaCall('list','GET',cookieAdmin)).json()).opponents[0].id,choices.opponents[0].id,
+      'Gem refill keeps the current rival round');
     const arenaFile=path.join(temporary,'arena',idA+'.json');
     const savedArena=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
     savedArena.windowKey='expired-window';fs.writeFileSync(arenaFile,JSON.stringify(savedArena));
     const reset=await (await arenaCall('list','GET',cookieAdmin)).json();
     assert.equal(reset.attemptsRemaining,3,'The server restores three attempts in a new time window');
-    assert.deepEqual(reset.defeatedOpponentIds,[],'Defeated rivals reset in a new 8-hour window');
-    console.log('OK: account sessions, server-generated Arena rivals, attack team validation and 8-hour attempts.');
+    assert.deepEqual(reset.defeatedOpponentIds,afterWin.defeatedOpponentIds,
+      'Defeated rivals remain defeated after an 8-hour attempt reset');
+    assert.deepEqual(reset.opponents.map(r=>r.id),choices.opponents.map(r=>r.id),
+      'An 8-hour reset does not reroll the virtual rival round');
+    const weakened=JSON.parse(fs.readFileSync(arenaFile,'utf8'));
+    weakened.rivals.forEach(rival=>rival.team.forEach(dragon=>{dragon.level=10;dragon.stars=0;}));
+    fs.writeFileSync(arenaFile,JSON.stringify(weakened));
+    for(const opponent of reset.opponents.filter(item=>!reset.defeatedOpponentIds.includes(item.id))){
+      let roster=await (await arenaCall('list','GET',cookieAdmin)).json();
+      if(roster.attemptsRemaining===0){
+        assert.equal((await arenaCall('refill','POST',cookieAdmin,{})).status,200);
+        roster=await (await arenaCall('list','GET',cookieAdmin)).json();
+      }
+      const match=await (await arenaCall('fight','POST',cookieAdmin,{opponentId:opponent.id})).json();
+      let outcome=match;
+      for(let turn=0;turn<80&&!outcome.result;turn++)outcome=await (await arenaCall('turn','POST',cookieAdmin,
+        {action:'skill',skillIndex:2,expectedTurn:outcome.battle.turn})).json();
+      assert.equal(outcome.result?.won,true,'Every remaining rival can be defeated once');
+    }
+    const nextRound=await (await arenaCall('list','GET',cookieAdmin)).json();
+    assert.equal(nextRound.opponents.length,5);
+    assert(nextRound.opponents.every((rival,index)=>rival.id!==reset.opponents[index].id),
+      'Defeating all five rivals creates a new opponent round');
+    assert.deepEqual(nextRound.defeatedOpponentIds,[],'New round clears defeated-rival markers');
+    assert.equal(nextRound.attemptsRemaining,3,'Completing a rival round restores all attempts');
+    console.log('OK: account sessions, five-rival Arena rounds, gem refills and scheduled attempts.');
   }finally{
     child.kill();
     fs.rmSync(temporary,{recursive:true,force:true});

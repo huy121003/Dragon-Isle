@@ -4,11 +4,12 @@
 function renderDragons(){
   dom.title.textContent="🐲 Owned Dragons · "+state.dragons.length;
   const feedsPerLevel=window.DragonConfig.world.feeding.feedsPerLevel;
-  let html='<div class="note">Tap a dragon card for its stats and skills. Feed '+feedsPerLevel+' times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+
+  let html='<div class="note">Tap a dragon card for its stats and skills. Feed '+feedsPerLevel+' times to level up. Dragon level cap: '+dragonLevelCap()+'.</div>'+elementFilter('dragon',ui.dragonElements)+rarityFilter('dragon',ui.dragonRarities)+
     '<div class="dragon-sort" role="group" aria-label="Sort dragons"><span>Sort:</span>'+[
       ['level','Level'],['stars','Stars']].map(([key,label])=>
         '<button class="btn '+(ui.dragonSort===key?'active':'')+'" data-action="dragon-sort" data-sort="'+key+'">'+label+'</button>').join('')+'</div><div class="cards">';
-  const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements))
+  const visible=state.dragons.filter(d=>matchesElementFilter(DATA.species[d.species],ui.dragonElements)&&
+      matchesRarityFilter(DATA.species[d.species],ui.dragonRarities))
     .slice().sort((a,b)=>{
       const left=ui.dragonSort==='level'?a.level:ui.dragonSort==='stars'?(a.stars||0):dragonCombatPower(a);
       const right=ui.dragonSort==='level'?b.level:ui.dragonSort==='stars'?(b.stars||0):dragonCombatPower(b);
@@ -28,7 +29,7 @@ function renderDragons(){
       ' · '+(home?(home.stored?"Stored Habitat":buildingName(home)):"No Habitat")+
       (home&&!home.stored?' · '+goldPerMinute(dragonIncomePerMinute(d,home))+' gold/min':'')+
       (busy?' · 💞 Breeding':'')+' · '+(d.level>=dragonLevelCap()?'Level cap '+dragonLevelCap():'Fed '+dragonFeedProgress(d)+'/'+feedsPerLevel+' feedings')+'</small><div class="meter"><span style="width:'+progress+'%"></span></div>'+
-      '<div class="actions"><button class="btn good" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+money(feedCost)+' food</button>'+
+      '<div class="actions"><button class="btn resource-action" data-action="feed" data-id="'+d.id+'"'+(busy||d.level>=dragonLevelCap()||state.food<feedCost?' disabled':'')+'>Feed · '+resourceAmount('food',feedCost)+'</button>'+
       '<button class="btn" data-action="assign-menu" data-id="'+d.id+'"'+(busy?' disabled':'')+'>Change Habitat</button></div></div></div>';
   });
   dom.body.innerHTML=html+"</div>";
@@ -40,7 +41,7 @@ function renderHabitat(id){
   const b=buildingById(id);
   if(!b||b.type!=="habitat"||b.stored){closeModal();return;}
   const ds=occupants(b),rate=habitatIncomePerMinute(b);
-  dom.title.textContent=DATA.elements[b.element].mark+' '+buildingName(b)+' · Level '+b.level;
+  dom.title.textContent=buildingName(b)+' · Level '+b.level;
   let html='<div class="panel"><h3>Habitat details</h3><div class="element-list">'+
       elementFlag(b.element,true)+'</div>'+
     '<div class="stat-grid"><div><span>📐 Footprint</span><b>'+buildingFootprint(b).w+'×'+buildingFootprint(b).h+' tiles</b></div>'+
@@ -56,12 +57,12 @@ function renderHabitat(id){
       buildingFootprint(b,b.level+1).h+' free tiles.':'')+'</p>'+
     '<div class="actions"><button class="btn primary" data-action="collect" data-id="'+b.id+'"'+
     (b.storedGold>=.005||(b.storedGems||0)>=1?'':' disabled')+'>Thu '+
-    goldDecimal(b.storedGold)+' gold · '+money(b.storedGems||0)+' gem</button>';
+    resourceAmount('gold',goldDecimal(b.storedGold))+resourceAmount('gems',b.storedGems||0)+'</button>';
   if(b.upgradeEnds)html+=inlineTimer(b.upgradeStartedAt,b.upgradeEnds)+
-    '<button class="btn primary" data-action="skip-timer" data-kind="upgrade" data-id="'+b.id+'">♦ '+
-    gemSkipCost(b.upgradeEnds,Date.now())+' Skip</button>';
-  else if(b.level<maxBuildingLevel(b))html+='<button class="btn good" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
-    money(standardUpgradeCost(b).gold)+' gold · '+money(standardUpgradeCost(b).gems)+' gems</button>';
+    '<button class="btn resource-action" data-action="skip-timer" data-kind="upgrade" data-id="'+b.id+'">Skip · '+
+    resourceAmount('gems',gemSkipCost(b.upgradeEnds,Date.now()))+'</button>';
+  else if(b.level<maxBuildingLevel(b))html+='<button class="btn resource-action" data-action="upgrade" data-id="'+b.id+'">Upgrade · '+
+    resourceAmount('gold',standardUpgradeCost(b).gold)+resourceAmount('gems',standardUpgradeCost(b).gems)+'</button>';
   if(!b.upgradeEnds)html+='</div><div class="actions"><button class="btn" data-action="move" data-id="'+b.id+'">Move</button>'+
     '<button class="btn" data-action="store" data-id="'+b.id+'"'+
     (ds.length?' disabled title="Move every dragon out before storing this Habitat"':'')+'>Store</button>'+
@@ -101,7 +102,7 @@ function renderAssign(dragonId){
   if(!homes.length)html+='<div class="note">No matching Habitat has room. Build or upgrade one.</div>';
   homes.forEach(function(b){
     html+='<button class="shop-item" data-action="assign" data-dragon="'+dragonId+'" data-building="'+b.id+'">'+
-      '<span class="shop-icon" style="color:'+DATA.elements[b.element].color+'">'+DATA.elements[b.element].mark+
+      '<span class="shop-icon" style="--element:'+DATA.elements[b.element].color+'">'+elementFlag(b.element,false,'lg')+
       '</span><span><b>'+buildingName(b)+'</b><small>Level '+b.level+' · '+occupants(b).length+'/'+
       habitatCapacity(b.level)+' dragons</small></span></button>';
   });

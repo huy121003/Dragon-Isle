@@ -149,6 +149,9 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         if(hits&&victim.hp>0){
           if(['poison','burn','curse','armor_down','damage_down'].includes(kind))
             fx.addStatus(victim,effect,skill.element);
+          if(kind==='curse_strike')
+            fx.addStatus(victim,{kind:'damage_down',value:effect.value,
+              duration:effect.duration},skill.element);
           if(kind==='freeze_chance'&&!victim.freezeImmunity&&rng()<effect.value)
             fx.addStatus(victim,{kind:'freeze',duration:1,value:0},skill.element);
           if(kind==='lock_switch'&&!victim.switchImmunity)
@@ -224,6 +227,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       if(f.switchImmunity>0)f.switchImmunity--;
     }
     if(battle.traps?.[side]?.turns>0&&--battle.traps[side].turns<=0)battle.traps[side]=null;
+    if(battle.lastSwitchSide===other)battle.lastSwitchSide=null;
     fx.nextFighter(battle,side);fx.nextFighter(battle,other);
   }
   /** True when a battle side still has at least one living fighter. */

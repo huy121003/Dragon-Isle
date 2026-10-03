@@ -80,4 +80,20 @@ for(const skill of special){
   assert(reserve.hp<hp,'remaining combo hits continue onto the next living reserve');
   assert(battle.events.some(event=>event.target===reserve.nickname&&event.damage>0));
 }
+{
+  const skill=game.skills.elemental.wind.find(s=>s.effect?.kind==='switch_punish');
+  const plain=setup([fighter('wind',1)],[fighter('earth',2)]);
+  const switched=setup([fighter('wind',3)],[fighter('earth',4)]);
+  switched.lastSwitchSide='defense';
+  engine.strike(plain,'attack',skill,3);
+  engine.strike(switched,'attack',skill,3);
+  assert(switched.events[0].damage>plain.events[0].damage);
+  assert.equal(switched.lastSwitchSide,null,'switch bonus lasts one opposing action');
+}
+{
+  const actor=fighter('dark',1),target=fighter('earth',2);
+  const skill=game.skills.elemental.dark.find(s=>s.effect?.kind==='curse_strike');
+  engine.strike(setup([actor],[target]),'attack',skill,3);
+  assert(fx.status(target,'damage_down'),'Dread Shroud reduces target damage');
+}
 console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');

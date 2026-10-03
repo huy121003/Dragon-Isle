@@ -73,6 +73,28 @@ function snapshot(game,expr){return JSON.parse(game.run('JSON.stringify('+expr+'
 (async()=>{
 const game=await boot();
 const check=(label,fn)=>{try{fn();console.log('PASS '+label);}catch(error){console.error('FAIL '+label+': '+error.message);throw error;}};
+const arenaEvents=await game.run('(async()=>{'+
+  'const fighter={id:1,nickname:"One",skills:[{name:"Strike"}]};'+
+  'const initial={turn:1,eventSeq:0,attack:[fighter,{...fighter,id:2,nickname:"Two"}],'+
+    'defense:[fighter],activeAttack:0,activeDefense:0,events:[]};'+
+  'const switchEvent={turn:1,side:"attack",switchTo:"Two"};'+
+  'const skillEvent={turn:1,side:"attack",skill:"Strike"};'+
+  'const aiEvent={turn:1,side:"defense",skill:"Strike"};'+
+  'const responses=[{battle:{...initial,activeAttack:1,eventSeq:1,events:[switchEvent]}},'+
+    '{battle:{...initial,turn:2,activeAttack:1,eventSeq:3,events:[switchEvent,skillEvent,aiEvent]}}];'+
+  'const calls=[];renderArena=()=>{};arenaRequest=async(path,method,payload)=>{calls.push(payload);return responses.shift();};'+
+  'ui.arena.data={battle:initial};'+
+  'await arenaTurn("switch",2);const first=ui.arena.presentation.events.slice();'+
+  'finishArenaPresentation();await arenaTurn("skill",0);'+
+  'return {first,second:ui.arena.presentation.events,payload:ui.arena.data.battle,calls};'+
+'})()');
+check('Arena keeps only new presentation events when a free swap and skill share a turn',()=>{
+  assert.equal(arenaEvents.first.length,1);
+  assert.equal(arenaEvents.second.length,2);
+  assert.equal(arenaEvents.second[0].skill,'Strike');
+  assert.equal(arenaEvents.payload.eventSeq,3);
+  assert.deepEqual(Array.from(arenaEvents.calls,payload=>payload.expectedEvents),[0,1]);
+});
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/dragons.json')));
 assert.equal(Object.keys(db.quads).length,150,'Exactly 150 four-element recipes must be in dragons.json');
 require('../scripts/extend-catalog.cjs')(db,JSON.parse(fs.readFileSync(path.join(root,'data/game.json'))));
@@ -272,9 +294,9 @@ check('Hatchery upgrade UI shows the same gold and Gem costs as the upgrade logi
  g.run('state=newGame();state.player.level=5;renderHatchery(3)');
  const cost=snapshot(g,'standardUpgradeCost(buildingById(3))');
  const html=g.element('sheetBody').innerHTML;
- const expected='Upgrade · '+g.run('money('+cost.gold+')')+' gold · '+
-   g.run('money('+cost.gems+')')+' gems';
- assert(html.includes(expected),'Hatchery button should show both resource costs: '+expected);
+ assert(html.includes('Upgrade · '+g.run('resourceAmount("gold",'+cost.gold+')')+
+   g.run('resourceAmount("gems",'+cost.gems+')')),
+   'Hatchery button should show both gold and Gem icons with the exact costs');
 });
 check('hatchery eggs scale with nests and do not overlap at level five',()=>{
  const sizes=snapshot(game,'[1,2,3,4,5].map(level=>({level,scale:hatcheryEggScale(level,900,500)}))');
@@ -336,6 +358,36 @@ check('early player XP, level rewards and dragon feeding costs',()=>{
  assert.equal(balance.element('xpText').textContent,'0 / '+balance.run('money(playerXPNeeded(60))')+' XP');
  balance.run('gainPlayerXP(playerXPNeeded(60))');
  assert.equal(balance.run('state.player.level'),61);
+});
+check('admin egg shop exposes the full catalog in small pages while players see pure eggs only',()=>{
+ const pure=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.length===1&&s.detail.giaTrung).length');
+ const all=balance.run('DRAGON_DB.species.length');
+ const specialPrices=snapshot(balance,'({quad:shopEggPrice(DATA.species[FOUR_IDS[0]],true),double:shopEggPrice(DATA.species[DOUBLE_IDS[0]],true)})');
+ assert(specialPrices.quad.gem>0&&specialPrices.double.gem>0,'Admin prices cover Mythic and Double eggs');
+ balance.run('currentAccount={id:"admin",username:"admin",role:"admin"};state.player.level=100;state.gold=state.food=state.gems=1000000;ui.shopTab="eggs";ui.shopEggPage=0;ui.shopEggElements=[];ui.shopEggRarities=[];renderShop()');
+ let html=balance.element('sheetBody').innerHTML;
+ assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,Math.min(48,all));
+ assert(html.includes(all+' eggs'));
+ assert(html.includes('data-target="admin-eggs"'),'Admin egg shop has element and tier filters');
+ balance.run('handleAction({dataset:{action:"rarity-filter",target:"admin-eggs",rarity:"mythic"}})');
+ const mythicCount=balance.run('DRAGON_DB.species.filter(raw=>DATA.species[raw.id].rarity==="mythic").length');
+ assert(balance.element('sheetBody').innerHTML.includes(mythicCount+' eggs'));
+ balance.run('handleAction({dataset:{action:"rarity-filter",target:"admin-eggs",rarity:"all"}});handleAction({dataset:{action:"element-filter",target:"admin-eggs",element:"fire"}})');
+ const fireCount=balance.run('DRAGON_DB.species.map(raw=>DATA.species[raw.id]).filter(s=>s.elements.includes("fire")).length');
+ assert(balance.element('sheetBody').innerHTML.includes(fireCount+' eggs'));
+ balance.run('handleAction({dataset:{action:"element-filter",target:"admin-eggs",element:"all"}})');
+ html=balance.element('sheetBody').innerHTML;
+ if(all>48){
+   const first=html.match(/data-action="shop-egg-detail" data-species="([^"]+)"/)[1];
+   balance.run('handleAction({dataset:{action:"shop-eggs-page",page:"1"}})');
+   html=balance.element('sheetBody').innerHTML;
+   const second=html.match(/data-action="shop-egg-detail" data-species="([^"]+)"/)[1];
+   assert.notEqual(first,second);
+ }
+ balance.run('currentAccount={id:"player",username:"player",role:"player"};ui.shopTab="eggs";renderShop()');
+ html=balance.element('sheetBody').innerHTML;
+ assert.equal((html.match(/class="shop-item egg-shop-card"/g)||[]).length,pure);
+ assert(!html.includes(' · '+all+' eggs'));
 });
 check('starter eggs and guide use the current progression rules',()=>{
  assert.equal(balance.run('hatchingSeconds(DATA.species.fire)'),30,'Fire pure egg should hatch in 30 seconds');
@@ -484,7 +536,7 @@ check('Shop prices and tier-element breeding and incubation durations are balanc
  assert.equal(economy.run('state.eggs[0].readyAt-state.eggs[0].startedAt'),
    economy.run('hatchingSeconds(DATA.species[DOUBLE_IDS[0]])*1000'));
  economy.run('ui.shopTab="special";renderShop()');
- assert(economy.element('sheetBody').innerHTML.includes('● 10,000'));
+ assert(economy.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
  economy.run('ui.shopTab="habitats";renderShop()');
  assert(economy.element('sheetBody').innerHTML.includes('Purchased 1×'));
 });
@@ -564,7 +616,7 @@ check('farm slots, food shop purchase and level four Dragon Fruit',()=>{
  assert.equal(balance.run('state.food'),100);
  assert.equal(balance.run('state.gold'),8500);
  balance.run('state.gold=0;renderShop();window.DragonGame.action({action:"buy-food",count:"100"})');
- assert(balance.element('sheetBody').innerHTML.includes('Need 1,500 more gold'));
+ assert(balance.element('sheetBody').innerHTML.includes('Need '+balance.run('resourceAmount("gold",1500)')+' more'));
  assert.equal(balance.run('state.food'),100);
  assert(balance.element('toast').textContent.includes('Not enough gold'));
  balance.run('state.gold=9500');
@@ -641,8 +693,9 @@ check('dragon detail back navigation and habitat actions follow their source and
  navigation.run('buildingById(1).upgradeEnds=Date.now()+60000;renderHabitat(1)');
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="move"'));
  assert(!navigation.element('sheetBody').innerHTML.includes('data-action="store"'));
- navigation.run('ui.shopTab="save";openModal("shop")');
- assert(navigation.element('sheetBody').innerHTML.includes('10,000 gold, 2,500 food'));
+ navigation.run('currentAccount={id:"admin",username:"admin",role:"admin"};ui.shopTab="save";openModal("shop")');
+ assert(navigation.element('sheetBody').innerHTML.includes('aria-label="10,000 gold"'));
+ assert(navigation.element('sheetBody').innerHTML.includes('aria-label="2,500 food"'));
  assert(navigation.element('sheetBody').innerHTML.includes('<summary>Testing &amp; debug</summary>'));
 });
 check('a waiting egg enters the only free Hatchery without a chooser popup',()=>{
@@ -723,7 +776,7 @@ const premium=await boot();
 check('Celestial Sanctuary costs gems once and persists through saves',()=>{
  premium.run('state=newGame();state.player.level=10;state.player.xp=0;state.gems=249;ui.shopTab="special";renderShop()');
  assert(premium.element('sheetBody').innerHTML.includes('data-type="premiumCave"'));
- assert(premium.element('sheetBody').innerHTML.includes('♦ 250'));
+ assert(premium.element('sheetBody').innerHTML.includes('aria-label="250 gems"'));
  premium.run('beginMode({kind:"buy",type:"premiumCave"})');
  const site=snapshot(premium,'(()=>{for(let y=692;y<716;y++)for(let x=738;x<762;x++)'+
    'if(getBuildValid(x,y,ui.mode))return {x,y};return null})()');
@@ -982,10 +1035,17 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
    html.indexOf('data-action="start-breeding"')<html.indexOf('breed-results'),
    'Start breeding should be available before the long possible-dragon list');
  assert(html.includes('data-breed-search="father"')&&html.includes('data-breed-search="mother"'));
+ assert(html.includes('data-action="rarity-filter" data-target="breed-father"')&&
+   html.includes('data-action="rarity-filter" data-target="breed-mother"'));
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"fire"}})');
  game.run('handleAction({dataset:{action:"element-filter",target:"breed-father",element:"water"}})');
  assert.deepEqual(snapshot(game,'ui.breedFatherElements'),['fire','water']);
  assert.deepEqual(snapshot(game,'ui.breedMotherElements'),[]);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-father",rarity:"epic"}})');
+ assert.deepEqual(snapshot(game,'ui.breedFatherRarities'),['epic']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-mother",rarity:"rare"}})');
+ assert.deepEqual(snapshot(game,'ui.breedMotherRarities'),['rare']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"breed-father",rarity:"all"}});handleAction({dataset:{action:"rarity-filter",target:"breed-mother",rarity:"all"}})');
  html=game.element('sheetBody').innerHTML;
  assert(html.includes('aria-label="Filter: Fire" aria-pressed="true"'));
  assert(html.includes('aria-label="Filter: Water" aria-pressed="true"'));
@@ -1001,6 +1061,12 @@ check('two independent breeding filters/searches and no duplicate parent',()=>{
  assert.notEqual(game.run('ui.breedDraft.mother'),game.run('ui.breedDraft.father'));
 });
 check('four-element AND filters apply in dragon roster and book',()=>{
+ game.run('ui.modal={name:"book"};renderBook()');
+ assert(game.element('sheetBody').innerHTML.includes('class="tier-glyph"'));
+ assert(game.element('sheetBody').innerHTML.includes('data-action="rarity-filter" data-target="book"'));
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"book",rarity:"mythic"}})');
+ assert.deepEqual(snapshot(game,'ui.bookRarities'),['mythic']);
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"book",rarity:"all"}})');
  assert(game.run('matchesElementFilter(DATA.species["fire>water"],["fire","water"])'));
  assert(!game.run('matchesElementFilter(DATA.species["fire>water"],["fire","earth"])'));
  for(const element of ['fire','water','earth','wind','ice'])game.run('handleAction({dataset:{action:"element-filter",target:"book",element:"'+element+'"}})');
@@ -1011,6 +1077,9 @@ check('four-element AND filters apply in dragon roster and book',()=>{
  assert.deepEqual(snapshot(game,'ui.bookElements'),[]);
  game.run('handleAction({dataset:{action:"element-filter",target:"dragon",element:"fire"}})');
  assert.deepEqual(snapshot(game,'ui.dragonElements'),['fire']);
+ assert(game.element('sheetBody').innerHTML.includes('data-action="rarity-filter" data-target="dragon"'));
+ game.run('handleAction({dataset:{action:"rarity-filter",target:"dragon",rarity:"epic"}})');
+ assert.deepEqual(snapshot(game,'ui.dragonRarities'),['epic']);
 });
 check('all single-element dragons are named after their element',()=>{
   const ids=['war','pure','legend','primal','time'];

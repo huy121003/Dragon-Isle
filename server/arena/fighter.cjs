@@ -6,6 +6,7 @@
  */
 const combat=require('../../js/data/combat-rules.js');
 const dragonConfig=require('../../js/config/dragons.js');
+const {skillIdsFor}=require('../../js/data/skill-assignment.js');
 
 /**
  * Create fighter/species helpers for one immutable catalog snapshot.
@@ -41,10 +42,8 @@ function createFighterFactory({catalog,game}){
   function makeFighter(dragon){
     const resolved=species(dragon.species);if(!resolved)return null;
     const stats=combat.stats(resolved.parts,resolved.rarity,dragon.level,elements,rarities,dragon.stars);
-    const skillIds=(catalog.species.find(item=>item.id===dragon.species)?.skillIds||
-      (resolved.parts.length===1?['claw','slam',resolved.parts[0]+'-1',resolved.parts[0]+'-2']:
-        (resolved.parts.length===2?['claw','slam']:resolved.parts.length===3?['claw']:[])
-          .concat(resolved.parts.map(element=>element+'-1'))));
+    const skillIds=catalog.species.find(item=>item.id===dragon.species)?.skillIds||
+      skillIdsFor(resolved.parts,dragon.species);
     return {...dragon,power:combat.power(stats),parts:resolved.parts,rarity:resolved.rarity,maxHp:stats.hp,
       hp:stats.hp,attack:stats.attack,defense:stats.defense,
       statuses:[],cooldowns:[0,0,0,0],skills:skillIds.map(id=>skillRegistry.get(id))};

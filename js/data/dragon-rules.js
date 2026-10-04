@@ -2,6 +2,8 @@
 (function(root){
 'use strict';
 const DB=root.DragonDatabase;
+const SKILL_ASSIGNMENT=root.DragonSkillAssignment||
+  (typeof module!=="undefined"&&module.exports?require("./skill-assignment.js"):null);
 const COMBAT_CONFIG=root.DragonConfig?.combat||(typeof module!=="undefined"&&module.exports?require("../config/combat.js"):null);
 const DRAGON_CONFIG=root.DragonConfig?.dragons||(typeof module!=="undefined"&&module.exports?require("../config/dragons.js"):null);
 const WORLD_CONFIG=root.DragonConfig?.world||(typeof module!=="undefined"&&module.exports?require("../config/world.js"):null);
@@ -79,9 +81,7 @@ function buildDragon(elements) {
   if (e2)   hat.push({ he: e2.id, ...e2.hat, tanSuat: 0.15 });
 
   // Bốn vị trí chiêu tham chiếu các định nghĩa trong data/skills/*.json.
-  const skillIds = els.length === 1 ? ['claw', 'slam', els[0] + '-1', els[0] + '-2']
-    : (els.length === 2 ? ['claw', 'slam'] : els.length === 3 ? ['claw'] : [])
-      .concat(els.map(e => e + '-1'));
+  const skillIds=SKILL_ASSIGNMENT.skillIdsFor(els,els.join('>'));
 
   // --- Nội tại: hệ chính 100%, phụ 50%, nhỏ 25% ---
   const noiTai = E.map((e, i) => ({ ...e.noiTai, giaTri: Math.round(e.noiTai.giaTri * [1, 0.5, 0.25, 0.125][i] * 1000) / 1000, tuHe: e.id }));
@@ -154,7 +154,8 @@ function allDragons(maxHe) {
 
 const API = {
   ELEMENTS, ELEMENT_IDS, TYPE_CHART, KHAC, RARITY, PAIRS, TRIPLES, TINH_TU, STAGE_INFO,
-  typeMultiplier, rarityOf, tenRong, buildDragon, getStats, stageOf, xpToNext, goldPerHour, allDragons, mix
+  typeMultiplier, rarityOf, tenRong, buildDragon, getStats, stageOf, xpToNext, goldPerHour, allDragons, mix,
+  skillIdsFor:SKILL_ASSIGNMENT.skillIdsFor
 };
 if (typeof module !== 'undefined' && module.exports) module.exports = API;
 else root.DragonData = API;

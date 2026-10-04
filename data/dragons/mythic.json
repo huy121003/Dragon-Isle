@@ -84,7 +84,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "fire-1",
+      "fire-2",
       "earth-1",
       "ice-1",
       "dark-1"
@@ -213,7 +213,7 @@
       "fire-1",
       "nature-1",
       "light-1",
-      "metal-1"
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -336,8 +336,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "fire-1",
-      "water-1",
+      "fire-2",
+      "water-2",
       "wind-1",
       "thunder-1"
     ],
@@ -462,10 +462,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "fire-1",
+      "fire-2",
       "thunder-1",
       "dark-1",
-      "light-1"
+      "light-2"
     ],
     "noiTai": [
       {
@@ -588,10 +588,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "fire-1",
+      "fire-2",
       "water-1",
       "earth-1",
-      "metal-1"
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -714,10 +714,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
-      "wind-1",
+      "water-2",
+      "wind-2",
       "ice-1",
-      "nature-1"
+      "nature-2"
     ],
     "noiTai": [
       {
@@ -841,8 +841,8 @@
     },
     "skillIds": [
       "water-1",
-      "earth-1",
-      "ice-1",
+      "earth-2",
+      "ice-2",
       "dark-1"
     ],
     "noiTai": [
@@ -966,8 +966,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
-      "nature-1",
+      "water-2",
+      "nature-2",
       "light-1",
       "metal-1"
     ],
@@ -1093,9 +1093,9 @@
     },
     "skillIds": [
       "water-1",
-      "wind-1",
+      "wind-2",
       "thunder-1",
-      "dark-1"
+      "dark-2"
     ],
     "noiTai": [
       {
@@ -1218,9 +1218,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
-      "earth-1",
-      "thunder-1",
+      "water-2",
+      "earth-2",
+      "thunder-2",
       "light-1"
     ],
     "noiTai": [
@@ -1344,8 +1344,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "earth-1",
-      "ice-1",
+      "earth-2",
+      "ice-2",
       "nature-1",
       "metal-1"
     ],
@@ -1470,10 +1470,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "earth-1",
-      "wind-1",
+      "earth-2",
+      "wind-2",
       "ice-1",
-      "dark-1"
+      "dark-2"
     ],
     "noiTai": [
       {
@@ -1596,9 +1596,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "earth-1",
-      "thunder-1",
-      "light-1",
+      "earth-2",
+      "thunder-2",
+      "light-2",
       "metal-1"
     ],
     "noiTai": [
@@ -1724,7 +1724,7 @@
     "skillIds": [
       "earth-1",
       "fire-1",
-      "wind-1",
+      "wind-2",
       "nature-1"
     ],
     "noiTai": [
@@ -1850,7 +1850,7 @@
     "skillIds": [
       "earth-1",
       "nature-1",
-      "dark-1",
+      "dark-2",
       "light-1"
     ],
     "noiTai": [
@@ -1974,9 +1974,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "wind-1",
+      "wind-2",
       "ice-1",
-      "thunder-1",
+      "thunder-2",
       "metal-1"
     ],
     "noiTai": [
@@ -2101,9 +2101,9 @@
     },
     "skillIds": [
       "wind-1",
-      "fire-1",
+      "fire-2",
       "ice-1",
-      "dark-1"
+      "dark-2"
     ],
     "noiTai": [
       {
@@ -2226,10 +2226,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "wind-1",
+      "wind-2",
       "nature-1",
-      "light-1",
-      "metal-1"
+      "light-2",
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -2352,9 +2352,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "wind-1",
-      "thunder-1",
-      "dark-1",
+      "wind-2",
+      "thunder-2",
+      "dark-2",
       "light-1"
     ],
     "noiTai": [
@@ -2480,7 +2480,7 @@
     "skillIds": [
       "wind-1",
       "fire-1",
-      "water-1",
+      "water-2",
       "metal-1"
     ],
     "noiTai": [
@@ -2604,10 +2604,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "ice-1",
+      "ice-2",
       "thunder-1",
       "nature-1",
-      "dark-1"
+      "dark-2"
     ],
     "noiTai": [
       {
@@ -2732,8 +2732,8 @@
     "skillIds": [
       "ice-1",
       "fire-1",
-      "light-1",
-      "metal-1"
+      "light-2",
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -2856,10 +2856,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "ice-1",
-      "water-1",
+      "ice-2",
+      "water-2",
       "earth-1",
-      "nature-1"
+      "nature-2"
     ],
     "noiTai": [
       {
@@ -3109,7 +3109,7 @@
     },
     "skillIds": [
       "ice-1",
-      "earth-1",
+      "earth-2",
       "dark-1",
       "light-1"
     ],
@@ -3235,8 +3235,8 @@
     },
     "skillIds": [
       "thunder-1",
-      "nature-1",
-      "dark-1",
+      "nature-2",
+      "dark-2",
       "metal-1"
     ],
     "noiTai": [
@@ -3361,7 +3361,7 @@
     },
     "skillIds": [
       "thunder-1",
-      "fire-1",
+      "fire-2",
       "light-1",
       "metal-1"
     ],
@@ -3487,9 +3487,9 @@
     },
     "skillIds": [
       "thunder-1",
-      "water-1",
-      "wind-1",
-      "nature-1"
+      "water-2",
+      "wind-2",
+      "nature-2"
     ],
     "noiTai": [
       {
@@ -3613,7 +3613,7 @@
     },
     "skillIds": [
       "thunder-1",
-      "fire-1",
+      "fire-2",
       "earth-1",
       "dark-1"
     ],
@@ -3739,9 +3739,9 @@
     },
     "skillIds": [
       "thunder-1",
-      "water-1",
-      "dark-1",
-      "light-1"
+      "water-2",
+      "dark-2",
+      "light-2"
     ],
     "noiTai": [
       {
@@ -3865,9 +3865,9 @@
     },
     "skillIds": [
       "nature-1",
-      "earth-1",
-      "wind-1",
-      "metal-1"
+      "earth-2",
+      "wind-2",
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -3991,9 +3991,9 @@
     },
     "skillIds": [
       "nature-1",
-      "fire-1",
+      "fire-2",
       "ice-1",
-      "light-1"
+      "light-2"
     ],
     "noiTai": [
       {
@@ -4116,9 +4116,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "nature-1",
+      "nature-2",
       "water-1",
-      "dark-1",
+      "dark-2",
       "metal-1"
     ],
     "noiTai": [
@@ -4369,7 +4369,7 @@
     },
     "skillIds": [
       "nature-1",
-      "earth-1",
+      "earth-2",
       "ice-1",
       "dark-1"
     ],
@@ -4495,9 +4495,9 @@
     },
     "skillIds": [
       "dark-1",
-      "wind-1",
+      "wind-2",
       "light-1",
-      "metal-1"
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -4620,10 +4620,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "dark-1",
+      "dark-2",
       "fire-1",
       "earth-1",
-      "light-1"
+      "light-2"
     ],
     "noiTai": [
       {
@@ -4748,8 +4748,8 @@
     "skillIds": [
       "dark-1",
       "ice-1",
-      "thunder-1",
-      "metal-1"
+      "thunder-2",
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -4873,8 +4873,8 @@
     },
     "skillIds": [
       "dark-1",
-      "water-1",
-      "earth-1",
+      "water-2",
+      "earth-2",
       "wind-1"
     ],
     "noiTai": [
@@ -4998,10 +4998,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "dark-1",
+      "dark-2",
       "fire-1",
-      "water-1",
-      "ice-1"
+      "water-2",
+      "ice-2"
     ],
     "noiTai": [
       {
@@ -5124,8 +5124,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "light-1",
-      "wind-1",
+      "light-2",
+      "wind-2",
       "thunder-1",
       "metal-1"
     ],
@@ -5251,9 +5251,9 @@
     },
     "skillIds": [
       "light-1",
-      "fire-1",
-      "earth-1",
-      "ice-1"
+      "fire-2",
+      "earth-2",
+      "ice-2"
     ],
     "noiTai": [
       {
@@ -5378,7 +5378,7 @@
     "skillIds": [
       "light-1",
       "water-1",
-      "thunder-1",
+      "thunder-2",
       "nature-1"
     ],
     "noiTai": [
@@ -5502,10 +5502,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "light-1",
-      "earth-1",
+      "light-2",
+      "earth-2",
       "nature-1",
-      "metal-1"
+      "metal-2"
     ],
     "noiTai": [
       {
@@ -5631,7 +5631,7 @@
       "light-1",
       "fire-1",
       "water-1",
-      "wind-1"
+      "wind-2"
     ],
     "noiTai": [
       {
@@ -5754,7 +5754,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "metal-1",
+      "metal-2",
       "earth-1",
       "ice-1",
       "thunder-1"
@@ -5883,7 +5883,7 @@
       "metal-1",
       "fire-1",
       "wind-1",
-      "ice-1"
+      "ice-2"
     ],
     "noiTai": [
       {
@@ -6008,7 +6008,7 @@
     "skillIds": [
       "metal-1",
       "water-1",
-      "thunder-1",
+      "thunder-2",
       "nature-1"
     ],
     "noiTai": [
@@ -6132,8 +6132,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "metal-1",
-      "water-1",
+      "metal-2",
+      "water-2",
       "earth-1",
       "wind-1"
     ],
@@ -6258,8 +6258,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "metal-1",
-      "fire-1",
+      "metal-2",
+      "fire-2",
       "nature-1",
       "dark-1"
     ],
@@ -6389,7 +6389,7 @@
       "fire-1",
       "war-1",
       "legend-1",
-      "time-1"
+      "time-2"
     ],
     "noiTai": [
       {
@@ -6515,7 +6515,7 @@
     },
     "skillIds": [
       "fire-1",
-      "pure-1",
+      "pure-2",
       "time-1",
       "primal-1"
     ],
@@ -6643,8 +6643,8 @@
     },
     "skillIds": [
       "fire-1",
-      "legend-1",
-      "primal-1",
+      "legend-2",
+      "primal-2",
       "war-1"
     ],
     "noiTai": [
@@ -6770,10 +6770,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "fire-1",
-      "time-1",
-      "war-1",
-      "pure-1"
+      "fire-2",
+      "time-2",
+      "war-2",
+      "pure-2"
     ],
     "noiTai": [
       {
@@ -7026,9 +7026,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
+      "water-2",
       "primal-1",
-      "pure-1",
+      "pure-2",
       "legend-1"
     ],
     "noiTai": [
@@ -7154,10 +7154,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
+      "water-2",
       "war-1",
-      "legend-1",
-      "time-1"
+      "legend-2",
+      "time-2"
     ],
     "noiTai": [
       {
@@ -7282,9 +7282,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
+      "water-2",
       "pure-1",
-      "war-1",
+      "war-2",
       "primal-1"
     ],
     "noiTai": [
@@ -7410,10 +7410,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
+      "water-2",
       "time-1",
-      "fire-1",
-      "pure-1"
+      "fire-2",
+      "pure-2"
     ],
     "noiTai": [
       {
@@ -7538,10 +7538,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "water-1",
+      "water-2",
       "legend-1",
-      "metal-1",
-      "fire-1"
+      "metal-2",
+      "fire-2"
     ],
     "noiTai": [
       {
@@ -7666,10 +7666,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "earth-1",
+      "earth-2",
       "primal-1",
-      "pure-1",
-      "legend-1"
+      "pure-2",
+      "legend-2"
     ],
     "noiTai": [
       {
@@ -7795,9 +7795,9 @@
     },
     "skillIds": [
       "earth-1",
-      "primal-1",
-      "time-1",
-      "war-1"
+      "primal-2",
+      "time-2",
+      "war-2"
     ],
     "noiTai": [
       {
@@ -7923,9 +7923,9 @@
     },
     "skillIds": [
       "earth-1",
-      "war-1",
+      "war-2",
       "pure-1",
-      "legend-1"
+      "legend-2"
     ],
     "noiTai": [
       {
@@ -8052,7 +8052,7 @@
     "skillIds": [
       "earth-1",
       "time-1",
-      "primal-1",
+      "primal-2",
       "water-1"
     ],
     "noiTai": [
@@ -8179,8 +8179,8 @@
     },
     "skillIds": [
       "earth-1",
-      "thunder-1",
-      "fire-1",
+      "thunder-2",
+      "fire-2",
       "water-1"
     ],
     "noiTai": [
@@ -8307,7 +8307,7 @@
     },
     "skillIds": [
       "wind-1",
-      "pure-1",
+      "pure-2",
       "legend-1",
       "time-1"
     ],
@@ -8437,7 +8437,7 @@
       "wind-1",
       "war-1",
       "primal-1",
-      "pure-1"
+      "pure-2"
     ],
     "noiTai": [
       {
@@ -8563,9 +8563,9 @@
     },
     "skillIds": [
       "wind-1",
-      "legend-1",
-      "time-1",
-      "war-1"
+      "legend-2",
+      "time-2",
+      "war-2"
     ],
     "noiTai": [
       {
@@ -8691,9 +8691,9 @@
     },
     "skillIds": [
       "wind-1",
-      "primal-1",
+      "primal-2",
       "war-1",
-      "earth-1"
+      "earth-2"
     ],
     "noiTai": [
       {
@@ -8819,9 +8819,9 @@
     },
     "skillIds": [
       "wind-1",
-      "nature-1",
+      "nature-2",
       "water-1",
-      "earth-1"
+      "earth-2"
     ],
     "noiTai": [
       {
@@ -8946,7 +8946,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "ice-1",
+      "ice-2",
       "pure-1",
       "legend-1",
       "time-1"
@@ -9076,8 +9076,8 @@
     "skillIds": [
       "ice-1",
       "war-1",
-      "pure-1",
-      "primal-1"
+      "pure-2",
+      "primal-2"
     ],
     "noiTai": [
       {
@@ -9202,10 +9202,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "ice-1",
+      "ice-2",
       "legend-1",
-      "time-1",
-      "primal-1"
+      "time-2",
+      "primal-2"
     ],
     "noiTai": [
       {
@@ -9330,7 +9330,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "ice-1",
+      "ice-2",
       "time-1",
       "wind-1",
       "war-1"
@@ -9458,9 +9458,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "ice-1",
-      "metal-1",
-      "primal-1",
+      "ice-2",
+      "metal-2",
+      "primal-2",
       "wind-1"
     ],
     "noiTai": [
@@ -9586,8 +9586,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "thunder-1",
-      "pure-1",
+      "thunder-2",
+      "pure-2",
       "primal-1",
       "legend-1"
     ],
@@ -9715,8 +9715,8 @@
     },
     "skillIds": [
       "thunder-1",
-      "time-1",
-      "war-1",
+      "time-2",
+      "war-2",
       "pure-1"
     ],
     "noiTai": [
@@ -9843,9 +9843,9 @@
     },
     "skillIds": [
       "thunder-1",
-      "legend-1",
+      "legend-2",
       "time-1",
-      "primal-1"
+      "primal-2"
     ],
     "noiTai": [
       {
@@ -9970,7 +9970,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "thunder-1",
+      "thunder-2",
       "ice-1",
       "war-1",
       "earth-1"
@@ -10100,8 +10100,8 @@
     "skillIds": [
       "thunder-1",
       "wind-1",
-      "pure-1",
-      "ice-1"
+      "pure-2",
+      "ice-2"
     ],
     "noiTai": [
       {
@@ -10227,8 +10227,8 @@
     },
     "skillIds": [
       "nature-1",
-      "primal-1",
-      "legend-1",
+      "primal-2",
+      "legend-2",
       "pure-1"
     ],
     "noiTai": [
@@ -10356,7 +10356,7 @@
     "skillIds": [
       "nature-1",
       "war-1",
-      "legend-1",
+      "legend-2",
       "time-1"
     ],
     "noiTai": [
@@ -10483,8 +10483,8 @@
     },
     "skillIds": [
       "nature-1",
-      "primal-1",
-      "war-1",
+      "primal-2",
+      "war-2",
       "thunder-1"
     ],
     "noiTai": [
@@ -10610,7 +10610,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "nature-1",
+      "nature-2",
       "light-1",
       "pure-1",
       "time-1"
@@ -10866,10 +10866,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "dark-1",
-      "pure-1",
-      "time-1",
-      "war-1"
+      "dark-2",
+      "pure-2",
+      "time-2",
+      "war-2"
     ],
     "noiTai": [
       {
@@ -10995,9 +10995,9 @@
     },
     "skillIds": [
       "dark-1",
-      "nature-1",
-      "primal-1",
-      "legend-1"
+      "nature-2",
+      "primal-2",
+      "legend-2"
     ],
     "noiTai": [
       {
@@ -11122,8 +11122,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "dark-1",
-      "time-1",
+      "dark-2",
+      "time-2",
       "pure-1",
       "primal-1"
     ],
@@ -11251,9 +11251,9 @@
     },
     "skillIds": [
       "dark-1",
-      "thunder-1",
-      "war-1",
-      "legend-1"
+      "thunder-2",
+      "war-2",
+      "legend-2"
     ],
     "noiTai": [
       {
@@ -11378,8 +11378,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "dark-1",
-      "light-1",
+      "dark-2",
+      "light-2",
       "nature-1",
       "ice-1"
     ],
@@ -11506,9 +11506,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "light-1",
-      "dark-1",
-      "legend-1",
+      "light-2",
+      "dark-2",
+      "legend-2",
       "pure-1"
     ],
     "noiTai": [
@@ -11635,7 +11635,7 @@
     },
     "skillIds": [
       "light-1",
-      "dark-1",
+      "dark-2",
       "primal-1",
       "time-1"
     ],
@@ -11762,10 +11762,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "light-1",
-      "ice-1",
+      "light-2",
+      "ice-2",
       "pure-1",
-      "war-1"
+      "war-2"
     ],
     "noiTai": [
       {
@@ -11890,10 +11890,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "light-1",
+      "light-2",
       "war-1",
-      "time-1",
-      "primal-1"
+      "time-2",
+      "primal-2"
     ],
     "noiTai": [
       {
@@ -12019,9 +12019,9 @@
     },
     "skillIds": [
       "light-1",
-      "legend-1",
-      "water-1",
-      "earth-1"
+      "legend-2",
+      "water-2",
+      "earth-2"
     ],
     "noiTai": [
       {
@@ -12146,9 +12146,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "metal-1",
+      "metal-2",
       "dark-1",
-      "light-1",
+      "light-2",
       "time-1"
     ],
     "noiTai": [
@@ -12275,9 +12275,9 @@
     },
     "skillIds": [
       "metal-1",
-      "light-1",
+      "light-2",
       "primal-1",
-      "war-1"
+      "war-2"
     ],
     "noiTai": [
       {
@@ -12404,7 +12404,7 @@
     "skillIds": [
       "metal-1",
       "pure-1",
-      "war-1",
+      "war-2",
       "legend-1"
     ],
     "noiTai": [
@@ -12532,8 +12532,8 @@
     "skillIds": [
       "metal-1",
       "primal-1",
-      "time-1",
-      "pure-1"
+      "time-2",
+      "pure-2"
     ],
     "noiTai": [
       {
@@ -12658,9 +12658,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "metal-1",
-      "legend-1",
-      "wind-1",
+      "metal-2",
+      "legend-2",
+      "wind-2",
       "fire-1"
     ],
     "noiTai": [
@@ -12786,10 +12786,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
-      "dark-1",
-      "thunder-1",
-      "earth-1"
+      "war-2",
+      "dark-2",
+      "thunder-2",
+      "earth-2"
     ],
     "noiTai": [
       {
@@ -12914,9 +12914,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
-      "wind-1",
-      "metal-1",
+      "war-2",
+      "wind-2",
+      "metal-2",
       "water-1"
     ],
     "noiTai": [
@@ -13042,10 +13042,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
-      "ice-1",
+      "war-2",
+      "ice-2",
       "fire-1",
-      "nature-1"
+      "nature-2"
     ],
     "noiTai": [
       {
@@ -13170,10 +13170,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
-      "light-1",
-      "earth-1",
-      "thunder-1"
+      "war-2",
+      "light-2",
+      "earth-2",
+      "thunder-2"
     ],
     "noiTai": [
       {
@@ -13298,10 +13298,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
+      "war-2",
       "dark-1",
-      "fire-1",
-      "wind-1"
+      "fire-2",
+      "wind-2"
     ],
     "noiTai": [
       {
@@ -13426,9 +13426,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
+      "war-2",
       "metal-1",
-      "nature-1",
+      "nature-2",
       "water-1"
     ],
     "noiTai": [
@@ -13554,10 +13554,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
-      "light-1",
+      "war-2",
+      "light-2",
       "legend-1",
-      "ice-1"
+      "ice-2"
     ],
     "noiTai": [
       {
@@ -13682,10 +13682,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
+      "war-2",
       "time-1",
       "pure-1",
-      "primal-1"
+      "primal-2"
     ],
     "noiTai": [
       {
@@ -13810,10 +13810,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "war-1",
-      "pure-1",
-      "primal-1",
-      "legend-1"
+      "war-2",
+      "pure-2",
+      "primal-2",
+      "legend-2"
     ],
     "noiTai": [
       {
@@ -13939,8 +13939,8 @@
     },
     "skillIds": [
       "war-1",
-      "dark-1",
-      "time-1",
+      "dark-2",
+      "time-2",
       "thunder-1"
     ],
     "noiTai": [
@@ -14066,10 +14066,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "pure-1",
-      "nature-1",
-      "fire-1",
-      "earth-1"
+      "pure-2",
+      "nature-2",
+      "fire-2",
+      "earth-2"
     ],
     "noiTai": [
       {
@@ -14194,8 +14194,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "pure-1",
-      "thunder-1",
+      "pure-2",
+      "thunder-2",
       "metal-1",
       "ice-1"
     ],
@@ -14323,9 +14323,9 @@
     },
     "skillIds": [
       "pure-1",
-      "dark-1",
-      "wind-1",
-      "water-1"
+      "dark-2",
+      "wind-2",
+      "water-2"
     ],
     "noiTai": [
       {
@@ -14451,8 +14451,8 @@
     },
     "skillIds": [
       "pure-1",
-      "light-1",
-      "nature-1",
+      "light-2",
+      "nature-2",
       "war-1"
     ],
     "noiTai": [
@@ -14581,7 +14581,7 @@
       "pure-1",
       "ice-1",
       "metal-1",
-      "fire-1"
+      "fire-2"
     ],
     "noiTai": [
       {
@@ -14707,7 +14707,7 @@
     },
     "skillIds": [
       "pure-1",
-      "thunder-1",
+      "thunder-2",
       "water-1",
       "earth-1"
     ],
@@ -14834,10 +14834,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "pure-1",
+      "pure-2",
       "light-1",
-      "war-1",
-      "wind-1"
+      "war-2",
+      "wind-2"
     ],
     "noiTai": [
       {
@@ -14962,9 +14962,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "pure-1",
-      "legend-1",
-      "dark-1",
+      "pure-2",
+      "legend-2",
+      "dark-2",
       "time-1"
     ],
     "noiTai": [
@@ -15090,8 +15090,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "pure-1",
-      "primal-1",
+      "pure-2",
+      "primal-2",
       "time-1",
       "legend-1"
     ],
@@ -15218,9 +15218,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "pure-1",
+      "pure-2",
       "primal-1",
-      "thunder-1",
+      "thunder-2",
       "fire-1"
     ],
     "noiTai": [
@@ -15347,8 +15347,8 @@
     },
     "skillIds": [
       "legend-1",
-      "earth-1",
-      "ice-1",
+      "earth-2",
+      "ice-2",
       "nature-1"
     ],
     "noiTai": [
@@ -15474,10 +15474,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "legend-1",
-      "metal-1",
-      "wind-1",
-      "water-1"
+      "legend-2",
+      "metal-2",
+      "wind-2",
+      "water-2"
     ],
     "noiTai": [
       {
@@ -15602,9 +15602,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "legend-1",
+      "legend-2",
       "war-1",
-      "dark-1",
+      "dark-2",
       "pure-1"
     ],
     "noiTai": [
@@ -15858,10 +15858,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "legend-1",
+      "legend-2",
       "wind-1",
-      "earth-1",
-      "water-1"
+      "earth-2",
+      "water-2"
     ],
     "noiTai": [
       {
@@ -15988,7 +15988,7 @@
     "skillIds": [
       "legend-1",
       "metal-1",
-      "nature-1",
+      "nature-2",
       "ice-1"
     ],
     "noiTai": [
@@ -16114,10 +16114,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "legend-1",
+      "legend-2",
       "light-1",
       "war-1",
-      "pure-1"
+      "pure-2"
     ],
     "noiTai": [
       {
@@ -16244,8 +16244,8 @@
     "skillIds": [
       "legend-1",
       "dark-1",
-      "fire-1",
-      "thunder-1"
+      "fire-2",
+      "thunder-2"
     ],
     "noiTai": [
       {
@@ -16370,10 +16370,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "legend-1",
+      "legend-2",
       "time-1",
       "nature-1",
-      "primal-1"
+      "primal-2"
     ],
     "noiTai": [
       {
@@ -16499,8 +16499,8 @@
     },
     "skillIds": [
       "legend-1",
-      "time-1",
-      "primal-1",
+      "time-2",
+      "primal-2",
       "water-1"
     ],
     "noiTai": [
@@ -16626,7 +16626,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
+      "primal-2",
       "wind-1",
       "metal-1",
       "earth-1"
@@ -16754,9 +16754,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
+      "primal-2",
       "ice-1",
-      "water-1",
+      "water-2",
       "light-1"
     ],
     "noiTai": [
@@ -16882,7 +16882,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
+      "primal-2",
       "dark-1",
       "fire-1",
       "war-1"
@@ -17010,9 +17010,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
+      "primal-2",
       "nature-1",
-      "pure-1",
+      "pure-2",
       "thunder-1"
     ],
     "noiTai": [
@@ -17138,9 +17138,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
-      "metal-1",
-      "legend-1",
+      "primal-2",
+      "metal-2",
+      "legend-2",
       "earth-1"
     ],
     "noiTai": [
@@ -17268,7 +17268,7 @@
     "skillIds": [
       "primal-1",
       "wind-1",
-      "thunder-1",
+      "thunder-2",
       "ice-1"
     ],
     "noiTai": [
@@ -17394,9 +17394,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
+      "primal-2",
       "pure-1",
-      "water-1",
+      "water-2",
       "nature-1"
     ],
     "noiTai": [
@@ -17524,8 +17524,8 @@
     "skillIds": [
       "primal-1",
       "legend-1",
-      "dark-1",
-      "light-1"
+      "dark-2",
+      "light-2"
     ],
     "noiTai": [
       {
@@ -17650,7 +17650,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "primal-1",
+      "primal-2",
       "war-1",
       "time-1",
       "fire-1"
@@ -17780,8 +17780,8 @@
     "skillIds": [
       "primal-1",
       "time-1",
-      "metal-1",
-      "wind-1"
+      "metal-2",
+      "wind-2"
     ],
     "noiTai": [
       {
@@ -17906,9 +17906,9 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "time-1",
+      "time-2",
       "earth-1",
-      "ice-1",
+      "ice-2",
       "dark-1"
     ],
     "noiTai": [
@@ -18163,9 +18163,9 @@
     },
     "skillIds": [
       "time-1",
-      "nature-1",
+      "nature-2",
       "legend-1",
-      "water-1"
+      "water-2"
     ],
     "noiTai": [
       {
@@ -18290,10 +18290,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "time-1",
+      "time-2",
       "thunder-1",
-      "wind-1",
-      "fire-1"
+      "wind-2",
+      "fire-2"
     ],
     "noiTai": [
       {
@@ -18419,9 +18419,9 @@
     },
     "skillIds": [
       "time-1",
-      "ice-1",
+      "ice-2",
       "war-1",
-      "pure-1"
+      "pure-2"
     ],
     "noiTai": [
       {
@@ -18546,7 +18546,7 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "time-1",
+      "time-2",
       "legend-1",
       "earth-1",
       "nature-1"
@@ -18674,10 +18674,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "time-1",
-      "pure-1",
-      "fire-1",
-      "wind-1"
+      "time-2",
+      "pure-2",
+      "fire-2",
+      "wind-2"
     ],
     "noiTai": [
       {
@@ -18802,10 +18802,10 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "time-1",
+      "time-2",
       "dark-1",
-      "metal-1",
-      "war-1"
+      "metal-2",
+      "war-2"
     ],
     "noiTai": [
       {
@@ -18933,7 +18933,7 @@
       "time-1",
       "light-1",
       "primal-1",
-      "water-1"
+      "water-2"
     ],
     "noiTai": [
       {
@@ -19058,8 +19058,8 @@
       "vien": "rainbow"
     },
     "skillIds": [
-      "time-1",
-      "earth-1",
+      "time-2",
+      "earth-2",
       "ice-1",
       "thunder-1"
     ],

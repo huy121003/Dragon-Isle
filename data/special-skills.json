@@ -24,36 +24,36 @@
       "id": "fire-special-2",
       "element": "fire",
       "name": "Phoenix Oath",
-      "power": 0.9,
+      "power": 1.0,
       "bonus": 0,
-      "cooldown": 4,
+      "cooldown": 3,
       "effect": {
         "kind": "blood_crit",
         "target": "self",
-        "value": 0.1,
+        "value": 0.08,
         "duration": 0
       },
       "description": "Sacrifices 10% current HP and guarantees a critical hit on this strike; cannot knock itself out.",
       "special": true,
-      "descriptionVi": "Đổi 10% HP hiện tại lấy một đòn chắc chắn chí mạng; chiêu không tự hạ gục người dùng.",
+      "descriptionVi": "Gây sát thương bằng 100% tấn công, chắc chắn chí mạng và đổi 8% HP hiện tại; không thể tự hạ gục.",
       "glyph": "✹"
     },
     {
       "id": "fire-special-3",
       "element": "fire",
       "name": "Ashen Detonation",
-      "power": 0.55,
+      "power": 0.9,
       "bonus": 0,
-      "cooldown": 5,
+      "cooldown": 4,
       "effect": {
         "kind": "detonate_burn",
         "target": "enemy",
-        "value": 0.06,
+        "value": 0.08,
         "duration": 0
       },
       "description": "Deals damage; if the target is burning, consumes the burn and immediately deals up to 6% of its maximum HP as burn damage.",
       "special": true,
-      "descriptionVi": "Gây sát thương; nếu mục tiêu đang cháy, tiêu hao hiệu ứng cháy để gây ngay tối đa 6% HP tối đa của mục tiêu.",
+      "descriptionVi": "Gây 90% tấn công; nếu mục tiêu đang cháy, tiêu hao hiệu ứng để gây thêm tối đa 8% HP tối đa.",
       "glyph": "✺"
     },
     {
@@ -64,14 +64,15 @@
       "bonus": 0,
       "cooldown": 4,
       "effect": {
-        "kind": "heal_lowest",
+        "kind": "cleanse_heal_lowest",
         "target": "ally",
-        "value": 0.22,
-        "duration": 0
+        "value": 0.26,
+        "duration": 0,
+        "remove": 1
       },
       "description": "Heals the living ally with the lowest HP ratio, including reserves, by 22% of that ally's maximum HP.",
       "special": true,
-      "descriptionVi": "Hồi 22% HP tối đa cho đồng đội còn sống có tỷ lệ HP thấp nhất, kể cả rồng dự bị.",
+      "descriptionVi": "Gỡ 1 trạng thái bất lợi và hồi 26% HP tối đa cho đồng minh còn sống có nhiều trạng thái bất lợi nhất.",
       "glyph": "✚"
     },
     {
@@ -80,16 +81,16 @@
       "name": "Ocean Renewal",
       "power": 0,
       "bonus": 0,
-      "cooldown": 5,
+      "cooldown": 4,
       "effect": {
         "kind": "heal_team",
         "target": "ally_team",
-        "value": 0.07,
+        "value": 0.1,
         "duration": 0
       },
       "description": "Heals each ally, including reserves, by 7% of its own maximum HP.",
       "special": true,
-      "descriptionVi": "Hồi riêng cho mỗi đồng đội còn sống, kể cả dự bị, 7% HP tối đa của chính rồng đó. HP đã đầy không nhận thêm; phần hồi dư không chuyển cho người dùng chiêu.",
+      "descriptionVi": "Hồi mỗi đồng minh còn sống 10% HP tối đa của chính họ; hồi dư không chuyển sang rồng khác.",
       "glyph": "✣"
     },
     {
@@ -102,13 +103,13 @@
       "effect": {
         "kind": "cleanse_heal_lowest",
         "target": "ally",
-        "value": 0.1,
+        "value": 0.16,
         "remove": 2,
         "duration": 0
       },
       "description": "Removes up to 2 harmful effects from the ally with the most harmful effects and heals it for 10% of its maximum HP.",
       "special": true,
-      "descriptionVi": "Gỡ tối đa 2 trạng thái bất lợi cho đồng đội còn sống có nhiều trạng thái bất lợi nhất và hồi 10% HP tối đa cho rồng đó.",
+      "descriptionVi": "Gỡ tối đa 2 trạng thái bất lợi và hồi 16% HP tối đa cho đồng minh có nhiều trạng thái bất lợi nhất.",
       "glyph": "✧"
     },
     {
@@ -121,67 +122,67 @@
       "effect": {
         "kind": "shield",
         "target": "self",
-        "value": 0.2,
+        "value": 0.3,
         "duration": 2
       },
       "description": "Creates a shield equal to 20% of this dragon's maximum HP for 2 turns; the shield absorbs direct and damage-over-time damage.",
       "special": true,
-      "descriptionVi": "Tạo khiên bằng 20% HP tối đa của bản thân trong 2 lượt; khiên hấp thụ cả sát thương trực tiếp và sát thương theo thời gian.",
+      "descriptionVi": "Tạo khiên bằng 30% HP tối đa của bản thân trong 2 lượt; hấp thụ sát thương trực tiếp và theo thời gian.",
       "glyph": "⬢"
     },
     {
       "id": "earth-special-2",
       "element": "earth",
       "name": "Faultline Crush",
-      "power": 1.1,
+      "power": 1.2,
       "bonus": 0,
-      "cooldown": 4,
+      "cooldown": 3,
       "effect": {
         "kind": "armor_down",
         "target": "enemy",
-        "value": 0.2,
+        "value": 0.25,
         "duration": 2
       },
       "description": "Deals damage and reduces the target's armor by 20% for 2 turns.",
       "special": true,
-      "descriptionVi": "Gây sát thương và giảm 20% giáp của mục tiêu trong 2 lượt.",
+      "descriptionVi": "Gây 120% tấn công và giảm 25% giáp mục tiêu trong 2 lượt.",
       "glyph": "⬡"
     },
     {
       "id": "earth-special-3",
       "element": "earth",
       "name": "Seismic Trap",
-      "power": 0.8,
+      "power": 0.9,
       "bonus": 0,
-      "cooldown": 5,
+      "cooldown": 4,
       "effect": {
         "kind": "switch_trap",
         "target": "enemy_team",
-        "value": 0.06,
-        "duration": 2
+        "value": 0.08,
+        "duration": 3
       },
       "description": "Deals damage and traps the opposing team; the next dragon switched in within 2 turns loses 6% of its maximum HP, ignoring armor.",
       "special": true,
-      "descriptionVi": "Gây sát thương và đặt bẫy lên đội địch; rồng tiếp theo được đổi vào trong 2 lượt mất 6% HP tối đa, bỏ qua giáp.",
+      "descriptionVi": "Gây 90% tấn công và đặt bẫy 3 lượt; rồng địch đổi vào mất 8% HP tối đa, bỏ qua giáp.",
       "glyph": "◇"
     },
     {
       "id": "wind-special-1",
       "element": "wind",
       "name": "Cyclone Flurry",
-      "power": 0.5,
+      "power": 0.55,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "multi",
         "target": "enemy",
         "hits": 3,
-        "missChance": 0.15,
+        "missChance": 0.1,
         "duration": 0
       },
       "description": "Three hits of 50% attack each; each hit has a 15% miss chance.",
       "special": true,
-      "descriptionVi": "Đánh 3 nhịp, mỗi nhịp bằng 50% tấn công và có 15% xác suất hụt.",
+      "descriptionVi": "Đánh 3 nhịp, mỗi nhịp bằng 55% tấn công; mỗi nhịp có 10% xác suất hụt.",
       "glyph": "⚔"
     },
     {
@@ -194,37 +195,37 @@
       "effect": {
         "kind": "damage_reduction",
         "target": "self",
-        "value": 0.25,
+        "value": 0.35,
         "duration": 2
       },
       "description": "Reduces direct damage received by this dragon by 25% for 2 turns; does not reduce damage over time.",
       "special": true,
-      "descriptionVi": "Giảm 25% sát thương trực tiếp bản thân nhận trong 2 lượt; không giảm sát thương theo thời gian.",
+      "descriptionVi": "Giảm 35% sát thương trực tiếp nhận vào trong 2 lượt.",
       "glyph": "◈"
     },
     {
       "id": "wind-special-3",
       "element": "wind",
       "name": "Crosswind Pursuit",
-      "power": 1,
+      "power": 1.1,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "switch_punish",
         "target": "enemy",
-        "value": 0.25,
+        "value": 0.3,
         "duration": 0
       },
       "description": "Deals 100% attack, increased to 125% if the opponent switched dragons on its previous turn.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 100% tấn công, tăng lên 125% nếu đối thủ vừa đổi rồng ở lượt trước.",
+      "descriptionVi": "Gây 110% tấn công; nếu đối thủ vừa đổi rồng, đòn đánh gây thêm 30% tấn công.",
       "glyph": "➤"
     },
     {
       "id": "ice-special-1",
       "element": "ice",
       "name": "Absolute Zero",
-      "power": 0.9,
+      "power": 1.0,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
@@ -235,32 +236,32 @@
       },
       "description": "Deals damage and has a 25% chance to make the target lose its next action.",
       "special": true,
-      "descriptionVi": "Gây sát thương và có 25% xác suất khiến mục tiêu mất lượt hành động tiếp theo.",
+      "descriptionVi": "Gây 100% tấn công và có 25% xác suất khiến mục tiêu bỏ lượt kế tiếp.",
       "glyph": "❄"
     },
     {
       "id": "ice-special-2",
       "element": "ice",
       "name": "Rime Fracture",
-      "power": 1.05,
+      "power": 1.15,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "damage_down",
         "target": "enemy",
-        "value": 0.15,
+        "value": 0.2,
         "duration": 2
       },
       "description": "Deals damage and reduces the target's direct damage by 15% for 2 turns.",
       "special": true,
-      "descriptionVi": "Gây sát thương và giảm 15% sát thương trực tiếp của mục tiêu trong 2 lượt.",
+      "descriptionVi": "Gây 115% tấn công và giảm 20% sát thương mục tiêu gây ra trong 2 lượt.",
       "glyph": "↘"
     },
     {
       "id": "ice-special-3",
       "element": "ice",
       "name": "Glacial Prison",
-      "power": 0.7,
+      "power": 0.9,
       "bonus": 0,
       "cooldown": 5,
       "effect": {
@@ -271,14 +272,14 @@
       },
       "description": "Deals damage and prevents the opponent from switching for 1 turn; then grants 3 turns of switch-lock immunity.",
       "special": true,
-      "descriptionVi": "Gây sát thương và khóa đổi rồng của đối thủ trong 1 lượt; sau đó đối thủ miễn nhiễm khóa đổi rồng trong 3 lượt.",
+      "descriptionVi": "Gây 90% tấn công và khóa đổi rồng của mục tiêu trong 1 lượt.",
       "glyph": "⛓"
     },
     {
       "id": "thunder-special-1",
       "element": "thunder",
       "name": "Chain Thunder",
-      "power": 0.65,
+      "power": 0.7,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
@@ -290,32 +291,32 @@
       },
       "description": "Two hits of 65% attack each; each hit has a 10% miss chance.",
       "special": true,
-      "descriptionVi": "Đánh 2 nhịp, mỗi nhịp bằng 65% tấn công và có 10% xác suất hụt.",
+      "descriptionVi": "Đánh 2 nhịp, mỗi nhịp bằng 70% tấn công; mỗi nhịp có 10% xác suất hụt.",
       "glyph": "⚔"
     },
     {
       "id": "thunder-special-2",
       "element": "thunder",
       "name": "Overcharge Pulse",
-      "power": 0,
+      "power": 0.8,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "next_attack_up",
         "target": "self",
-        "value": 0.25,
+        "value": 0.4,
         "duration": 2
       },
       "description": "Increases this dragon's next direct attack by 25%; consumed after that attack.",
       "special": true,
-      "descriptionVi": "Tăng 25% sát thương cho đòn trực tiếp kế tiếp của bản thân; hiệu ứng hết sau đòn đó.",
+      "descriptionVi": "Gây 80% tấn công và tăng 40% sát thương đòn trực tiếp kế tiếp; hiệu ứng mất sau khi dùng.",
       "glyph": "⚡"
     },
     {
       "id": "thunder-special-3",
       "element": "thunder",
       "name": "Storm Arc",
-      "power": 0.5,
+      "power": 0.65,
       "bonus": 0,
       "cooldown": 5,
       "effect": {
@@ -326,7 +327,7 @@
       },
       "description": "Deals 50% attack to each opposing dragon, including reserves.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 50% tấn công lên từng rồng địch, kể cả dự bị.",
+      "descriptionVi": "Gây 65% tấn công lên từng rồng địch, kể cả rồng dự bị.",
       "glyph": "✺"
     },
     {
@@ -353,92 +354,92 @@
       "name": "Verdant Revival",
       "power": 0,
       "bonus": 0,
-      "cooldown": 5,
+      "cooldown": 4,
       "effect": {
         "kind": "regen_team",
         "target": "ally_team",
-        "value": 0.07,
+        "value": 0.09,
         "duration": 2
       },
       "description": "Heals each ally, including reserves, for 7% of its own maximum HP at the end of each of the next 2 turns.",
       "special": true,
-      "descriptionVi": "Cho từng đồng đội còn sống, kể cả dự bị, hồi 7% HP tối đa của chính rồng đó ở cuối mỗi lượt trong 2 lượt. HP đầy không nhận thêm và không chuyển phần dư.",
+      "descriptionVi": "Hồi 9% HP tối đa cho mỗi đồng minh còn sống vào cuối 2 lượt; không hồi sinh.",
       "glyph": "❀"
     },
     {
       "id": "nature-special-3",
       "element": "nature",
       "name": "Spore Bloom",
-      "power": 0.4,
+      "power": 0.6,
       "bonus": 0,
       "cooldown": 5,
       "effect": {
         "kind": "spore_bloom",
         "target": "enemy_team",
-        "value": 0.015,
+        "value": 0.02,
         "duration": 2
       },
       "description": "Deals 40% attack to each opponent. If the active target is poisoned, poisons the other opponents for 1.5% of their own maximum HP for 2 turns.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 40% tấn công lên từng rồng địch. Nếu mục tiêu đang đứng sân bị độc, các rồng địch còn lại cũng bị độc 1,5% HP tối đa trong 2 lượt.",
+      "descriptionVi": "Gây 60% tấn công; nếu mục tiêu đã nhiễm độc, lây độc 2% HP tối đa mỗi lượt trong 2 lượt sang rồng địch.",
       "glyph": "✿"
     },
     {
       "id": "dark-special-1",
       "element": "dark",
       "name": "Umbral Curse",
-      "power": 0,
+      "power": 0.65,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "curse",
         "target": "enemy",
-        "value": 0.025,
-        "healingReduction": 0.3,
+        "value": 0.03,
+        "healingReduction": 0.4,
         "duration": 2
       },
       "description": "Curses the active target for 2 turns: it loses 2.5% maximum HP each turn and receives 30% less healing; HP loss ignores armor.",
       "special": true,
-      "descriptionVi": "Nguyền mục tiêu đứng sân trong 2 lượt: mất 2,5% HP tối đa mỗi lượt và nhận hồi máu ít hơn 30%; mất HP bỏ qua giáp.",
+      "descriptionVi": "Gây 65% tấn công và nguyền mục tiêu mất 3% HP tối đa mỗi lượt trong 2 lượt, đồng thời giảm 40% hiệu quả hồi máu.",
       "glyph": "☾"
     },
     {
       "id": "dark-special-2",
       "element": "dark",
       "name": "Dread Shroud",
-      "power": 0.95,
+      "power": 1.05,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "curse_strike",
         "target": "enemy",
-        "value": 0.15,
+        "value": 0.2,
         "bonusDamage": 0.2,
         "duration": 2
       },
       "description": "Deals 95% attack and reduces target damage by 15% for 2 turns; against a cursed target deals 115% attack.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 95% tấn công và giảm 15% sát thương của mục tiêu trong 2 lượt; tăng thành 115% tấn công nếu mục tiêu bị nguyền.",
+      "descriptionVi": "Gây 105% tấn công, thêm 20% nếu mục tiêu đang bị nguyền; giảm 20% sát thương mục tiêu gây ra trong 2 lượt.",
       "glyph": "◐"
     },
     {
       "id": "dark-special-3",
       "element": "dark",
       "name": "Shadow Feast",
-      "power": 1,
+      "power": 1.1,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "lifesteal_cost",
         "target": "self",
-        "value": 0.3,
-        "cost": 0.08,
-        "healCap": 0.1,
+        "value": 0.35,
+        "cost": 0.05,
+        "healCap": 0.12,
         "duration": 0
       },
       "description": "Sacrifices 8% current HP, deals damage, then heals this dragon for 30% of actual damage dealt, capped at 10% of its maximum HP.",
       "special": true,
-      "descriptionVi": "Đổi 8% HP hiện tại để tấn công, sau đó hồi cho bản thân 30% sát thương thực gây ra, tối đa 10% HP tối đa.",
+      "descriptionVi": "Mất 5% HP hiện tại, gây 110% tấn công và hồi 35% sát thương gây ra, tối đa 12% HP tối đa.",
       "glyph": "♥"
     },
     {
@@ -449,14 +450,15 @@
       "bonus": 0,
       "cooldown": 4,
       "effect": {
-        "kind": "heal_lowest",
+        "kind": "cleanse_heal_lowest",
         "target": "ally",
         "value": 0.22,
-        "duration": 0
+        "duration": 0,
+        "remove": 1
       },
       "description": "Heals the living ally with the lowest HP ratio by 22% of that ally's maximum HP.",
       "special": true,
-      "descriptionVi": "Hồi 22% HP tối đa cho đồng đội còn sống có tỷ lệ HP thấp nhất.",
+      "descriptionVi": "Gỡ 1 trạng thái bất lợi và hồi 22% HP tối đa cho đồng minh còn sống có nhiều trạng thái bất lợi nhất.",
       "glyph": "✚"
     },
     {
@@ -469,13 +471,13 @@
       "effect": {
         "kind": "cleanse_team_heal",
         "target": "ally_team",
-        "value": 0.05,
+        "value": 0.08,
         "remove": 1,
         "duration": 0
       },
       "description": "Removes 1 harmful effect from each ally and heals each for 5% of its own maximum HP.",
       "special": true,
-      "descriptionVi": "Gỡ 1 trạng thái bất lợi và hồi 5% HP tối đa cho từng đồng đội còn sống; HP đầy không nhận thêm và không chuyển phần dư.",
+      "descriptionVi": "Gỡ 1 trạng thái bất lợi và hồi 8% HP tối đa cho mỗi đồng minh còn sống, kể cả dự bị.",
       "glyph": "✧"
     },
     {
@@ -488,12 +490,12 @@
       "effect": {
         "kind": "revive_first",
         "target": "ally_dead",
-        "value": 0.12,
+        "value": 0.2,
         "duration": 0
       },
       "description": "Revives the first defeated ally in team order at 12% of its own maximum HP; once per team per battle.",
       "special": true,
-      "descriptionVi": "Hồi sinh đồng đội đầu tiên đã gục theo thứ tự đội hình với 12% HP tối đa. Chỉ dùng khi có ít nhất một đồng đội gục; mỗi đội chỉ hồi sinh một lần mỗi trận.",
+      "descriptionVi": "Hồi sinh đồng minh gục đầu tiên với 20% HP tối đa; mỗi đội chỉ dùng được 1 lần mỗi trận.",
       "glyph": "✦"
     },
     {
@@ -506,30 +508,30 @@
       "effect": {
         "kind": "armor_up",
         "target": "self",
-        "value": 0.3,
+        "value": 0.4,
         "duration": 2
       },
       "description": "Increases this dragon's armor by 30% for 2 turns.",
       "special": true,
-      "descriptionVi": "Tăng 30% giáp của bản thân trong 2 lượt.",
+      "descriptionVi": "Tăng 40% giáp cho bản thân trong 2 lượt.",
       "glyph": "⬟"
     },
     {
       "id": "metal-special-2",
       "element": "metal",
       "name": "Sundering Blades",
-      "power": 1.05,
+      "power": 1.15,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "armor_down",
         "target": "enemy",
-        "value": 0.18,
+        "value": 0.22,
         "duration": 2
       },
       "description": "Deals damage and reduces the target's armor by 18% for 2 turns.",
       "special": true,
-      "descriptionVi": "Gây sát thương và giảm 18% giáp của mục tiêu trong 2 lượt.",
+      "descriptionVi": "Gây 115% tấn công và giảm 22% giáp mục tiêu trong 2 lượt.",
       "glyph": "⬡"
     },
     {
@@ -542,31 +544,31 @@
       "effect": {
         "kind": "reflect",
         "target": "self",
-        "value": 0.18,
-        "cap": 0.12,
+        "value": 0.25,
+        "cap": 0.15,
         "duration": 2
       },
       "description": "Reflects 18% of direct damage actually received for 2 turns, capped at 12% of this dragon's maximum HP per turn; does not reflect damage over time.",
       "special": true,
-      "descriptionVi": "Phản lại 18% sát thương trực tiếp thực nhận trong 2 lượt, tối đa 12% HP tối đa của bản thân mỗi lượt; không phản sát thương theo thời gian.",
+      "descriptionVi": "Phản lại 25% sát thương trực tiếp nhận vào trong 2 lượt; tối đa 15% HP tối đa mỗi lần.",
       "glyph": "↶"
     },
     {
       "id": "war-special-1",
       "element": "war",
       "name": "Legion Rally",
-      "power": 0,
+      "power": 0.8,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "damage_up",
         "target": "self",
-        "value": 0.25,
+        "value": 0.3,
         "duration": 2
       },
       "description": "Increases this dragon's direct damage by 25% for its next 2 attacks.",
       "special": true,
-      "descriptionVi": "Tăng 25% sát thương trực tiếp của bản thân cho 2 đòn đánh tiếp theo.",
+      "descriptionVi": "Gây 80% tấn công và tăng 30% sát thương của bản thân trong 2 lượt.",
       "glyph": "⬆"
     },
     {
@@ -592,20 +594,20 @@
       "id": "war-special-3",
       "element": "war",
       "name": "Last Stand",
-      "power": 0.9,
+      "power": 1.0,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "last_stand",
         "target": "self",
         "lowHp": 0.3,
-        "lowPower": 1.25,
-        "cost": 0.05,
+        "lowPower": 1.4,
+        "cost": 0.03,
         "duration": 0
       },
       "description": "Deals 90% attack, or 125% while below 30% HP, then loses 5% of its maximum HP; cannot knock itself out.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 90% tấn công, hoặc 125% khi bản thân dưới 30% HP; sau đó mất 5% HP tối đa nhưng không thể tự hạ gục.",
+      "descriptionVi": "Mất 3% HP tối đa và gây 100% tấn công; khi HP bản thân dưới 30%, gây 140% tấn công.",
       "glyph": "⚑"
     },
     {
@@ -618,13 +620,13 @@
       "effect": {
         "kind": "cleanse_heal_self",
         "target": "self",
-        "value": 0.12,
+        "value": 0.18,
         "remove": 2,
         "duration": 0
       },
       "description": "Removes up to 2 harmful effects from this dragon and heals it for 12% of its maximum HP.",
       "special": true,
-      "descriptionVi": "Gỡ tối đa 2 trạng thái bất lợi trên bản thân và hồi 12% HP tối đa.",
+      "descriptionVi": "Gỡ tối đa 2 trạng thái bất lợi và hồi 18% HP tối đa cho bản thân.",
       "glyph": "✧"
     },
     {
@@ -637,19 +639,19 @@
       "effect": {
         "kind": "vitality",
         "target": "self",
-        "value": 0.15,
+        "value": 0.2,
         "duration": 3
       },
       "description": "Increases this dragon's maximum and current HP by 15% for 3 turns; current HP is clamped when the effect ends.",
       "special": true,
-      "descriptionVi": "Tăng 15% HP tối đa và HP hiện tại của bản thân trong 3 lượt; HP hiện tại được giới hạn lại khi hiệu ứng hết.",
+      "descriptionVi": "Tăng HP tối đa của bản thân thêm 20% trong 3 lượt.",
       "glyph": "♥"
     },
     {
       "id": "pure-special-3",
       "element": "pure",
       "name": "Prism Break",
-      "power": 1,
+      "power": 1.15,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
@@ -660,14 +662,14 @@
       },
       "description": "Deals damage and removes one armor-up or damage-reduction buff from the active enemy.",
       "special": true,
-      "descriptionVi": "Gây sát thương và gỡ một hiệu ứng tăng giáp hoặc giảm sát thương trên rồng địch đang đứng sân.",
+      "descriptionVi": "Gây 115% tấn công và xóa một hiệu ứng tăng giáp hoặc giảm sát thương của mục tiêu.",
       "glyph": "✹"
     },
     {
       "id": "legend-special-1",
       "element": "legend",
       "name": "Celestial Echo",
-      "power": 0.55,
+      "power": 0.65,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
@@ -678,7 +680,7 @@
       },
       "description": "Deals 55% attack to each opposing dragon, including reserves.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 55% tấn công lên từng rồng địch, kể cả dự bị.",
+      "descriptionVi": "Gây 65% tấn công lên từng rồng địch, kể cả dự bị.",
       "glyph": "✺"
     },
     {
@@ -687,54 +689,54 @@
       "name": "Mimic Constellation",
       "power": 0,
       "bonus": 0,
-      "cooldown": 5,
+      "cooldown": 4,
       "effect": {
         "kind": "copy_last",
         "target": "enemy",
-        "value": 0.65,
+        "value": 0.8,
         "duration": 0
       },
       "description": "Copies the last eligible skill used by the active opponent and uses it at 65% effect; cannot copy resurrection or copying skills.",
       "special": true,
-      "descriptionVi": "Sao chép chiêu hợp lệ gần nhất của đối thủ và dùng với 65% hiệu lực; không sao chép hồi sinh hoặc chiêu sao chép.",
+      "descriptionVi": "Sao chép chiêu trực tiếp hợp lệ gần nhất của rồng địch đang hoạt động với 80% hiệu lực.",
       "glyph": "✦"
     },
     {
       "id": "legend-special-3",
       "element": "legend",
       "name": "Fatebreaker",
-      "power": 1.05,
+      "power": 1.1,
       "bonus": 0,
       "cooldown": 3,
       "effect": {
         "kind": "repeat_punish",
         "target": "enemy",
-        "value": 0.25,
+        "value": 0.3,
         "duration": 0
       },
       "description": "Deals 105% attack, increased to 130% if the target has used the same skill at least twice this battle.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 105% tấn công, tăng lên 130% nếu mục tiêu đã dùng cùng một chiêu ít nhất 2 lần trong trận.",
+      "descriptionVi": "Gây 110% tấn công; nếu mục tiêu đã dùng cùng chiêu ít nhất 2 lần trong trận, sát thương chiêu tăng thêm 30%.",
       "glyph": "⟳"
     },
     {
       "id": "primal-special-1",
       "element": "primal",
       "name": "Ancient Rampage",
-      "power": 0.6,
+      "power": 0.65,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "low_hp_power",
         "target": "enemy",
         "threshold": 0.4,
-        "lowPower": 0.7,
+        "lowPower": 0.75,
         "hits": 2,
         "duration": 0
       },
       "description": "Hits twice for 60% attack each, increased to 70% each while this dragon is below 40% HP.",
       "special": true,
-      "descriptionVi": "Đánh 2 nhịp, mỗi nhịp bằng 60% tấn công; tăng lên 70% mỗi nhịp khi bản thân dưới 40% HP.",
+      "descriptionVi": "Đánh 2 nhịp, mỗi nhịp gây 65% tấn công; khi HP bản thân dưới 40%, mỗi nhịp gây 75%.",
       "glyph": "⚔"
     },
     {
@@ -747,13 +749,13 @@
       "effect": {
         "kind": "carapace",
         "target": "self",
-        "value": 0.35,
-        "counterBonus": 0.15,
+        "value": 0.4,
+        "counterBonus": 0.2,
         "duration": 2
       },
       "description": "Increases this dragon's armor by 35% for 2 turns; after it takes direct damage, its next attack gains 15% damage.",
       "special": true,
-      "descriptionVi": "Tăng 35% giáp của bản thân trong 2 lượt; sau khi chịu sát thương trực tiếp, đòn đánh tiếp theo tăng 15% sát thương.",
+      "descriptionVi": "Tăng 40% giáp trong 2 lượt; sau khi nhận sát thương trực tiếp, đòn kế tiếp được cộng 20% sát thương.",
       "glyph": "◆"
     },
     {
@@ -779,18 +781,18 @@
       "id": "time-special-1",
       "element": "time",
       "name": "Moment Lock",
-      "power": 0.85,
+      "power": 0.95,
       "bonus": 0,
       "cooldown": 4,
       "effect": {
         "kind": "freeze_chance",
         "target": "enemy",
-        "value": 0.25,
+        "value": 0.3,
         "duration": 1
       },
       "description": "Deals 85% attack and has a 25% chance to skip the target's next action.",
       "special": true,
-      "descriptionVi": "Gây sát thương bằng 85% tấn công và có 25% xác suất khiến mục tiêu bỏ lượt hành động kế tiếp.",
+      "descriptionVi": "Gây 95% tấn công và có 30% xác suất khiến mục tiêu bỏ lượt kế tiếp.",
       "glyph": "❄"
     },
     {
@@ -803,13 +805,14 @@
       "effect": {
         "kind": "rewind_ally",
         "target": "ally",
-        "value": 0.5,
-        "cap": 0.22,
-        "duration": 0
+        "value": 0.65,
+        "cap": 0.28,
+        "duration": 0,
+        "fallbackValue": 0.08
       },
       "description": "Restores 50% of the lowest-HP ally's HP lost since its previous turn, capped at 22% of that ally's maximum HP; cannot revive.",
       "special": true,
-      "descriptionVi": "Hồi 50% lượng HP đồng đội có tỷ lệ HP thấp nhất đã mất kể từ lượt trước, tối đa 22% HP tối đa của rồng đó; không hồi sinh.",
+      "descriptionVi": "Hồi 65% HP đã mất kể từ lượt trước cho đồng minh có HP thấp nhất, tối đa 28% HP tối đa; nếu chưa mất HP, hồi 8%; không hồi sinh.",
       "glyph": "◷"
     },
     {
@@ -818,17 +821,17 @@
       "name": "Temporal Echo",
       "power": 0,
       "bonus": 0,
-      "cooldown": 5,
+      "cooldown": 4,
       "effect": {
         "kind": "echo_last",
         "target": "self",
-        "value": 0.6,
-        "cap": 1.2,
+        "value": 0.9,
+        "cap": 1.5,
         "duration": 0
       },
       "description": "Repeats 60% of this dragon's last direct-damage skill, capped at 120% of its attack; excludes healing, resurrection, control and area effects.",
       "special": true,
-      "descriptionVi": "Lặp lại 60% sát thương trực tiếp gần nhất của bản thân, tối đa 120% tấn công; không lặp hồi máu, hồi sinh, khống chế hoặc đánh diện rộng. Cần từng gây sát thương trực tiếp trước đó.",
+      "descriptionVi": "Lặp lại 90% sát thương trực tiếp gần nhất của bản thân, tối đa 150% tấn công.",
       "glyph": "⟲"
     }
   ]

@@ -95,8 +95,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "fire-1",
-      "water-1"
+      "fire-2",
+      "water-2"
     ]
   },
   {
@@ -195,7 +195,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "fire-1",
+      "fire-2",
       "earth-1"
     ]
   },
@@ -295,7 +295,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "fire-1",
+      "fire-2",
       "wind-1"
     ]
   },
@@ -495,8 +495,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "fire-1",
-      "thunder-1"
+      "fire-2",
+      "thunder-2"
     ]
   },
   {
@@ -595,8 +595,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "fire-1",
-      "nature-1"
+      "fire-2",
+      "nature-2"
     ]
   },
   {
@@ -795,8 +795,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "water-1",
-      "earth-1"
+      "water-2",
+      "earth-2"
     ]
   },
   {
@@ -895,7 +895,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "water-1",
+      "water-2",
       "wind-1"
     ]
   },
@@ -996,7 +996,7 @@
       "claw",
       "slam",
       "water-1",
-      "ice-1"
+      "ice-2"
     ]
   },
   {
@@ -1195,7 +1195,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "water-1",
+      "water-2",
       "nature-1"
     ]
   },
@@ -1295,7 +1295,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "earth-1",
+      "earth-2",
       "fire-1"
     ]
   },
@@ -1395,7 +1395,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "earth-1",
+      "earth-2",
       "water-1"
     ]
   },
@@ -1495,8 +1495,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "earth-1",
-      "wind-1"
+      "earth-2",
+      "wind-2"
     ]
   },
   {
@@ -1596,7 +1596,7 @@
       "claw",
       "slam",
       "earth-1",
-      "ice-1"
+      "ice-2"
     ]
   },
   {
@@ -1695,8 +1695,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "earth-1",
-      "thunder-1"
+      "earth-2",
+      "thunder-2"
     ]
   },
   {
@@ -1795,8 +1795,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "earth-1",
-      "nature-1"
+      "earth-2",
+      "nature-2"
     ]
   },
   {
@@ -2295,8 +2295,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "wind-1",
-      "thunder-1"
+      "wind-2",
+      "thunder-2"
     ]
   },
   {
@@ -2395,8 +2395,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "wind-1",
-      "nature-1"
+      "wind-2",
+      "nature-2"
     ]
   },
   {
@@ -2695,7 +2695,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "ice-1",
+      "ice-2",
       "earth-1"
     ]
   },
@@ -2995,7 +2995,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "ice-1",
+      "ice-2",
       "nature-1"
     ]
   },
@@ -3095,7 +3095,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "thunder-1",
+      "thunder-2",
       "fire-1"
     ]
   },
@@ -3295,7 +3295,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "thunder-1",
+      "thunder-2",
       "earth-1"
     ]
   },
@@ -3395,7 +3395,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "thunder-1",
+      "thunder-2",
       "wind-1"
     ]
   },
@@ -3496,7 +3496,7 @@
       "claw",
       "slam",
       "thunder-1",
-      "ice-1"
+      "ice-2"
     ]
   },
   {
@@ -3595,8 +3595,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "thunder-1",
-      "nature-1"
+      "thunder-2",
+      "nature-2"
     ]
   },
   {
@@ -3895,8 +3895,8 @@
     "skillIds": [
       "claw",
       "slam",
-      "nature-1",
-      "earth-1"
+      "nature-2",
+      "earth-2"
     ]
   },
   {
@@ -3996,7 +3996,7 @@
       "claw",
       "slam",
       "nature-1",
-      "wind-1"
+      "wind-2"
     ]
   },
   {
@@ -4095,7 +4095,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "nature-1",
+      "nature-2",
       "ice-1"
     ]
   },
@@ -4195,7 +4195,7 @@
     "skillIds": [
       "claw",
       "slam",
-      "nature-1",
+      "nature-2",
       "thunder-1"
     ]
   }

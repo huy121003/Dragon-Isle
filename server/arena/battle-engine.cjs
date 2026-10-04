@@ -48,9 +48,10 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
     if(skill.effect?.kind==='copy_last'){
       const last=skillRegistry.get(target.lastSkill);
       if(last&&!['copy_last','revive_first'].includes(last.effect?.kind))
-        cast={...last,power:last.power*.65,bonus:(last.bonus||0)*.65,
+        cast={...last,power:last.power*(skill.effect.value||0.65),
+          bonus:(last.bonus||0)*(skill.effect.value||0.65),
           special:true,effect:last.effect?{...last.effect,
-            value:(last.effect.value||0)*.65}:null};
+            value:(last.effect.value||0)*(skill.effect.value||0.65)}:null};
       else cast={...skill,power:1,effect:null};
     }
     const effect=cast.effect||{},kind=effect.kind;
@@ -194,7 +195,12 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         battle.revives={...battle.revives,[side]:true};support(f,0);
       }else if(kind==='rewind_ally'){
         const f=fx.lowest(allies);
-        if(f)support(f,fx.heal(f,Math.min(f.maxHp*effect.cap,(f.damageLastTurn||0)*effect.value)));
+        if(f){
+          const lost=f.damageLastTurn||0;
+          const amount=lost>0?Math.min(f.maxHp*effect.cap,lost*effect.value):
+            f.maxHp*(effect.fallbackValue||0);
+          support(f,fx.heal(f,amount));
+        }
       }else if(kind==='regen_team'){
         for(const f of fx.living(allies)){fx.addStatus(f,{kind:'regen',value:effect.value,
           duration:effect.duration},skill.element);support(f);}

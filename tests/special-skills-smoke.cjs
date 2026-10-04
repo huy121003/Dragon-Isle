@@ -61,7 +61,7 @@ for(const skill of special){
   dead.hp=0;dead.statuses=[];
   const revive=game.skills.elemental.light.find(s=>s.effect?.kind==='revive_first');
   engine.strike(battle,'attack',revive,3);
-  assert.equal(dead.hp,Math.round(dead.maxHp*.12));
+  assert.equal(dead.hp,Math.round(dead.maxHp*.20));
   assert.throws(()=>engine.strike(battle,'attack',revive,3),/revive/);
 }
 {
@@ -115,7 +115,7 @@ for(const skill of special){
   target.lastSkill='fire-special-1';
   const mimic=game.skills.elemental.legend.find(s=>s.effect?.kind==='copy_last');
   engine.strike(battle,'attack',mimic,3);
-  assert.equal(fx.status(target,'burn')?.value,.04*.65,'Mimic scales copied burn');
+  assert.equal(fx.status(target,'burn')?.value,.04*.8,'Mimic scales copied burn at its listed 80% strength');
 }
 {
   const actor=fighter('metal',1),target=fighter('fire',2),battle=setup([actor],[target]);

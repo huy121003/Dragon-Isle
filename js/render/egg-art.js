@@ -4,11 +4,12 @@
 function eggStyle(egg){
   const species=typeof egg==="string"?egg:(egg&&egg.species)||"unknown";
   const double=DATA.species[species]?.rarity==="transcendent";
+  const apex=DATA.species[species]?.rarity==='apex';
   let hash=2166136261;
   for(let i=0;i<species.length;i++)hash=Math.imul(hash^species.charCodeAt(i),16777619)>>>0;
   hash^=hash>>>16;hash=Math.imul(hash,2246822507)>>>0;
   const hue=hash%360,other=(hue+62+(hash>>>12)%140)%360;
-  return {seed:hash,pattern:(hash>>>8)%8,contour:double?3:(hash>>>20)%3,double,
+  return {seed:hash,pattern:(hash>>>8)%8,contour:(double||apex)?3:(hash>>>20)%3,double,apex,
     base:"hsl("+hue+" 55% 74%)",shade:"hsl("+hue+" 39% 44%)",
     shine:"hsl("+hue+" 78% 94%)",mark:"hsl("+other+" 68% 48%)"};
 }
@@ -16,7 +17,7 @@ function eggStyle(egg){
 function eggShellHtml(egg,ready){
   const style=eggStyle(egg);
   return '<span class="mystery-egg pattern-'+style.pattern+' contour-'+style.contour+
-    (style.double?' double-egg':'')+(ready?' ready':'')+'" aria-label="Mystery egg" style="--shell:'+style.base+
+    (style.double?' double-egg':'')+(style.apex?' apex-egg':'')+(ready?' ready':'')+'" aria-label="Mystery egg" style="--shell:'+style.base+
     ';--shell-shade:'+style.shade+';--shell-shine:'+style.shine+
     ';--shell-mark:'+style.mark+'"><i></i></span>';
 }
@@ -73,6 +74,11 @@ function drawEgg(context,egg,x,y,time,scale){
       context.lineTo(point[0]+3,point[1]);context.lineTo(point[0],point[1]+3);
       context.lineTo(point[0]-3,point[1]);context.closePath();context.fill();
     }break;
+  }
+  if(style.apex){
+    context.strokeStyle='#fff1a8';context.lineWidth=2.4;context.globalAlpha=.95;
+    context.beginPath();context.ellipse(0,0,8,14,.2,0,Math.PI*2);context.stroke();
+    context.fillStyle='#5ce1ff';for(const side of [-1,1]){context.beginPath();context.arc(side*7,-5,2,0,Math.PI*2);context.fill();}
   }
   if(style.double){
     context.strokeStyle=style.shine;context.lineWidth=2.4;

@@ -64,6 +64,7 @@
   function offspringOptions({fatherSpecies,motherSpecies,fatherLevel,motherLevel,speciesById,
     elementOrder,fourIds,doubleIds,quads,premium}){
     if(!fatherSpecies||!motherSpecies)return [];
+    if(fatherSpecies.rarity==='apex'||motherSpecies.rarity==='apex')return [];
     const pool=[...new Set(fatherSpecies.elements.concat(motherSpecies.elements))];
     const canInherit=parts=>parts.some(e=>fatherSpecies.elements.includes(e))&&
       parts.some(e=>motherSpecies.elements.includes(e));
@@ -89,7 +90,7 @@
 
     groups[3]=pool.length<4?[]:fourIds.filter(id=>{
       const parts=speciesById[id].elements;
-      return parts.every(e=>pool.includes(e))&&canInherit(parts)&&
+      return speciesById[id].rarity!=='apex'&&parts.every(e=>pool.includes(e))&&canInherit(parts)&&
         quads[parts.slice().sort().join("|")]===id;
     });
 
@@ -139,3 +140,4 @@
 
   return {rareTierChances,commonTierChances,candidateBias,offspringOptions,seconds};
 });
+

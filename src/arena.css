@@ -370,7 +370,11 @@
   display:flex;align-items:stretch;gap:2px;border-radius:9px;text-align:left;
   background:#172e3fe8;color:#fff;border:1px solid #b7dfda8c;
 }
-.arena-stage-controls .battle-skill-grid .battle-skill-card.special{border-color:#f2cc70;box-shadow:inset 0 0 0 1px #f2cc7055}
+.arena-stage-controls .battle-skill-grid .battle-skill-card.special{border-color:#f2cc70;outline:1px solid #9b6bd0;outline-offset:1px;box-shadow:inset 0 0 0 1px #f2cc7055,0 0 9px #f2cc7044}
+.arena-stage-controls .battle-skill-grid .battle-skill-card.apex{border-color:#fff1a8;outline:2px solid #5ce1ff;outline-offset:1px;box-shadow:inset 0 0 0 1px #fff7c8,0 0 12px #ffe87388}
+.arena-skill-popover-title{display:block;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arena-skill-popover-content{max-width:260px;display:grid;gap:6px;line-height:1.35}
+.arena-skill-popover-content>div:nth-child(2){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
 .arena-stage-controls .battle-skill-grid .battle-skill-label{height:100%;display:flex;align-items:center;gap:5px;white-space:nowrap;min-width:0}
 .arena-stage-controls .battle-skill-icon-wrap{position:relative;flex:none;display:block;width:25px;height:26px}
 .arena-stage-controls .battle-skill-grid .battle-skill-icon-wrap .skill-hex{width:25px;height:26px}

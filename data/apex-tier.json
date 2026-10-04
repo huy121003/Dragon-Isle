@@ -1,0 +1,489 @@
+{
+  "version": 1,
+  "rarity": "apex",
+  "rarityConfig": {
+    "id": "apex",
+    "ten": "Apex",
+    "vien": "#f5d76e",
+    "hao": "#fff1a8",
+    "heSoChiSo": 4.8,
+    "vangGio": 4000,
+    "apGiay": 86400,
+    "giaTrung": null,
+    "banGia": 100000
+  },
+  "dragons": [
+    {
+      "speciesId": "apex-fire",
+      "primary": "fire",
+      "name": "Forgeborn Dragon",
+      "partners": [
+        "metal",
+        "war",
+        "primal"
+      ],
+      "skillId": "apex-fire-signature"
+    },
+    {
+      "speciesId": "apex-metal",
+      "primary": "metal",
+      "name": "Ironclad Dragon",
+      "partners": [
+        "war",
+        "primal",
+        "earth"
+      ],
+      "skillId": "apex-metal-signature"
+    },
+    {
+      "speciesId": "apex-war",
+      "primary": "war",
+      "name": "Primal Siege Dragon",
+      "partners": [
+        "primal",
+        "earth",
+        "nature"
+      ],
+      "skillId": "apex-war-signature"
+    },
+    {
+      "speciesId": "apex-primal",
+      "primary": "primal",
+      "name": "Genesis Earth Dragon",
+      "partners": [
+        "earth",
+        "nature",
+        "pure"
+      ],
+      "skillId": "apex-primal-signature"
+    },
+    {
+      "speciesId": "apex-earth",
+      "primary": "earth",
+      "name": "Worldroot Dragon",
+      "partners": [
+        "nature",
+        "pure",
+        "light"
+      ],
+      "skillId": "apex-earth-signature"
+    },
+    {
+      "speciesId": "apex-nature",
+      "primary": "nature",
+      "name": "Verdant Luminary Dragon",
+      "partners": [
+        "pure",
+        "light",
+        "legend"
+      ],
+      "skillId": "apex-nature-signature"
+    },
+    {
+      "speciesId": "apex-pure",
+      "primary": "pure",
+      "name": "Crystal Rewinder Dragon",
+      "partners": [
+        "light",
+        "legend",
+        "time"
+      ],
+      "skillId": "apex-pure-signature"
+    },
+    {
+      "speciesId": "apex-light",
+      "primary": "light",
+      "name": "Eclipse Arbiter Dragon",
+      "partners": [
+        "legend",
+        "time",
+        "dark"
+      ],
+      "skillId": "apex-light-signature"
+    },
+    {
+      "speciesId": "apex-legend",
+      "primary": "legend",
+      "name": "Tidal Oracle Dragon",
+      "partners": [
+        "time",
+        "dark",
+        "water"
+      ],
+      "skillId": "apex-legend-signature"
+    },
+    {
+      "speciesId": "apex-time",
+      "primary": "time",
+      "name": "Umbral Chronos Dragon",
+      "partners": [
+        "dark",
+        "water",
+        "ice"
+      ],
+      "skillId": "apex-time-signature"
+    },
+    {
+      "speciesId": "apex-dark",
+      "primary": "dark",
+      "name": "Abyssal Frostmaw Dragon",
+      "partners": [
+        "water",
+        "ice",
+        "wind"
+      ],
+      "skillId": "apex-dark-signature"
+    },
+    {
+      "speciesId": "apex-water",
+      "primary": "water",
+      "name": "Stormtide Leviathan Dragon",
+      "partners": [
+        "ice",
+        "wind",
+        "thunder"
+      ],
+      "skillId": "apex-water-signature"
+    },
+    {
+      "speciesId": "apex-ice",
+      "primary": "ice",
+      "name": "Aurora Wyrm Dragon",
+      "partners": [
+        "wind",
+        "thunder",
+        "fire"
+      ],
+      "skillId": "apex-ice-signature"
+    },
+    {
+      "speciesId": "apex-wind",
+      "primary": "wind",
+      "name": "Thunderforge Dragon",
+      "partners": [
+        "thunder",
+        "fire",
+        "metal"
+      ],
+      "skillId": "apex-wind-signature"
+    },
+    {
+      "speciesId": "apex-thunder",
+      "primary": "thunder",
+      "name": "Stormfire Colossus Dragon",
+      "partners": [
+        "fire",
+        "metal",
+        "war"
+      ],
+      "skillId": "apex-thunder-signature"
+    }
+  ],
+  "skills": [
+    {
+      "id": "apex-fire-signature",
+      "element": "fire",
+      "name": "Forgefire Ascension",
+      "power": 1.15,
+      "bonus": 0,
+      "cooldown": 3,
+      "effect": {
+        "kind": "burn",
+        "target": "enemy",
+        "value": 0.04,
+        "duration": 3,
+        "bonusIfBurn": 0.2
+      },
+      "description": "Gây 115% ATK; nếu mục tiêu đang cháy, sát thương tăng thêm 20%.",
+      "special": true,
+      "descriptionVi": "Gây 115% ATK; nếu mục tiêu đang cháy, sát thương tăng thêm 20%.",
+      "glyph": "✹",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-metal-signature",
+      "element": "metal",
+      "name": "Mountainbreaker Strike",
+      "power": 1.1,
+      "bonus": 0,
+      "cooldown": 3,
+      "effect": {
+        "kind": "armor_down",
+        "target": "enemy",
+        "value": 0.2,
+        "duration": 2,
+        "secondary": {
+          "kind": "switch_trap",
+          "value": 0.05,
+          "duration": 2
+        }
+      },
+      "description": "Gây 110% ATK và giảm 20% giáp trong 2 lượt. Nếu mục tiêu đổi rồng ở lượt kế tiếp, nó mất thêm 5% HP tối đa.",
+      "special": true,
+      "descriptionVi": "Gây 110% ATK và giảm 20% giáp trong 2 lượt. Nếu mục tiêu đổi rồng ở lượt kế tiếp, nó mất thêm 5% HP tối đa.",
+      "glyph": "⬟",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-war-signature",
+      "element": "war",
+      "name": "Warbeast Stampede",
+      "power": 0.7,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "multi",
+        "target": "enemy",
+        "hits": 2,
+        "missChance": 0,
+        "secondary": {
+          "kind": "lifesteal",
+          "value": 0.05,
+          "threshold": 0.5
+        }
+      },
+      "description": "Đánh 2 nhịp, mỗi nhịp 70% ATK. Khi HP bản thân dưới 50%, hồi 5% sát thương đã gây.",
+      "special": true,
+      "descriptionVi": "Đánh 2 nhịp, mỗi nhịp 70% ATK. Khi HP bản thân dưới 50%, hồi 5% sát thương đã gây.",
+      "glyph": "⚔",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-primal-signature",
+      "element": "primal",
+      "name": "Genesis Purge",
+      "power": 0,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "cleanse_shield_self",
+        "target": "self",
+        "remove": 1,
+        "value": 0.18,
+        "shield": 0.1,
+        "duration": 2
+      },
+      "description": "Gỡ 1 trạng thái bất lợi và hồi 18% HP tối đa; nếu không có trạng thái để gỡ, tạo khiên 10% HP tối đa trong 2 lượt.",
+      "special": true,
+      "descriptionVi": "Gỡ 1 trạng thái bất lợi và hồi 18% HP tối đa; nếu không có trạng thái để gỡ, tạo khiên 10% HP tối đa trong 2 lượt.",
+      "glyph": "✧",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-earth-signature",
+      "element": "earth",
+      "name": "Radiant Worldroot",
+      "power": 0,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "shield_team",
+        "target": "ally_team",
+        "value": 0.12,
+        "duration": 2
+      },
+      "description": "Tạo khiên bằng 12% HP tối đa cho mỗi đồng minh còn sống trong 2 lượt.",
+      "special": true,
+      "descriptionVi": "Tạo khiên bằng 12% HP tối đa cho mỗi đồng minh còn sống trong 2 lượt.",
+      "glyph": "❖",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-nature-signature",
+      "element": "nature",
+      "name": "Celestial Bloom",
+      "power": 0,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "team_blessing",
+        "target": "ally_team",
+        "heal": 0.08,
+        "buff": 0.15,
+        "duration": 2
+      },
+      "description": "Hồi 8% HP tối đa cho mỗi đồng minh còn sống và tăng 15% sát thương của họ trong 2 lượt; không hồi sinh.",
+      "special": true,
+      "descriptionVi": "Hồi 8% HP tối đa cho mỗi đồng minh còn sống và tăng 15% sát thương của họ trong 2 lượt; không hồi sinh.",
+      "glyph": "✿",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-pure-signature",
+      "element": "pure",
+      "name": "Crystal Rewind",
+      "power": 0,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "rewind_ally",
+        "target": "ally",
+        "value": 1,
+        "cap": 0.2,
+        "fallbackValue": 0
+      },
+      "description": "Hồi lượng HP đã mất từ lượt trước cho đồng minh có tỷ lệ HP thấp nhất, tối đa 20% HP tối đa; không hồi sinh.",
+      "special": true,
+      "descriptionVi": "Hồi lượng HP đã mất từ lượt trước cho đồng minh có tỷ lệ HP thấp nhất, tối đa 20% HP tối đa; không hồi sinh.",
+      "glyph": "◈",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-light-signature",
+      "element": "light",
+      "name": "Eclipse Verdict",
+      "power": 1.1,
+      "bonus": 0,
+      "cooldown": 3,
+      "effect": {
+        "kind": "apex_verdict",
+        "target": "enemy",
+        "value": 0.25,
+        "duration": 2
+      },
+      "description": "Gây 110% ATK; nếu mục tiêu có trạng thái bất lợi, giảm 25% hiệu quả hồi máu trong 2 lượt.",
+      "special": true,
+      "descriptionVi": "Gây 110% ATK; nếu mục tiêu có trạng thái bất lợi, giảm 25% hiệu quả hồi máu trong 2 lượt.",
+      "glyph": "☼",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-legend-signature",
+      "element": "legend",
+      "name": "Tidal Prophecy",
+      "power": 1,
+      "bonus": 0,
+      "cooldown": 3,
+      "effect": {
+        "kind": "heal_lowest",
+        "target": "enemy",
+        "value": 0.15
+      },
+      "description": "Gây 100% ATK, sau đó hồi 15% HP tối đa cho đồng minh còn sống yếu máu nhất.",
+      "special": true,
+      "descriptionVi": "Gây 100% ATK, sau đó hồi 15% HP tối đa cho đồng minh còn sống yếu máu nhất.",
+      "glyph": "∞",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-time-signature",
+      "element": "time",
+      "name": "Frozen Moment",
+      "power": 1.05,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "freeze_chance",
+        "target": "enemy",
+        "value": 0.2,
+        "bonusIfDamageDown": 0.1,
+        "duration": 1
+      },
+      "description": "Gây 105% ATK; có 20% xác suất khiến mục tiêu bỏ lượt, tăng lên 30% nếu mục tiêu đang bị giảm sát thương.",
+      "special": true,
+      "descriptionVi": "Gây 105% ATK; có 20% xác suất khiến mục tiêu bỏ lượt, tăng lên 30% nếu mục tiêu đang bị giảm sát thương.",
+      "glyph": "⌛",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-dark-signature",
+      "element": "dark",
+      "name": "Abyssal Vortex",
+      "power": 1.05,
+      "bonus": 0,
+      "cooldown": 3,
+      "effect": {
+        "kind": "damage_down",
+        "target": "enemy",
+        "value": 0.2,
+        "duration": 2
+      },
+      "description": "Gây 105% ATK và giảm 20% sát thương mục tiêu gây ra trong 2 lượt.",
+      "special": true,
+      "descriptionVi": "Gây 105% ATK và giảm 20% sát thương mục tiêu gây ra trong 2 lượt.",
+      "glyph": "◉",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-water-signature",
+      "element": "water",
+      "name": "Froststorm Surge",
+      "power": 0.7,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "area",
+        "target": "enemy_team",
+        "healTeam": 0.06
+      },
+      "description": "Gây 70% ATK lên từng rồng địch và hồi 6% HP tối đa cho mỗi đồng minh còn sống.",
+      "special": true,
+      "descriptionVi": "Gây 70% ATK lên từng rồng địch và hồi 6% HP tối đa cho mỗi đồng minh còn sống.",
+      "glyph": "❄",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-ice-signature",
+      "element": "ice",
+      "name": "Aurora Tempest",
+      "power": 0.45,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "multi",
+        "target": "enemy",
+        "hits": 3,
+        "missChance": 0,
+        "secondary": {
+          "kind": "damage_down_if_hits",
+          "value": 0.2,
+          "duration": 2,
+          "minHits": 2
+        }
+      },
+      "description": "Đánh 3 nhịp, mỗi nhịp 45% ATK. Nếu trúng ít nhất 2 nhịp, giảm 20% sát thương mục tiêu gây ra trong 2 lượt.",
+      "special": true,
+      "descriptionVi": "Đánh 3 nhịp, mỗi nhịp 45% ATK. Nếu trúng ít nhất 2 nhịp, giảm 20% sát thương mục tiêu gây ra trong 2 lượt.",
+      "glyph": "✺",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-wind-signature",
+      "element": "wind",
+      "name": "Thunderforge Cyclone",
+      "power": 1.1,
+      "bonus": 0,
+      "cooldown": 3,
+      "effect": {
+        "kind": "next_attack_up",
+        "target": "self",
+        "value": 0.25,
+        "duration": 1
+      },
+      "description": "Gây 110% ATK và tăng 25% sát thương cho đòn trực tiếp kế tiếp của bản thân.",
+      "special": true,
+      "descriptionVi": "Gây 110% ATK và tăng 25% sát thương cho đòn trực tiếp kế tiếp của bản thân.",
+      "glyph": "⟳",
+      "icon": "✦"
+    },
+    {
+      "id": "apex-thunder-signature",
+      "element": "thunder",
+      "name": "Stormfire Dominion",
+      "power": 1.2,
+      "bonus": 0,
+      "cooldown": 4,
+      "effect": {
+        "kind": "execute",
+        "target": "enemy",
+        "value": 0.3,
+        "lowPower": 1.4
+      },
+      "description": "Gây 120% ATK; nếu mục tiêu dưới 30% HP, sát thương tăng lên 140% ATK.",
+      "special": true,
+      "descriptionVi": "Gây 120% ATK; nếu mục tiêu dưới 30% HP, sát thương tăng lên 140% ATK.",
+      "glyph": "⚡",
+      "icon": "✦"
+    }
+  ]
+}

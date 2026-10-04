@@ -34,19 +34,26 @@ function guideChallenge(){
 }
 
 function guideSpecialSkills(){
-  const detail=skill=>esc(skill.descriptionVi||skill.description||'')+' Hồi chiêu '+skill.cooldown+' lượt.';
+  function skillCard(skill,element){
+    const copy={...skill,element:skill.element||element||null};
+    const damage=skill.power>0?'Gây '+Math.round(skill.power*100)+'% ATK trước giáp, biến thiên và khắc hệ.':'Không gây sát thương trực tiếp.';
+    const description=skill.special?(skill.descriptionVi||skill.description||'')+' Hồi chiêu '+skill.cooldown+' lượt.':
+      (skill.descriptionVi||skill.description||damage);
+    return '<article class="guide-skill-card"><h4>'+skillHex(copy)+'<span class="skill-name" title="'+esc(skill.name)+'">'+esc(skill.name)+'</span></h4><p class="guide-skill-desc" title="'+esc(description)+'">'+esc(description)+'</p>'+
+      '<small>'+(skill.special?(skill.apex?'Apex signature skill':'Double special skill'):skill.power>0?'Sát thương '+Math.round(skill.power*100)+'% ATK':'Hỗ trợ')+
+      (skill.special?' · hồi chiêu '+skill.cooldown+' lượt':'')+'</small></article>';
+  }
+  const normal=(DATA.skills.neutral||[]).map(skill=>skillCard(skill,null)).join('');
   const groups=Object.keys(DATA.elements).map(function(element){
-    const cards=DOUBLE_IDS.filter(id=>DATA.species[id].elements[0]===element).map(function(id){
-      const skill=skillsForSpecies(DATA.species[id])[3];
-      return '<article class="guide-special-card"><h4>'+skillHex(skill)+' <span class="skill-name" title="'+esc(skill.name)+'">'+esc(skill.name)+'</span></h4><p>'+detail(skill)+'</p></article>';
-    });
+    const skills=(DATA.skills.elemental[element]||[]).map(skill=>skillCard(skill,element));
     return '<details class="guide-special-group"><summary>'+elementFlag(element,false,'sm')+' '+
-      esc(DATA.elements[element].name)+' · '+cards.length+' chiêu</summary><div class="guide-special-cards">'+cards.join('')+'</div></details>';
+      esc(DATA.elements[element].name)+' · '+skills.length+' chiêu</summary><div class="guide-special-cards">'+skills.join('')+'</div></details>';
   });
-  return '<p>Mỗi hệ có ba Double Element Special Skill ở ô thứ tư. Mỗi rồng Double Element đang mang một trong ba chiêu của hệ chủ đạo. Biểu tượng, tên và tác dụng lấy từ danh mục skill đang dùng trong Arena.</p>'+
-    '<div class="guide-callout">Skill hỗ trợ thuần gây 0 sát thương. Đòn trực tiếp chịu giáp và khắc hệ; sát thương theo thời gian tối đa 10% HP mục tiêu mỗi lượt. Khiên hấp thụ trước HP. Trạng thái cùng loại không cộng dồn hoặc kéo dài thời gian.</div>'+groups.join('');
+  return '<p>Danh mục dưới đây gồm toàn bộ đòn đánh thường, đòn đánh hệ, chiêu đặc biệt Double và chiêu đặc biệt Apex. Sát thương được tính theo ATK của rồng trước giáp, biến thiên, chí mạng và khắc hệ; chiêu hỗ trợ có thể không gây sát thương trực tiếp.</p>'+
+    '<h3>Đòn đánh thường</h3><div class="guide-special-cards">'+normal+'</div>'+
+    '<div class="guide-callout">Skill hệ có hai mức sát thương 90% và 110% ATK. Mỗi rồng Double có một chiêu đặc biệt ở ô thứ tư; mỗi rồng Apex có ba chiêu Double và một chiêu Apex riêng ở bốn ô.</div>'+
+    groups.join('');
 }
-
 function guideElements(){
   const ids=Object.keys(DATA.elements),chart=DRAGON_DB.typeChart;
   const values=ids.flatMap(attacker=>ids.map(target=>chart[attacker][target]??1));

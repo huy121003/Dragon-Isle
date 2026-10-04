@@ -13,7 +13,7 @@ function newGame(){
   return {version:SAVE_VERSION,lastTick:Date.now(),savedAt:Date.now(),nextId:4,player:{level:1,xp:0},
     gold:starting.gold,food:starting.food,gems:starting.gems,expansions:0,land:land,regions:[],unlockedIslands:1,
     habitatPurchases:{fire:1},
-    eggs:[],discovered:["fire"],recipes:[],
+    eggs:[],discovered:["fire"],recipes:[],achievements:{apexEggs:{}},
     dailyMissions:{dayKey:"",progress:{},claimed:[]},
     buildings:[{id:1,type:"habitat",element:"fire",x:startX+11,y:startY+11,level:1,stored:false,
       storedGold:0,storedGems:0,purchaseCost:buildingBalance.habitat.cost,

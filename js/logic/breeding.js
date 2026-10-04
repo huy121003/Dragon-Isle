@@ -13,7 +13,7 @@
 function breedingOptions(father,mother,cave){
   if(!father||!mother||father.id===mother.id)return [];
   const fatherSpecies=DATA.species[father.species],motherSpecies=DATA.species[mother.species];
-  if(!fatherSpecies||!motherSpecies)return [];
+  if(!fatherSpecies||!motherSpecies)return [];\n  if(fatherSpecies.rarity==="apex"||motherSpecies.rarity==="apex")return [];
   return window.DragonRules.breeding.offspringOptions({
     fatherSpecies,motherSpecies,fatherLevel:father.level,motherLevel:mother.level,
     speciesById:DATA.species,elementOrder:Object.keys(DATA.elements),

@@ -4,12 +4,12 @@ require('../scripts/extend-catalog.cjs')(catalog,game);
 const combat=require('../js/data/combat-rules.js');
 const rules=require('../js/rules/progression.js');
 const config=require('../js/config/combat.js');
-const tiers=['common','rare','epic','legendary','transcendent','mythic'];
+const tiers=['common','rare','epic','legendary','transcendent','mythic','apex'];
 const sample=Object.fromEntries(tiers.map(tier=>[tier,catalog.species.find(s=>
   s.doHiem===tier&&s.elements[0]==='fire')]));
 assert(tiers.every(tier=>sample[tier]),'representative Fire-led species exists for each tier');
 assert.deepEqual(Object.keys(catalog.rarities),
-  ['common','rare','epic','legendary','mythic','transcendent'],
+  ['common','rare','epic','legendary','mythic','transcendent','apex'],
   'rarity ordering remains distinct from combat power ordering');
 const stats=(tier,level)=>combat.stats(sample[tier].elements,tier,level,
   catalog.elements,catalog.rarities);
@@ -23,7 +23,8 @@ for(const level of [1,15,40,100]){
     const damage=combat.damage(value,{...value,parts:sample[tier].elements},skill,
       catalog.typeChart,1,false);
     const hits=Math.ceil(value.hp/damage);
-    assert(hits>=5&&hits<=9,`${tier} level ${level} equal-tier duel lasts ${hits} hits`);
+    const maximumHits=tier==='apex'?12:9;
+    assert(hits>=5&&hits<=maximumHits,`${tier} level ${level} equal-tier duel lasts ${hits} hits`);
   }
 }
 for(const level of [40,100]){
@@ -55,4 +56,4 @@ assert(rules.dragonFeedCost(99,100)>100000,'each feed from level 99 to 100 excee
 assert(rules.dragonFeedCost(99,100)*4<=12*48000,
   'four level-99 feeds fit within one full 12-farm crystal-melon harvest');
 assert(config.defenseScale<.6,'base defense is reduced');
-console.log(`PASS six tiers × four level milestones: combat ranking, 5–9 hits; food ${totals.join(', ')}`);
+console.log(`PASS seven tiers × four level milestones: combat ranking, 5–12 hits; food ${totals.join(', ')}`);

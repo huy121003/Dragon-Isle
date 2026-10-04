@@ -26,7 +26,7 @@ export function BattleSkillControls({attacker,defender,disabled,animating,challe
         skill.unavailableReason||skill.remainingCooldown>0&&`Hồi chiêu còn ${skill.remainingCooldown} lượt`;
       return <div key={skill.index} className="battle-skill-slot">
         <Button disabled={disabled||!skill.unlocked||skill.available===false||skill.remainingCooldown>0}
-          className={'battle-skill battle-skill-card '+(!skill.unlocked?'locked':'')+(skill.special?' special':'')}
+          className={'battle-skill battle-skill-card '+(!skill.unlocked?'locked':'')+(skill.special?' special':'')+(skill.apex?' apex':'')}
           aria-label={`${skill.name}${mark?` · ${mark} ×${matchup}`:''}${reason?` · ${reason}`:''}`}
           onClick={()=>act('skill',challenge?{skillIndex:skill.index}:{skill:skill.index})}>
           <span className="battle-skill-label"><span className="battle-skill-icon-wrap">

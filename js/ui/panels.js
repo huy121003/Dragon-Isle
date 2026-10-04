@@ -21,6 +21,8 @@ function renderModal(){
   if(name==="breeding"){renderBreeding(ui.modal.extra);return;}
   if(name==="arena"){renderArena();return;}
   if(name==="daily-missions"){dom.body.innerHTML=renderDailyMissions();return;}
+  if(name==="achievements"){renderAchievements();return;}
+  if(name==="achievements"){renderAchievements();return;}
   if(name==="islands"){renderIslands();return;}
   if(name==="book"){renderBook();return;}
   if(name==="guide"){renderGuide();return;}

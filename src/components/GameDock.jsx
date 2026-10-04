@@ -5,7 +5,7 @@ import {send,text} from '../app/game-bridge.js';
 const BASE_BUTTONS=[
   ['📅','Daily Missions','open-daily-missions'],['🗺️','Islands','open-islands'],
   ['🏪','Shop','open-shop'],['🐲','Dragons','open-dragons'],
-  ['📖','Dragon Book','open-book'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']
+  ['📖','Dragon Book','open-book'],['🏆','Thành tựu','open-achievements'],['🎒','Inventory','open-inventory'],['📚','Hướng dẫn','open-guide']
 ];
 export default function GameDock({state,ui,challengeOpen,openChallenge,refProp}){
   const buttons=[...BASE_BUTTONS];

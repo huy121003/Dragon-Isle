@@ -91,7 +91,7 @@ try{
   const arena={data,draft:{attack:[2]},busy:false};
   const setup=renderToStaticMarkup(React.createElement(ArenaView,{arena}));
   assert.match(setup,/arena-roster-card/);assert.match(setup,/Fire Dragon/);
-  assert.match(setup,/class="element-flag flag-sm primary"/);assert.match(setup,/class="rarity-gem"/);
+  assert.match(setup,/class="element-flag flag-sm primary"/);assert.match(setup,/class="rarity-gem rarity-/);
   assert.match(setup,/--gem:#e45/);
   assert.doesNotMatch(setup,/roster-power|4,250 power/);
   assert.match(setup,/href="#flag-fire"/);

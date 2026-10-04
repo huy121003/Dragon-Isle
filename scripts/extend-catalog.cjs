@@ -2,6 +2,7 @@
 const expansion=require('../data/elements-expansion.json');
 const specialSkillCatalog=require('../data/special-skills.json');
 const doubleDragonCatalog=require('../data/dragons/transcendent.json');
+const {skillIdsFor}=require('../js/data/skill-assignment.js');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const physical={
   fire:{adjective:'Volcanic',noun:'Flare'},
@@ -200,7 +201,7 @@ function extendCatalog(db,game){
     dragon.doubleElement=primary;
     dragon.doubleForm=recipe.form;
     dragon.specialSkillIds=[specialSkillId];
-    dragon.skillIds=[primary+'-1',partners[0]+'-1',partners[1]+'-1',specialSkillId];
+    dragon.skillIds=skillIdsFor(parts,recipe.speciesId,specialSkillId);
     dragon.hienTuong=dragon.ten+' channels '+db.elements[primary].ten+
       ' twice, with '+partners.map(e=>db.elements[e].ten).join(' and ')+'.';
     dragon.moTa=dragon.hienTuong;

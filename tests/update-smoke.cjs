@@ -1146,7 +1146,7 @@ check('1800 unique phenomenon-named species and no retired Special category',()=
 check('ordered pairs, unique triples and 150 balanced four-element species',()=>{
  const elements=Object.keys(db.elements);
  const groups=Object.fromEntries([1,2,3,4].map(n=>[n,db.species.filter(s=>s.elements.length===n)]));
- assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,195]);
+ assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,210]);
  const byId=new Map(db.species.map(s=>[s.id,s]));
  for(const a of elements)for(const b of elements){
    if(a===b)continue;

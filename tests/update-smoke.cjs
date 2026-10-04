@@ -1233,10 +1233,10 @@ check('every catalog species draws with the rebuilt renderer',()=>{
     assert.equal(segments.length,slots>=3?slots*2:0,id+' tail ring segments');
     assert(!balance.drawCalls.some(call=>call[0]==='ellipse'&&call[1]===-4&&call[2]===-19),
       id+' has an old body halo');
-    if(id.indexOf('>')<0)silhouettes.add(JSON.stringify(balance.drawCalls
+    if(db.species[index].elements.length===1)silhouettes.add(JSON.stringify(balance.drawCalls
       .filter(call=>call[0]==='moveTo'||call[0]==='lineTo').slice(0,30)));
   }
-  assert.equal(ids.length,1785);
+  assert.equal(ids.length,1800);
   assert.equal(silhouettes.size,15,'Every primary element needs distinct geometry');
   balance.drawCalls.length=0;
 });

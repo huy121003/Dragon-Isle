@@ -1128,8 +1128,8 @@ check('all single-element dragons are named after their element',()=>{
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
 });
-check('1785 unique phenomenon-named species and no retired Special category',()=>{
- assert.equal(db.species.length,1785);
+check('1800 unique phenomenon-named species and no retired Special category',()=>{
+ assert.equal(db.species.length,1800);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
  assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.endsWith(' Dragon')));
  assert(db.species.filter(s=>s.doHiem==='transcendent').every(s=>s.ten.startsWith('Resonant ')));

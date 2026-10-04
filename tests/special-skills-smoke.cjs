@@ -12,7 +12,7 @@ const fighter=(primary,id)=>engine.makeFighter({id,species:species(primary),leve
 const setup=(left,right)=>({attack:left,defense:right,activeAttack:0,activeDefense:0,
   turn:1,events:[]});
 const special=Object.values(game.skills.elemental).flat().filter(s=>s.special);
-assert.equal(special.length,45);
+assert.equal(special.length,60);
 assert.equal(catalog.species.filter(s=>s.doHiem==='transcendent').length,45);
 for(const skill of special){
   const a=fighter(skill.element,1),reserve=fighter('water',2),b=fighter('earth',3);
@@ -133,4 +133,4 @@ for(const skill of special){
   assert(target.hp<target.maxHp,'Echo repeats an eligible direct hit');
 }
 require('./special-skill-cases.cjs');
-console.log('PASS 45 special skills, 45 species, status stacking, reserve switch and DoT cap');
+console.log('PASS 60 special skills, 45 Double species, status stacking, reserve switch and DoT cap');

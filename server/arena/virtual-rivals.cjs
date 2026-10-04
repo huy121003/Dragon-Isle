@@ -5,7 +5,7 @@
  * level and stars). NPC species always come from the full catalog, filtered by
  * player-level element gates; no owned dragon is cloned or stat-tuned.
  */
-const RARITY_ORDER=['common','rare','epic','legendary','mythic','transcendent'];
+const RARITY_ORDER=['common','rare','epic','legendary','mythic','transcendent','apex'];
 const RIVAL_NAMES=['Rookie Warden','Scout Keeper','Balanced Guard','Veteran Champion','Arena Legend'];
 const NICKNAMES=['Rookie','Scout','Keeper','Veteran','Legend'];
 const STRENGTHS=['Weaker','Weaker','Balanced','Stronger','Stronger'];

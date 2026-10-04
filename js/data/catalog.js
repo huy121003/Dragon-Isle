@@ -88,7 +88,7 @@ function migrateSpeciesId(id){
   if(speciesStore[mapped]||typeof id!=="string")return mapped;
   const parts=id.split(">");
   if(parts.length!==4||new Set(parts).size!==4||parts.some(function(e){return !DATA.elements[e];}))return mapped;
-  const candidates=fourSpecies.filter(function(s){return s.elements[0]===parts[0];});
+  const candidates=fourSpecies.filter(function(s){return s.elements[0]===parts[0]&&s.doHiem!=="apex";});
   candidates.sort(function(a,b){
     // Old saves may contain four-element recipes from the earlier, uneven catalog.
     // Keep their dominant affinity and favor scarce/advanced secondary affinities.

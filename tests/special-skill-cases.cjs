@@ -51,7 +51,8 @@ for(const s of skills){
   }
   if(k==='next_attack_up'){
     assert(f.enemy.hp<before.e,'Overcharge also deals immediate damage');
-    assert.equal(fx.status(f.actor,k).value,.4,'Overcharge buffs the next direct attack by 40%');
+    assert.equal(fx.status(f.actor,k).value,s.id==='thunder-special-2'?.4:.25,
+      s.id==='thunder-special-2'?'Overcharge buffs the next direct attack by 40%':'Thunderforge Cyclone buffs the next direct attack by 25%');
   }
   if(k==='revive_first'){
     assert.equal(f.ally.hp,Math.round(f.ally.maxHp*.20));

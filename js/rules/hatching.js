@@ -13,6 +13,7 @@
   /** Convert a species to its incubation tier. */
   function tierOf(species){
     if(!species)return 1;
+    if(species.rarity==="apex")return "apex";
     if(species.rarity==="transcendent")return "double";
     return Math.max(1,Math.min(4,species.elements.length));
   }
@@ -29,7 +30,8 @@
     const elementTime=species.elements.reduce((sum,id)=>sum+(config.pureElementSeconds[id]||60),0);
     const multiplier=config.tierMultipliers[tier]||config.tierMultipliers[4];
     const maximum=config.maxTierSeconds[tier]||config.maxTierSeconds[4];
-    return Math.min(maximum,Math.round(elementTime*multiplier));
+    const seconds=Math.min(maximum,Math.round(elementTime*multiplier));
+    return tier==='apex'?Math.max(config.apexMinimumSeconds,seconds):seconds;
   }
 
   return {tierOf,seconds};

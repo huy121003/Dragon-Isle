@@ -58,6 +58,7 @@ function drawDragonForm(c,s,p,form,pose,time,id,level){
     drawDragonAffinity(c,s.elements[slot],slot,p,form,pose,time,seed);
   }
   if(double)drawDragonDouble(c,primary,p,seed,crown,bodyW,bodyH);
+  if(s.rarity==='apex')drawDragonApex(c,p,seed,bodyW,bodyH,time,s.elements);
   drawDragonLimbs(c,form,p,pose,time,id,bodyW,bodyH,false);
   drawDragonWing(c,form,p,accent,pose,-8,-bodyH*.74,seed,false,mantle);
   // Pivot 2: neck and head lead the body, with spring eased look direction.
@@ -290,6 +291,23 @@ function drawDragonAffinity(c,id,slot,p,form,pose,time,seed){
       e.color,e.dark,1.5);
     artFill(c,[[-4,-3],[0,-17],[4,-3],[0,3]],e.light,e.dark,.8);break;
   }
+  c.restore();
+}
+
+function drawDragonApex(c,p,seed,w,h,time,elements){
+  c.save();
+  c.strokeStyle='#fff1a8';c.lineWidth=2.8;c.globalAlpha=.9;
+  c.beginPath();c.ellipse(0,-h*1.05,w*.78,Math.max(8,h*.47),-.08,Math.PI*1.08,Math.PI*1.92);c.stroke();
+  c.globalAlpha=1;
+  for(let i=0;i<4;i++){
+    const x=(i-1.5)*w*.22,y=-h*(1.48+(i%2)*.08);
+    c.fillStyle=DATA.elements[elements[i]]?.light||'#fff1a8';
+    c.strokeStyle='#68479b';c.lineWidth=1.7;c.beginPath();
+    c.moveTo(x,y-9-seed%4);c.lineTo(x+6,y);c.lineTo(x,y+8);c.lineTo(x-6,y);c.closePath();c.fill();c.stroke();
+  }
+  c.strokeStyle='#5ce1ff';c.lineWidth=2;c.beginPath();
+  c.moveTo(-w*.58,-h*.68);c.lineTo(-w*.72,-h*1.24);c.lineTo(-w*.37,-h*1.03);
+  c.lineTo(0,-h*1.68);c.lineTo(w*.37,-h*1.03);c.lineTo(w*.72,-h*1.24);c.lineTo(w*.58,-h*.68);c.stroke();
   c.restore();
 }
 function drawDragonDouble(c,primary,p,seed,crown,w,h){

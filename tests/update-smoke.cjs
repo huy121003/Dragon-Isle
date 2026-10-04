@@ -911,15 +911,15 @@ check('guide navigation and game-driven help pages',()=>{
  assert(!breeding.includes('nhận trứng lai vào Inventory'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"challenge"}})');
  assert(game.element('sheetBody').innerHTML.includes('Đổi sang rồng dự bị không mất lượt'));
- game.run('handleAction({dataset:{action:"guide-tab",tab:"special"}})');
- const special=game.element('sheetBody').innerHTML;
- assert.equal((special.match(/class="guide-special-group"/g)||[]).length,15);
- assert.equal((special.match(/class="guide-special-card"/g)||[]).length,45);
- assert.equal((special.match(/class="skill-special-glyph"/g)||[]).length,45);
- assert.equal((special.match(/class="skill-hex/g)||[]).length,45);
- assert(!special.includes('Cinderheart Sovereign')&&!special.includes('<table'));
- assert(special.includes('Sovereign Flame')&&special.includes('Rewind Wounds'));
- assert(special.includes('HP tối đa của mục tiêu mỗi lượt trong 3 lượt'));
+ game.run('handleAction({dataset:{action:"guide-tab",tab:"skills"}})');
+ const skillGuide=game.element('sheetBody').innerHTML;
+ assert.equal((skillGuide.match(/class="guide-special-group"/g)||[]).length,15);
+ assert.equal((skillGuide.match(/class="guide-skill-card"/g)||[]).length,92);
+ assert(skillGuide.includes('Đòn đánh thường')&&skillGuide.includes('Danh mục dưới đây gồm toàn bộ'));
+ assert(skillGuide.includes('Apex signature skill'));
+ assert(skillGuide.includes('Sovereign Flame')&&skillGuide.includes('Rewind Wounds'));
+ assert(skillGuide.includes('HP tối đa của mục tiêu mỗi lượt trong 3 lượt'));
+ assert(!skillGuide.includes('<table'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"resources"}})');
  assert(game.element('sheetBody').innerHTML.includes('XP và thưởng khi lên Player Level'));
  game.run('handleAction({dataset:{action:"guide-tab",tab:"islands"}})');
@@ -1128,8 +1128,8 @@ check('all single-element dragons are named after their element',()=>{
   }
   assert(!game.run('DATA.skills.elemental.primal.some(skill=>skill.icon==="☯")'));
 });
-check('1785 unique phenomenon-named species and no retired Special category',()=>{
- assert.equal(db.species.length,1785);
+check('1800 unique phenomenon-named species and no retired Special category',()=>{
+ assert.equal(db.species.length,1800);
  assert.equal(new Set(db.species.map(s=>s.ten)).size,db.species.length);
  assert(db.species.every(s=>!s.id.startsWith('special_')&&s.ten.endsWith(' Dragon')));
  assert(db.species.filter(s=>s.doHiem==='transcendent').every(s=>s.ten.startsWith('Resonant ')));
@@ -1146,7 +1146,7 @@ check('1785 unique phenomenon-named species and no retired Special category',()=
 check('ordered pairs, unique triples and 150 balanced four-element species',()=>{
  const elements=Object.keys(db.elements);
  const groups=Object.fromEntries([1,2,3,4].map(n=>[n,db.species.filter(s=>s.elements.length===n)]));
- assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,195]);
+ assert.deepEqual([1,2,3,4].map(n=>groups[n].length),[15,210,1365,210]);
  const byId=new Map(db.species.map(s=>[s.id,s]));
  for(const a of elements)for(const b of elements){
    if(a===b)continue;
@@ -1233,10 +1233,10 @@ check('every catalog species draws with the rebuilt renderer',()=>{
     assert.equal(segments.length,slots>=3?slots*2:0,id+' tail ring segments');
     assert(!balance.drawCalls.some(call=>call[0]==='ellipse'&&call[1]===-4&&call[2]===-19),
       id+' has an old body halo');
-    if(id.indexOf('>')<0)silhouettes.add(JSON.stringify(balance.drawCalls
+    if(db.species[index].elements.length===1)silhouettes.add(JSON.stringify(balance.drawCalls
       .filter(call=>call[0]==='moveTo'||call[0]==='lineTo').slice(0,30)));
   }
-  assert.equal(ids.length,1785);
+  assert.equal(ids.length,1800);
   assert.equal(silhouettes.size,15,'Every primary element needs distinct geometry');
   balance.drawCalls.length=0;
 });

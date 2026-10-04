@@ -23,6 +23,11 @@ const assignedVariants=Object.fromEntries(elements.map(element=>[element,new Set
 for(const dragon of catalog.species){
   assert.equal(dragon.skillIds.length,4,`${dragon.id} has four assigned skill slots`);
   assert.equal(new Set(dragon.skillIds).size,4,`${dragon.id} has no duplicate skill slots`);
+  if(dragon.doHiem==='apex'){
+    assert(dragon.skillIds.every(id=>Object.values(game.skills.elemental).flat().some(skill=>skill.id===id&&skill.special)),
+      `${dragon.id} reserves every skill slot for a special skill`);
+    continue;
+  }
   const distinct=[...new Set(dragon.elements)];
   if(distinct.length===1&&!dragon.doubleElement){
     assert.deepEqual(dragon.skillIds,['claw','slam',distinct[0]+'-1',distinct[0]+'-2'],

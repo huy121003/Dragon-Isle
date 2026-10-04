@@ -45,7 +45,7 @@ function autoAssignWaitingEggs(){
 function buyEgg(speciesId){
   const species=DATA.species[speciesId];
   const isAdmin=currentAccount?.role==="admin";
-  if(!species||(!isAdmin&&(species.elements.length!==1||!species.detail.giaTrung))){
+  if(!species||species.rarity==="apex"||(!isAdmin&&(species.elements.length!==1||!species.detail.giaTrung))){
     toast(isAdmin?"This egg is unavailable in the Shop.":"The Shop only sells pure element dragon eggs.");return;
   }
   const price=shopEggPrice(species,isAdmin);
@@ -110,6 +110,8 @@ function hatchEgg(eggId,habitatId){
   state.dragons.push(dragon);
   state.eggs=state.eggs.filter(function(item){return item.id!==egg.id;});
   const fresh=recordDiscovery(egg.species,egg.parents);
+  checkApexAchievements();
+  checkApexAchievements();
   gainPlayerXP(fresh?window.DragonConfig.progression.xpSources.hatchNew:
     window.DragonConfig.progression.xpSources.hatchKnown);
   const house=buildingById(egg.hatcheryId);

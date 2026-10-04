@@ -32,7 +32,7 @@ export function SkillHex({element,locked=false}){
 export function RarityGem({id,element}){
   const rarity=game()?.data?.rarities?.[id];
   const color=game()?.data?.elements?.[element]?.color||rarity?.color;
-  return rarity?<span className="rarity-gem" style={{'--gem':color,'--tier':rarity.color}}
+  return rarity?<span className={'rarity-gem rarity-'+id} style={{'--gem':color,'--tier':rarity.color}}
     title={rarity.name} aria-label={rarity.name}><svg viewBox="0 0 40 46" aria-hidden="true">
       <path d="M20 1 37 11 36 30 20 45 4 30 3 11Z" fill={rarity.color} stroke="#283a4b" strokeWidth="2"/>
       <path d="M20 5 33 13 32 28 20 40 8 28 7 13Z" fill={color} stroke="#ffffffbb" strokeWidth="1.5"/>

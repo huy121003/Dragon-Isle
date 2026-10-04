@@ -3,6 +3,7 @@
 /* The guide reads balance values from the same catalog and rules as gameplay.
    Add a GUIDE_UPDATES entry and amend the relevant section when rules change. */
 const GUIDE_UPDATES=[
+  {date:"04/10/2026",title:"Apex Dragons và thành tựu",detail:"Thêm 15 rồng Apex, trứng thưởng khi khám phá đủ ba rồng Double cùng hệ chủ đạo, 15 chiêu Apex và danh mục đầy đủ skill trong hướng dẫn."},
   {date:"02/10/2026",title:"Cân bằng progression tổng thể",detail:"Rà soát XP Player Level, mốc mở 15 hệ, thời gian lai/ấp theo hệ và bậc, thời gian nâng cấp, cây trồng, sức chứa Habitat/Hatchery và kinh tế Gold/Food/Gem."},
   {date:"01/10/2026",title:"Nâng sao rồng",detail:"Mỗi rồng có 0–5 sao. Mỗi sao tăng 5% HP, tấn công và giáp; nâng sao tiêu hao vàng, thức ăn, gem và rồng cùng giống đạt level yêu cầu."},
   {date:"01/10/2026",title:"Giá Shop, thời gian lai/ấp và cẩm nang",detail:"Chuồng cấp cao chứa nhiều vàng hơn; giá Chuồng tăng theo số lần mua từng hệ, điều chỉnh giá Shop và tăng thời gian lai/ấp bậc cao. Thêm lối tắt Arena khi đã xây Arena, cờ xung khắc và mô tả Special Skill."},
@@ -12,7 +13,7 @@ const GUIDE_UPDATES=[
   {date:"01/10/2026",title:"Hướng dẫn và tỷ lệ lai",detail:"Thêm cẩm nang theo chủ đề và bảng tỷ lệ trong Hang lai: tổng từng bậc, tỷ lệ từng giống và xác suất hiếm."},
   {date:"01/10/2026",title:"Arena và chiến đấu",detail:"Đòn đánh hiển thị Strong, Weak, Crit; đội phòng thủ chọn skill theo sát thương và hiệu ứng thực tế."},
   {date:"01/10/2026",title:"15 hệ và Double Element",detail:"Bổ sung năm hệ War, Pure, Legend, Primal, Time và 30 rồng Double Element với skill đặc biệt."}
-];
+ ];
 const GUIDE_SECTIONS=[
   ["start","🧭 Bắt đầu",guideStart],
   ["dragons","🐉 Rồng & cấp",guideDragons],
@@ -21,7 +22,7 @@ const GUIDE_SECTIONS=[
   ["resources","🎒 Tài nguyên & vật phẩm",guideResources],
   ["arena","⚔️ Đấu trường",guideArena],
   ["challenge","🗡️ Thách đấu",guideChallenge],
-  ["special","✦ Special Skill",guideSpecialSkills],
+  ["skills","✨ Skill",guideSpecialSkills],
   ["elements","🔰 Xung khắc hệ",guideElements],
   ["updates","✨ Cập nhật",guideUpdates]
 ];

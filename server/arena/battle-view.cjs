@@ -10,7 +10,7 @@ const arenaConfig=require('../../js/config/arena.js');
 
 const statusIcons={poison:'☠',burn:'♨',curse:'☾',freeze:'❄',damage_up:'⚔',damage_down:'↘',
   armor_up:'⬟',armor_down:'⬡',damage_reduction:'◈',regen:'✚',vitality:'♥',
-  accuracy_down:'◎',shield:'⬢',reflect:'↶',lock_switch:'⛓',next_attack_up:'⚡',
+  accuracy_down:'◎',anti_heal:'⊘',shield:'⬢',reflect:'↶',lock_switch:'⛓',next_attack_up:'⚡',
   carapace:'◆',carapace_strike:'✦'};
 
 /** Stable public status payload for React clients. */
@@ -37,7 +37,7 @@ function publicBattle(battle){
     maxHp:combat.effectiveMaxHp(fighter),statuses:statusSnapshot(fighter),
     skills:fighter.skills.map((skill,index)=>skill?{
       index,id:skill.id,name:skill.name,element:skill.element||null,power:skill.power,bonus:skill.bonus||0,
-      special:!!skill.special,glyph:skill.glyph||null,effect:skill.effect||null,description:skill.descriptionVi||skill.description||null,
+      special:!!skill.special,apex:!!skill.apex,glyph:skill.glyph||null,effect:skill.effect||null,description:skill.descriptionVi||skill.description||null,
       cooldown:skill.cooldown||0,remainingCooldown:fighter.cooldowns?.[index]||0,
       unlockLevel:progressionConfig.skillUnlockLevels[index],
       available:skill.effect?.kind==='echo_last'?fighter.lastDirectDamage>0:

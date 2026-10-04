@@ -52,10 +52,11 @@ function landCost(islandIndex,opened=1){
 }
 function hatchingSeconds(parts,rarity='common'){
   if(parts.length===1)return economy.hatching.pureElementSeconds[parts[0]];
-  const tier=rarity==='transcendent'?'double':parts.length;
+  const tier=rarity==='transcendent'?'double':rarity==='apex'?'apex':parts.length;
   const base=parts.reduce((sum,e)=>sum+(economy.hatching.pureElementSeconds[e]||60),0);
-  return Math.min(economy.hatching.maxTierSeconds[tier]||economy.hatching.maxTierSeconds[4],
+  const seconds=Math.min(economy.hatching.maxTierSeconds[tier]||economy.hatching.maxTierSeconds[4],
     base*(economy.hatching.tierMultipliers[tier]||economy.hatching.tierMultipliers[4]));
+  return tier==='apex'?Math.max(economy.hatching.apexMinimumSeconds,seconds):seconds;
 }
 
 console.log('SESSION REGRESSION: combat');
@@ -122,8 +123,9 @@ console.log('SESSION REGRESSION: hatching / breeding');
 assert.equal(economy.hatching.pureElementSeconds.fire,30);
 assert.equal(economy.hatching.pureElementSeconds.water,60);
 assert.equal(economy.hatching.pureElementSeconds.time,21600);
-assert.deepEqual(economy.hatching.tierMultipliers,{2:2,3:4,4:8,double:12});
-assert.deepEqual(economy.hatching.maxTierSeconds,{2:21600,3:43200,4:86400,double:172800});
+assert.deepEqual(economy.hatching.tierMultipliers,{2:2,3:4,4:8,double:12,apex:20});
+assert.deepEqual(economy.hatching.maxTierSeconds,{2:21600,3:43200,4:86400,double:172800,apex:604800});
+assert.equal(economy.hatching.apexMinimumSeconds,86400);
 assert.deepEqual(economy.breeding.elementSeconds,{fire:60,water:60,earth:90,wind:120,ice:180,thunder:300,
   nature:420,dark:600,light:900,metal:1200,war:1800,pure:2400,legend:3000,primal:3600,time:4200});
 assert.equal(economy.breeding.tierMultipliers[2],2);
@@ -132,6 +134,8 @@ assert(hatchingSeconds(['fire','water','earth'])>hatchingSeconds(['fire','water'
 assert(hatchingSeconds(['fire','water','earth','wind'])>hatchingSeconds(['fire','water','earth']));
 assert(hatchingSeconds(['fire','fire','water','earth'],'transcendent')>
   hatchingSeconds(['fire','fire','water','earth'],'mythic'));
+assert(hatchingSeconds(['fire','water','earth','wind'],'apex')>
+  hatchingSeconds(['fire','water','earth','wind'],'mythic'));
 
 console.log('SESSION REGRESSION: Academy');
 assert.equal(buildingConfig.definitions.academy.maxLevel,7);

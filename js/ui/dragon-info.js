@@ -35,7 +35,7 @@ function elementFlag(id,primary,size='sm'){
 function rarityGem(id,elementId){
   const rarity=DATA.rarities[id];
   const gemColor=DATA.elements[elementId]?.color||rarity.color;
-  return '<span class="rarity-gem" style="--gem:'+gemColor+';--tier:'+rarity.color+'" title="'+esc(rarity.name)+
+  return '<span class="rarity-gem rarity-'+id+'" style="--gem:'+gemColor+';--tier:'+rarity.color+'" title="'+esc(rarity.name)+
     '" aria-label="'+esc(rarity.name)+'"><svg viewBox="0 0 40 46" aria-hidden="true">'+
     '<path d="M20 1 37 11 36 30 20 45 4 30 3 11Z" fill="'+rarity.color+'" stroke="#283a4b" stroke-width="2"/>'+
     '<path d="M20 5 33 13 32 28 20 40 8 28 7 13Z" fill="'+gemColor+'" stroke="#ffffffbb" stroke-width="1.5"/>'+
@@ -51,7 +51,7 @@ function elementBadges(species,size='sm'){
 function skillHex(skill,locked=false){
   const e=skill.element?DATA.elements[skill.element]:null;
   const glyph=e?'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#flag-'+skill.element+'"/></svg>':'⚔';
-  return '<span class="skill-hex '+(e?'elemental':'neutral')+(locked?' locked':'')+(skill.special?' special':'')+'" style="--skill-color:'+(e?e.color:'#bd7520')+'"'+
+  return '<span class="skill-hex '+(e?'elemental':'neutral')+(locked?' locked':'')+(skill.special?' special':'')+(skill.apex?' apex':'')+'" style="--skill-color:'+(e?e.color:'#bd7520')+'"'+
     ' title="'+esc(skill.special?skill.name:(e?e.name+' element skill':'Normal skill'))+'">'+glyph+
     (skill.special?'<i class="skill-special-glyph" aria-hidden="true">'+esc(skill.glyph||'✦')+'</i>':'')+
     (locked?'<i aria-label="Locked">🔒</i>':'')+'</span>';

@@ -36,6 +36,7 @@ function handleAction(button){
       openModal(house&&!house.stored?"habitat":"dragons",house?.id);break;
     }
     case "open-book":openModal("book");break;
+    case "open-achievements":openModal("achievements");break;
     case "open-inventory":openModal("inventory");break;
     case "open-islands":openModal("islands");break;
     case "open-guide":openModal("guide");break;

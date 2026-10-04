@@ -2,6 +2,7 @@
 const expansion=require('../data/elements-expansion.json');
 const specialSkillCatalog=require('../data/special-skills.json');
 const doubleDragonCatalog=require('../data/dragons/transcendent.json');
+const apexCatalog=require('../data/apex-tier.json');
 const {skillIdsFor}=require('../js/data/skill-assignment.js');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const physical={
@@ -62,6 +63,9 @@ function extendCatalog(db,game){
   if(doubleDragonCatalog.rarityConfig.id!==doubleDragonCatalog.rarity)
     throw Error('Double Element rarity metadata does not match its recipes.');
   db.rarities[doubleDragonCatalog.rarity]=clone(doubleDragonCatalog.rarityConfig);
+  if(apexCatalog.rarityConfig.id!==apexCatalog.rarity||apexCatalog.dragons.length!==15||
+    apexCatalog.skills.length!==15)throw Error('Apex tier must define 15 dragons and signature skills.');
+  db.rarities[apexCatalog.rarity]=clone(apexCatalog.rarityConfig);
   globalThis.DragonDatabase=db;
   // Use the same factory, rarity, colors, stats, passive and skills as all existing dragons.
   const rulesPath=require.resolve('../js/data/dragon-rules.js');
@@ -212,6 +216,51 @@ function extendCatalog(db,game){
   }
   if(ids.some(id=>specialSkillCatalog.skills.filter(skill=>skill.element===id).length!==3))
     throw Error('Each primary element must have exactly three special skills.');
+  const apexSkillIds=new Set();
+  for(const skill of apexCatalog.skills){
+    if(apexSkillIds.has(skill.id)||!ids.includes(skill.element)||!game.skills.elemental[skill.element])
+      throw Error('Invalid or duplicate Apex signature skill: '+skill.id);
+    apexSkillIds.add(skill.id);
+    game.skills.elemental[skill.element].push({...clone(skill),
+      icon:db.elements[skill.element].icon,special:true,apex:true});
+  }
+  const coveredDoubleSkills=new Set();
+  for(const recipe of apexCatalog.dragons){
+    const parts=[recipe.primary,...recipe.partners];
+    if(parts.length!==4||new Set(parts).size!==4||!ids.includes(recipe.primary)||
+      recipe.partners.some(element=>!ids.includes(element))||seen.has(recipe.speciesId))
+      throw Error('Invalid or duplicate Apex species: '+recipe.speciesId);
+    const dragon=rules.buildDragon(parts);
+    const signature=apexCatalog.skills.find(skill=>skill.id===recipe.skillId);
+    if(!signature||signature.element!==recipe.primary)
+      throw Error('Apex signature skill does not match its primary element: '+recipe.speciesId);
+    const doubleSkills=recipe.partners.map((element,index)=>element+'-special-'+(index+1));
+    for(const id of doubleSkills){
+      const skill=skillById.get(id);
+      if(!skill||skill.element!==id.split('-special-')[0]||coveredDoubleSkills.has(id))
+        throw Error('Invalid or repeated Double skill in Apex recipe: '+id);
+      coveredDoubleSkills.add(id);
+    }
+    dragon.id=recipe.speciesId;dragon.ten=recipe.name;dragon.elements=parts;
+    dragon.soHe=4;dragon.slotCount=4;dragon.doHiem=apexCatalog.rarity;
+    dragon.doHiemTen=apexCatalog.rarityConfig.ten;dragon.vienMau=apexCatalog.rarityConfig.vien;
+    dragon.doubleElement=null;dragon.apexPrimary=recipe.primary;dragon.apexForm='crown';
+    dragon.specialSkillIds=[...doubleSkills,recipe.skillId];
+    dragon.skillIds=dragon.specialSkillIds.slice();dragon.apGiay=apexCatalog.rarityConfig.apGiay;
+    dragon.giaTrung=null;dragon.giaBan=apexCatalog.rarityConfig.banGia;
+    dragon.tenTrung=recipe.name.replace(/ Dragon$/,'')+' Egg';
+    dragon.moTa='Apex Dragon — '+db.elements[recipe.primary].ten+' primary with '+
+      recipe.partners.map(element=>db.elements[element].ten).join(', ')+
+      ' secondary affinities. Cannot be bred.';
+    dragon.hienTuong=dragon.moTa;dragon.sachGhi=dragon.moTa;
+    dragon.specialSkillIds.forEach((id,index)=>{
+      const skill=index===3?signature:skillById.get(id);
+      if(!skill)throw Error('Missing Apex skill: '+id);
+    });
+    db.species.push(dragon);seen.add(recipe.speciesId);
+  }
+  if(apexSkillIds.size!==15||coveredDoubleSkills.size!==45)
+    throw Error('Apex releases must use all 45 Double skills exactly once.');
   // Species metadata follows the rarity's current incubation clock, including legacy catalog entries.
   for(const dragon of db.species)dragon.apGiay=db.rarities[dragon.doHiem].apGiay;
   return {db,game};

@@ -6,7 +6,7 @@
 const combat=require('../../js/data/combat-rules.js');
 const {record}=require('./battle-view.cjs');
 const harmful=new Set(['poison','burn','curse','freeze','damage_down','armor_down',
-  'accuracy_down','lock_switch']);
+  'accuracy_down','lock_switch','anti_heal']);
 const dots=new Set(['poison','burn','curse']);
 
 function status(fighter,kind){return fighter.statuses?.find(item=>item.kind===kind);}
@@ -53,8 +53,8 @@ function absorb(fighter,amount){
 }
 function heal(fighter,amount){
   if(fighter.hp<=0)return 0;
-  const before=fighter.hp,curse=status(fighter,'curse');
-  const multiplier=1-Math.min(.5,curse?.healingReduction||0);
+  const before=fighter.hp,curse=status(fighter,'curse'),antiHeal=status(fighter,'anti_heal');
+  const multiplier=1-Math.min(.75,(curse?.healingReduction||0)+(antiHeal?.value||0));
   fighter.hp=Math.min(combat.effectiveMaxHp(fighter),fighter.hp+Math.round(amount*multiplier));
   return fighter.hp-before;
 }

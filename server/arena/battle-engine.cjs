@@ -83,7 +83,7 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       if(repeated){
         // Resolve each hit against the current living target. A knockout sends
         // the next hit to the next living reserve instead of discarding it.
-        let current=target;
+        let current=target,actualHits=0;
         for(let i=0;i<effect.hits&&actor.hp>0;i++){
           if(current.hp<=0)current=battle[other].find(f=>f.hp>0);
           if(!current)break;
@@ -99,12 +99,17 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
             catalog.typeChart,variance,crit);
           const actual=fx.absorb(current,dealt);
           totalDamage+=actual;
+          actualHits++;
           recordHit(current,actual,{hits:1,critical:crit,
             matchup:combat.matchup(skill.element,current.parts,catalog.typeChart)});
           const reflect=fx.status(current,'reflect');
           if(reflect)fx.absorb(actor,Math.min(Math.round(actual*reflect.value),
             Math.round(current.maxHp*(reflect.cap||.12))));
         }
+        if(effect.secondary?.kind==='damage_down_if_hits'&&actualHits>=effect.secondary.minHits&&
+          current.hp>0)
+          fx.addStatus(current,{kind:'damage_down',value:effect.secondary.value,
+            duration:effect.secondary.duration},skill.element);
       }
       for(const victim of victims){
         if(victim.hp<=0)continue;
@@ -120,6 +125,9 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
           let power=cast.power;
           if(kind==='switch_punish'&&battle.lastSwitchSide===other)power+=effect.value;
           if(kind==='curse_strike'&&fx.status(victim,'curse'))power+=effect.bonusDamage;
+          if(kind==='apex_verdict'&&victim.statuses?.some(s=>fx.harmful.has(s.kind)))
+            power+=effect.bonusDamage||0;
+          if(kind==='burn'&&fx.status(victim,'burn'))power+=effect.bonusIfBurn||0;
           if(kind==='repeat_punish'&&((victim.skillUses||{})[victim.lastSkill]||0)>=2)
             power+=effect.value;
           if(kind==='execute'&&victim.hp/victim.maxHp<effect.value)power=effect.lowPower;
@@ -155,7 +163,8 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
           if(kind==='curse_strike')
             fx.addStatus(victim,{kind:'damage_down',value:effect.value,
               duration:effect.duration},skill.element);
-          if(kind==='freeze_chance'&&!victim.freezeImmunity&&rng()<effect.value)
+          if(kind==='freeze_chance'&&!victim.freezeImmunity&&rng()<
+            effect.value+(fx.status(victim,'damage_down')?(effect.bonusIfDamageDown||0):0))
             fx.addStatus(victim,{kind:'freeze',duration:1,value:0},skill.element);
           if(kind==='lock_switch'&&!victim.switchImmunity)
             fx.addStatus(victim,effect,skill.element);
@@ -167,6 +176,15 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
           }
           if(kind==='spore_bloom'&&poisonedBefore&&victim!==target)
             fx.addStatus(victim,{kind:'poison',value:effect.value,duration:effect.duration},skill.element);
+          if(effect.secondary?.kind==='anti_heal'&&victim.statuses?.some(s=>fx.harmful.has(s.kind)))
+            fx.addStatus(victim,{kind:'anti_heal',value:effect.secondary.value,
+              duration:effect.secondary.duration},skill.element);
+          if(kind==='apex_verdict'&&victim.statuses?.some(s=>fx.harmful.has(s.kind)))
+            fx.addStatus(victim,{kind:'anti_heal',value:effect.value,
+              duration:effect.duration},skill.element);
+          if(effect.secondary?.kind==='damage_down_if_hits'&&hits>=effect.secondary.minHits)
+            fx.addStatus(victim,{kind:'damage_down',value:effect.secondary.value,
+              duration:effect.secondary.duration},skill.element);
           if(kind==='dispel_strike'){
             const buff=victim.statuses.find(s=>['armor_up','damage_reduction'].includes(s.kind));
             if(buff)victim.statuses.splice(victim.statuses.indexOf(buff),1);
@@ -180,6 +198,22 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
       const healOne=(victim,value)=>{if(victim)support(victim,fx.heal(victim,victim.maxHp*value));};
       if(kind==='heal_lowest')healOne(fx.lowest(allies),effect.value);
       else if(kind==='heal_team')for(const f of fx.living(allies))healOne(f,effect.value);
+      else if(kind==='area'&&effect.healTeam)
+        for(const f of fx.living(allies))healOne(f,effect.healTeam);
+      else if(kind==='shield_team')for(const f of fx.living(allies)){
+        fx.addStatus(f,{kind:'shield',value:effect.value,duration:effect.duration+1},skill.element);
+        support(f);
+      }
+      else if(kind==='team_blessing')for(const f of fx.living(allies)){
+        healOne(f,effect.heal);
+        fx.addStatus(f,{kind:'damage_up',value:effect.buff,duration:effect.duration+1},skill.element);
+      }
+      else if(kind==='cleanse_shield_self'){
+        const removed=fx.removeHarmful(actor,effect.remove);
+        if(removed)healOne(actor,effect.value);
+        else fx.addStatus(actor,{kind:'shield',value:effect.shield,duration:effect.duration+1},skill.element);
+        support(actor);
+      }
       else if(kind==='cleanse_heal_lowest'){
         const f=fx.living(allies).sort((a,b)=>
           fx.harmful.size&&b.statuses.filter(s=>fx.harmful.has(s.kind)).length-
@@ -217,8 +251,15 @@ function createBattleEngine({catalog,game,rng=()=>Math.random()}){
         if(!trap)battle.traps[other]={turns:effect.duration,value:effect.value};
         else trap.value=Math.max(trap.value,effect.value);
         support(actor);
+      }else if(effect.secondary?.kind==='switch_trap'){
+        battle.traps??={};
+        battle.traps[other]={turns:effect.secondary.duration||2,value:effect.secondary.value};
+        support(actor);
       }else if(kind==='lifesteal_cost'){
         support(actor,fx.heal(actor,Math.min(totalDamage*effect.value,actor.maxHp*effect.healCap)));
+      }else if(kind==='multi'&&effect.secondary?.kind==='lifesteal'&&
+        actor.hp/actor.maxHp<effect.secondary.threshold){
+        support(actor,fx.heal(actor,totalDamage*effect.secondary.value));
       }else if(kind==='curse'&&!offensive){fx.addStatus(target,effect,skill.element);support(target);}
       else if(!offensive)support(actor);
       if(totalDamage>0&&kind!=='echo_last'&&!aoe)actor.lastDirectDamage=totalDamage;

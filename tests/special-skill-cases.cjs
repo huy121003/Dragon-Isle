@@ -49,8 +49,12 @@ for(const s of skills){
     assert(f.ally.hp>before.b,s.id+' heals injured lowest ally');
     assert.equal(f.actor.hp,before.a,s.id+' does not heal healthier actor');
   }
+  if(k==='next_attack_up'){
+    assert(f.enemy.hp<before.e,'Overcharge also deals immediate damage');
+    assert.equal(fx.status(f.actor,k).value,.4,'Overcharge buffs the next direct attack by 40%');
+  }
   if(k==='revive_first'){
-    assert.equal(f.ally.hp,Math.round(f.ally.maxHp*.12));
+    assert.equal(f.ally.hp,Math.round(f.ally.maxHp*.20));
     assert.equal(publicBattle(f.battle).attack[0].skills[3].available,false);
   }
   if(k==='multi'||k==='low_hp_power'){
@@ -71,6 +75,13 @@ for(const s of skills){
   if(k==='copy_last')assert(fx.status(f.enemy,'burn'),'copies active target’s prior burn');
   if(k==='echo_last')assert(f.enemy.hp<before.e);
   checked++;
+}
+{
+  const s=skills.find(x=>x.id==='time-special-2'),f=fixture(s);
+  f.ally.hp=Math.round(f.ally.maxHp*.9);f.ally.damageLastTurn=0;
+  const before=f.ally.hp;
+  cast(f,s);
+  assert.equal(f.ally.hp,before+Math.round(f.ally.maxHp*.08),'Rewind fallback heals 8% when no damage was recorded');
 }
 // Full-health team healing never converts excess healing into extra casts on the actor.
 for(const id of ['water-special-2','light-special-2','nature-special-2']){
@@ -174,7 +185,7 @@ for(const [id,prepare,label] of [
 }
 {
   const f=fixture(special('nature-special-2'));
-  f.actor.hp-=1000;f.ally.hp-=1000;
+  f.actor.hp-=2500;f.ally.hp-=2500;
   const before=f.actor.hp;cast(f,f.actor.skills[3]);
   assert(f.actor.hp>before,'regeneration ticks after casting');
   assert.equal(fx.status(f.actor,'regen')?.turns,1,'one remaining tick after casting turn');

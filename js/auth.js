@@ -37,6 +37,12 @@ document.getElementById("authForm").addEventListener("submit",async function(eve
   }catch(error){showAuthMessage(error.message);button.disabled=false;}
 });
 async function authenticate(){
+  if(window.DragonPlatform?.offline){
+    currentAccount={...window.DragonPlatform.account};
+    document.getElementById("accountName").textContent=currentAccount.username;
+    authScreen.hidden=true;
+    return currentAccount;
+  }
   if(!serverSaveAvailable){showAuthMessage("Start node server.cjs and open the HTTP address to sign in.");return null;}
   try{
     const response=await fetch('/api/auth/me',{cache:'no-store'});
@@ -49,6 +55,10 @@ async function authenticate(){
   }catch(error){showAuthMessage(error.message);return null;}
 }
 async function logoutAccount(){
+  if(window.DragonPlatform?.offline){
+    toast("Offline profile is stored on this iPhone.");
+    return;
+  }
   const button=document.querySelector('[data-action="logout"]');
   if(button)button.disabled=true;
   try{

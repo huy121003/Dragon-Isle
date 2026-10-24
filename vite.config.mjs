@@ -8,7 +8,7 @@ export default defineConfig({
     name:'dragon-isle-native-offline-flag',
     transformIndexHtml(html){
       return nativeBuild
-        ? html.replace('<head>', '<head>\\n  <script>window.DRAGON_OFFLINE_MODE = true;</script>')
+        ? html.replace('<head>', '<head>\n  <script>window.DRAGON_OFFLINE_MODE = true;</script>')
         : html;
     }
   }]

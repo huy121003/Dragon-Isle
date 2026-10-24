@@ -1,3 +1,4 @@
-/* BUILD: React + Ant Design đóng gói vào dist; máy chủ Node vẫn cấp dữ liệu game. */
+/* BUILD: React + Ant Design bundle to dist; the Node server currently provides game data. */
 import {defineConfig} from 'vite';
-export default defineConfig({base:'/',build:{outDir:'dist'}});
+const nativeBuild = process.env.VITE_NATIVE_BUILD === 'true';
+export default defineConfig({base:nativeBuild?'./':'/',build:{outDir:'dist'}});

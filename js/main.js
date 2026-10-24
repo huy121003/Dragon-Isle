@@ -12,9 +12,15 @@ async function startGame(){
   checkApexAchievements();
   ensureDailyMissions();
 
-  /* SAVE: Bản localStorage cũ bị xóa và không bao giờ tự ghép vào hồ sơ tài khoản. */
-  try{window.localStorage.removeItem(SAVE_KEY);}catch(error){}
+  /* Offline app keeps its own local profile; do not clear its save on boot. */
+  if(!window.DragonPlatform?.offline){
+    try{window.localStorage.removeItem(SAVE_KEY);}catch(error){}
+  }
   try{ui.fixedDay=window.localStorage.getItem('dragon-isle-fixed-day')==='1';}catch(error){}
+  if(window.DragonPlatform?.offline){
+    const arenaButton=document.getElementById("arenaDockButton");
+    if(arenaButton)arenaButton.hidden=true;
+  }
 
   const offline=advanceWorld(Date.now());
   // Apply the current XP curve to progress saved under earlier balance values.

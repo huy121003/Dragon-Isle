@@ -40,7 +40,7 @@ jobs:
           VITE_NATIVE_BUILD: "true"
 
       - name: Install Capacitor tooling
-        run: npm install --no-save @capacitor/core@^8 @capacitor/cli@^8 @capacitor/ios@^8
+        run: npm install --no-save --package-lock=false @capacitor/core@^8 @capacitor/cli@^8 @capacitor/ios@^8
 
       - name: Generate iOS project and sync bundled assets
         run: |

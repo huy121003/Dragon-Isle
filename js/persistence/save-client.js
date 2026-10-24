@@ -2,7 +2,7 @@
 
 /* SAVE TRANSPORT: Server profile loading, queued writes and manual import/export. */
 let saveReadOnly=false;
-let serverSaveAvailable=!!(window.location&&/^https?:$/.test(window.location.protocol));
+let serverSaveAvailable=!window.DragonPlatform?.offline&&!!(window.location&&/^https?:$/.test(window.location.protocol));
 let pendingServerSave=null;
 let serverSaveBusy=false;
 let serverFlushPromise=null;
@@ -10,6 +10,12 @@ let serverWarningShown=false;
 let serverSaveRevision=0;
 
 async function loadGameFromServer(){
+  if(window.DragonPlatform?.offline){
+    let raw=null;
+    try{raw=JSON.parse(window.localStorage.getItem(SAVE_KEY)||"null");}catch(error){}
+    saveReadOnly=false;
+    return raw?migrateSave(raw):newGame();
+  }
   const response=await fetch('/api/save',{headers:{'X-Dragon-Account':currentAccount.id},cache:'no-store'});
   if(!response.ok)throw new Error(response.status===401?'Session expired. Sign in again.':
     'Cannot read progress from the server.');
@@ -78,6 +84,15 @@ function saveGame(){
   if(saveReadOnly||!state)return Promise.resolve(false);
   state.version=SAVE_VERSION;
   state.savedAt=Date.now();
+  if(window.DragonPlatform?.offline){
+    try{
+      window.localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+      return Promise.resolve(true);
+    }catch(error){
+      toast("Unable to save offline progress on this device.");
+      return Promise.resolve(false);
+    }
+  }
   pendingServerSave=JSON.stringify(state);
   return flushServerSave();
 }

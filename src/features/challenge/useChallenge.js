@@ -17,13 +17,15 @@ async function readStatus(){
 
 export default function useChallenge(account,connection){
   const client=useQueryClient();
+  const offline=!!window.DragonPlatform?.offline;
   const query=useQuery({
     queryKey:['challenge','status',account?.id],
-    queryFn:readStatus,enabled:!!account&&!connection?.blocked,
+    queryFn:readStatus,enabled:!!account&&!offline&&!connection?.blocked,
     refetchInterval:2000,refetchIntervalInBackground:true,retry:false
   });
   const mutation=useMutation({
     mutationFn:async({route,body,method='POST'})=>{
+      if(window.DragonPlatform?.offline)throw new Error('Challenges require an online server.');
       if(connectionState()?.blocked)return null;
       if(['invite','select'].includes(route)&&!await game()?.save())
         throw new Error('Unable to save dragons before the challenge.');
@@ -55,6 +57,11 @@ export default function useChallenge(account,connection){
     if(account&&!connection?.blocked)client.invalidateQueries({queryKey:['challenge','status',account.id]});
   },[account?.id,connection?.blocked,client]);
   const base=query.data||{players:[],match:null};
+  if(offline)return {
+    challenge:{players:[],match:null,error:null,busy:false,offline:true},
+    status:async()=>({data:{players:[],match:null}}),
+    request:async()=>{throw new Error('Challenges require an online server.');}
+  };
   return {
     challenge:{...base,error:query.error?.message||mutation.error?.message||null,
       busy:mutation.isPending},

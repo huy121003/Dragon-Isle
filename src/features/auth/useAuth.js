@@ -6,6 +6,7 @@ export function useAuth(){
   const query=useQuery({
     queryKey:['auth','me'],
     queryFn:async()=>{
+      if(window.DragonPlatform?.offline)return {user:window.DragonPlatform.account};
       try{return parseWith(AuthMeSchema,await apiFetch('/api/auth/me'),'Auth response');}
       catch(error){if(error instanceof ApiError&&error.status===401)return {user:null};throw error;}
     },

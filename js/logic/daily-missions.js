@@ -8,6 +8,12 @@ function ensureDailyMissions(){
 }
 /** Refresh the server-owned daily state, including its authoritative reset boundary. */
 async function refreshDailyMissions(){
+  if(window.DragonPlatform?.offline){
+    ensureDailyMissions();
+    if(ui.modal?.name==='daily-missions')updateUI();
+    toast("Daily Missions require an online server in this build.");
+    return;
+  }
   try{
     const response=await fetch('/api/daily-missions',{cache:'no-store'}),body=await response.json();
     if(!response.ok)throw new Error(body.error||'Could not load Daily Missions.');
@@ -17,6 +23,10 @@ async function refreshDailyMissions(){
 }
 /** Claim a completed mission. The server validates progress and calculates/grants the reward. */
 async function claimDailyMission(id){
+  if(window.DragonPlatform?.offline){
+    toast("Daily Missions require an online server in this build.");
+    return;
+  }
   if(!await saveGame())return;
   try{
     const response=await fetch('/api/daily-missions/claim',{method:'POST',headers:{'Content-Type':'application/json'},
